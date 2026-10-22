@@ -66,6 +66,11 @@
 				<label><input type="checkbox" id="khoiDinhDanh" checked> Thêm khối định danh 5 dòng đầu file</label>
 				<label><input type="checkbox" id="thutLe" checked> Thụt lề bằng Tab</label>
 				<label><input type="checkbox" id="ghiChuSuaTay" checked> Ghi chú %! SỬA TAY vào cuối dòng cần sửa</label>
+				<label>Màu trong hình TikZ <select id="cheDoMau" aria-label="Xử lí màu trong hình">
+					<option value="tu" selected>Tự nhận biết (hình vật giữ màu, hình học bỏ màu)</option>
+					<option value="bo">Luôn bỏ màu</option>
+					<option value="giu">Luôn giữ màu</option>
+				</select></label>
 			</div>
 		</details>
 
@@ -199,6 +204,8 @@ const O_TT = ["tenDuAn", "gvSoan", "gvPB1"];
 const O_CHON = ["bocSo", "bocTenDiem", "nhanForeach", "xoaCanChinh", "xoaCommentCode", "khoiDinhDanh", "thutLe", "ghiChuSuaTay"];
 function doc_(k) { try { return localStorage.getItem("tdk_" + k); } catch (e) { return null; } }
 function luu(k, v) { try { localStorage.setItem("tdk_" + k, v); } catch (e) {} }
+try { const v = localStorage.getItem("tdk_cheDoMau"); if (v) document.getElementById("cheDoMau").value = v; } catch (e) {}
+document.getElementById("cheDoMau").addEventListener("change", e => { try { localStorage.setItem("tdk_cheDoMau", e.target.value); } catch (er) {} });
 O_TT.forEach(k => { const v = doc_(k); if (v) $(k).value = v; $(k).addEventListener("input", () => luu(k, $(k).value)); });
 O_CHON.forEach(k => { const v = doc_(k); if (v !== null) $(k).checked = v === "1"; $(k).addEventListener("change", () => luu(k, $(k).checked ? "1" : "0")); });
 function dem(s) { const n = s ? s.split("\n").length : 0; return n ? "· " + n + " dòng" : ""; }
@@ -210,6 +217,7 @@ async function chay() {
 	const tuyChon = {};
 	O_TT.forEach(k => tuyChon[k] = $(k).value.trim());
 	O_CHON.forEach(k => tuyChon[k] = $(k).checked);
+	tuyChon.cheDoMau = $("cheDoMau").value;
 	if (!boMay) { hien("Bộ luật chưa sẵn sàng"); return; }
 	try {
 		const data = boMay.chuanHoa(src, tuyChon);
