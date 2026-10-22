@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>chuanhoacodeTDK</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="dau">
+	<div class="khung">
+		<h1 class="ten">chuanhoacode<b>TDK</b></h1>
+		<p class="mota">Chuẩn hoá code LaTeX đề thi theo quy định dự án</p>
+		<div class="taiKhoan" id="taiKhoan" hidden>
+			<img id="anh" alt="" referrerpolicy="no-referrer">
+			<span id="emailNd"></span>
+			<a class="nut" id="linkAdmin" href="admin.html" hidden>Quản trị</a>
+			<button class="nut" id="nutThoat" type="button">Đăng xuất</button>
+		</div>
+	</div>
+	<div class="vach"></div>
+</header>
+
+<main class="khung">
+	<!-- MÀN HÌNH 1: đang tải -->
+	<section class="manHinh" id="manTai"><p>Đang kiểm tra đăng nhập…</p></section>
+
+	<!-- MÀN HÌNH 2: đăng nhập -->
+	<section class="manHinh" id="manDangNhap" hidden>
+		<h2>Đăng nhập</h2>
+		<p>Dùng tài khoản Gmail để đăng nhập. Tài khoản mới cần quản trị viên duyệt trước khi sử dụng.</p>
+		<button class="nut chinh nutGoogle" id="nutDangNhap" type="button">
+			<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+			Đăng nhập bằng Google
+		</button>
+		<p class="hanDung" id="loiDangNhap" style="margin-top:12px"></p>
+	</section>
+
+	<!-- MÀN HÌNH 3: chờ duyệt / hết hạn -->
+	<section class="manHinh" id="manChoDuyet" hidden>
+		<span class="trangThai" id="nhanTrangThai">Đang chờ duyệt</span>
+		<h2 style="margin-top:12px" id="tieuDeCho">Tài khoản chưa được kích hoạt</h2>
+		<p id="loiChoDuyet">Quản trị viên sẽ duyệt tài khoản của bạn.</p>
+		<p id="lienHe"></p>
+		<button class="nut" id="nutKiemTraLai" type="button">Kiểm tra lại</button>
+	</section>
+
+	<!-- MÀN HÌNH 4: công cụ -->
+	<section id="manCongCu" hidden>
+		<section class="thongtin" aria-label="Thông tin dự án">
+			<label class="o" for="tenDuAn">Tên dự án<input type="text" id="tenDuAn" placeholder="Đề thi thử THPT 2027 — Sở GD&amp;ĐT ..."></label>
+			<label class="o" for="gvSoan">GV soạn<input type="text" id="gvSoan" placeholder="Nguyễn Văn A"></label>
+			<label class="o" for="gvPB1">GV phản biện 1<input type="text" id="gvPB1" placeholder="Trần Văn B"></label>
+			<button class="nut chinh" id="nutChay" type="button">Chuẩn hoá</button>
+		</section>
+		<details class="tuychon">
+			<summary>Tuỳ chọn luật <span class="hanDung" id="hanDung"></span></summary>
+			<div class="dsTuychon">
+				<label><input type="checkbox" id="bocSo" checked> Bọc số, biểu thức trong câu vào $...$</label>
+				<label><input type="checkbox" id="bocTenDiem" checked> Bọc tên điểm, biến (ABC, x) vào $...$</label>
+				<label><input type="checkbox" id="nhanForeach" checked> Gom nhãn điểm TikZ thành \foreach</label>
+				<label><input type="checkbox" id="xoaCanChinh" checked> Xoá căn chỉnh thủ công (\vspace, \\ ...)</label>
+				<label><input type="checkbox" id="xoaCommentCode" checked> Xoá dòng code bị comment-out</label>
+				<label><input type="checkbox" id="khoiDinhDanh" checked> Thêm khối định danh 5 dòng đầu file</label>
+				<label><input type="checkbox" id="thutLe" checked> Thụt lề bằng Tab</label>
+			</div>
+		</details>
+
+		<section class="haiKhung">
+			<div class="oCode">
+				<div class="dauO">
+					<h2>Code gốc <span id="demVao"></span></h2>
+					<div class="nhom"><button class="nut" id="nutXoa" type="button">Xoá</button></div>
+				</div>
+				<textarea id="vao" spellcheck="false" aria-label="Code LaTeX gốc" placeholder="Dán code LaTeX cần chuẩn hoá vào đây…"></textarea>
+			</div>
+			<div class="oCode">
+				<div class="dauO">
+					<h2>Code đã chuẩn hoá <span id="demRa"></span></h2>
+					<div class="nhom"><button class="nut" id="nutChep" type="button">Sao chép</button></div>
+				</div>
+				<textarea id="ra" spellcheck="false" aria-label="Code LaTeX đã chuẩn hoá"></textarea>
+			</div>
+		</section>
+
+		<div class="thanhChay">
+			<div class="tomtat" id="tomtat"></div>
+			<span class="goiy">Phím tắt <kbd>Ctrl</kbd> + <kbd>Enter</kbd> trong khung code gốc</span>
+		</div>
+
+		<section class="baoCao">
+			<div class="bang">
+				<h3>Cần sửa tay <small>bấm số dòng để tới chỗ đó</small></h3>
+				<ul class="ds" id="dsCanh"><li class="trong">Dán code vào khung bên trái rồi bấm Chuẩn hoá.</li></ul>
+			</div>
+			<div class="bang">
+				<h3>Đã tự sửa <small>mã quy tắc · số lần</small></h3>
+				<ul class="ds" id="dsSua"><li class="trong">Chưa có kết quả.</li></ul>
+			</div>
+		</section>
+		<p class="chuthich">Mã quy tắc: C — quy định chung, E — cấu trúc câu hỏi, T — TikZ, B — bảng biến thiên, #n — mục n của Bảng kí hiệu. Máy sửa theo luật nên vẫn cần biên dịch lại và đọc soát trước khi nộp.</p>
+	</section>
+</main>
+<div class="toast" id="toast" role="status"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { firebaseConfig, EMAIL_QUAN_TRI, LIEN_HE } from "./cauhinh.js";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+let boMay = null;   // bộ luật, chỉ tải được khi tài khoản đã duyệt
+const $ = id => document.getElementById(id);
+
+/* ---------- chuyển màn hình ---------- */
+function man(ten) { ["manTai", "manDangNhap", "manChoDuyet", "manCongCu"].forEach(m => $(m).hidden = m !== ten); }
+function hien(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("hien"); clearTimeout(hien.t); hien.t = setTimeout(() => t.classList.remove("hien"), 2000); }
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]); }
+$("lienHe").textContent = LIEN_HE;
+
+/* ---------- đăng nhập ---------- */
+$("nutDangNhap").addEventListener("click", async () => {
+	$("loiDangNhap").textContent = "";
+	try { await signInWithPopup(auth, new GoogleAuthProvider()); }
+	catch (e) { $("loiDangNhap").textContent = "Không đăng nhập được (" + e.code + "). Thử lại hoặc cho phép cửa sổ bật lên."; }
+});
+$("nutThoat").addEventListener("click", () => { boMay = null; signOut(auth); });
+$("nutKiemTraLai").addEventListener("click", () => auth.currentUser && kiemTraQuyen(auth.currentUser));
+
+onAuthStateChanged(auth, async user => {
+	if (!user) { $("taiKhoan").hidden = true; man("manDangNhap"); return; }
+	$("taiKhoan").hidden = false;
+	$("emailNd").textContent = user.email;
+	if (user.photoURL) $("anh").src = user.photoURL; else $("anh").hidden = true;
+	$("linkAdmin").hidden = !EMAIL_QUAN_TRI.includes(user.email);
+	await kiemTraQuyen(user);
+});
+
+// Tạo hồ sơ lần đầu (trạng thái chờ duyệt), đọc trạng thái hiện tại
+async function kiemTraQuyen(user) {
+	man("manTai");
+	const ref = doc(db, "nguoiDung", user.uid);
+	let snap = await getDoc(ref);
+	if (!snap.exists()) {
+		await setDoc(ref, { email: user.email, ten: user.displayName || "", daDuyet: false, ngayDangKy: serverTimestamp() });
+		snap = await getDoc(ref);
+	}
+	const d = snap.data();
+	const laQT = EMAIL_QUAN_TRI.includes(user.email);
+	const hetHan = d.hetHan ? d.hetHan.toDate() : null;
+	const conHan = !hetHan || hetHan > new Date();
+	if (laQT || (d.daDuyet && conHan)) {
+		$("hanDung").textContent = laQT ? "· quản trị viên" : hetHan ? "· hạn dùng đến " + hetHan.toLocaleDateString("vi-VN") : "· không giới hạn";
+		try { await taiBoLuat(); }
+		catch (e) {
+			$("nhanTrangThai").textContent = "Lỗi";
+			$("tieuDeCho").textContent = "Chưa tải được bộ luật";
+			$("loiChoDuyet").textContent = e.message;
+			man("manChoDuyet"); return;
+		}
+		man("manCongCu");
+		return;
+	}
+	if (d.daDuyet && !conHan) {
+		$("nhanTrangThai").textContent = "Hết hạn";
+		$("tieuDeCho").textContent = "Tài khoản đã hết hạn sử dụng";
+		$("loiChoDuyet").textContent = "Hạn dùng kết thúc ngày " + hetHan.toLocaleDateString("vi-VN") + ". Liên hệ để gia hạn.";
+	} else {
+		$("nhanTrangThai").textContent = "Đang chờ duyệt";
+		$("tieuDeCho").textContent = "Tài khoản chưa được kích hoạt";
+		$("loiChoDuyet").textContent = "Đã ghi nhận đăng kí của " + user.email + ". Quản trị viên sẽ duyệt tài khoản của bạn.";
+	}
+	man("manChoDuyet");
+}
+
+/* ---------- tải bộ luật từ cơ sở dữ liệu ---------- */
+async function taiBoLuat() {
+	if (boMay) return;
+	let snap;
+	try { snap = await getDoc(doc(db, "heThong", "boLuat")); }
+	catch (e) { throw new Error("Tài khoản không có quyền tải bộ luật (" + e.code + ")."); }
+	if (!snap.exists()) throw new Error("Quản trị viên chưa tải bộ luật lên. Vào trang Quản trị → Cập nhật bộ luật.");
+	const hop = {};
+	new Function("window", snap.data().ma)(hop);
+	if (!hop.TDK || typeof hop.TDK.chuanHoa !== "function") throw new Error("Bộ luật trên hệ thống bị lỗi, báo quản trị viên.");
+	boMay = hop.TDK;
+	const pb = snap.data().phienBan;
+	if (pb) $("hanDung").textContent += " · bộ luật " + pb;
+}
+
+/* ---------- công cụ ---------- */
+const O_TT = ["tenDuAn", "gvSoan", "gvPB1"];
+const O_CHON = ["bocSo", "bocTenDiem", "nhanForeach", "xoaCanChinh", "xoaCommentCode", "khoiDinhDanh", "thutLe"];
+function doc_(k) { try { return localStorage.getItem("tdk_" + k); } catch (e) { return null; } }
+function luu(k, v) { try { localStorage.setItem("tdk_" + k, v); } catch (e) {} }
+O_TT.forEach(k => { const v = doc_(k); if (v) $(k).value = v; $(k).addEventListener("input", () => luu(k, $(k).value)); });
+O_CHON.forEach(k => { const v = doc_(k); if (v !== null) $(k).checked = v === "1"; $(k).addEventListener("change", () => luu(k, $(k).checked ? "1" : "0")); });
+function dem(s) { const n = s ? s.split("\n").length : 0; return n ? "· " + n + " dòng" : ""; }
+$("vao").addEventListener("input", () => $("demVao").textContent = dem($("vao").value));
+
+async function chay() {
+	const src = $("vao").value;
+	if (!src.trim()) { hien("Chưa có code để chuẩn hoá"); return; }
+	const tuyChon = {};
+	O_TT.forEach(k => tuyChon[k] = $(k).value.trim());
+	O_CHON.forEach(k => tuyChon[k] = $(k).checked);
+	if (!boMay) { hien("Bộ luật chưa sẵn sàng"); return; }
+	try {
+		const data = boMay.chuanHoa(src, tuyChon);
+		$("ra").value = data.ketQua;
+		$("demRa").textContent = dem(data.ketQua);
+		veBaoCao(data);
+		hien("Đã chuẩn hoá");
+	} catch (e) {
+		$("tomtat").innerHTML = '<span class="the canh">Máy gặp lỗi khi đọc đoạn code này. Gửi đoạn code cho quản trị viên để sửa luật.</span>';
+		return;
+	}
+	// đếm lượt dùng (không lưu nội dung code)
+	updateDoc(doc(db, "nguoiDung", auth.currentUser.uid), { luotDung: increment(1), lanCuoi: serverTimestamp() }).catch(() => {});
+}
+function veBaoCao(r) {
+	const tong = r.nhatKi.reduce((a, e) => a + e.n, 0);
+	$("tomtat").innerHTML = '<span class="the sua">Đã tự sửa ' + tong + ' chỗ</span>' +
+		(r.canhBao.length ? '<span class="the canh">' + r.canhBao.length + ' chỗ cần sửa tay</span>' : '<span class="the on">Không còn cảnh báo</span>');
+	$("dsCanh").innerHTML = r.canhBao.length ? r.canhBao.map(c =>
+		'<li><span class="ma">' + esc(c.ma) + '</span><span>' + esc(c.mo) + '<span class="doan">' + esc(c.doan) + '</span></span>' +
+		'<button class="dong" type="button" data-dong="' + c.dong + '">dòng ' + c.dong + '</button></li>').join("")
+		: '<li class="trong">Không có chỗ nào cần sửa tay theo các luật máy kiểm tra được.</li>';
+	const ds = r.nhatKi.slice().sort((a, b) => a.ma.localeCompare(b.ma, "vi", { numeric: true }));
+	$("dsSua").innerHTML = ds.length ? ds.map(e =>
+		'<li><span class="ma">' + esc(e.ma) + '</span><span>' + esc(e.mo) + '</span><span class="so">×' + e.n + '</span></li>').join("")
+		: '<li class="trong">Code đã đúng quy định, không cần sửa gì.</li>';
+}
+$("dsCanh").addEventListener("click", e => {
+	const b = e.target.closest("button[data-dong]"); if (!b) return;
+	const n = +b.dataset.dong, ta = $("ra"), dong = ta.value.split("\n");
+	let dau = 0; for (let i = 0; i < n - 1; i++) dau += dong[i].length + 1;
+	ta.focus(); ta.setSelectionRange(dau, dau + (dong[n - 1] || "").length);
+	ta.scrollTop = Math.max(0, (n - 4) * parseFloat(getComputedStyle(ta).lineHeight));
+});
+$("nutChay").addEventListener("click", chay);
+$("nutXoa").addEventListener("click", () => { $("vao").value = ""; $("demVao").textContent = ""; $("vao").focus(); });
+$("nutChep").addEventListener("click", () => {
+	const ta = $("ra"); if (!ta.value) return;
+	const chon = () => { ta.focus(); ta.select(); hien("Đã chọn toàn bộ — bấm Ctrl+C để sao chép"); };
+	if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value).then(() => hien("Đã sao chép code chuẩn"), chon); else chon();
+});
+$("vao").addEventListener("keydown", e => {
+	if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); chay(); }
+	if (e.key === "Tab" && !e.shiftKey) { e.preventDefault(); const t = e.target, a = t.selectionStart; t.setRangeText("\t", a, t.selectionEnd, "end"); }
+});
+</script>
+</body>
+</html>

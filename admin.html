@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quản trị chuanhoacodeTDK</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="dau">
+	<div class="khung">
+		<h1 class="ten">chuanhoacode<b>TDK</b> · Quản trị</h1>
+		<div class="taiKhoan">
+			<span id="emailNd"></span>
+			<a class="nut" href="index.html">Về công cụ</a>
+		</div>
+	</div>
+	<div class="vach"></div>
+</header>
+<main class="khung">
+	<section class="manHinh" id="manKhong" hidden>
+		<h2>Không có quyền</h2>
+		<p>Trang này chỉ dành cho quản trị viên. Hãy đăng nhập bằng Gmail quản trị ở trang công cụ.</p>
+		<a class="nut" href="index.html">Về trang đăng nhập</a>
+	</section>
+
+	<section id="manQT" hidden>
+		<div class="bang" style="margin-top:18px">
+			<h3>Bộ luật chuẩn hoá <small id="ttBoLuat">đang kiểm tra…</small></h3>
+			<div class="hangBoLuat">
+				<label class="o" for="fileBoLuat">Chọn file engine.js mới
+					<input type="file" id="fileBoLuat" accept=".js,text/javascript"></label>
+				<label class="o" for="phienBan">Tên phiên bản<input type="text" id="phienBan" placeholder="VD: 1.1 (22/10/2026)"></label>
+				<button class="nut chinh" id="nutTaiBoLuat" type="button">Cập nhật bộ luật</button>
+			</div>
+		</div>
+		<div class="locDs">
+			<input type="text" id="timEmail" placeholder="Tìm theo email hoặc tên…" aria-label="Tìm người dùng">
+			<select id="locTT" aria-label="Lọc trạng thái">
+				<option value="tatca">Tất cả</option>
+				<option value="cho" selected>Chờ duyệt</option>
+				<option value="duyet">Đang dùng</option>
+				<option value="het">Hết hạn / bị khoá</option>
+			</select>
+			<button class="nut" id="nutTai" type="button">Tải lại</button>
+			<span class="tomtat" id="thongKe"></span>
+		</div>
+		<div class="cuon">
+			<table class="nd">
+				<thead><tr><th>Người dùng</th><th>Đăng kí</th><th>Trạng thái</th><th>Hạn dùng</th><th>Lượt dùng</th><th>Ghi chú</th><th>Tác vụ</th></tr></thead>
+				<tbody id="bang"><tr><td colspan="7" class="trong">Đang tải…</td></tr></tbody>
+			</table>
+		</div>
+	</section>
+</main>
+<div class="toast" id="toast" role="status"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, Timestamp, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { firebaseConfig, EMAIL_QUAN_TRI } from "./cauhinh.js";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app), db = getFirestore(app);
+const $ = id => document.getElementById(id);
+let ds = [];
+function hien(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("hien"); clearTimeout(hien.t); hien.t = setTimeout(() => t.classList.remove("hien"), 2000); }
+function esc(s) { return String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]); }
+const ngay = t => t ? t.toDate().toLocaleDateString("vi-VN") : "—";
+
+onAuthStateChanged(auth, user => {
+	if (!user || !EMAIL_QUAN_TRI.includes(user.email)) { $("manKhong").hidden = false; return; }
+	$("emailNd").textContent = user.email;
+	$("manQT").hidden = false;
+	tai();
+	ttBoLuat();
+});
+
+/* ---------- bộ luật ---------- */
+async function ttBoLuat() {
+	try {
+		const s = await getDoc(doc(db, "heThong", "boLuat"));
+		$("ttBoLuat").textContent = s.exists()
+			? "phiên bản " + (s.data().phienBan || "?") + " · cập nhật " + ngay(s.data().capNhat) + " · " + Math.round(s.data().ma.length / 1024) + " KB"
+			: "CHƯA CÓ — hãy tải file engine.js lên để người dùng sử dụng được";
+	} catch (e) { $("ttBoLuat").textContent = "không đọc được (" + e.code + ")"; }
+}
+$("nutTaiBoLuat").addEventListener("click", async () => {
+	const f = $("fileBoLuat").files[0];
+	if (!f) { hien("Chưa chọn file engine.js"); return; }
+	const ma = await f.text();
+	// chạy thử trước khi tải lên
+	try {
+		const hop = {}; new Function("window", ma)(hop);
+		const r = hop.TDK.chuanHoa("$\\frac12 \\leq x$, $90^0$");
+		if (!/\\dfrac\{1\}\{2\}/.test(r.ketQua)) throw new Error("kết quả chạy thử sai");
+	} catch (e) { hien("File không hợp lệ: " + e.message); return; }
+	if (ma.length > 900000) { hien("File quá lớn (giới hạn khoảng 900 KB)"); return; }
+	$("nutTaiBoLuat").disabled = true;
+	try {
+		await setDoc(doc(db, "heThong", "boLuat"), { ma, phienBan: $("phienBan").value.trim() || new Date().toLocaleDateString("vi-VN"), capNhat: serverTimestamp() });
+		hien("Đã cập nhật bộ luật"); $("fileBoLuat").value = ""; ttBoLuat();
+	} catch (e) { hien("Không lưu được: " + e.code); }
+	$("nutTaiBoLuat").disabled = false;
+});
+
+function trangThai(d) {
+	if (!d.daDuyet) return d.ngayDuyet ? "het" : "cho";
+	if (d.hetHan && d.hetHan.toDate() < new Date()) return "het";
+	return "duyet";
+}
+const NHAN = { cho: ["Chờ duyệt", "tt-cho"], duyet: ["Đang dùng", "tt-duyet"], het: ["Hết hạn / khoá", "tt-het"] };
+
+async function tai() {
+	const snap = await getDocs(collection(db, "nguoiDung"));
+	ds = snap.docs.map(s => ({ id: s.id, ...s.data() }))
+		.sort((a, b) => (b.ngayDangKy?.toMillis?.() || 0) - (a.ngayDangKy?.toMillis?.() || 0));
+	ve();
+}
+function ve() {
+	const tim = $("timEmail").value.trim().toLowerCase(), loc = $("locTT").value;
+	const dem = { cho: 0, duyet: 0, het: 0 };
+	ds.forEach(d => dem[trangThai(d)]++);
+	$("thongKe").innerHTML = '<span class="the tt-cho">' + dem.cho + ' chờ duyệt</span><span class="the tt-duyet">' + dem.duyet + ' đang dùng</span><span class="the tt-het">' + dem.het + ' hết hạn</span>';
+	const hang = ds.filter(d => (loc === "tatca" || trangThai(d) === loc) &&
+		(!tim || (d.email || "").toLowerCase().includes(tim) || (d.ten || "").toLowerCase().includes(tim)));
+	$("bang").innerHTML = hang.length ? hang.map(d => {
+		const tt = trangThai(d), [nhan, lop] = NHAN[tt];
+		return '<tr data-id="' + d.id + '">' +
+			'<td><strong>' + esc(d.ten) + '</strong><br><span class="hanDung">' + esc(d.email) + '</span></td>' +
+			'<td>' + ngay(d.ngayDangKy) + '</td>' +
+			'<td><span class="the ' + lop + '">' + nhan + '</span></td>' +
+			'<td>' + (d.daDuyet ? (d.hetHan ? ngay(d.hetHan) : "Không giới hạn") : "—") + '</td>' +
+			'<td class="so">' + (d.luotDung || 0) + '</td>' +
+			'<td><input type="text" class="ghiChu" value="' + esc(d.ghiChu) + '" placeholder="VD: đã CK 200k" aria-label="Ghi chú"></td>' +
+			'<td><div class="tacVu"><select class="thoiHan" aria-label="Thời hạn">' +
+			'<option value="1">1 tháng</option><option value="3">3 tháng</option><option value="6">6 tháng</option>' +
+			'<option value="12" selected>12 tháng</option><option value="0">Không giới hạn</option></select>' +
+			'<button class="nut chinh" data-tv="duyet" type="button">' + (tt === "cho" ? "Duyệt" : "Gia hạn") + '</button>' +
+			(d.daDuyet ? '<button class="nut" data-tv="khoa" type="button">Khoá</button>' : "") +
+			'</div></td></tr>';
+	}).join("") : '<tr><td colspan="7" class="trong">Không có người dùng nào phù hợp.</td></tr>';
+}
+$("bang").addEventListener("click", async e => {
+	const b = e.target.closest("button[data-tv]"); if (!b) return;
+	const tr = b.closest("tr"), id = tr.dataset.id, d = ds.find(x => x.id === id);
+	const ghiChu = tr.querySelector(".ghiChu").value.trim();
+	let capNhat;
+	if (b.dataset.tv === "duyet") {
+		const thang = +tr.querySelector(".thoiHan").value;
+		let het = null;
+		if (thang) {
+			const goc = d.daDuyet && d.hetHan && d.hetHan.toDate() > new Date() ? d.hetHan.toDate() : new Date();
+			het = new Date(goc); het.setMonth(het.getMonth() + thang);
+		}
+		capNhat = { daDuyet: true, hetHan: het ? Timestamp.fromDate(het) : null, ngayDuyet: serverTimestamp(), ghiChu };
+	} else capNhat = { daDuyet: false, ghiChu };
+	b.disabled = true;
+	try { await updateDoc(doc(db, "nguoiDung", id), capNhat); hien(b.dataset.tv === "duyet" ? "Đã duyệt " + d.email : "Đã khoá " + d.email); await tai(); }
+	catch (err) { hien("Không lưu được: " + err.code); b.disabled = false; }
+});
+$("bang").addEventListener("change", async e => {
+	if (!e.target.classList.contains("ghiChu")) return;
+	const id = e.target.closest("tr").dataset.id;
+	try { await updateDoc(doc(db, "nguoiDung", id), { ghiChu: e.target.value.trim() }); hien("Đã lưu ghi chú"); } catch (err) { hien("Không lưu được ghi chú"); }
+});
+$("timEmail").addEventListener("input", ve);
+$("locTT").addEventListener("change", ve);
+$("nutTai").addEventListener("click", tai);
+</script>
+</body>
+</html>
