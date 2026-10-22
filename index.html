@@ -65,6 +65,7 @@
 				<label><input type="checkbox" id="xoaCommentCode" checked> Xoá dòng code bị comment-out</label>
 				<label><input type="checkbox" id="khoiDinhDanh" checked> Thêm khối định danh 5 dòng đầu file</label>
 				<label><input type="checkbox" id="thutLe" checked> Thụt lề bằng Tab</label>
+				<label><input type="checkbox" id="ghiChuSuaTay" checked> Ghi chú %! SỬA TAY vào cuối dòng cần sửa</label>
 			</div>
 		</details>
 
@@ -195,7 +196,7 @@ async function taiBoLuat() {
 
 /* ---------- công cụ ---------- */
 const O_TT = ["tenDuAn", "gvSoan", "gvPB1"];
-const O_CHON = ["bocSo", "bocTenDiem", "nhanForeach", "xoaCanChinh", "xoaCommentCode", "khoiDinhDanh", "thutLe"];
+const O_CHON = ["bocSo", "bocTenDiem", "nhanForeach", "xoaCanChinh", "xoaCommentCode", "khoiDinhDanh", "thutLe", "ghiChuSuaTay"];
 function doc_(k) { try { return localStorage.getItem("tdk_" + k); } catch (e) { return null; } }
 function luu(k, v) { try { localStorage.setItem("tdk_" + k, v); } catch (e) {} }
 O_TT.forEach(k => { const v = doc_(k); if (v) $(k).value = v; $(k).addEventListener("input", () => luu(k, $(k).value)); });
@@ -225,12 +226,16 @@ async function chay() {
 }
 function veBaoCao(r) {
 	const tong = r.nhatKi.reduce((a, e) => a + e.n, 0);
+	const nhom = new Map();
+	r.canhBao.forEach(c => { const k = c.ma + "|" + c.mo; if (!nhom.has(k)) nhom.set(k, { ma: c.ma, mo: c.mo, dong: [] }); nhom.get(k).dong.push(c.dong); });
 	$("tomtat").innerHTML = '<span class="the sua">Đã tự sửa ' + tong + ' chỗ</span>' +
-		(r.canhBao.length ? '<span class="the canh">' + r.canhBao.length + ' chỗ cần sửa tay</span>' : '<span class="the on">Không còn cảnh báo</span>');
-	$("dsCanh").innerHTML = r.canhBao.length ? r.canhBao.map(c =>
-		'<li><span class="ma">' + esc(c.ma) + '</span><span>' + esc(c.mo) + '<span class="doan">' + esc(c.doan) + '</span></span>' +
-		'<button class="dong" type="button" data-dong="' + c.dong + '">dòng ' + c.dong + '</button></li>').join("")
-		: '<li class="trong">Không có chỗ nào cần sửa tay theo các luật máy kiểm tra được.</li>';
+		(r.canhBao.length ? '<span class="the canh" id="denCanh" title="Xem danh sách">' + r.canhBao.length + ' chỗ cần sửa tay · ' + nhom.size + ' loại ↓</span>' : '<span class="the on">Không còn chỗ nào cần sửa tay</span>');
+	const den = document.getElementById("denCanh"); if (den) den.addEventListener("click", () => $("dsCanh").scrollIntoView({ behavior: "smooth", block: "center" }));
+	$("dsCanh").innerHTML = nhom.size ? Array.from(nhom.values()).map(g =>
+		'<li class="nhomCB"><div class="dauCB"><span class="ma">' + esc(g.ma) + '</span><span>' + esc(g.mo) + '</span><span class="so">×' + g.dong.length + '</span></div>' +
+		'<div class="cacDong">' + g.dong.slice(0, 40).map(d => '<button class="dong" type="button" data-dong="' + d + '">dòng ' + d + '</button>').join("") +
+		(g.dong.length > 40 ? '<span class="them">… và ' + (g.dong.length - 40) + ' chỗ khác (tìm %! SỬA TAY trong code)</span>' : "") + '</div></li>').join("")
+		: '<li class="trong">Không có chỗ nào cần sửa tay.</li>';
 	const ds = r.nhatKi.slice().sort((a, b) => a.ma.localeCompare(b.ma, "vi", { numeric: true }));
 	$("dsSua").innerHTML = ds.length ? ds.map(e =>
 		'<li><span class="ma">' + esc(e.ma) + '</span><span>' + esc(e.mo) + '</span><span class="so">×' + e.n + '</span></li>').join("")

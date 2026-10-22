@@ -123,3 +123,10 @@ a.nut { text-decoration: none; display: inline-block; }
 .hangBoLuat { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; padding: 12px 14px; }
 .hangBoLuat label { flex: 1 1 220px; }
 .hangBoLuat input[type=file] { font: inherit; font-size: 13px; color: var(--chu); }
+
+/* cảnh báo gom theo loại */
+.ds li.nhomCB { display: block; }
+.nhomCB .dauCB { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 10px; align-items: baseline; }
+.nhomCB .cacDong { display: flex; flex-wrap: wrap; gap: 4px; margin: 6px 0 0 62px; }
+.nhomCB .them { color: var(--phu); font-size: 12px; align-self: center; }
+.the.canh { cursor: pointer; }
