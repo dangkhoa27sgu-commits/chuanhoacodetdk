@@ -7,6 +7,39 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="style.css">
+<style>
+.tabChinh { display: flex; gap: 2px; margin-top: 16px; border-bottom: 1px solid var(--vien); overflow-x: auto; scrollbar-width: none; }
+.tabChinh::-webkit-scrollbar { display: none; }
+.tabChinh button { font: inherit; font-size: 14px; font-weight: 600; background: none; border: 0; border-bottom: 3px solid transparent; color: var(--phu); padding: 10px 16px 9px; cursor: pointer; white-space: nowrap; display: flex; gap: 8px; align-items: center; }
+.tabChinh button small { font-weight: 400; font-size: 12px; color: var(--phu); }
+.tabChinh button[aria-selected="true"] { color: var(--chu); border-bottom-color: var(--vang); }
+.tabChinh button:hover { color: var(--chu); }
+.tabChinh button:focus-visible { outline: 2px solid var(--vang); outline-offset: -2px; }
+.manTab[hidden] { display: none !important; }
+.cdO { margin-top: 18px; background: var(--mat); border: 1px solid var(--vien); border-radius: 8px; padding: 16px; display: grid; gap: 14px; }
+.cdO h2 { margin: 0; font-size: 16px; font-weight: 600; }
+.cdO .moTa { margin: 0; color: var(--phu); font-size: 13px; max-width: 90ch; }
+.cdHang { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
+.cdHang label { display: flex; gap: 6px; align-items: center; font-size: 13px; cursor: pointer; }
+.cdHang input[type=checkbox] { accent-color: var(--vang); }
+.cdTha { border: 1.5px dashed var(--vien); border-radius: 8px; padding: 22px 16px; text-align: center; cursor: pointer; background: var(--code); transition: border-color .15s; }
+.cdTha:hover, .cdTha.keo { border-color: var(--vang); }
+.cdTha b { display: block; font-size: 14px; margin-bottom: 4px; }
+.cdTha span { color: var(--phu); font-size: 12.5px; }
+.cdTha input { display: none; }
+.cdTrangThai { font-size: 13px; color: var(--phu); min-height: 1.4em; }
+.cdTrangThai.ok { color: var(--xanh); }
+.cdTrangThai.loi { color: var(--do); }
+.cdKetQua { font-size: 13px; border-left: 3px solid var(--vang); background: var(--code); padding: 8px 12px; border-radius: 0 6px 6px 0; }
+.cdKetQua[hidden] { display: none; }
+.cdKetQua ul { margin: 4px 0 0; padding-left: 18px; }
+.cdKetQua li { margin: 2px 0; }
+.cdKetQua code, .cdO code { font-family: var(--f-code); font-size: 12px; }
+.cdRa { width: 100%; height: 420px; resize: vertical; border: 1px solid var(--vien); border-radius: 6px; background: var(--code); color: var(--chu); font-family: var(--f-code); font-size: 13px; line-height: 1.55; padding: 12px 14px; tab-size: 4; white-space: pre; overflow: auto; }
+.cdRa[hidden] { display: none; }
+.nut[disabled] { opacity: .55; cursor: progress; }
+@media (max-width: 600px) { .tabChinh button small { display: none; } .cdRa { height: 300px; } }
+</style>
 </head>
 <body>
 <header class="dau">
@@ -49,6 +82,12 @@
 
 	<!-- MÀN HÌNH 4: công cụ -->
 	<section id="manCongCu" hidden>
+	<nav class="tabChinh" role="tablist" aria-label="Chức năng">
+		<button type="button" role="tab" id="nutTabChuan" aria-selected="true" aria-controls="tabChuan">Chuẩn hoá code <small>LaTeX</small></button>
+		<button type="button" role="tab" id="nutTabPdfTex" aria-selected="false" aria-controls="tabPdfTex" tabindex="-1">PDF → LaTeX</button>
+		<button type="button" role="tab" id="nutTabPdfWord" aria-selected="false" aria-controls="tabPdfWord" tabindex="-1">PDF → Word</button>
+	</nav>
+		<div class="manTab" id="tabChuan" role="tabpanel" aria-labelledby="nutTabChuan">
 		<section class="thongtin" aria-label="Thông tin dự án">
 			<label class="o" for="tenDuAn">Tên dự án<input type="text" id="tenDuAn" placeholder="Đề thi thử THPT 2027 — Sở GD&amp;ĐT ..."></label>
 			<label class="o" for="gvSoan">GV soạn<input type="text" id="gvSoan" placeholder="Nguyễn Văn A"></label>
@@ -107,94 +146,61 @@
 			</div>
 		</section>
 		<p class="chuthich">Mã quy tắc: C — quy định chung, E — cấu trúc câu hỏi, T — TikZ, B — bảng biến thiên, #n — mục n của Bảng kí hiệu. Máy sửa theo luật nên vẫn cần biên dịch lại và đọc soát trước khi nộp.</p>
-<!-- ===================== KHU CHUYỂN ĐỔI ĐỀ (LaTeX -> Word, PDF -> LaTeX/Word) ===================== -->
-<style>
-.chuyenDoi { margin-top: 26px; background: var(--mat); border: 1px solid var(--vien); border-radius: 8px; }
-.chuyenDoi > h2 { margin: 0; padding: 12px 14px; font-size: 15px; font-weight: 600; border-bottom: 1px solid var(--vien); display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; }
-.chuyenDoi > h2 small { color: var(--phu); font-weight: 400; font-size: 12.5px; }
-.cdTab { display: flex; gap: 0; border-bottom: 1px solid var(--vien); padding: 0 8px; overflow-x: auto; }
-.cdTab button { font: inherit; font-size: 13.5px; font-weight: 500; background: none; border: 0; border-bottom: 2px solid transparent; color: var(--phu); padding: 10px 12px; cursor: pointer; white-space: nowrap; }
-.cdTab button[aria-selected="true"] { color: var(--chu); border-bottom-color: var(--vang); }
-.cdTab button:focus-visible { outline: 2px solid var(--vang); outline-offset: -2px; }
-.cdKhung { padding: 14px; display: grid; gap: 14px; }
-.cdKhung[hidden] { display: none; }
-.cdBuoc { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; align-items: start; }
-.cdSo { width: 26px; height: 26px; border-radius: 50%; background: var(--vangnhat); color: var(--chu); font-weight: 600; font-size: 13px; display: grid; place-items: center; }
-.cdBuoc h3 { margin: 2px 0 4px; font-size: 14px; font-weight: 600; }
-.cdBuoc p { margin: 0 0 8px; color: var(--phu); font-size: 13px; max-width: 78ch; }
-.cdHang { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
-.cdHang label { display: flex; gap: 6px; align-items: center; font-size: 13px; cursor: pointer; }
-.cdHang input[type=checkbox] { accent-color: var(--vang); }
-.cdTep { font: inherit; font-size: 13px; color: var(--phu); max-width: 100%; }
-.cdTep::file-selector-button { font: inherit; font-size: 13px; font-weight: 500; border-radius: 6px; padding: 6px 12px; cursor: pointer; border: 1px solid var(--vien); background: var(--mat); color: var(--chu); margin-right: 8px; }
-.cdTrangThai { font-size: 13px; color: var(--phu); min-height: 1.5em; }
-.cdTrangThai.ok { color: var(--xanh); }
-.cdTrangThai.loi { color: var(--do); }
-.cdKetQua { font-size: 13px; border-left: 3px solid var(--vang); background: var(--code); padding: 8px 12px; border-radius: 0 6px 6px 0; display: none; }
-.cdKetQua.hien { display: block; }
-.cdKetQua ul { margin: 6px 0 0; padding-left: 18px; }
-.cdKetQua li { margin: 2px 0; }
-.cdKetQua code { font-family: var(--f-code); font-size: 12px; }
-.cdLuuY { color: var(--phu); font-size: 12.5px; margin: 0; max-width: 85ch; }
-.nut[disabled] { opacity: .55; cursor: progress; }
-</style>
-
-<section class="chuyenDoi" id="chuyenDoi" aria-label="Chuyển đổi đề">
-	<h2>Chuyển đổi đề <small>LaTeX → Word có Equation · PDF → LaTeX / Word — chạy ngay trên trình duyệt, không cần key AI</small></h2>
-	<div class="cdTab" role="tablist">
-		<button type="button" role="tab" id="cdTabA" aria-selected="true" aria-controls="cdA">LaTeX → Word</button>
-		<button type="button" role="tab" id="cdTabB" aria-selected="false" aria-controls="cdB">PDF → LaTeX / Word</button>
-	</div>
-
-	<!-- A. LaTeX -> Word -->
-	<div class="cdKhung" id="cdA" role="tabpanel" aria-labelledby="cdTabA">
-		<div class="cdBuoc"><span class="cdSo">1</span><div>
-			<h3>Hình vẽ TikZ (bỏ qua nếu đề không có hình)</h3>
-			<p>Trình duyệt không chạy được LaTeX, nên hình được lấy từ chính bản biên dịch của bạn: tải file hình về, biên dịch bằng pdfLaTeX như đề bình thường (mỗi hình một trang), rồi chọn file PDF đó.</p>
-			<div class="cdHang">
-				<button class="nut" id="cdTaiFileHinh" type="button">Tải file hình (.tex)</button>
-				<input class="cdTep" type="file" id="cdPdfHinh" accept="application/pdf,.pdf" aria-label="PDF của file hình">
-			</div>
-			<div class="cdTrangThai" id="cdTTHinh"></div>
-		</div></div>
-		<div class="cdBuoc"><span class="cdSo">2</span><div>
-			<h3>Xuất file Word</h3>
-			<p>Lấy code ở khung <b>Code đã chuẩn hoá</b> (nếu trống thì lấy code gốc). Công thức là Equation thật của Word — bấm vào sửa được, MathType chuyển đổi được.</p>
-			<div class="cdHang">
-				<label><input type="checkbox" id="cdLoiGiai" checked> Kèm lời giải</label>
-				<label><input type="checkbox" id="cdGachDung" checked> Gạch chân đáp án đúng</label>
-				<label><input type="checkbox" id="cdBangDA" checked> Bảng đáp án cuối đề</label>
-				<button class="nut chinh" id="cdXuatWord" type="button">Xuất Word (.docx)</button>
-			</div>
-			<div class="cdTrangThai" id="cdTTWord"></div>
-			<div class="cdKetQua" id="cdKQWord"></div>
-		</div></div>
-	</div>
-
-	<!-- B. PDF -> LaTeX / Word -->
-	<div class="cdKhung" id="cdB" role="tabpanel" aria-labelledby="cdTabB" hidden>
-		<div class="cdBuoc"><span class="cdSo">1</span><div>
-			<h3>Chọn file PDF đề</h3>
-			<p>PDF xuất từ LaTeX hoặc Word (bôi đen chọn được chữ) cho kết quả tốt nhất: web đọc chữ, font và nét vẽ để dựng lại công thức, nhận dạng Câu / A. B. C. D. / a) b) c) d) / Lời giải, cắt hình thành ảnh. PDF scan (ảnh chụp) chỉ nhận dạng được chữ, công thức phải gõ lại.</p>
-			<div class="cdHang">
-				<input class="cdTep" type="file" id="cdPdfDe" accept="application/pdf,.pdf" aria-label="File PDF đề">
-				<label><input type="checkbox" id="cdOcr" checked> Nhận dạng chữ cho trang scan (chậm)</label>
-				<button class="nut chinh" id="cdChuyenPdf" type="button">Chuyển sang LaTeX</button>
-			</div>
-			<div class="cdTrangThai" id="cdTTPdf"></div>
-		</div></div>
-		<div class="cdBuoc"><span class="cdSo">2</span><div>
-			<h3>Kết quả</h3>
-			<p>Code LaTeX được đưa vào khung <b>Code gốc</b> và chuẩn hoá ngay — các chỗ chưa chắc chắn được ghi <code>%! SỬA TAY</code> như bình thường. Ảnh hình vẽ tải kèm dạng .zip.</p>
-			<div class="cdHang">
-				<button class="nut" id="cdTaiAnh" type="button" disabled>Tải ảnh hình vẽ (.zip)</button>
-				<button class="nut" id="cdWordTuPdf" type="button" disabled>Xuất Word từ PDF này</button>
-			</div>
-			<div class="cdKetQua" id="cdKQPdf"></div>
-		</div></div>
-		<p class="cdLuuY">Máy dựng lại công thức theo vị trí chữ trên trang nên vẫn cần đọc soát. Công thức nào chưa dựng được, web đặt ô <code>\boxed{?}</code> và ghi công thức gợi ý ở dòng comment ngay dưới — code luôn biên dịch được.</p>
+		</div>
+<!-- TAB: PDF -> LaTeX -->
+<section class="manTab" id="tabPdfTex" role="tabpanel" aria-labelledby="nutTabPdfTex" hidden>
+	<div class="cdO">
+		<h2>PDF → LaTeX</h2>
+		<p class="moTa">Chọn file PDF đề, web dựng lại code LaTeX theo mẫu ex_test (công thức, câu trắc nghiệm, đúng sai, trả lời ngắn, lời giải) và chuẩn hoá theo bộ luật. Hình vẽ được cắt thành ảnh, tải kèm file .zip.</p>
+		<label class="cdTha" id="thaPdfTex">
+			<b>Chọn hoặc kéo thả file PDF vào đây</b>
+			<span id="tenPdfTex">PDF xuất từ LaTeX / Word cho kết quả tốt nhất; PDF scan chỉ nhận dạng được chữ</span>
+			<input type="file" id="pdfTex" accept="application/pdf,.pdf">
+		</label>
+		<div class="cdHang">
+			<label><input type="checkbox" id="ptChuan" checked> Chuẩn hoá theo bộ luật</label>
+			<label><input type="checkbox" id="ptOcr" checked> Nhận dạng chữ trang scan (chậm)</label>
+			<button class="nut chinh" id="nutPdfTex" type="button">Chuyển sang LaTeX</button>
+		</div>
+		<div class="cdTrangThai" id="ttPdfTex" role="status"></div>
+		<div class="cdKetQua" id="kqPdfTex" hidden></div>
+		<textarea class="cdRa" id="raPdfTex" spellcheck="false" aria-label="Code LaTeX từ PDF" hidden></textarea>
+		<div class="cdHang" id="nhomPdfTex" hidden>
+			<button class="nut" id="ptChep" type="button">Sao chép code</button>
+			<button class="nut" id="ptTaiTex" type="button">Tải file .tex</button>
+			<button class="nut" id="ptTaiAnh" type="button">Tải ảnh hình vẽ (.zip)</button>
+			<button class="nut" id="ptSangChuan" type="button">Mở ở tab Chuẩn hoá</button>
+		</div>
 	</div>
 </section>
+
+<!-- TAB: PDF -> Word -->
+<section class="manTab" id="tabPdfWord" role="tabpanel" aria-labelledby="nutTabPdfWord" hidden>
+	<div class="cdO">
+		<h2>PDF → Word</h2>
+		<p class="moTa">Chọn file PDF đề, web chuyển thẳng sang file Word (.docx): công thức là Equation của Word (bấm vào sửa được; MathType: tab MathType → <b>Convert Equations</b> để đổi toàn bộ sang MathType), hình vẽ được cắt từ PDF và chèn đúng vị trí, đúng mẫu câu trắc nghiệm, đúng sai, trả lời ngắn.</p>
+		<label class="cdTha" id="thaPdfWord">
+			<b>Chọn hoặc kéo thả file PDF vào đây</b>
+			<span id="tenPdfWord">PDF xuất từ LaTeX / Word cho kết quả tốt nhất; PDF scan chỉ nhận dạng được chữ</span>
+			<input type="file" id="pdfWord" accept="application/pdf,.pdf">
+		</label>
+		<div class="cdHang">
+			<label><input type="checkbox" id="pwLoiGiai" checked> Kèm lời giải</label>
+			<label><input type="checkbox" id="pwGachDung" checked> Gạch chân đáp án đúng</label>
+			<label><input type="checkbox" id="pwBangDA" checked> Bảng đáp án cuối đề</label>
+			<label><input type="checkbox" id="pwOcr" checked> Nhận dạng chữ trang scan (chậm)</label>
+			<button class="nut chinh" id="nutPdfWord" type="button">Chuyển sang Word</button>
+		</div>
+		<div class="cdTrangThai" id="ttPdfWord" role="status"></div>
+		<div class="cdKetQua" id="kqPdfWord" hidden></div>
+		<div class="cdHang" id="nhomPdfWord" hidden>
+			<button class="nut" id="pwTaiLai" type="button">Tải lại file Word</button>
+		</div>
+	</div>
+</section>
+
+
+
 
 
 	</section>
@@ -359,6 +365,9 @@ $("vao").addEventListener("keydown", e => {
 	if (e.key === "Tab" && !e.shiftKey) { e.preventDefault(); const t = e.target, a = t.selectionStart; t.setRangeText("\t", a, t.selectionEnd, "end"); }
 });
 </script>
+
+
+
 <script>
 (function () {
 	"use strict";
@@ -371,23 +380,20 @@ $("vao").addEventListener("keydown", e => {
 		tesseract: "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"
 	};
 	const bo = () => window.__TDK || window.TDK;
+	const coBo = ten => { const T = bo(); return T && typeof T[ten] === "function"; };
 	function bao(id, msg, kieu) { const e = $(id); e.textContent = msg || ""; e.className = "cdTrangThai" + (kieu ? " " + kieu : ""); }
-	function toast(msg) { const t = $("toast"); if (!t) return; t.textContent = msg; t.classList.add("hien"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("hien"), 2200); }
+	function toast(msg) { const t = $("toast"); if (!t) return; t.textContent = msg; t.classList.add("hien"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("hien"), 2400); }
+	function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]); }
 	const daNap = {};
 	function napScript(url) {
 		if (daNap[url]) return daNap[url];
-		return daNap[url] = new Promise((ok, loi) => { const s = document.createElement("script"); s.src = url; s.async = true; s.onload = () => ok(); s.onerror = () => { delete daNap[url]; loi(new Error("Không tải được thư viện (" + url.split("/npm/")[1] + "). Kiểm tra kết nối mạng.")); }; document.head.appendChild(s); });
+		return daNap[url] = new Promise((ok, loi) => { const s = document.createElement("script"); s.src = url; s.async = true; s.onload = () => ok(); s.onerror = () => { delete daNap[url]; loi(new Error("không tải được thư viện " + url.split("/npm/")[1].split("/")[0] + " — kiểm tra kết nối mạng")); }; document.head.appendChild(s); });
 	}
-	async function napKatex() { if (!window.katex) await napScript(CDN.katex); }
-	async function napZip() { if (!window.JSZip) await napScript(CDN.jszip); }
-	async function napPdf() {
-		if (window.pdfjsLib) return;
-		const m = await import(CDN.pdfjs);
-		m.GlobalWorkerOptions.workerSrc = CDN.pdfWorker;
-		window.pdfjsLib = m;
-	}
-	async function napOcr() { if (!window.Tesseract) await napScript(CDN.tesseract); }
-	// tải file: trong trang Claude dùng hộp lưu của Claude (chỉ nhận đuôi docx/zip/txt...), trên web thường dùng liên kết tải
+	const napKatex = async () => { if (!window.katex) await napScript(CDN.katex); };
+	const napZip = async () => { if (!window.JSZip) await napScript(CDN.jszip); };
+	const napOcr = async () => { if (!window.Tesseract) await napScript(CDN.tesseract); };
+	async function napPdf() { if (window.pdfjsLib) return; const m = await import(CDN.pdfjs); m.GlobalWorkerOptions.workerSrc = CDN.pdfWorker; window.pdfjsLib = m; }
+	// lưu file: trong Claude dùng hộp lưu của Claude; trên web thường dùng liên kết tải
 	let hopLuu;
 	async function taiVe(du, ten, kieu) {
 		const blob = du instanceof Blob ? du : new Blob([du], { type: kieu || "application/octet-stream" });
@@ -395,7 +401,7 @@ $("vao").addEventListener("keydown", e => {
 			if (hopLuu === undefined) { try { hopLuu = await window.claude.use("downloads"); } catch (e) { hopLuu = null; } }
 			if (hopLuu) {
 				const tenLuu = /\.tex$/.test(ten) ? ten + ".txt" : ten;
-				try { await hopLuu.save({ filename: tenLuu, data: blob }); if (tenLuu !== ten) toast("Đã lưu " + tenLuu + " — đổi đuôi thành .tex trước khi biên dịch"); return true; }
+				try { await hopLuu.save({ filename: tenLuu, data: blob }); if (tenLuu !== ten) toast("Đã lưu " + tenLuu + " — đổi đuôi thành .tex"); return true; }
 				catch (e) { if (e && e.code === "declined") return false; throw new Error("không lưu được file (" + (e && e.code || "lỗi") + ")"); }
 			}
 		}
@@ -403,114 +409,112 @@ $("vao").addEventListener("keydown", e => {
 		document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
 		return true;
 	}
-	function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]); }
-	function layCode() { const r = $("ra").value.trim(); return r || $("vao").value.trim(); }
-	function tenTep() { const t = ($("tenDuAn") && $("tenDuAn").value.trim()) || "de-thi"; return t.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || "de-thi"; }
-	// tab
-	function chonTab(b) {
-		["A", "B"].forEach(k => { const on = k === b; $("cdTab" + k).setAttribute("aria-selected", on); $("cd" + k).hidden = !on; });
-		try { localStorage.setItem("tdk_cdTab", b); } catch (e) {}
+	function tenGoc(f) { return (f && f.name || "de-thi").replace(/\.pdf$/i, "").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || "de-thi"; }
+	function luatHienTai() {
+		const o = {};
+		["tenDuAn", "gvSoan", "gvPB1"].forEach(k => { if ($(k)) o[k] = $(k).value.trim(); });
+		["bocSo", "bocTenDiem", "nhanForeach", "xoaCanChinh", "xoaCommentCode", "khoiDinhDanh", "thutLe", "ghiChuSuaTay"].forEach(k => { if ($(k)) o[k] = $(k).checked; });
+		if ($("cheDoMau")) o.cheDoMau = $("cheDoMau").value;
+		return o;
 	}
-	$("cdTabA").addEventListener("click", () => chonTab("A"));
-	$("cdTabB").addEventListener("click", () => chonTab("B"));
-	try { const t = localStorage.getItem("tdk_cdTab"); if (t === "B") chonTab("B"); } catch (e) {}
-	["cdLoiGiai", "cdGachDung", "cdBangDA", "cdOcr"].forEach(k => { try { const v = localStorage.getItem("tdk_" + k); if (v !== null) $(k).checked = v === "1"; } catch (e) {} $(k).addEventListener("change", () => { try { localStorage.setItem("tdk_" + k, $(k).checked ? "1" : "0"); } catch (e) {} }); });
+	function nho(ids) { ids.forEach(k => { try { const v = localStorage.getItem("tdk_" + k); if (v !== null) $(k).checked = v === "1"; } catch (e) {} $(k).addEventListener("change", () => { try { localStorage.setItem("tdk_" + k, $(k).checked ? "1" : "0"); } catch (e) {} }); }); }
+	nho(["ptChuan", "ptOcr", "pwLoiGiai", "pwGachDung", "pwBangDA", "pwOcr"]);
 
-	/* ---------- A. LaTeX -> Word ---------- */
-	let anhHinh = null, tenPdfHinh = "";
-	$("cdTaiFileHinh").addEventListener("click", async function () {
-		const T = bo(); const code = layCode();
-		if (!T || !T.taoFileHinh) { bao("cdTTHinh", "Bộ luật chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật mới.", "loi"); return; }
-		if (!code) { bao("cdTTHinh", "Chưa có code: dán đề vào khung Code gốc và bấm Chuẩn hoá trước.", "loi"); return; }
-		const r = T.taoFileHinh(code);
-		if (!r.soHinh) { bao("cdTTHinh", "Đề này không có hình TikZ — bỏ qua bước 1.", "ok"); return; }
-		await taiVe(r.tex, tenTep() + "-hinh.tex", "application/x-tex");
-		bao("cdTTHinh", "Đã tải file hình (" + r.soHinh + " hình). Biên dịch bằng pdfLaTeX rồi chọn file PDF ở ô bên cạnh.", "ok");
-	});
-	$("cdPdfHinh").addEventListener("change", async function (e) {
-		const f = e.target.files && e.target.files[0]; if (!f) return;
-		const T = bo(); anhHinh = null;
-		try {
-			bao("cdTTHinh", "Đang đọc " + f.name + "…");
-			await napPdf();
-			anhHinh = await T.anhTuPdf(new Uint8Array(await f.arrayBuffer()), 4);
-			tenPdfHinh = f.name;
-			const can = (T.taoFileHinh(layCode()) || {}).soHinh || 0;
-			bao("cdTTHinh", "Đã nhận " + anhHinh.length + " hình từ " + f.name + (can && can !== anhHinh.length ? " — đề có " + can + " hình, số trang PDF khác số hình: hãy tải lại file hình và biên dịch lại." : "."), can && can !== anhHinh.length ? "loi" : "ok");
-		} catch (er) { bao("cdTTHinh", "Không đọc được PDF: " + er.message, "loi"); }
-	});
-	async function xuatWord(code, anhTep, idTT, idKQ) {
-		const T = bo();
-		if (!T || !T.xuatWord) { bao(idTT, "Bộ luật chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật mới.", "loi"); return; }
-		bao(idTT, "Đang tải thư viện công thức…");
-		await Promise.all([napKatex(), napZip()]);
-		bao(idTT, "Đang dựng file Word…");
-		const r = await T.xuatWord(code, { loiGiai: $("cdLoiGiai").checked, gachDung: $("cdGachDung").checked, bangDapAn: $("cdBangDA").checked, anh: anhHinh || [], anhTep: anhTep || {} });
-		await taiVe(r.file, tenTep() + ".docx");
-		const soTikz = (T.taoFileHinh(code) || {}).soHinh || 0;
-		const thieuHinh = r.soHinh && !anhHinh && !anhTep;
-		bao(idTT, "Đã xuất " + r.soCau + " câu" + (r.soHinh ? ", " + r.soHinh + " hình" : "") + (r.loi.length ? " — " + r.loi.length + " công thức cần xem lại" : "") + ".", r.loi.length || thieuHinh ? "loi" : "ok");
-		const kq = $(idKQ); let h = "";
-		if (thieuHinh && soTikz) h += "<p>Chưa có PDF file hình nên " + soTikz + " hình đang để chỗ trống <b>[Hình n]</b> — làm bước 1 rồi xuất lại.</p>";
-		if (r.loi.length) h += "<p>Công thức chưa chuyển được (đang để nguyên dạng chữ trong Word):</p><ul>" + r.loi.slice(0, 30).map(x => "<li>Câu " + esc(x.cau) + ": <code>" + esc(x.tex.slice(0, 120)) + "</code> — " + esc(x.loi.slice(0, 90)) + "</li>").join("") + "</ul>";
-		kq.innerHTML = h; kq.classList.toggle("hien", !!h);
-		toast("Đã tải file Word");
+	/* ---------- tab ngang ---------- */
+	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"]];
+	function chonTab(nut, luu) {
+		TAB.forEach(([n, m]) => { const on = n === nut; $(n).setAttribute("aria-selected", on); $(n).tabIndex = on ? 0 : -1; $(m).hidden = !on; });
+		if (luu) try { localStorage.setItem("tdk_tab", nut); } catch (e) {}
 	}
-	$("cdXuatWord").addEventListener("click", async function () {
-		const code = layCode();
-		if (!code) { bao("cdTTWord", "Chưa có code: dán đề vào khung Code gốc và bấm Chuẩn hoá trước.", "loi"); return; }
-		const nut = this; nut.disabled = true;
-		try { await xuatWord(code, null, "cdTTWord", "cdKQWord"); }
-		catch (er) { bao("cdTTWord", "Không xuất được: " + er.message, "loi"); }
-		finally { nut.disabled = false; }
+	TAB.forEach(([n], i) => {
+		$(n).addEventListener("click", () => chonTab(n, true));
+		$(n).addEventListener("keydown", e => {
+			if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+			const j = (i + (e.key === "ArrowRight" ? 1 : TAB.length - 1)) % TAB.length;
+			chonTab(TAB[j][0], true); $(TAB[j][0]).focus();
+		});
 	});
+	try { const t = localStorage.getItem("tdk_tab"); if (t && $(t)) chonTab(t, false); } catch (e) {}
 
-	/* ---------- B. PDF -> LaTeX / Word ---------- */
-	let kqPdf = null;
-	$("cdChuyenPdf").addEventListener("click", async function () {
-		const f = $("cdPdfDe").files && $("cdPdfDe").files[0];
-		const T = bo();
-		if (!T || !T.pdfSangLatex) { bao("cdTTPdf", "Bộ luật chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật mới.", "loi"); return; }
-		if (!f) { bao("cdTTPdf", "Chọn file PDF đề trước.", "loi"); return; }
-		const nut = this; nut.disabled = true; $("cdTaiAnh").disabled = true; $("cdWordTuPdf").disabled = true;
+	/* ---------- ô chọn file (kéo thả) ---------- */
+	function oChon(tha, input, nhan) {
+		const capNhat = () => { const f = input.files && input.files[0]; if (f) $(nhan).textContent = f.name + " · " + Math.max(1, Math.round(f.size / 1024)) + " KB"; };
+		input.addEventListener("change", capNhat);
+		tha.addEventListener("dragover", e => { e.preventDefault(); tha.classList.add("keo"); });
+		tha.addEventListener("dragleave", () => tha.classList.remove("keo"));
+		tha.addEventListener("drop", e => { e.preventDefault(); tha.classList.remove("keo"); const f = e.dataTransfer.files && e.dataTransfer.files[0]; if (!f) return; const dt = new DataTransfer(); dt.items.add(f); input.files = dt.files; capNhat(); });
+	}
+	oChon($("thaPdfTex"), $("pdfTex"), "tenPdfTex");
+	oChon($("thaPdfWord"), $("pdfWord"), "tenPdfWord");
+	function dsCanhBao(id, ds) { const k = $(id); k.innerHTML = ds.length ? "<ul>" + ds.map(x => "<li>" + x + "</li>").join("") + "</ul>" : ""; k.hidden = !ds.length; }
+	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 6.1.";
+
+	/* ---------- CHỨC NĂNG 1: PDF -> LaTeX ---------- */
+	let kqTex = null, tenTex = "de-thi";
+	$("nutPdfTex").addEventListener("click", async function () {
+		const f = $("pdfTex").files && $("pdfTex").files[0];
+		if (!coBo("pdfSangLatex")) { bao("ttPdfTex", CHUA_CO, "loi"); return; }
+		if (!f) { bao("ttPdfTex", "Chọn file PDF đề trước.", "loi"); return; }
+		const nut = this; nut.disabled = true; $("nhomPdfTex").hidden = true;
 		try {
-			bao("cdTTPdf", "Đang tải thư viện đọc PDF…");
+			bao("ttPdfTex", "Đang tải thư viện đọc PDF…");
 			await Promise.all([napPdf(), napKatex()]);
-			const ocr = $("cdOcr").checked;
-			const du = new Uint8Array(await f.arrayBuffer());
-			kqPdf = await T.pdfSangLatex(du, { ocr: ocr ? "tu" : "khong", baoTienDo: m => bao("cdTTPdf", m), napOcr: ocr ? napOcr : null });
-			$("vao").value = kqPdf.tex;
-			$("vao").dispatchEvent(new Event("input"));
-			const nc = $("nutChay"); if (nc) nc.click();
-			const soAnh = Object.keys(kqPdf.anh).length;
-			$("cdTaiAnh").disabled = !soAnh; $("cdWordTuPdf").disabled = false;
-			bao("cdTTPdf", "Đã chuyển " + kqPdf.soTrang + " trang" + (soAnh ? ", " + soAnh + " hình" : "") + ". Code đã vào khung Code gốc và được chuẩn hoá.", "ok");
-			const kq = $("cdKQPdf");
-			kq.innerHTML = kqPdf.canhBao.length ? "<ul>" + kqPdf.canhBao.map(x => "<li>" + esc(x) + "</li>").join("") + "</ul>" : "";
-			kq.classList.toggle("hien", !!kqPdf.canhBao.length);
-			const o = document.querySelector(".haiKhung"); if (o) o.scrollIntoView({ behavior: "smooth", block: "start" });
-		} catch (er) { bao("cdTTPdf", "Không chuyển được: " + er.message, "loi"); }
+			const ocr = $("ptOcr").checked;
+			const r = await bo().pdfSangLatex(new Uint8Array(await f.arrayBuffer()), { ocr: ocr ? "tu" : "khong", napOcr: ocr ? napOcr : null, baoTienDo: m => bao("ttPdfTex", m) });
+			let code = r.tex, soSua = 0;
+			if ($("ptChuan").checked && coBo("chuanHoa")) { const c = bo().chuanHoa(r.tex, luatHienTai()); code = c.ketQua; soSua = c.canhBao.length; }
+			kqTex = { code, anh: r.anh }; tenTex = tenGoc(f);
+			$("raPdfTex").value = code; $("raPdfTex").hidden = false; $("nhomPdfTex").hidden = false;
+			const soAnh = Object.keys(r.anh).length;
+			$("ptTaiAnh").hidden = !soAnh;
+			bao("ttPdfTex", "Đã chuyển " + r.soTrang + " trang" + (soAnh ? ", " + soAnh + " hình" : "") + (soSua ? " — " + soSua + " chỗ ghi %! SỬA TAY trong code" : "") + ".", "ok");
+			dsCanhBao("kqPdfTex", r.canhBao.map(esc));
+		} catch (er) { bao("ttPdfTex", "Không chuyển được: " + er.message, "loi"); }
 		finally { nut.disabled = false; }
 	});
-	$("cdTaiAnh").addEventListener("click", async function () {
-		if (!kqPdf) return;
+	$("ptChep").addEventListener("click", () => {
+		const ta = $("raPdfTex"); if (!ta.value) return;
+		const chon = () => { ta.focus(); ta.select(); toast("Đã chọn toàn bộ — bấm Ctrl+C để sao chép"); };
+		if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value).then(() => toast("Đã sao chép code"), chon); else chon();
+	});
+	$("ptTaiTex").addEventListener("click", async () => { try { await taiVe($("raPdfTex").value, tenTex + ".tex", "application/x-tex"); } catch (er) { bao("ttPdfTex", er.message, "loi"); } });
+	$("ptTaiAnh").addEventListener("click", async () => {
+		if (!kqTex) return;
+		try { await napZip(); const z = new window.JSZip(); Object.keys(kqTex.anh).forEach(k => z.file(k, kqTex.anh[k].png)); await taiVe(await z.generateAsync({ type: "blob" }), tenTex + "-hinh.zip"); }
+		catch (er) { bao("ttPdfTex", "Không tạo được file ảnh: " + er.message, "loi"); }
+	});
+	$("ptSangChuan").addEventListener("click", () => {
+		$("vao").value = $("raPdfTex").value; $("vao").dispatchEvent(new Event("input"));
+		chonTab("nutTabChuan", true); const n = $("nutChay"); if (n) n.click();
+	});
+
+	/* ---------- CHỨC NĂNG 2: PDF -> Word (độc lập, một bước) ---------- */
+	let fileWord = null, tenWord = "de-thi";
+	$("nutPdfWord").addEventListener("click", async function () {
+		const f = $("pdfWord").files && $("pdfWord").files[0];
+		if (!coBo("pdfSangWord")) { bao("ttPdfWord", CHUA_CO, "loi"); return; }
+		if (!f) { bao("ttPdfWord", "Chọn file PDF đề trước.", "loi"); return; }
+		const nut = this; nut.disabled = true; $("nhomPdfWord").hidden = true; fileWord = null;
 		try {
-			await napZip();
-			const z = new window.JSZip();
-			Object.keys(kqPdf.anh).forEach(k => z.file(k, kqPdf.anh[k].png));
-			await taiVe(await z.generateAsync({ type: "blob" }), tenTep() + "-hinh.zip");
-		} catch (er) { bao("cdTTPdf", "Không tạo được file ảnh: " + er.message, "loi"); }
-	});
-	$("cdWordTuPdf").addEventListener("click", async function () {
-		if (!kqPdf) return;
-		const nut = this; nut.disabled = true;
-		try { await xuatWord(layCode() || kqPdf.tex, kqPdf.anh, "cdTTPdf", "cdKQPdf"); }
-		catch (er) { bao("cdTTPdf", "Không xuất được: " + er.message, "loi"); }
+			bao("ttPdfWord", "Đang tải thư viện…");
+			await Promise.all([napPdf(), napKatex(), napZip()]);
+			const ocr = $("pwOcr").checked;
+			const r = await bo().pdfSangWord(new Uint8Array(await f.arrayBuffer()), {
+				ocr: ocr ? "tu" : "khong", napOcr: ocr ? napOcr : null, baoTienDo: m => bao("ttPdfWord", m),
+				loiGiai: $("pwLoiGiai").checked, gachDung: $("pwGachDung").checked, bangDapAn: $("pwBangDA").checked, luat: luatHienTai()
+			});
+			fileWord = r.file; tenWord = tenGoc(f);
+			await taiVe(fileWord, tenWord + ".docx");
+			$("nhomPdfWord").hidden = false;
+			bao("ttPdfWord", "Đã tạo file Word: " + r.soCau + " câu" + (r.soHinh ? ", " + r.soHinh + " hình đã chèn" : "") + ".", r.loi.length ? "loi" : "ok");
+			const ds = r.canhBao.filter(x => !/includegraphics/.test(x)).map(x => esc(x.replace(/đã đặt ô \[\?\] và ghi công thức gợi ý ở dòng comment % \[PDF\] ngay dưới/, "trong Word hiện ô ? — gõ lại công thức đó (xem PDF gốc)")));
+			if (r.loi.length) ds.push("Công thức chưa chuyển được sang Equation (đang để dạng chữ): " + r.loi.slice(0, 12).map(x => "Câu " + esc(x.cau) + " <code>" + esc(x.tex.slice(0, 80)) + "</code>").join("; "));
+			dsCanhBao("kqPdfWord", ds);
+		} catch (er) { bao("ttPdfWord", "Không chuyển được: " + er.message, "loi"); }
 		finally { nut.disabled = false; }
 	});
+	$("pwTaiLai").addEventListener("click", async () => { if (fileWord) try { await taiVe(fileWord, tenWord + ".docx"); } catch (er) { bao("ttPdfWord", er.message, "loi"); } });
 })();
 </script>
-
-
 </body>
 </html>
