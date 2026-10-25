@@ -387,10 +387,21 @@ $("vao").addEventListener("keydown", e => {
 		window.pdfjsLib = m;
 	}
 	async function napOcr() { if (!window.Tesseract) await napScript(CDN.tesseract); }
-	function taiVe(du, ten, kieu) {
+	// tải file: trong trang Claude dùng hộp lưu của Claude (chỉ nhận đuôi docx/zip/txt...), trên web thường dùng liên kết tải
+	let hopLuu;
+	async function taiVe(du, ten, kieu) {
 		const blob = du instanceof Blob ? du : new Blob([du], { type: kieu || "application/octet-stream" });
+		if (window.claude && typeof window.claude.use === "function") {
+			if (hopLuu === undefined) { try { hopLuu = await window.claude.use("downloads"); } catch (e) { hopLuu = null; } }
+			if (hopLuu) {
+				const tenLuu = /\.tex$/.test(ten) ? ten + ".txt" : ten;
+				try { await hopLuu.save({ filename: tenLuu, data: blob }); if (tenLuu !== ten) toast("Đã lưu " + tenLuu + " — đổi đuôi thành .tex trước khi biên dịch"); return true; }
+				catch (e) { if (e && e.code === "declined") return false; throw new Error("không lưu được file (" + (e && e.code || "lỗi") + ")"); }
+			}
+		}
 		const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = ten;
 		document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+		return true;
 	}
 	function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]); }
 	function layCode() { const r = $("ra").value.trim(); return r || $("vao").value.trim(); }
@@ -407,13 +418,13 @@ $("vao").addEventListener("keydown", e => {
 
 	/* ---------- A. LaTeX -> Word ---------- */
 	let anhHinh = null, tenPdfHinh = "";
-	$("cdTaiFileHinh").addEventListener("click", function () {
+	$("cdTaiFileHinh").addEventListener("click", async function () {
 		const T = bo(); const code = layCode();
 		if (!T || !T.taoFileHinh) { bao("cdTTHinh", "Bộ luật chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật mới.", "loi"); return; }
 		if (!code) { bao("cdTTHinh", "Chưa có code: dán đề vào khung Code gốc và bấm Chuẩn hoá trước.", "loi"); return; }
 		const r = T.taoFileHinh(code);
 		if (!r.soHinh) { bao("cdTTHinh", "Đề này không có hình TikZ — bỏ qua bước 1.", "ok"); return; }
-		taiVe(r.tex, tenTep() + "-hinh.tex", "application/x-tex");
+		await taiVe(r.tex, tenTep() + "-hinh.tex", "application/x-tex");
 		bao("cdTTHinh", "Đã tải file hình (" + r.soHinh + " hình). Biên dịch bằng pdfLaTeX rồi chọn file PDF ở ô bên cạnh.", "ok");
 	});
 	$("cdPdfHinh").addEventListener("change", async function (e) {
@@ -435,7 +446,7 @@ $("vao").addEventListener("keydown", e => {
 		await Promise.all([napKatex(), napZip()]);
 		bao(idTT, "Đang dựng file Word…");
 		const r = await T.xuatWord(code, { loiGiai: $("cdLoiGiai").checked, gachDung: $("cdGachDung").checked, bangDapAn: $("cdBangDA").checked, anh: anhHinh || [], anhTep: anhTep || {} });
-		taiVe(r.file, tenTep() + ".docx");
+		await taiVe(r.file, tenTep() + ".docx");
 		const soTikz = (T.taoFileHinh(code) || {}).soHinh || 0;
 		const thieuHinh = r.soHinh && !anhHinh && !anhTep;
 		bao(idTT, "Đã xuất " + r.soCau + " câu" + (r.soHinh ? ", " + r.soHinh + " hình" : "") + (r.loi.length ? " — " + r.loi.length + " công thức cần xem lại" : "") + ".", r.loi.length || thieuHinh ? "loi" : "ok");
@@ -487,7 +498,7 @@ $("vao").addEventListener("keydown", e => {
 			await napZip();
 			const z = new window.JSZip();
 			Object.keys(kqPdf.anh).forEach(k => z.file(k, kqPdf.anh[k].png));
-			taiVe(await z.generateAsync({ type: "blob" }), tenTep() + "-hinh.zip");
+			await taiVe(await z.generateAsync({ type: "blob" }), tenTep() + "-hinh.zip");
 		} catch (er) { bao("cdTTPdf", "Không tạo được file ảnh: " + er.message, "loi"); }
 	});
 	$("cdWordTuPdf").addEventListener("click", async function () {
