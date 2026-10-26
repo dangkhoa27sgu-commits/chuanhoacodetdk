@@ -887,7 +887,7 @@ $("vao").addEventListener("keydown", e => {
 	function nho(ids) { ids.forEach(k => { if (!$(k)) return; const v = docO(k); if (v !== null) $(k).checked = v === "1"; $(k).addEventListener("change", () => ghiO(k, $(k).checked ? "1" : "0")); }); }
 	nho(["ptChuan", "wTieuDe", "wLoiGiai", "wGach", "wBangDA"]);
 	["wFont", "wCo", "wLe", "wNgat", "ptScan"].forEach(k => { if (!$(k)) return; const v = docO(k); if (v) { const cu = $(k).value; $(k).value = v; if ($(k).value !== v) $(k).value = cu; } $(k).addEventListener("change", () => ghiO(k, $(k).value)); });
-	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 7.2.";
+	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 7.3.";
 
 	/* ---------- tab ngang ---------- */
 	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"]];
@@ -994,7 +994,7 @@ $("vao").addEventListener("keydown", e => {
 		const khoa = $(o.khoa).value.trim();
 		const tt = $(o.tt);
 		if (!khoa) { tt.textContent = "Dán khoá vào ô trên trước."; tt.className = "ttKhoa loi"; return; }
-		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 7.2."; tt.className = "ttKhoa loi"; return; }
+		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 7.3."; tt.className = "ttKhoa loi"; return; }
 		$(o.nut).disabled = true; tt.textContent = "Đang kiểm tra…"; tt.className = "ttKhoa";
 		try {
 			const ds = await bo().aiDsMoHinh({ nguon, khoa });
@@ -1577,7 +1577,7 @@ $("vao").addEventListener("keydown", e => {
 				return r;
 			} catch (e) {
 				if (ac.signal.aborted) return null;
-				if (TW.bd === bd) { TW.bd = null; $("ttBDTW").className = "ttBD loi"; $("ttBDTW").textContent = "Chưa vẽ được hình: " + (e && e.message || e) + (e && e.thieu ? ". Cần tải thư mục tikz lên cùng chỗ với index.html (xem hướng dẫn cập nhật)." : e && e.mang ? ". Kiểm tra mạng rồi bấm Vẽ lại." : "."); $("thanhBDTW").parentNode.hidden = true; }
+				if (TW.bd === bd) { TW.bd = null; $("ttBDTW").className = "ttBD loi"; $("ttBDTW").textContent = "Chưa vẽ được hình: " + (e && e.message || e) + (e && e.thieu ? ". Cần đặt 3 file tex.wasm, latex.dump.gz, goi.bin.gz cạnh index.html (hoặc trong thư mục tikz cạnh index.html)." : e && e.mang ? ". Kiểm tra mạng rồi bấm Vẽ lại." : "."); $("thanhBDTW").parentNode.hidden = true; }
 				return null;
 			}
 		})();
