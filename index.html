@@ -232,7 +232,7 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 .cdHang select { font: inherit; font-size: 13px; color: var(--chu); background: var(--mat); border: 1px solid var(--vien); border-radius: 6px; padding: 5px 8px; max-width: 100%; }
 .the .ghi { font-size: 11px; }
 .hangTD { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
-.dongHo { font-size: 12.5px; color: var(--phu); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.dongHo { font-size: 12.5px; color: var(--phu); font-variant-numeric: tabular-nums; white-space: nowrap; display: inline-block; min-width: 6.5em; height: 1.4em; line-height: 1.4em; text-align: right; overflow: hidden; contain: strict; }
 .tongKet { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--vien); border-radius: 8px; overflow: hidden; background: var(--code); }
 .tongKet > div { padding: 10px 14px; display: grid; gap: 2px; min-width: 0; }
 .tongKet > div + div { border-left: 1px solid var(--vien); }
@@ -302,6 +302,7 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 .dsLoiHinh:empty { display: none; }
 .dsLoiHinh li { font-size: .88em; line-height: 1.45; padding: 6px 9px; border-radius: 6px; background: var(--mat); border-left: 3px solid var(--do); word-break: break-word; }
 .buocHinh #bdLaiTW { width: fit-content; }
+.tongKet .chiTiet { grid-column: 1 / -1; margin: 0; padding: 7px 14px; border-top: 1px solid var(--vien); font-size: 12px; color: var(--phu); font-variant-numeric: tabular-nums; }
 
 </style>
 </head>
@@ -558,8 +559,9 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 					</div>
 					<div class="tienDo" id="tienDoTW" hidden>
 						<div class="thanhTD" aria-hidden="true"><i id="thanhTDTW"></i></div>
-						<div class="hangTD"><span class="chuTD" id="chuTDTW" role="status"></span></div>
+						<div class="hangTD"><span class="chuTD" id="chuTDTW" role="status"></span><span class="dongHo" id="dongHoTW" aria-label="Thời gian đã chạy"></span></div>
 					</div>
+					<div class="tongKet" id="tongKetTW" hidden></div>
 					<div class="dinhDang" aria-label="Định dạng file Word">
 						<span class="manhGhep" role="group" aria-label="Dạng công thức">
 							<button type="button" id="twMT" aria-pressed="true" title="Mỗi công thức là một đối tượng MathType — nháy đúp để sửa trong MathType">MathType</button>
@@ -887,7 +889,7 @@ $("vao").addEventListener("keydown", e => {
 	function nho(ids) { ids.forEach(k => { if (!$(k)) return; const v = docO(k); if (v !== null) $(k).checked = v === "1"; $(k).addEventListener("change", () => ghiO(k, $(k).checked ? "1" : "0")); }); }
 	nho(["ptChuan", "wTieuDe", "wLoiGiai", "wGach", "wBangDA"]);
 	["wFont", "wCo", "wLe", "wNgat", "ptScan"].forEach(k => { if (!$(k)) return; const v = docO(k); if (v) { const cu = $(k).value; $(k).value = v; if ($(k).value !== v) $(k).value = cu; } $(k).addEventListener("change", () => ghiO(k, $(k).value)); });
-	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 7.3.";
+	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 7.4.";
 
 	/* ---------- tab ngang ---------- */
 	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"]];
@@ -994,7 +996,7 @@ $("vao").addEventListener("keydown", e => {
 		const khoa = $(o.khoa).value.trim();
 		const tt = $(o.tt);
 		if (!khoa) { tt.textContent = "Dán khoá vào ô trên trước."; tt.className = "ttKhoa loi"; return; }
-		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 7.3."; tt.className = "ttKhoa loi"; return; }
+		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 7.4."; tt.className = "ttKhoa loi"; return; }
 		$(o.nut).disabled = true; tt.textContent = "Đang kiểm tra…"; tt.className = "ttKhoa";
 		try {
 			const ds = await bo().aiDsMoHinh({ nguon, khoa });
@@ -1380,6 +1382,12 @@ $("vao").addEventListener("keydown", e => {
 		$(n).addEventListener("keydown", e => { if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return; const j = (i + (e.key === "ArrowRight" ? 1 : KQ_TAB.length - 1)) % KQ_TAB.length; $(KQ_TAB[j][0]).click(); $(KQ_TAB[j][0]).focus(); });
 	});
 	// dạng công thức
+	// thời gian chính xác tới phần mười giây (dưới 1 phút): 0,8 giây · 12,4 giây
+	function thoiGianCX(ms) {
+		if (ms >= 60000) return thoiGian(ms);
+		const s = Math.max(0.1, ms / 1000);
+		return (s < 10 ? s.toFixed(1) : s.toFixed(s < 30 ? 1 : 0)).replace(".", ",").replace(/,0$/, "") + " giây";
+	}
 	function thoiGian(ms) { const s = Math.max(1, Math.round(ms / 1000)), p = Math.floor(s / 60); return p ? p + " phút" + (s % 60 ? " " + (s % 60) + " giây" : "") : s + " giây"; }
 	const KIEU_CT = { mathtype: "ctMT", omml: "ctOmml" };
 	function datCT(k) {
@@ -1415,7 +1423,7 @@ $("vao").addEventListener("keydown", e => {
 		W.dangQuet = true; W.ac = new AbortController();
 		const t0 = Date.now();
 		$("tongKet").hidden = true;
-		const dh = setInterval(() => { $("dongHo").textContent = thoiGian(Date.now() - t0); }, 1000); $("dongHo").textContent = "0 giây";
+		const dh = setInterval(() => { $("dongHo").textContent = thoiGianCX(Date.now() - t0); }, 250); $("dongHo").textContent = "0,0 giây";
 		$("nutDung").hidden = false; capNhatDem();
 		W.trang.forEach(t => datTT(t.p, t.chon ? "cho" : null));
 		let daXong = 0;
@@ -1436,7 +1444,7 @@ $("vao").addEventListener("keydown", e => {
 			const soCau = (code.match(/\\begin\{ex\}/g) || []).length, soHinh = Object.keys(r.anh).length;
 			$("nutTaiWord").disabled = false;
 			$("thanhTD").style.width = "100%";
-			const tg = thoiGian(Date.now() - t0), daDoc = chon.length - W.kq.chua.length;
+			const tg = thoiGianCX(Date.now() - t0), daDoc = chon.length - W.kq.chua.length;
 			baoTD(W.kq.chua.length ? "Đã quét xong " + daDoc + "/" + chon.length + " trang, tổng thời gian xử lí " + tg + ". Còn " + W.kq.chua.length + " trang chưa đọc được — xem tab Cần soát." : "Đã quét xong " + chon.length + " trang, tổng thời gian xử lí " + tg + ". Xem bản in thử rồi tải file Word.", W.kq.chua.length ? "loi" : "ok");
 			$("tongKet").innerHTML = '<div class="' + (W.kq.chua.length ? "xau" : "tot") + '"><b>' + daDoc + "/" + chon.length + "</b><span>trang đã quét</span></div><div><b>" + soCau + "</b><span>câu hỏi</span></div><div><b>" + soHinh + "</b><span>hình đã cắt</span></div><div><b>" + esc(tg) + "</b><span>tổng thời gian xử lí</span></div>";
 			$("tongKet").hidden = false; $("dongHo").textContent = "";
@@ -1555,7 +1563,7 @@ $("vao").addEventListener("keydown", e => {
 		if (!soTikz) return null;
 		if (TW.bd && TW.bd.ac) TW.bd.ac.abort();
 		const ac = new AbortController();
-		const bd = { ma: code, ac };
+		const bd = { ma: code, ac, t0: performance.now() };
 		TW.bd = bd;
 		$("ttBDTW").className = "ttBD"; $("ttBDTW").textContent = "Đang biên dịch " + soTikz + " hình TikZ…"; $("thanhBDTW").parentNode.hidden = false; $("thanhBDTW").style.width = "4%"; $("dsLoiHinhTW").innerHTML = "";
 		bd.cho = (async () => {
@@ -1566,12 +1574,13 @@ $("vao").addEventListener("keydown", e => {
 					bao: (x, n, chu) => { if (TW.bd !== bd) return; $("thanhBDTW").style.width = Math.max(4, Math.round(30 + x / n * 70)) + "%"; $("ttBDTW").textContent = chu || ("Đang vẽ hình TikZ: " + x + "/" + n + "…"); }
 				});
 				if (TW.bd !== bd) return r;
+				bd.tg = performance.now() - bd.t0; bd.xong = true;
 				datHinhTW(r.anh, de.hinh);
 				const cau = cauCuaHinh(de);
 				const ok = r.soTikz - r.loi.length;
 				$("thanhBDTW").style.width = "100%"; $("thanhBDTW").parentNode.hidden = true;
 				$("ttBDTW").className = "ttBD " + (r.loi.length ? "loi" : "ok");
-				$("ttBDTW").textContent = r.loi.length ? "Đã vẽ " + ok + "/" + r.soTikz + " hình. " + r.loi.length + " hình lỗi — sửa code hình rồi bấm Vẽ lại:" : "Đã vẽ xong " + r.soTikz + " hình TikZ ✓ — mỗi hình đặt đúng câu của nó.";
+				$("ttBDTW").textContent = r.loi.length ? "Đã vẽ " + ok + "/" + r.soTikz + " hình. " + r.loi.length + " hình lỗi — sửa code hình rồi bấm Vẽ lại:" : "Đã vẽ xong " + r.soTikz + " hình TikZ trong " + thoiGianCX(bd.tg) + " ✓ — mỗi hình đặt đúng câu của nó.";
 				$("dsLoiHinhTW").innerHTML = r.loi.map(x => "<li><b>Hình " + (x.i + 1) + (cau[x.i] ? " · " + esc(cau[x.i]) : "") + ":</b> " + esc(x.loi) + "</li>").join("");
 				capNhatTW(true);
 				return r;
@@ -1680,15 +1689,25 @@ $("vao").addEventListener("keydown", e => {
 		if (!coBo("xuatWord")) { baoTW(CHUA_CO, "loi"); return; }
 		const nut = this; nut.disabled = true;
 		const t0 = performance.now();
+		$("tongKetTW").hidden = true;
+		$("dongHoTW").textContent = "0,0 giây";
+		const dh = setInterval(() => { $("dongHoTW").textContent = thoiGianCX(performance.now() - t0); }, 250);
 		try {
 			baoTW("Đang tải thư viện…", "", 0.05);
 			await Promise.all([napZip(), napKatex()]);
 			const code = maDungTW();
+			// hình đã vẽ xong từ trước (ngay khi mở đề) thì cộng thời gian vẽ đó vào tổng
+			const veSan = TW.bd && TW.bd.xong && TW.bd.ma === code && TW.daTinhVe !== code ? TW.bd.tg || 0 : 0;
+			TW.daTinhVe = code;
+			let tgVe = 0;
 			if (TW.de && TW.de.hinh.some(h => h.loai === "tikz")) {
 				baoTW("Đang vẽ hình TikZ…", "", 0.15);
 				clearTimeout(TW.henBD);
+				const tv = performance.now();
 				await bienDichTW(false);
+				tgVe = veSan || (performance.now() - tv);
 			}
+			const tWord = performance.now();
 			baoTW("Đang dựng file Word…", "", 0.4);
 			const cd = $("twCheDo").value;
 			const r = await bo().xuatWord(code, {
@@ -1697,8 +1716,20 @@ $("vao").addEventListener("keydown", e => {
 				font: $("twFont").value, coChu: +$("twCo").value, le: LE[$("twLe").value] || LE.chuan, ngatTrang: $("twNgat").value,
 				congThuc: kieuCTTW(), baoTienDo: m => baoTW(m, "", 0.6)
 			});
+			const tgWord = performance.now() - tWord;
+			const tongMs = performance.now() - t0 + veSan;
+			clearInterval(dh); $("dongHoTW").textContent = "";
+			const soHinhVe = TW.tikz.filter(Boolean).length;
+			const soCT = r.soMathType || r.soCT || 0;
+			$("tongKetTW").innerHTML =
+				'<div><b>' + r.soCau + '</b><span>câu hỏi</span></div>' +
+				'<div><b>' + (r.soHinh || 0) + '</b><span>hình chèn đúng câu</span></div>' +
+				'<div><b>' + soCT + '</b><span>công thức ' + (r.soMathType ? "MathType" : "Equation") + '</span></div>' +
+				'<div class="tot"><b>' + esc(thoiGianCX(tongMs)) + '</b><span>tổng thời gian xử lí</span></div>' +
+				'<p class="chiTiet">' + (soHinhVe ? "Vẽ " + soHinhVe + " hình TikZ: " + esc(thoiGianCX(tgVe)) + " · " : "") + "Dựng file Word: " + esc(thoiGianCX(tgWord)) + "</p>";
+			$("tongKetTW").hidden = false;
 			const daLuu = await taiVe(r.file, TW.ten + ".docx");
-			const tg = thoiGian(performance.now() - t0);
+			const tg = thoiGianCX(tongMs);
 			baoTW("Đã tạo file Word: " + r.soCau + " câu" + (r.soHinh ? ", " + r.soHinh + " hình" : "") + (r.soMathType ? ", " + r.soMathType + " công thức MathType" : "") + " — " + tg + "." + (daLuu ? "" : " (Chưa lưu file)"), "ok", 1);
 			const cb = [];
 			if (r.soCTLoi) cb.push(r.soCTLoi + " công thức trình duyệt không vẽ được nên để dạng Equation.");
@@ -1712,7 +1743,7 @@ $("vao").addEventListener("keydown", e => {
 			}
 			veCBTW(cb);
 		} catch (e) { baoTW("Không tạo được file Word: " + (e && e.message || e), "loi"); }
-		finally { nut.disabled = false; }
+		finally { nut.disabled = false; clearInterval(dh); $("dongHoTW").textContent = ""; }
 	});
 	let daKhoiDongTW = false;
 	function khoiDongTW() {
