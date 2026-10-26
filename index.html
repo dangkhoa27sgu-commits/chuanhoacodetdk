@@ -889,7 +889,7 @@ $("vao").addEventListener("keydown", e => {
 	function nho(ids) { ids.forEach(k => { if (!$(k)) return; const v = docO(k); if (v !== null) $(k).checked = v === "1"; $(k).addEventListener("change", () => ghiO(k, $(k).checked ? "1" : "0")); }); }
 	nho(["ptChuan", "wTieuDe", "wLoiGiai", "wGach", "wBangDA"]);
 	["wFont", "wCo", "wLe", "wNgat", "ptScan"].forEach(k => { if (!$(k)) return; const v = docO(k); if (v) { const cu = $(k).value; $(k).value = v; if ($(k).value !== v) $(k).value = cu; } $(k).addEventListener("change", () => ghiO(k, $(k).value)); });
-	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 7.4.";
+	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 7.5.";
 
 	/* ---------- tab ngang ---------- */
 	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"]];
@@ -996,7 +996,7 @@ $("vao").addEventListener("keydown", e => {
 		const khoa = $(o.khoa).value.trim();
 		const tt = $(o.tt);
 		if (!khoa) { tt.textContent = "Dán khoá vào ô trên trước."; tt.className = "ttKhoa loi"; return; }
-		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 7.4."; tt.className = "ttKhoa loi"; return; }
+		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 7.5."; tt.className = "ttKhoa loi"; return; }
 		$(o.nut).disabled = true; tt.textContent = "Đang kiểm tra…"; tt.className = "ttKhoa";
 		try {
 			const ds = await bo().aiDsMoHinh({ nguon, khoa });
@@ -1569,7 +1569,7 @@ $("vao").addEventListener("keydown", e => {
 		bd.cho = (async () => {
 			try {
 				const r = await bo().bienDichHinh(code, {
-					signal: ac.signal, khongNho: !!ep,
+					signal: ac.signal, khongNho: !!ep, nguonGoc: $("maTW").value,
 					baoTai: (x, n) => { if (TW.bd !== bd) return; $("thanhBDTW").style.width = Math.max(4, Math.round(x / n * 30)) + "%"; $("ttBDTW").textContent = "Đang tải bộ vẽ hình (chỉ lần đầu, khoảng 10 MB)… " + x + "/" + n; },
 					bao: (x, n, chu) => { if (TW.bd !== bd) return; $("thanhBDTW").style.width = Math.max(4, Math.round(30 + x / n * 70)) + "%"; $("ttBDTW").textContent = chu || ("Đang vẽ hình TikZ: " + x + "/" + n + "…"); }
 				});
