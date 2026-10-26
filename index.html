@@ -290,6 +290,19 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 .toDe table.bangDS td { text-align: center; }
 .toDe table.bangDS td:first-child { text-align: left; }
 .toDe table.bangDS td + td { width: 56px; }
+/* --- LaTeX → Word: tự biên dịch hình --- */
+.buocHinh .ttBD { margin: 0; font-size: .92em; color: var(--phu); line-height: 1.5; }
+.buocHinh .ttBD.ok { color: var(--xanh); }
+.buocHinh .ttBD.loi { color: var(--do); }
+.thanhBD[hidden] { display: none; }
+.thanhBD { height: 5px; border-radius: 99px; background: var(--vien); overflow: hidden; }
+.thanhBD > i { display: block; height: 100%; width: 0; border-radius: inherit; background: var(--vang); transition: width .3s ease; }
+.dsLoiHinh { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.dsLoiHinh:empty { display: none; }
+.dsLoiHinh li { font-size: .88em; line-height: 1.45; padding: 6px 9px; border-radius: 6px; background: var(--mat); border-left: 3px solid var(--do); word-break: break-word; }
+.buocHinh #bdLaiTW { width: fit-content; }
+.thuCong summary { cursor: pointer; color: var(--phu); user-select: none; font-size: .92em; }
+.thuCong[open] summary { margin-bottom: 8px; }
 
 </style>
 </head>
@@ -516,20 +529,27 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 				<label class="thaTep" id="thaTexW">
 					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13l-2 2 2 2M15 13l2 2-2 2"/></svg>
 					<b>Chọn hoặc kéo thả file .tex</b>
-					<span>Hoặc dán code vào tab <b>Mã LaTeX</b>. Đề theo mẫu ex_test: \begin{ex}, \choice, \choiceTF, \shortans, \loigiai.</span>
-					<input type="file" id="tepTexW" accept=".tex,text/x-tex,text/plain">
+					<span>Hoặc dán code vào tab <b>Mã LaTeX</b>. Có ảnh \includegraphics thì chọn cùng lúc file .tex và các ảnh, hoặc một file .zip. Hình TikZ web tự vẽ.</span>
+					<input type="file" id="tepTexW" accept=".tex,.zip,text/x-tex,text/plain,application/zip,image/*" multiple>
 				</label>
 				<button class="nut rong" id="layTuChuan" type="button">Lấy code ở tab Chuẩn hoá</button>
 				<div class="hinhKem">
 					<h3>Hình trong đề</h3>
 					<p class="ttHinh" id="ttHinhTW">Chưa có đề.</p>
 					<div class="buocHinh" id="buocTikzTW" hidden>
-						<p><b>Hình TikZ</b> cần biên dịch một lần trên máy bạn:</p>
-						<ol>
-							<li><button class="nut" id="taiFileHinhTW" type="button">Tải file hình .tex</button></li>
-							<li>Biên dịch bằng pdfLaTeX (TeXstudio, MiKTeX…) ra file PDF.</li>
-							<li><label class="nut">Nạp PDF hình<input type="file" id="pdfHinhTW" accept="application/pdf,.pdf" hidden></label> <span id="ttPdfHinhTW"></span></li>
-						</ol>
+						<p><b>Hình TikZ</b> — web tự biên dịch và chèn đúng vào từng câu, bạn không cần làm gì.</p>
+						<p class="ttBD" id="ttBDTW" role="status">Đang chờ…</p>
+						<div class="thanhBD" aria-hidden="true"><i id="thanhBDTW"></i></div>
+						<ul class="dsLoiHinh" id="dsLoiHinhTW"></ul>
+						<button class="nut" id="bdLaiTW" type="button">Biên dịch lại</button>
+						<details class="thuCong">
+							<summary>Tự biên dịch trên máy (khi không có mạng)</summary>
+							<ol>
+								<li><button class="nut" id="taiFileHinhTW" type="button">Tải file hình .tex</button></li>
+								<li>Biên dịch bằng pdfLaTeX (TeXstudio, MiKTeX…) ra file PDF.</li>
+								<li><label class="nut">Nạp PDF hình<input type="file" id="pdfHinhTW" accept="application/pdf,.pdf" hidden></label> <span id="ttPdfHinhTW"></span></li>
+							</ol>
+						</details>
 					</div>
 					<div class="buocHinh" id="buocAnhTW" hidden>
 						<p><b>Ảnh</b> (\includegraphics) — chọn các file ảnh đi kèm đề:</p>
@@ -876,7 +896,7 @@ $("vao").addEventListener("keydown", e => {
 	function nho(ids) { ids.forEach(k => { if (!$(k)) return; const v = docO(k); if (v !== null) $(k).checked = v === "1"; $(k).addEventListener("change", () => ghiO(k, $(k).checked ? "1" : "0")); }); }
 	nho(["ptChuan", "wTieuDe", "wLoiGiai", "wGach", "wBangDA"]);
 	["wFont", "wCo", "wLe", "wNgat", "ptScan"].forEach(k => { if (!$(k)) return; const v = docO(k); if (v) { const cu = $(k).value; $(k).value = v; if ($(k).value !== v) $(k).value = cu; } $(k).addEventListener("change", () => ghiO(k, $(k).value)); });
-	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 6.9.";
+	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 7.0.";
 
 	/* ---------- tab ngang ---------- */
 	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"]];
@@ -983,7 +1003,7 @@ $("vao").addEventListener("keydown", e => {
 		const khoa = $(o.khoa).value.trim();
 		const tt = $(o.tt);
 		if (!khoa) { tt.textContent = "Dán khoá vào ô trên trước."; tt.className = "ttKhoa loi"; return; }
-		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 6.9."; tt.className = "ttKhoa loi"; return; }
+		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 7.0."; tt.className = "ttKhoa loi"; return; }
 		$(o.nut).disabled = true; tt.textContent = "Đang kiểm tra…"; tt.className = "ttKhoa";
 		try {
 			const ds = await bo().aiDsMoHinh({ nguon, khoa });
@@ -1493,7 +1513,7 @@ $("vao").addEventListener("keydown", e => {
 		return goc;
 	}
 	const tenAnh = t => String(t || "").replace(/^.*[\/\\]/, "");
-	function capNhatTW() {
+	function capNhatTW(tuBienDich) {
 		const code = $("maTW").value;
 		const T = bo();
 		TW.de = null;
@@ -1508,12 +1528,67 @@ $("vao").addEventListener("keydown", e => {
 		const thieu = anh.filter(t => !TW.anh[t] && !TW.anh[t.replace(/\.\w+$/, "")]);
 		$("nutTaoTW").disabled = !soCau;
 		$("uocTW").innerHTML = soCau ? "<b>" + soCau + "</b> câu" + (tikz ? " · <b>" + tikz + "</b> hình TikZ" : "") + (anh.length ? " · <b>" + anh.length + "</b> ảnh" : "") : "Chưa nhận ra câu hỏi nào — đề cần có \\begin{ex} … \\end{ex}.";
-		$("ttHinhTW").textContent = !tikz && !anh.length ? "Đề không có hình." : (tikz ? tikz + " hình TikZ" + (TW.tikz.length ? " — đã nạp " + TW.tikz.length + " hình" : " — chưa nạp") : "") + (tikz && anh.length ? "; " : "") + (anh.length ? anh.length + " ảnh" + (thieu.length ? " — còn thiếu " + thieu.length : " — đủ") : "") + ".";
+		const daVe = TW.tikz.filter(Boolean).length;
+		$("ttHinhTW").textContent = !tikz && !anh.length ? "Đề không có hình." : (tikz ? tikz + " hình TikZ" + (daVe ? " — đã vẽ " + daVe : "") : "") + (tikz && anh.length ? "; " : "") + (anh.length ? anh.length + " ảnh" + (thieu.length ? " — còn thiếu " + thieu.length : " — đủ") : "") + ".";
+		// đề có TikZ: tự biên dịch khi code thay đổi (đợi người dùng dừng gõ)
+		if (tikz && !tuBienDich) { clearTimeout(TW.henBD); TW.henBD = setTimeout(() => bienDichTW(false), 1200); }
 		$("buocTikzTW").hidden = !tikz;
 		$("buocAnhTW").hidden = !anh.length;
 		$("dsAnhTW").innerHTML = anh.map(t => '<li class="' + (thieu.includes(t) ? "thieu" : "co") + '">' + esc(t) + "</li>").join("");
 		if (!$("manTWXem").hidden) veXemTW();
 	}
+	// --- tự biên dịch hình TikZ ---
+	function cauCuaHinh(de) {
+		// chỉ số hình -> "Câu n" (đánh số như file Word)
+		const ra = {}; let so = 0, phan = "";
+		de.cau.forEach(c => {
+			if (c.phanMoi) { so = 0; phan = (c.phanMoi.match(/PHẦN\s+[IV]+/i) || [""])[0]; return; }
+			so++;
+			const nd = [c.de, c.hinhPhai, c.loiGiai].concat(c.phuongAn || []).join(" ");
+			(nd.match(/\uE100(\d+)\uE101/g) || []).forEach(m => { const i = +m.slice(1, -1); if (ra[i] === undefined) ra[i] = "Câu " + so + (phan ? " (" + phan.replace(/^PHẦN/i, "Phần") + ")" : ""); });
+		});
+		return ra;
+	}
+	function datHinhTW(anhTheoHinh, hinh) {
+		TW.tikzUrl.forEach(u => u && URL.revokeObjectURL(u));
+		TW.tikz = []; TW.tikzUrl = [];
+		hinh.forEach((h, i) => { if (h.loai !== "tikz") return; const a = anhTheoHinh[i] || null; TW.tikz.push(a); TW.tikzUrl.push(a ? URL.createObjectURL(new Blob([a.png], { type: "image/png" })) : null); });
+	}
+	async function bienDichTW(ep) {
+		const code = maDungTW();
+		if (!ep && (TW.thuCong || TW.bd && TW.bd.ma === code)) return TW.bd ? TW.bd.cho : null;
+		if (!coBo("bienDichHinh")) { $("ttBDTW").textContent = "Bộ luật chưa có chức năng tự biên dịch hình — cập nhật bộ luật mới, hoặc dùng cách tự biên dịch trên máy."; return null; }
+		let de; try { de = bo().docDe(code); } catch (e) { return null; }
+		const soTikz = de.hinh.filter(h => h.loai === "tikz").length;
+		if (!soTikz) return null;
+		if (TW.bd && TW.bd.ac) TW.bd.ac.abort();
+		const ac = new AbortController();
+		const bd = { ma: code, ac };
+		TW.bd = bd; TW.thuCong = false;
+		$("ttBDTW").className = "ttBD"; $("ttBDTW").textContent = "Đang biên dịch " + soTikz + " hình TikZ…"; $("thanhBDTW").parentNode.hidden = false; $("thanhBDTW").style.width = "4%"; $("dsLoiHinhTW").innerHTML = "";
+		bd.cho = (async () => {
+			try {
+				await napPdf();
+				const r = await bo().bienDichHinh(code, { signal: ac.signal, khongNho: !!ep, bao: (x, n) => { if (TW.bd !== bd) return; $("thanhBDTW").style.width = Math.max(4, Math.round(x / n * 100)) + "%"; $("ttBDTW").textContent = "Đang biên dịch hình TikZ: " + x + "/" + n + "…"; } });
+				if (TW.bd !== bd) return r;
+				datHinhTW(r.anh, de.hinh);
+				const cau = cauCuaHinh(de);
+				const ok = r.soTikz - r.loi.length;
+				$("thanhBDTW").style.width = "100%"; $("thanhBDTW").parentNode.hidden = true;
+				$("ttBDTW").className = "ttBD " + (r.loi.length ? "loi" : "ok");
+				$("ttBDTW").textContent = r.loi.length ? "Đã vẽ " + ok + "/" + r.soTikz + " hình. " + r.loi.length + " hình lỗi — sửa code hình rồi bấm Biên dịch lại:" : "Đã vẽ xong " + r.soTikz + " hình TikZ ✓ — mỗi hình đặt đúng câu của nó.";
+				$("dsLoiHinhTW").innerHTML = r.loi.map(x => "<li><b>Hình " + (x.i + 1) + (cau[x.i] ? " · " + esc(cau[x.i]) : "") + ":</b> " + esc(x.loi) + "</li>").join("");
+				capNhatTW(true);
+				return r;
+			} catch (e) {
+				if (ac.signal.aborted) return null;
+				if (TW.bd === bd) { TW.bd = null; $("ttBDTW").className = "ttBD loi"; $("ttBDTW").textContent = "Chưa vẽ được hình: " + (e && e.message || e) + (e && e.mang ? " (mục bên dưới), rồi bấm Biên dịch lại khi có mạng." : "."); $("thanhBDTW").parentNode.hidden = true; if (e && e.mang) $("buocTikzTW").querySelector(".thuCong").open = true; }
+				return null;
+			}
+		})();
+		return bd.cho;
+	}
+	$("bdLaiTW").addEventListener("click", () => bienDichTW(true));
 	function veXemTW() {
 		const toDe = $("toDeTW"); if (!toDe || $("manTWXem").hidden) return;
 		const T = bo();
@@ -1528,22 +1603,53 @@ $("vao").addEventListener("keydown", e => {
 	}
 	$("maTW").addEventListener("input", () => { clearTimeout(TW.hen); TW.hen = setTimeout(capNhatTW, 350); });
 	$("xoaMaTW").addEventListener("click", () => { $("maTW").value = ""; TW.ten = "de-thi"; $("tenTepTW").textContent = "Dán code LaTeX của đề vào đây."; capNhatTW(); });
-	async function docTepTex(f) {
-		const b = new Uint8Array(await f.arrayBuffer());
+	function giaiMaTex(b) {
 		let t = new TextDecoder("utf-8").decode(b);
-		if (/�/.test(t)) { try { t = new TextDecoder("windows-1258").decode(b); } catch (e) { } }
-		$("maTW").value = t.replace(/^﻿/, "");
-		TW.ten = tenGoc({ name: f.name.replace(/\.tex$/i, "") });
-		$("tenTepTW").textContent = f.name + " · " + Math.max(1, Math.round(f.size / 1024)) + " KB";
+		if (/\uFFFD/.test(t)) { try { t = new TextDecoder("windows-1258").decode(b); } catch (e) { } }
+		return t.replace(/^\uFEFF/, "");
+	}
+	function datMaTW(t, ten, moTa) {
+		$("maTW").value = t;
+		TW.ten = tenGoc({ name: String(ten || "de-thi").replace(/\.(tex|zip)$/i, "") });
+		TW.thuCong = false;
+		$("tenTepTW").textContent = moTa;
 		capNhatTW();
 		chonKQTW("twXem");
 	}
-	$("tepTexW").addEventListener("change", e => { const f = e.target.files && e.target.files[0]; if (f) docTepTex(f); e.target.value = ""; });
+	// nhận file: .tex, .zip (đề + ảnh + file \input), ảnh đi kèm
+	async function nhanTepTW(ds) {
+		ds = [...ds];
+		const anh = ds.filter(f => /^image\//.test(f.type) || /\.(png|jpe?g|gif|bmp|webp)$/i.test(f.name));
+		const zip = ds.find(f => /\.zip$/i.test(f.name));
+		const tex = ds.find(f => /\.tex$/i.test(f.name) || f.type === "text/plain" || f.type === "text/x-tex");
+		if (zip) {
+			try {
+				await napZip();
+				const z = await window.JSZip.loadAsync(await zip.arrayBuffer());
+				const tep = Object.values(z.files).filter(x => !x.dir);
+				const texs = [];
+				for (const x of tep.filter(x => /\.tex$/i.test(x.name))) texs.push({ ten: x.name, noi: giaiMaTex(await x.async("uint8array")) });
+				const chinh = texs.filter(x => /\\begin\{ex\}|\\input\{|\\include\{/.test(x.noi)).sort((a, b) => (/\\begin\{ex\}/.test(b.noi) - /\\begin\{ex\}/.test(a.noi)) || b.noi.length - a.noi.length)[0] || texs[0];
+				if (!chinh) { toast("File .zip không có file .tex"); return; }
+				// ghép các file \input / \include (một cấp)
+				let noi = chinh.noi.replace(/\\(?:input|include)\s*\{([^{}]+)\}/g, (m, t) => { const ten = t.trim().replace(/\.tex$/i, "") + ".tex"; const f = texs.find(x => x.ten.endsWith(ten) || x.ten.endsWith("/" + ten.replace(/^.*\//, ""))); return f ? f.noi : m; });
+				const anhZ = [];
+				for (const x of tep.filter(x => /\.(png|jpe?g|gif|bmp|webp)$/i.test(x.name))) anhZ.push(new File([await x.async("blob")], x.name.replace(/^.*\//, "")));
+				datMaTW(noi, zip.name, zip.name + " · " + texs.length + " file .tex, " + anhZ.length + " ảnh");
+				if (anhZ.length) await themAnhTW(anhZ);
+			} catch (e) { toast("Không mở được file .zip: " + (e && e.message || e)); }
+			return;
+		}
+		if (tex) datMaTW(giaiMaTex(new Uint8Array(await tex.arrayBuffer())), tex.name, tex.name + " · " + Math.max(1, Math.round(tex.size / 1024)) + " KB");
+		if (anh.length) await themAnhTW(anh);
+		if (!tex && !anh.length) toast("Chỉ nhận file .tex, .zip hoặc ảnh");
+	}
+	$("tepTexW").addEventListener("change", e => { const ds = [...(e.target.files || [])]; e.target.value = ""; if (ds.length) nhanTepTW(ds); });
 	["thaTexW", "maTW"].forEach(id => {
 		const el = $(id);
 		el.addEventListener("dragover", e => { if (e.dataTransfer && [...e.dataTransfer.items || []].some(x => x.kind === "file")) { e.preventDefault(); el.classList.add("keo"); } });
 		el.addEventListener("dragleave", () => el.classList.remove("keo"));
-		el.addEventListener("drop", e => { const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (!f) return; e.preventDefault(); el.classList.remove("keo"); if (/\.tex$|^text\//i.test(f.name + " " + f.type)) docTepTex(f); else toast("Chỉ nhận file .tex"); });
+		el.addEventListener("drop", e => { const ds = e.dataTransfer && e.dataTransfer.files; if (!ds || !ds.length) return; e.preventDefault(); el.classList.remove("keo"); nhanTepTW(ds); });
 	});
 	$("layTuChuan").addEventListener("click", () => {
 		const t = ($("ra") && $("ra").value.trim()) || ($("vao") && $("vao").value.trim());
@@ -1572,14 +1678,16 @@ $("vao").addEventListener("keydown", e => {
 				tikz = ds.filter((x, k) => hinh[k].loai === "tikz");
 				hinh.forEach((h, k) => { if (h.loai !== "anh") return; const t = tenAnh(h.tep), g = t.replace(/\.\w+$/, ""); if (!TW.anh[t] && !TW.anh[g]) { [t, g, g + ".png"].forEach(x => { TW.anh[x] = ds[k]; }); const u = URL.createObjectURL(new Blob([ds[k].png], { type: "image/png" })); TW.anhUrl[t] = TW.anhUrl[g] = u; } });
 			}
+			if (TW.bd && TW.bd.ac) TW.bd.ac.abort();
+			TW.bd = null; TW.thuCong = true;
 			TW.tikz = tikz; TW.tikzUrl = tikz.map(x => URL.createObjectURL(new Blob([x.png], { type: "image/png" })));
+			$("ttBDTW").className = "ttBD ok"; $("ttBDTW").textContent = "Đang dùng hình từ file PDF bạn nạp.";
 			const khop = !hinh.length || ds.length === hinh.length || ds.length === can;
 			$("ttPdfHinhTW").textContent = "Đã nạp " + ds.length + " trang hình" + (khop ? " ✓" : " (đề có " + hinh.length + " hình — file PDF hình chưa khớp, tải lại file hình .tex rồi biên dịch)");
-			capNhatTW();
+			capNhatTW(true);
 		} catch (e2) { $("ttPdfHinhTW").textContent = "Không đọc được PDF: " + (e2 && e2.message || e2); }
 	});
-	$("anhTW").addEventListener("change", async e => {
-		const ds = [...(e.target.files || [])]; e.target.value = "";
+	async function themAnhTW(ds) {
 		for (const f of ds) {
 			try {
 				const bm = await createImageBitmap(f);
@@ -1594,7 +1702,8 @@ $("vao").addEventListener("keydown", e => {
 			} catch (e2) { toast("Không đọc được ảnh " + f.name); }
 		}
 		capNhatTW();
-	});
+	}
+	$("anhTW").addEventListener("change", e => { const ds = [...(e.target.files || [])]; e.target.value = ""; themAnhTW(ds); });
 	function baoTW(msg, kieu, phan) {
 		$("tienDoTW").hidden = false;
 		$("chuTDTW").textContent = msg; $("chuTDTW").className = "chuTD" + (kieu ? " " + kieu : "");
@@ -1611,8 +1720,13 @@ $("vao").addEventListener("keydown", e => {
 		try {
 			baoTW("Đang tải thư viện…", "", 0.05);
 			await Promise.all([napZip(), napKatex()]);
-			baoTW("Đang dựng file Word…", "", 0.3);
 			const code = maDungTW();
+			if (TW.de && TW.de.hinh.some(h => h.loai === "tikz") && !TW.thuCong) {
+				baoTW("Đang vẽ hình TikZ…", "", 0.15);
+				clearTimeout(TW.henBD);
+				await bienDichTW(false);
+			}
+			baoTW("Đang dựng file Word…", "", 0.4);
 			const cd = $("twCheDo").value;
 			const r = await bo().xuatWord(code, {
 				anhTep: TW.anh, anh: TW.tikz, cheDo: cd, dsBang: $("twDsBang").checked, hoTen: $("twHoTen").checked,
@@ -1628,7 +1742,8 @@ $("vao").addEventListener("keydown", e => {
 			(r.loi || []).slice(0, 30).forEach(x => cb.push("Câu " + x.cau + ": công thức chưa dựng được (đang để dạng chữ): " + String(x.tex).slice(0, 90)));
 			if (TW.de) {
 				const tikz = TW.de.hinh.filter(h => h.loai === "tikz").length;
-				if (tikz && TW.tikz.length < tikz) cb.push("Còn " + (tikz - TW.tikz.length) + " hình TikZ chưa có ảnh — tải file hình .tex, biên dịch rồi nạp PDF hình.");
+				const daVe = TW.tikz.filter(Boolean).length;
+				if (tikz && daVe < tikz) cb.push("Còn " + (tikz - daVe) + " hình TikZ chưa vẽ được (trong file Word là ô [Hình n]) — xem danh sách lỗi ở mục Hình trong đề.");
 				const thieu = [...new Set(TW.de.hinh.filter(h => h.loai === "anh").map(h => tenAnh(h.tep)))].filter(t => !TW.anh[t] && !TW.anh[t.replace(/\.\w+$/, "")]);
 				if (thieu.length) cb.push("Chưa có ảnh: " + thieu.join(", ") + " — bấm Thêm ảnh.");
 			}
