@@ -230,6 +230,41 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 @media (prefers-reduced-motion: reduce) { .vongQuay { animation-duration: 3s; } .the .to, .thanhTD i { transition: none; } }
 .cdHang select { font: inherit; font-size: 13px; color: var(--chu); background: var(--mat); border: 1px solid var(--vien); border-radius: 6px; padding: 5px 8px; max-width: 100%; }
 .the .ghi { font-size: 11px; }
+.hangTD { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.dongHo { font-size: 12.5px; color: var(--phu); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tongKet { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--vien); border-radius: 8px; overflow: hidden; background: var(--code); }
+.tongKet > div { padding: 10px 14px; display: grid; gap: 2px; min-width: 0; }
+.tongKet > div + div { border-left: 1px solid var(--vien); }
+.tongKet b { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.tongKet span { font-size: 12px; color: var(--phu); }
+.tongKet .xau b { color: var(--do); }
+.tongKet .tot b { color: var(--xanh); }
+.meoCT { margin: 0; font-size: 12.5px; color: var(--phu); line-height: 1.55; }
+.meoCT b { color: var(--chu); font-weight: 600; }
+.meoCT kbd { font-family: var(--f-ui); font-size: 11.5px; border: 1px solid var(--vien); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; background: var(--mat); color: var(--chu); white-space: nowrap; }
+@media (max-width: 520px) { .tongKet { grid-template-columns: repeat(2, minmax(0, 1fr)); } .tongKet > div:nth-child(3) { border-left: 0; } .tongKet > div:nth-child(n+3) { border-top: 1px solid var(--vien); } }
+.huongDan { border: 1px solid var(--vang); border-radius: 10px; background: var(--vangnhat); }
+.huongDan summary { list-style: none; cursor: pointer; padding: 11px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; font-weight: 600; font-size: 13.5px; }
+.huongDan summary::-webkit-details-marker { display: none; }
+.huongDan summary small { font-weight: 500; font-size: 12px; color: var(--vang); }
+.huongDan summary small::after { content: " ▾"; }
+.huongDan[open] summary small::after { content: " ▴"; }
+.huongDan summary:focus-visible { outline: 2px solid var(--vang); outline-offset: 2px; border-radius: 10px; }
+.buocDai { list-style: none; counter-reset: b; margin: 0; padding: 2px 14px 4px; display: grid; gap: 12px; }
+.buocDai li { counter-increment: b; display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; align-items: start; }
+.buocDai li::before { content: counter(b); width: 26px; height: 26px; border-radius: 50%; background: var(--navy); color: #F4F2EC; display: grid; place-items: center; font-size: 12.5px; font-weight: 700; }
+.buocDai b { font-size: 13.5px; }
+.buocDai p { margin: 2px 0 0; font-size: 12.5px; color: var(--phu); line-height: 1.6; }
+.nutMo { display: inline-flex; align-items: center; gap: 6px; margin-top: 7px; padding: 7px 13px; border-radius: 7px; background: var(--vang); color: #1B2A41; font-weight: 600; font-size: 13px; text-decoration: none; }
+.nutMo:hover { filter: brightness(1.06); }
+.nutMo:focus-visible { outline: 2px solid var(--chu); outline-offset: 2px; }
+.giaNut { display: inline-block; font-size: 11.5px; font-weight: 600; padding: 1px 8px; border-radius: 5px; border: 1px solid var(--vien); background: var(--mat); color: var(--chu); white-space: nowrap; }
+.giaNut.xanh { background: #1A73E8; border-color: #1A73E8; color: #fff; }
+.giaNut.vang { background: var(--vang); border-color: var(--vang); color: #1B2A41; }
+.giaKhoa { display: inline-flex; gap: 6px; align-items: center; font-family: var(--f-code); font-size: 11.5px; padding: 1px 8px; border-radius: 5px; border: 1px dashed var(--vang); background: var(--mat); color: var(--chu); white-space: nowrap; }
+.giaKhoa i { font-style: normal; color: var(--phu); }
+.huongDan kbd, .buocDai kbd { font-family: var(--f-ui); font-size: 11px; border: 1px solid var(--vien); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; background: var(--mat); color: var(--chu); }
+.luuY { margin: 4px 14px 12px; font-size: 12px; color: var(--phu); line-height: 1.55; border-top: 1px dashed var(--vang); padding-top: 9px; }
 
 </style>
 </head>
@@ -411,12 +446,13 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 					</div>
 					<div class="tienDo" id="tienDo" hidden>
 						<div class="thanhTD" aria-hidden="true"><i id="thanhTD"></i></div>
-						<div class="chuTD" id="chuTD" role="status"></div>
+						<div class="hangTD"><span class="chuTD" id="chuTD" role="status"></span><span class="dongHo" id="dongHo" aria-label="Thời gian đã chạy"></span></div>
 					</div>
+					<div class="tongKet" id="tongKet" hidden></div>
 					<div class="dinhDang" aria-label="Định dạng file Word">
 						<span class="manhGhep" role="group" aria-label="Dạng công thức">
-							<button type="button" id="ctOmml" aria-pressed="true">Word Equation</button>
-							<button type="button" id="ctTex" aria-pressed="false">Mã TeX cho MathType</button>
+							<button type="button" id="ctOmml" aria-pressed="true" title="Công thức là Equation của Word — đổi sang MathType bằng Convert Equations">Equation (Word, MathType)</button>
+							<button type="button" id="ctTex" aria-pressed="false" title="Công thức để dạng mã TeX $…$">Mã TeX $…$</button>
 						</span>
 						<label>Phông <select id="wFont"><option>Times New Roman</option><option>Arial</option><option>Cambria</option><option>Calibri</option></select></label>
 						<label>Cỡ chữ <select id="wCo"><option value="11">11 pt</option><option value="12" selected>12 pt</option><option value="13">13 pt</option><option value="14">14 pt</option></select></label>
@@ -427,6 +463,7 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 						<label class="bat"><input type="checkbox" id="wGach" checked> Gạch chân đáp án</label>
 						<label class="bat"><input type="checkbox" id="wBangDA" checked> Bảng đáp án</label>
 					</div>
+					<p class="meoCT" id="meoCT"></p>
 				</div>
 				<div class="theKQ" role="tablist" aria-label="Kết quả">
 					<button type="button" role="tab" id="kqXem" aria-selected="true" aria-controls="manXem">Bản in thử</button>
@@ -465,12 +502,19 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 			</div>
 
 			<div class="phanAI" data-nguon="gemini">
-				<ol class="buoc">
-					<li>Mở <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> và đăng nhập Gmail.</li>
-					<li>Bấm <b>Create API key</b>, rồi sao chép khoá (bắt đầu bằng AIza…).</li>
-					<li>Dán vào ô dưới và bấm <b>Kiểm tra khoá</b>.</li>
-				</ol>
-				<div class="oKhoa"><input type="password" id="khoaGemini" autocomplete="off" spellcheck="false" placeholder="AIza..." aria-label="Khoá API Gemini"><button class="nut" type="button" id="hienKhoaGemini">Hiện</button><button class="nut" type="button" id="ktGemini">Kiểm tra khoá</button></div>
+				<details class="huongDan" id="hdGemini">
+					<summary><span>Chưa có khoá? Lấy miễn phí trong 2 phút</span><small>Xem hướng dẫn từng bước</small></summary>
+					<ol class="buocDai">
+						<li><div><b>Mở trang lấy khoá của Google</b><p>Trang mở ở thẻ mới, không làm mất trang này.</p><a class="nutMo" href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Mở Google AI Studio <span aria-hidden="true">↗</span></a></div></li>
+						<li><div><b>Đăng nhập bằng Gmail</b><p>Lần đầu vào, Google hỏi đồng ý điều khoản: tích ô đồng ý rồi bấm <span class="giaNut">Continue</span>.</p></div></li>
+						<li><div><b>Tạo khoá</b><p>Bấm nút <span class="giaNut xanh">+ Create API key</span> ở góc trên bên phải. Nếu Google hỏi chọn dự án (project), chọn dự án có sẵn hoặc tạo dự án mới với tên bất kì.</p></div></li>
+						<li><div><b>Sao chép khoá</b><p>Khoá hiện ra có dạng <span class="giaKhoa">AIzaSy…<i aria-hidden="true">⧉</i></span> — bấm biểu tượng sao chép bên cạnh.</p></div></li>
+						<li><div><b>Dán vào đây rồi kiểm tra</b><p>Bấm vào ô <b>Khoá API</b> bên dưới, dán (<kbd>Ctrl</kbd>+<kbd>V</kbd>; điện thoại: giữ ngón tay → Dán), bấm <span class="giaNut">Kiểm tra khoá</span>. Thấy dòng ✓ màu xanh là xong, bấm <span class="giaNut vang">Lưu cấu hình</span>.</p></div></li>
+					</ol>
+					<p class="luuY">Khoá miễn phí, không cần thẻ ngân hàng. Không gửi khoá cho người khác. Hết lượt trong ngày thì chờ 14–15 giờ chiều để Google cấp lại lượt, hoặc tạo khoá bằng một Gmail khác.</p>
+				</details>
+				<label class="truong" for="khoaGemini">Khoá API Gemini</label>
+				<div class="oKhoa"><input type="password" id="khoaGemini" autocomplete="off" spellcheck="false" placeholder="Dán khoá AIza... vào đây"><button class="nut" type="button" id="danGemini">Dán</button><button class="nut" type="button" id="hienKhoaGemini">Hiện</button><button class="nut" type="button" id="ktGemini">Kiểm tra khoá</button></div>
 				<div class="ttKhoa" id="ttGemini" role="status"></div>
 				<label class="truong">Mô hình<select id="mhGemini"><option value="gemini-flash-lite-latest">gemini-flash-lite-latest (khuyên dùng)</option></select></label>
 				<p class="ghiChuAI">Gói miễn phí của Google giới hạn số lượt gọi mỗi ngày (mỗi lượt đọc 1–3 trang), lượt được cấp lại lúc 14–15 giờ chiều giờ Việt Nam. Ở gói miễn phí, Google có thể dùng nội dung gửi lên để cải thiện dịch vụ, nên không gửi đề cần giữ kín. Khoá chỉ lưu trong trình duyệt máy này và chỉ gửi tới Google.</p>
@@ -809,6 +853,7 @@ $("vao").addEventListener("keydown", e => {
 		$("cheDoClaude").value = AI.cheDo; $("gopTrang").value = String(AI.gop); $("songSongAI").value = String(AI.songSong);
 		$("ttGemini").textContent = AI.okGemini && AI.khoaGemini ? "✓ Khoá đã kiểm tra, dùng được." : ""; $("ttGemini").className = "ttKhoa" + (AI.okGemini ? " ok" : "");
 		$("ttAnthropic").textContent = AI.okAnthropic && AI.khoaAnthropic ? "✓ Khoá đã kiểm tra, dùng được." : ""; $("ttAnthropic").className = "ttKhoa" + (AI.okAnthropic ? " ok" : "");
+		$("hdGemini").open = !(AI.khoaGemini && AI.okGemini);
 		hienPhan();
 		if (typeof hop.showModal === "function") hop.showModal(); else hop.setAttribute("open", "");
 	}
@@ -816,6 +861,12 @@ $("vao").addEventListener("keydown", e => {
 		hienPhan();
 		if (r.value === "claude" && r.checked) $("gopTrang").value = "1";
 	}));
+	// hướng dẫn lấy khoá: tự mở khi chưa có khoá, hoặc khi bấm vào ô khoá còn trống
+	$("khoaGemini").addEventListener("focus", () => { if (!$("khoaGemini").value.trim()) $("hdGemini").open = true; });
+	$("danGemini").addEventListener("click", async () => {
+		try { const t = (await navigator.clipboard.readText()).trim(); if (t) { $("khoaGemini").value = t; $("ttGemini").textContent = "Đã dán khoá — bấm Kiểm tra khoá."; $("ttGemini").className = "ttKhoa"; return; } } catch (e) { }
+		$("khoaGemini").focus(); $("ttGemini").textContent = "Trình duyệt không cho dán tự động — bấm vào ô khoá rồi nhấn Ctrl+V."; $("ttGemini").className = "ttKhoa";
+	});
 	[["hienKhoaGemini", "khoaGemini"], ["hienKhoaAnthropic", "khoaAnthropic"]].forEach(([n, o]) => $(n).addEventListener("click", () => { const an = $(o).type === "password"; $(o).type = an ? "text" : "password"; $(n).textContent = an ? "Ẩn" : "Hiện"; }));
 	async function kiemTra(nguon) {
 		const o = nguon === "gemini" ? { khoa: "khoaGemini", tt: "ttGemini", sel: "mhGemini", nut: "ktGemini" } : { khoa: "khoaAnthropic", tt: "ttAnthropic", sel: "mhAnthropic", nut: "ktAnthropic" };
@@ -832,7 +883,8 @@ $("vao").addEventListener("keydown", e => {
 			else { AI.dsAnthropic = nho2; AI.okAnthropic = true; AI.khoaAnthropic = khoa; }
 			const giu = nho2.some(m => m.id === chonCu) ? chonCu : nho2.length ? nho2[0].id : chonCu;
 			dienMoHinh($(o.sel), nho2, giu, nguon === "gemini" ? MD_GEMINI : MD_ANTH);
-			tt.textContent = "✓ Khoá dùng được — " + nho2.length + " mô hình. Đã chọn sẵn mô hình phù hợp nhất.";
+			tt.textContent = "✓ Khoá dùng được — " + nho2.length + " mô hình. Đã chọn sẵn mô hình phù hợp nhất. Bấm Lưu cấu hình.";
+			if (nguon === "gemini") $("hdGemini").open = false;
 			tt.className = "ttKhoa ok";
 		} catch (e) { tt.textContent = "✗ " + e.message; tt.className = "ttKhoa loi"; if (nguon === "gemini") AI.okGemini = false; else AI.okAnthropic = false; }
 		finally { $(o.nut).disabled = false; }
@@ -940,13 +992,19 @@ $("vao").addEventListener("keydown", e => {
 		if (!daPhan) h += " · đang phân loại trang…";
 		$("uocTinh").innerHTML = h;
 	}
-	function datTT(p, tt) {
+	// lí do ngắn gọn cho trang không đọc được
+	function liDo(m) {
+		m = String(m || "");
+		return /RECITATION|trùng tài liệu/.test(m) ? "Google chặn: nội dung trùng tài liệu đã đăng trên mạng" : /hết lượt/.test(m) ? "khoá đã hết lượt miễn phí hôm nay" : /không hợp lệ|API key/i.test(m) ? "khoá API không hợp lệ" : /mạng|kết nối/.test(m) ? "mất kết nối mạng" : /chặn/.test(m) ? "Google chặn trang này" : m.slice(0, 80);
+	}
+	function datTT(p, tt, ghiChu) {
 		const el = theTrang(p); if (!el) return;
+		el.title = tt === "loi" && ghiChu ? "Trang " + p + " chưa đọc được: " + ghiChu : "";
 		if (!tt) { el.removeAttribute("data-tt"); return; }
 		el.dataset.tt = tt;
 		el.querySelector(".tinh").innerHTML = tt === "dang" ? '<span class="vongQuay" aria-hidden="true"></span>' : tt === "cho" ? "Chờ" : tt === "loi" ? "Lỗi" : "";
 		el.querySelector(".dau").textContent = tt === "loi" ? "!" : "✓";
-		el.querySelector(".ghi").textContent = tt === "nho" ? "từ bộ nhớ" : tt === "loi" ? "chưa đọc được" : tt === "xong" ? "đã đọc" : tt === "dang" ? "đang đọc…" : "";
+		el.querySelector(".ghi").textContent = tt === "nho" ? "từ bộ nhớ" : tt === "loi" ? (ghiChu ? liDo(ghiChu) : "chưa đọc được") : tt === "xong" ? "đã đọc" : tt === "dang" ? "đang đọc…" : "";
 	}
 	function chonThe(t, chon) {
 		t.chon = chon; const el = theTrang(t.p); if (el) el.setAttribute("aria-checked", chon ? "true" : "false");
@@ -1030,10 +1088,28 @@ $("vao").addEventListener("keydown", e => {
 		if (!window.katex) return '<code>' + esc(tex) + '</code>';
 		try {
 			const T = bo(); let t2 = T && T._noiBo && T._noiBo.chuanBiTex ? T._noiBo.chuanBiTex(tex) : tex;
-			// tập số: kí tự Unicode để hiện đúng chữ kép trên mọi trình duyệt
-			t2 = t2.replace(/\\mathbb\s*\{\s*([RNZQC])\s*\}/g, (m, c) => ({ R: "ℝ", N: "ℕ", Z: "ℤ", Q: "ℚ", C: "ℂ" })[c]);
-			return window.katex.renderToString(t2, { output: "mathml", displayMode: !!hienThi, throwOnError: true, strict: "ignore", macros: Object.assign({}, MACRO) });
+			const ve = x => chuKieu(window.katex.renderToString(x, { output: "mathml", displayMode: !!hienThi, throwOnError: true, strict: "ignore", macros: Object.assign({}, MACRO) }));
+			try { return ve(t2); } catch (e1) {
+				// sửa nhẹ (\left \right lệch cặp, ngoặc nhọn thiếu) rồi thử lại
+				for (const f of [T && T.suaNhe1, T && T.suaNhe2]) if (f) { try { return ve(f(t2)); } catch (e2) { } }
+				throw e1;
+			}
 		} catch (e) { return '<span class="loiTex" title="Công thức chưa đọc được — sửa ở tab Mã LaTeX">' + esc(tex) + '</span>'; }
+	}
+	// trình duyệt bỏ qua mathvariant (chữ kép ℝ, chữ viết tay 𝒟, chữ đậm...): đổi sang kí tự toán Unicode
+	const KIEU = {
+		"double-struck": [0x1D538, 0x1D552, 0x1D7D8, { C: 0x2102, H: 0x210D, N: 0x2115, P: 0x2119, Q: 0x211A, R: 0x211D, Z: 0x2124 }],
+		"script": [0x1D49C, 0x1D4B6, 0, { B: 0x212C, E: 0x2130, F: 0x2131, H: 0x210B, I: 0x2110, L: 0x2112, M: 0x2133, R: 0x211B, e: 0x212F, g: 0x210A, o: 0x2134 }],
+		"fraktur": [0x1D504, 0x1D51E, 0, { C: 0x212D, H: 0x210C, I: 0x2111, R: 0x211C, Z: 0x2128 }],
+		"bold": [0x1D400, 0x1D41A, 0x1D7CE, {}],
+		"bold-italic": [0x1D468, 0x1D482, 0, {}]
+	};
+	function chuKieu(h) {
+		return h.replace(/<(mi|mn|mtext) mathvariant="(double-struck|script|fraktur|bold|bold-italic)">([A-Za-z0-9]+)<\/\1>/g, (m, the, kieu, chu) => {
+			const [hoa, thuong, so, rieng] = KIEU[kieu];
+			const doi = Array.from(chu, c => rieng[c] ? String.fromCodePoint(rieng[c]) : /[A-Z]/.test(c) ? String.fromCodePoint(hoa + c.charCodeAt(0) - 65) : /[a-z]/.test(c) ? String.fromCodePoint(thuong + c.charCodeAt(0) - 97) : so ? String.fromCodePoint(so + c.charCodeAt(0) - 48) : c).join("");
+			return "<" + the + ">" + doi + "</" + the + ">";
+		});
 	}
 	function tachO(h) {
 		const out = []; let d = 0, cur = "";
@@ -1168,10 +1244,16 @@ $("vao").addEventListener("keydown", e => {
 		$(n).addEventListener("keydown", e => { if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return; const j = (i + (e.key === "ArrowRight" ? 1 : KQ_TAB.length - 1)) % KQ_TAB.length; $(KQ_TAB[j][0]).click(); $(KQ_TAB[j][0]).focus(); });
 	});
 	// dạng công thức
-	function datCT(tex) { $("ctOmml").setAttribute("aria-pressed", !tex); $("ctTex").setAttribute("aria-pressed", !!tex); ghiO("wCT", tex ? "tex" : "omml"); }
+	function thoiGian(ms) { const s = Math.max(1, Math.round(ms / 1000)), p = Math.floor(s / 60); return p ? p + " phút" + (s % 60 ? " " + (s % 60) + " giây" : "") : s + " giây"; }
+	function datCT(tex) {
+		$("ctOmml").setAttribute("aria-pressed", !tex); $("ctTex").setAttribute("aria-pressed", !!tex); ghiO("wCT2", tex ? "tex" : "omml");
+		$("meoCT").innerHTML = tex
+			? "Công thức để dạng mã <b>$…$</b>. Đổi sang MathType: mở file Word → tab <b>MathType</b> → <kbd>Convert Equations</kbd> → tích <b>Text using MathType TeX input language</b> → <kbd>Convert</kbd>; hoặc bôi đen một công thức rồi bấm <kbd>Toggle TeX</kbd>."
+			: "Công thức là <b>Equation của Word</b>, bấm vào sửa được ngay. Đổi tất cả sang MathType: mở file Word → tab <b>MathType</b> → <kbd>Convert Equations</kbd> → chọn <b>Microsoft Word equations</b> (Office 2007 trở lên) → <kbd>Convert</kbd>.";
+	}
 	$("ctOmml").addEventListener("click", () => datCT(false));
 	$("ctTex").addEventListener("click", () => datCT(true));
-	datCT(docO("wCT") === "tex");
+	datCT(docO("wCT2") === "tex");
 	$("chepMaW").addEventListener("click", () => {
 		const ta = $("maTexW"); if (!ta.value) return;
 		const chon = () => { ta.focus(); ta.select(); toast("Đã chọn toàn bộ — bấm Ctrl+C để sao chép"); };
@@ -1192,10 +1274,13 @@ $("vao").addEventListener("keydown", e => {
 		const cfg = cauHinhQuet();
 		if (coScan && cfg.ocr === "ai" && !(bo()._quet && bo()._quet.docNhomAI)) { baoTD(CHUA_CO, "loi"); return; }
 		W.dangQuet = true; W.ac = new AbortController();
+		const t0 = Date.now();
+		$("tongKet").hidden = true;
+		const dh = setInterval(() => { $("dongHo").textContent = thoiGian(Date.now() - t0); }, 1000); $("dongHo").textContent = "0 giây";
 		$("nutDung").hidden = false; capNhatDem();
 		W.trang.forEach(t => datTT(t.p, t.chon ? "cho" : null));
 		let daXong = 0;
-		const baoTrang = (p, tt) => { datTT(p, tt); if (tt === "xong" || tt === "nho" || tt === "loi") { daXong++; $("thanhTD").style.width = Math.round(daXong / chon.length * 100) + "%"; } };
+		const baoTrang = (p, tt, ghiChu) => { datTT(p, tt, ghiChu); if (tt === "xong" || tt === "nho" || tt === "loi") { daXong++; $("thanhTD").style.width = Math.round(daXong / chon.length * 100) + "%"; } };
 		try {
 			baoTD("Đang tải thư viện…", "", 0);
 			await Promise.all([napPdf(), napKatex(), napZip()]);
@@ -1212,11 +1297,15 @@ $("vao").addEventListener("keydown", e => {
 			const soCau = (code.match(/\\begin\{ex\}/g) || []).length, soHinh = Object.keys(r.anh).length;
 			$("nutTaiWord").disabled = false;
 			$("thanhTD").style.width = "100%";
-			baoTD("Đã đọc " + chon.length + " trang: " + soCau + " câu, " + soHinh + " hình." + (W.kq.chua.length ? " Còn " + W.kq.chua.length + " trang chưa đọc — xem tab Cần soát." : " Xem bản in thử rồi tải file Word."), W.kq.chua.length ? "loi" : "ok");
+			const tg = thoiGian(Date.now() - t0), daDoc = chon.length - W.kq.chua.length;
+			baoTD(W.kq.chua.length ? "Đã quét xong " + daDoc + "/" + chon.length + " trang, tổng thời gian xử lí " + tg + ". Còn " + W.kq.chua.length + " trang chưa đọc được — xem tab Cần soát." : "Đã quét xong " + chon.length + " trang, tổng thời gian xử lí " + tg + ". Xem bản in thử rồi tải file Word.", W.kq.chua.length ? "loi" : "ok");
+			$("tongKet").innerHTML = '<div class="' + (W.kq.chua.length ? "xau" : "tot") + '"><b>' + daDoc + "/" + chon.length + "</b><span>trang đã quét</span></div><div><b>" + soCau + "</b><span>câu hỏi</span></div><div><b>" + soHinh + "</b><span>hình đã cắt</span></div><div><b>" + esc(tg) + "</b><span>tổng thời gian xử lí</span></div>";
+			$("tongKet").hidden = false; $("dongHo").textContent = "";
 		} catch (e) {
 			if (e && e.dung) { baoTD("Đã dừng.", ""); W.trang.forEach(t => { const el = theTrang(t.p); if (el && (el.dataset.tt === "cho" || el.dataset.tt === "dang")) datTT(t.p, null); }); }
 			else baoTD("Không đọc được: " + (e && e.message || e), "loi");
 		} finally {
+			clearInterval(dh);
 			W.dangQuet = false; $("nutDung").hidden = true; capNhatDem();
 		}
 	}
