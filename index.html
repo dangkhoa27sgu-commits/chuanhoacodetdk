@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>chuanhoacodeTDK</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap">
 <link rel="stylesheet" href="style.css">
 <style>
 .tabChinh { display: flex; gap: 2px; margin-top: 16px; border-bottom: 1px solid var(--vien); overflow-x: auto; scrollbar-width: none; }
@@ -39,6 +39,198 @@
 .cdRa[hidden] { display: none; }
 .nut[disabled] { opacity: .55; cursor: progress; }
 @media (max-width: 600px) { .tabChinh button small { display: none; } .cdRa { height: 300px; } }
+/* ===== Xưởng PDF → Word: bàn soát đề — trái: dải trang PDF như tờ liên ảnh; phải: bản in thử đề như file Word ===== */
+:root { --giay: #FFFFFF; --giayChu: #16202E; --mucCau: #1F3FB8; --mucDung: #A3261F; --toi: rgba(27, 42, 65, .55); --bong: 0 1px 2px rgba(27, 42, 65, .06), 0 8px 24px -12px rgba(27, 42, 65, .18); --f-de: "Noto Serif", "Times New Roman", Times, serif; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --giay: #1F2631; --giayChu: #E6E2D8; --mucCau: #93A9FF; --mucDung: #F0938B; --toi: rgba(5, 8, 12, .7); --bong: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 28px -14px rgba(0, 0, 0, .6); } }
+:root[data-theme="dark"] { --giay: #1F2631; --giayChu: #E6E2D8; --mucCau: #93A9FF; --mucDung: #F0938B; --toi: rgba(5, 8, 12, .7); --bong: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 28px -14px rgba(0, 0, 0, .6); }
+
+.xuong { margin-top: 18px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+.xuong > *, .xuongDau > *, .ban > * { min-width: 0; }
+.xuongDau { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
+.xuongDau h2 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: .1px; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.xuongDau h2 small { font-size: 13px; font-weight: 400; color: var(--phu); }
+.chipAI { min-width: 0; font: inherit; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px 7px 10px; border-radius: 999px; border: 1px solid var(--vien); background: var(--mat); color: var(--chu); cursor: pointer; max-width: 100%; }
+.chipAI:hover { border-color: var(--vang); }
+.chipAI:focus-visible { outline: 2px solid var(--vang); outline-offset: 2px; }
+.chipAI .cham { width: 8px; height: 8px; border-radius: 50%; background: var(--vang); flex: none; box-shadow: 0 0 0 3px var(--vangnhat); }
+.chipAI[data-tt="ok"] .cham { background: var(--xanh); box-shadow: 0 0 0 3px var(--xanhnhat); }
+.chipAI[data-tt="loi"] .cham { background: var(--do); box-shadow: 0 0 0 3px var(--donhat); }
+.chipAI .tenAI { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chipAI .tenAI b { font-weight: 600; }
+.chipAI svg { width: 15px; height: 15px; flex: none; color: var(--phu); }
+
+.xuongThan { display: grid; grid-template-columns: minmax(250px, 340px) minmax(0, 1fr); gap: 16px; align-items: start; }
+.khoi { background: var(--mat); border: 1px solid var(--vien); border-radius: 10px; min-width: 0; }
+
+/* --- dải trang --- */
+.dai { position: sticky; top: 12px; display: flex; flex-direction: column; max-height: calc(100vh - 24px); overflow: hidden; }
+.daiDau { padding: 12px 14px; border-bottom: 1px solid var(--vien); display: grid; gap: 10px; }
+.tepPdf { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.tepPdf .bieu { width: 34px; height: 40px; flex: none; border-radius: 4px; background: var(--vangnhat); color: var(--vang); display: grid; place-items: center; font-size: 10px; font-weight: 700; letter-spacing: .5px; border: 1px solid var(--vien); }
+.tepPdf .tt { min-width: 0; flex: 1; }
+.tepPdf .tt b { display: block; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tepPdf .tt span { font-size: 12px; color: var(--phu); font-variant-numeric: tabular-nums; }
+.locTrang { display: flex; flex-wrap: wrap; gap: 6px; }
+.locTrang button { font: inherit; font-size: 12px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--vien); background: transparent; color: var(--chu); cursor: pointer; }
+.locTrang button:hover { border-color: var(--vang); }
+.locTrang button:focus-visible { outline: 2px solid var(--vang); outline-offset: 1px; }
+.dsTrang { list-style: none; margin: 0; padding: 12px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; overflow-y: auto; min-height: 0; }
+.the { position: relative; cursor: pointer; border-radius: 6px; outline: none; }
+.the .to { position: relative; aspect-ratio: 210 / 297; max-width: 100%; background: #fff; border: 1px solid var(--vien); border-radius: 4px; overflow: hidden; box-shadow: var(--bong); transition: transform .15s, border-color .15s, opacity .15s; }
+.the canvas { width: 100%; height: 100%; display: block; }
+.the:hover .to { transform: translateY(-1px); border-color: var(--vang); }
+.the:focus-visible .to { outline: 2px solid var(--vang); outline-offset: 2px; }
+.the[aria-checked="false"] .to { opacity: .42; }
+.the .chon { position: absolute; top: 6px; left: 6px; width: 20px; height: 20px; border-radius: 5px; background: var(--mat); border: 1.5px solid var(--vien); display: grid; place-items: center; }
+.the[aria-checked="true"] .chon { background: var(--navy); border-color: var(--navy); }
+.the[aria-checked="true"] .chon::after { content: ""; width: 9px; height: 5px; border: 2px solid #F4F2EC; border-top: 0; border-right: 0; transform: rotate(-45deg) translate(1px, -1px); }
+.the .nhan { position: absolute; top: 6px; right: 6px; font-size: 10.5px; font-weight: 600; letter-spacing: .4px; text-transform: uppercase; padding: 2px 7px; border-radius: 999px; background: var(--xanhnhat); color: var(--xanh); border: 1px solid transparent; }
+.the .nhan.scan { background: var(--vangnhat); color: var(--vang); }
+.the .so { display: flex; flex-wrap: wrap; gap: 0 6px; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 12px; color: var(--phu); font-variant-numeric: tabular-nums; }
+.the .tinh { position: absolute; inset: 0; display: grid; place-items: center; background: var(--toi); color: #fff; opacity: 0; transition: opacity .2s; pointer-events: none; font-size: 12px; font-weight: 600; }
+.the[data-tt] .tinh { opacity: 1; }
+.the[data-tt="xong"] .tinh, .the[data-tt="nho"] .tinh { opacity: 0; }
+.the .dau { position: absolute; bottom: 6px; right: 6px; width: 22px; height: 22px; border-radius: 50%; display: none; place-items: center; font-size: 12px; font-weight: 700; color: #fff; }
+.the[data-tt="xong"] .dau, .the[data-tt="nho"] .dau { display: grid; background: var(--xanh); }
+.the[data-tt="loi"] .dau { display: grid; background: var(--do); }
+.vongQuay { width: 26px; height: 26px; border-radius: 50%; border: 3px solid rgba(255, 255, 255, .3); border-top-color: #fff; animation: quay 0.9s linear infinite; }
+@keyframes quay { to { transform: rotate(360deg); } }
+.thaTep { position: relative; margin: 12px; padding: 34px 16px; border: 1.5px dashed var(--vien); border-radius: 10px; display: grid; justify-items: center; gap: 10px; text-align: center; cursor: pointer; background: var(--code); transition: border-color .15s, background .15s; }
+.thaTep:hover, .thaTep.keo { border-color: var(--vang); background: var(--vangnhat); }
+.thaTep:focus-within { outline: 2px solid var(--vang); outline-offset: 2px; }
+.thaTep svg { width: 34px; height: 34px; color: var(--vang); }
+.thaTep b { font-size: 14px; }
+.thaTep span { font-size: 12.5px; color: var(--phu); max-width: 30ch; }
+.thaTep input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+
+/* --- bàn làm việc --- */
+.ban { display: grid; gap: 0; overflow: hidden; }
+.banDieuKhien { padding: 14px 16px; display: grid; gap: 12px; border-bottom: 1px solid var(--vien); }
+.hangNut { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.nut.chinh .soN { font-variant-numeric: tabular-nums; }
+.nut svg { width: 15px; height: 15px; vertical-align: -3px; margin-right: 6px; }
+.nut.phu2 { padding: 9px 16px; font-size: 14px; font-weight: 600; }
+.nut:disabled { opacity: .5; cursor: not-allowed; }
+.uocTinh { font-size: 12.5px; color: var(--phu); flex: 1 1 220px; min-width: 0; }
+.uocTinh b { color: var(--chu); font-weight: 600; font-variant-numeric: tabular-nums; }
+.tienDo { display: grid; gap: 6px; }
+.tienDo[hidden] { display: none; }
+.thanhTD { height: 6px; border-radius: 999px; background: var(--code); border: 1px solid var(--vien); overflow: hidden; }
+.thanhTD i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--vang), var(--xanh)); transition: width .35s ease; }
+.chuTD { font-size: 12.5px; color: var(--phu); font-variant-numeric: tabular-nums; }
+.chuTD.loi { color: var(--do); }
+.chuTD.ok { color: var(--xanh); }
+
+.dinhDang { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; font-size: 13px; }
+.dinhDang label { display: inline-flex; align-items: center; gap: 6px; color: var(--phu); }
+.dinhDang select { font: inherit; font-size: 13px; color: var(--chu); background: var(--mat); border: 1px solid var(--vien); border-radius: 6px; padding: 5px 8px; max-width: 100%; }
+.dinhDang select:focus-visible { outline: 2px solid var(--vang); outline-offset: 1px; }
+.dinhDang input[type=checkbox] { accent-color: var(--vang); }
+.dinhDang .bat { color: var(--chu); cursor: pointer; }
+.manhGhep { display: inline-flex; border: 1px solid var(--vien); border-radius: 7px; padding: 2px; background: var(--code); }
+.manhGhep button { font: inherit; font-size: 12.5px; border: 0; background: transparent; color: var(--phu); padding: 5px 11px; border-radius: 5px; cursor: pointer; }
+.manhGhep button[aria-pressed="true"] { background: var(--mat); color: var(--chu); font-weight: 600; box-shadow: 0 1px 2px rgba(0, 0, 0, .08); }
+.manhGhep button:focus-visible { outline: 2px solid var(--vang); outline-offset: -2px; }
+
+.theKQ { display: flex; gap: 2px; padding: 0 12px; border-bottom: 1px solid var(--vien); overflow-x: auto; scrollbar-width: none; }
+.theKQ button { font: inherit; font-size: 13px; font-weight: 600; background: none; border: 0; border-bottom: 2px solid transparent; color: var(--phu); padding: 10px 10px 9px; cursor: pointer; white-space: nowrap; }
+.theKQ button[aria-selected="true"] { color: var(--chu); border-bottom-color: var(--vang); }
+.theKQ button:focus-visible { outline: 2px solid var(--vang); outline-offset: -2px; }
+.theKQ .dem { display: inline-block; min-width: 18px; padding: 0 5px; margin-left: 4px; border-radius: 999px; font-size: 11px; background: var(--vangnhat); color: var(--vang); text-align: center; }
+.manKQ { padding: 18px; background: var(--nen); min-height: 420px; }
+.manKQ[hidden] { display: none; }
+
+/* bản in thử: tờ đề như file Word */
+.toDe { background: var(--giay); color: var(--giayChu); max-width: 820px; margin: 0 auto; padding: 44px clamp(16px, 6%, 64px) 52px; border-radius: 3px; box-shadow: var(--bong); font-family: var(--f-de); font-size: 15.5px; line-height: 1.6; overflow-wrap: anywhere; }
+.toDe .viDu { font-family: var(--f-ui); font-size: 11px; letter-spacing: .6px; text-transform: uppercase; color: var(--vang); margin: -20px 0 18px; }
+.toDe .tieuDeDe { text-align: center; font-weight: 700; margin: 0 0 18px; line-height: 1.45; text-wrap: balance; }
+.toDe h3 { font-family: var(--f-de); font-size: 16px; font-weight: 700; margin: 22px 0 10px; }
+.toDe .cau { margin: 0 0 16px; }
+.toDe .cau::after { content: ""; display: block; clear: both; }
+.toDe .nhanCau { color: var(--mucCau); font-weight: 700; }
+.toDe .hinhPhai { float: right; max-width: 42%; margin: 0 0 8px 16px; }
+.toDe img { max-width: 100%; height: auto; vertical-align: middle; }
+.toDe .giua { text-align: center; margin: 6px 0; }
+.toDe .hienThi { display: block; text-align: center; margin: 6px 0; overflow-x: auto; }
+.toDe .pa { display: grid; gap: 4px 16px; margin: 6px 0 0 18px; }
+.toDe .pa.c4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.toDe .pa.c2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.toDe .pa > div { min-width: 0; }
+.toDe .pa b { color: var(--mucCau); }
+.toDe .pa .dung b { color: var(--mucDung); text-decoration: underline; text-underline-offset: 3px; }
+.toDe .ds { margin: 6px 0 0 18px; display: grid; gap: 3px; }
+.toDe .ds b { color: var(--mucCau); }
+.toDe .ds .dS { font-family: var(--f-ui); font-size: 11px; font-weight: 600; margin-left: 8px; padding: 1px 7px; border-radius: 999px; background: var(--xanhnhat); color: var(--xanh); }
+.toDe .ds .dS.sai { background: var(--donhat); color: var(--do); }
+.toDe .dapSo { margin-top: 6px; font-weight: 700; }
+.toDe .dapSo span { color: var(--mucDung); }
+.toDe details.lg { margin-top: 8px; border-top: 1px dashed var(--vien); padding-top: 6px; }
+.toDe details.lg summary { cursor: pointer; font-family: var(--f-ui); font-size: 12.5px; color: var(--phu); width: fit-content; }
+.toDe table { border-collapse: collapse; margin: 6px auto; }
+.toDe td { border: 1px solid currentColor; padding: 3px 10px; text-align: center; }
+.toDe .boc { overflow-x: auto; max-width: 100%; }
+.toDe .hinhTikz { display: inline-block; font-family: var(--f-ui); font-size: 12px; color: var(--phu); border: 1px dashed var(--vien); padding: 10px 14px; border-radius: 4px; }
+.toDe .loiTex { color: var(--do); font-family: var(--f-code); font-size: 12px; }
+.toDe math { font-size: 1.05em; }
+.maTex { width: 100%; min-height: 460px; resize: vertical; border: 1px solid var(--vien); border-radius: 8px; background: var(--code); color: var(--chu); font-family: var(--f-code); font-size: 13px; line-height: 1.6; padding: 14px 16px; tab-size: 4; white-space: pre; overflow: auto; }
+.maTex:focus { outline: 2px solid var(--vang); outline-offset: 1px; }
+.hangMa { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 12.5px; color: var(--phu); }
+.dsCB { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; max-width: 820px; }
+.dsCB li { background: var(--mat); border: 1px solid var(--vien); border-left: 3px solid var(--vang); border-radius: 0 6px 6px 0; padding: 9px 12px; font-size: 13px; }
+.dsCB li.trong { border-left-color: var(--xanh); color: var(--phu); }
+
+/* hộp cấu hình AI */
+dialog.hopAI { border: 1px solid var(--vien); border-radius: 12px; padding: 0; width: min(560px, calc(100vw - 32px)); max-height: calc(100vh - 32px); background: var(--mat); color: var(--chu); box-shadow: 0 24px 60px -20px rgba(0, 0, 0, .45); }
+dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
+.hopAI form { display: grid; gap: 0; }
+.hopAI .dauHop { padding: 18px 20px 12px; display: flex; justify-content: space-between; gap: 12px; align-items: start; border-bottom: 1px solid var(--vien); }
+.hopAI h2 { margin: 0; font-size: 17px; }
+.hopAI .dauHop p { margin: 4px 0 0; font-size: 12.5px; color: var(--phu); }
+.hopAI .dong { font: inherit; border: 0; background: none; color: var(--phu); cursor: pointer; font-size: 20px; line-height: 1; padding: 2px 6px; border-radius: 6px; }
+.hopAI .dong:focus-visible { outline: 2px solid var(--vang); }
+.hopAI .thanHop { padding: 16px 20px; display: grid; gap: 16px; overflow-y: auto; }
+.nguonAI { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.nguonAI label { position: relative; display: grid; gap: 2px; padding: 10px 12px; border: 1px solid var(--vien); border-radius: 8px; cursor: pointer; background: var(--code); }
+.nguonAI label:hover { border-color: var(--vang); }
+.nguonAI input { position: absolute; opacity: 0; }
+.nguonAI label:has(input:checked) { border-color: var(--vang); background: var(--vangnhat); box-shadow: inset 0 0 0 1px var(--vang); }
+.nguonAI label:has(input:focus-visible) { outline: 2px solid var(--vang); outline-offset: 2px; }
+.nguonAI b { font-size: 13.5px; }
+.nguonAI span { font-size: 12px; color: var(--phu); }
+.nguonAI label.tat { opacity: .55; }
+.phanAI { display: grid; gap: 12px; }
+.phanAI[hidden] { display: none; }
+.buoc { margin: 0; padding-left: 20px; font-size: 13px; display: grid; gap: 4px; }
+.buoc a { color: var(--chu); font-weight: 600; text-decoration-color: var(--vang); text-underline-offset: 3px; }
+.oKhoa { display: flex; gap: 8px; flex-wrap: wrap; }
+.oKhoa input { flex: 1 1 220px; min-width: 0; font-family: var(--f-code); font-size: 13px; }
+.hopAI input[type=password], .hopAI input[type=text] { font: inherit; color: var(--chu); background: var(--mat); border: 1px solid var(--vien); border-radius: 6px; padding: 8px 10px; }
+.hopAI select { font: inherit; font-size: 13px; color: var(--chu); background: var(--mat); border: 1px solid var(--vien); border-radius: 6px; padding: 7px 8px; max-width: 100%; }
+.hopAI .truong { display: grid; gap: 5px; font-size: 12.5px; color: var(--phu); font-weight: 500; }
+.ttKhoa { font-size: 12.5px; min-height: 1.3em; color: var(--phu); }
+.ttKhoa.ok { color: var(--xanh); }
+.ttKhoa.loi { color: var(--do); }
+.ghiChuAI { font-size: 12px; color: var(--phu); line-height: 1.55; margin: 0; padding: 10px 12px; background: var(--code); border-radius: 8px; border: 1px solid var(--vien); }
+.nangCao { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.hopAI .chanHop { padding: 12px 20px 16px; display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid var(--vien); }
+.nutCauHinh { font-size: 12.5px; }
+
+@media (max-width: 860px) {
+	.xuongThan { grid-template-columns: minmax(0, 1fr); }
+	.dai { position: static; max-height: none; }
+	.dsTrang { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); max-height: 360px; }
+}
+@media (max-width: 520px) {
+	.toDe { padding: 26px 16px 32px; font-size: 15px; }
+	.toDe .pa.c4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	.toDe .hinhPhai { float: none; max-width: 100%; margin: 6px 0; display: block; }
+	.nguonAI { grid-template-columns: minmax(0, 1fr); }
+	.manKQ { padding: 10px; }
+}
+@media (prefers-reduced-motion: reduce) { .vongQuay { animation-duration: 3s; } .the .to, .thanhTD i { transition: none; } }
+.cdHang select { font: inherit; font-size: 13px; color: var(--chu); background: var(--mat); border: 1px solid var(--vien); border-radius: 6px; padding: 5px 8px; max-width: 100%; }
+.the .ghi { font-size: 11px; }
+
 </style>
 </head>
 <body>
@@ -154,12 +346,13 @@
 		<p class="moTa">Chọn file PDF đề, web dựng lại code LaTeX theo mẫu ex_test (công thức, câu trắc nghiệm, đúng sai, trả lời ngắn, lời giải) và chuẩn hoá theo bộ luật. Hình vẽ được cắt thành ảnh, tải kèm file .zip.</p>
 		<label class="cdTha" id="thaPdfTex">
 			<b>Chọn hoặc kéo thả file PDF vào đây</b>
-			<span id="tenPdfTex">PDF xuất từ LaTeX / Word cho kết quả tốt nhất; PDF scan chỉ nhận dạng được chữ</span>
+			<span id="tenPdfTex">PDF xuất từ LaTeX / Word đọc trực tiếp; PDF scan, ảnh chụp do AI đọc cả công thức và hình</span>
 			<input type="file" id="pdfTex" accept="application/pdf,.pdf">
 		</label>
 		<div class="cdHang">
 			<label><input type="checkbox" id="ptChuan" checked> Chuẩn hoá theo bộ luật</label>
-			<label><input type="checkbox" id="ptOcr" checked> Nhận dạng chữ trang scan (chậm)</label>
+			<label>Trang scan <select id="ptScan"><option value="ai">Đọc theo cấu hình AI</option><option value="khong">Bỏ qua</option></select></label>
+			<button class="nut nutCauHinh" id="ptCauHinh" type="button">Cấu hình AI</button>
 			<button class="nut chinh" id="nutPdfTex" type="button">Chuyển sang LaTeX</button>
 		</div>
 		<div class="cdTrangThai" id="ttPdfTex" role="status"></div>
@@ -176,25 +369,77 @@
 
 <!-- TAB: PDF -> Word -->
 <section class="manTab" id="tabPdfWord" role="tabpanel" aria-labelledby="nutTabPdfWord" hidden>
-	<div class="cdO">
-		<h2>PDF → Word</h2>
-		<p class="moTa">Chọn file PDF đề, web chuyển thẳng sang file Word (.docx): công thức là Equation của Word (bấm vào sửa được; MathType: tab MathType → <b>Convert Equations</b> để đổi toàn bộ sang MathType), hình vẽ được cắt từ PDF và chèn đúng vị trí, đúng mẫu câu trắc nghiệm, đúng sai, trả lời ngắn.</p>
-		<label class="cdTha" id="thaPdfWord">
-			<b>Chọn hoặc kéo thả file PDF vào đây</b>
-			<span id="tenPdfWord">PDF xuất từ LaTeX / Word cho kết quả tốt nhất; PDF scan chỉ nhận dạng được chữ</span>
-			<input type="file" id="pdfWord" accept="application/pdf,.pdf">
-		</label>
-		<div class="cdHang">
-			<label><input type="checkbox" id="pwLoiGiai" checked> Kèm lời giải</label>
-			<label><input type="checkbox" id="pwGachDung" checked> Gạch chân đáp án đúng</label>
-			<label><input type="checkbox" id="pwBangDA" checked> Bảng đáp án cuối đề</label>
-			<label><input type="checkbox" id="pwOcr" checked> Nhận dạng chữ trang scan (chậm)</label>
-			<button class="nut chinh" id="nutPdfWord" type="button">Chuyển sang Word</button>
+	<div class="xuong">
+		<div class="xuongDau">
+			<h2>PDF → Word <small>Công thức là Equation của Word · hình cắt từ PDF · đúng mẫu trắc nghiệm, đúng sai, trả lời ngắn</small></h2>
+			<button class="chipAI" id="chipAI" type="button" data-tt="chua" aria-haspopup="dialog">
+				<span class="cham" aria-hidden="true"></span>
+				<span class="tenAI" id="chipAITen">Chưa cấu hình AI</span>
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+			</button>
 		</div>
-		<div class="cdTrangThai" id="ttPdfWord" role="status"></div>
-		<div class="cdKetQua" id="kqPdfWord" hidden></div>
-		<div class="cdHang" id="nhomPdfWord" hidden>
-			<button class="nut" id="pwTaiLai" type="button">Tải lại file Word</button>
+		<div class="xuongThan">
+			<aside class="khoi dai" aria-label="Các trang PDF">
+				<label class="thaTep" id="thaWord">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 18v-6"/><path d="m9.5 14.5 2.5-2.5 2.5 2.5"/></svg>
+					<b>Chọn hoặc kéo thả file đề PDF</b>
+					<span>PDF xuất từ Word, LaTeX đọc trực tiếp, không tốn lượt AI. PDF scan, ảnh chụp do AI đọc cả công thức và hình.</span>
+					<input type="file" id="pdfWord" accept="application/pdf,.pdf">
+				</label>
+				<div class="daiDau" id="daiDau" hidden>
+					<div class="tepPdf">
+						<span class="bieu" aria-hidden="true">PDF</span>
+						<div class="tt"><b id="tenTepW">de-thi.pdf</b><span id="demTrangW">—</span></div>
+						<button class="nut" id="doiTepW" type="button">Đổi file</button>
+					</div>
+					<div class="locTrang" role="group" aria-label="Chọn trang">
+						<button type="button" data-loc="tat">Tất cả</button>
+						<button type="button" data-loc="scan">Chỉ trang scan</button>
+						<button type="button" data-loc="bo">Bỏ chọn</button>
+					</div>
+				</div>
+				<ol class="dsTrang" id="dsTrang" aria-label="Trang PDF — bấm để chọn hoặc bỏ chọn" hidden></ol>
+			</aside>
+
+			<div class="khoi ban">
+				<div class="banDieuKhien">
+					<div class="hangNut">
+						<button class="nut chinh" id="nutQuet" type="button" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>Quét <span class="soN" id="soQuet">0</span> trang</button>
+						<button class="nut phu2" id="nutDung" type="button" hidden>Dừng</button>
+						<button class="nut phu2" id="nutTaiWord" type="button" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Tải file Word</button>
+						<span class="uocTinh" id="uocTinh">Chọn file PDF để bắt đầu.</span>
+					</div>
+					<div class="tienDo" id="tienDo" hidden>
+						<div class="thanhTD" aria-hidden="true"><i id="thanhTD"></i></div>
+						<div class="chuTD" id="chuTD" role="status"></div>
+					</div>
+					<div class="dinhDang" aria-label="Định dạng file Word">
+						<span class="manhGhep" role="group" aria-label="Dạng công thức">
+							<button type="button" id="ctOmml" aria-pressed="true">Word Equation</button>
+							<button type="button" id="ctTex" aria-pressed="false">Mã TeX cho MathType</button>
+						</span>
+						<label>Phông <select id="wFont"><option>Times New Roman</option><option>Arial</option><option>Cambria</option><option>Calibri</option></select></label>
+						<label>Cỡ chữ <select id="wCo"><option value="11">11 pt</option><option value="12" selected>12 pt</option><option value="13">13 pt</option><option value="14">14 pt</option></select></label>
+						<label>Lề <select id="wLe"><option value="chuan">Chuẩn · trái 2 cm</option><option value="hep">Hẹp · 1,5 cm</option><option value="rong">Rộng · 2,5 cm</option></select></label>
+						<label>Ngắt trang <select id="wNgat"><option value="lien">Liền mạch</option><option value="phan">Mỗi phần một trang</option></select></label>
+						<label class="bat"><input type="checkbox" id="wTieuDe" checked> Tiêu đề đầu đề</label>
+						<label class="bat"><input type="checkbox" id="wLoiGiai" checked> Lời giải</label>
+						<label class="bat"><input type="checkbox" id="wGach" checked> Gạch chân đáp án</label>
+						<label class="bat"><input type="checkbox" id="wBangDA" checked> Bảng đáp án</label>
+					</div>
+				</div>
+				<div class="theKQ" role="tablist" aria-label="Kết quả">
+					<button type="button" role="tab" id="kqXem" aria-selected="true" aria-controls="manXem">Bản in thử</button>
+					<button type="button" role="tab" id="kqMa" aria-selected="false" aria-controls="manMa" tabindex="-1">Mã LaTeX</button>
+					<button type="button" role="tab" id="kqCB" aria-selected="false" aria-controls="manCB" tabindex="-1">Cần soát <span class="dem" id="demCB">0</span></button>
+				</div>
+				<div class="manKQ" id="manXem" role="tabpanel" aria-labelledby="kqXem"><div class="toDe" id="toDe"></div></div>
+				<div class="manKQ" id="manMa" role="tabpanel" aria-labelledby="kqMa" hidden>
+					<div class="hangMa"><span>Sửa trực tiếp mã bên dưới — bản in thử và file Word cập nhật theo.</span><button class="nut" id="chepMaW" type="button">Sao chép mã</button></div>
+					<textarea class="maTex" id="maTexW" spellcheck="false" aria-label="Mã LaTeX của đề"></textarea>
+				</div>
+				<div class="manKQ" id="manCB" role="tabpanel" aria-labelledby="kqCB" hidden><ul class="dsCB" id="dsCBW"><li class="trong">Chưa có gì cần soát.</li></ul></div>
+			</div>
 		</div>
 	</div>
 </section>
@@ -205,6 +450,62 @@
 
 	</section>
 </main>
+<dialog class="hopAI" id="hopAI" aria-labelledby="hopAITieuDe">
+	<form method="dialog" id="formAI">
+		<div class="dauHop">
+			<div><h2 id="hopAITieuDe">Cấu hình AI đọc PDF scan</h2><p>Chỉ dùng cho trang scan, ảnh chụp. PDF xuất từ Word, LaTeX luôn đọc trực tiếp, không cần AI.</p></div>
+			<button class="dong" type="button" id="dongAI" aria-label="Đóng">×</button>
+		</div>
+		<div class="thanHop">
+			<div class="nguonAI" role="radiogroup" aria-label="Dịch vụ AI">
+				<label><input type="radio" name="nguonAI" value="gemini"><b>Google Gemini</b><span>Khoá miễn phí của bạn</span></label>
+				<label id="nhanClaude"><input type="radio" name="nguonAI" value="claude"><b>Claude</b><span id="moTaClaude">Tài khoản Claude, không cần khoá</span></label>
+				<label><input type="radio" name="nguonAI" value="anthropic"><b>Claude API</b><span>Khoá trả phí theo lượt</span></label>
+				<label><input type="radio" name="nguonAI" value="tesseract"><b>Không dùng AI</b><span>Tesseract · chỉ đọc chữ</span></label>
+			</div>
+
+			<div class="phanAI" data-nguon="gemini">
+				<ol class="buoc">
+					<li>Mở <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> và đăng nhập Gmail.</li>
+					<li>Bấm <b>Create API key</b>, rồi sao chép khoá (bắt đầu bằng AIza…).</li>
+					<li>Dán vào ô dưới và bấm <b>Kiểm tra khoá</b>.</li>
+				</ol>
+				<div class="oKhoa"><input type="password" id="khoaGemini" autocomplete="off" spellcheck="false" placeholder="AIza..." aria-label="Khoá API Gemini"><button class="nut" type="button" id="hienKhoaGemini">Hiện</button><button class="nut" type="button" id="ktGemini">Kiểm tra khoá</button></div>
+				<div class="ttKhoa" id="ttGemini" role="status"></div>
+				<label class="truong">Mô hình<select id="mhGemini"><option value="gemini-flash-lite-latest">gemini-flash-lite-latest (khuyên dùng)</option></select></label>
+				<p class="ghiChuAI">Gói miễn phí của Google giới hạn số lượt gọi mỗi ngày (mỗi lượt đọc 1–3 trang), lượt được cấp lại lúc 14–15 giờ chiều giờ Việt Nam. Ở gói miễn phí, Google có thể dùng nội dung gửi lên để cải thiện dịch vụ, nên không gửi đề cần giữ kín. Khoá chỉ lưu trong trình duyệt máy này và chỉ gửi tới Google.</p>
+			</div>
+
+			<div class="phanAI" data-nguon="claude" hidden>
+				<p class="ghiChuAI" id="ghiChuClaude">Dùng chính tài khoản Claude của bạn, không cần khoá. Lần chạy đầu, Claude hỏi quyền cho trang gửi ảnh trang đề — bấm Cho phép.</p>
+				<label class="truong">Chế độ<select id="cheDoClaude"><option value="chinhxac">Chính xác</option><option value="nhanh">Nhanh</option></select></label>
+			</div>
+
+			<div class="phanAI" data-nguon="anthropic" hidden>
+				<ol class="buoc">
+					<li>Mở <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a>, nạp tiền và tạo khoá.</li>
+					<li>Dán khoá (bắt đầu bằng sk-ant-…) vào ô dưới và bấm <b>Kiểm tra khoá</b>.</li>
+				</ol>
+				<div class="oKhoa"><input type="password" id="khoaAnthropic" autocomplete="off" spellcheck="false" placeholder="sk-ant-..." aria-label="Khoá Claude API"><button class="nut" type="button" id="hienKhoaAnthropic">Hiện</button><button class="nut" type="button" id="ktAnthropic">Kiểm tra khoá</button></div>
+				<div class="ttKhoa" id="ttAnthropic" role="status"></div>
+				<label class="truong">Mô hình<select id="mhAnthropic"><option value="claude-sonnet-5-5">claude-sonnet-5-5</option><option value="claude-haiku-5-5">claude-haiku-5-5</option></select></label>
+				<p class="ghiChuAI">Tính phí theo lượng dùng trên tài khoản Anthropic của bạn. Khoá chỉ lưu trong trình duyệt máy này và chỉ gửi tới Anthropic.</p>
+			</div>
+
+			<div class="phanAI" data-nguon="tesseract" hidden>
+				<p class="ghiChuAI">Nhận dạng chữ ngay trên máy, không cần mạng sau lần tải đầu, không tốn lượt. Chỉ đọc được chữ: công thức toán phải gõ lại; hình vẽ vẫn được cắt tự động.</p>
+			</div>
+
+			<div class="nangCao" id="nangCaoAI">
+				<label class="truong">Số trang mỗi lượt gọi<select id="gopTrang"><option value="1">1 trang</option><option value="2">2 trang</option><option value="3">3 trang</option></select></label>
+				<label class="truong">Số lượt chạy cùng lúc<select id="songSongAI"><option>1</option><option>2</option><option>3</option><option>4</option></select></label>
+			</div>
+		</div>
+		<div class="chanHop">
+			<button class="nut chinh" type="submit" id="luuAI">Lưu cấu hình</button>
+		</div>
+	</form>
+</dialog>
 <div class="toast" id="toast" role="status"></div>
 
 <script type="module">
@@ -393,6 +694,8 @@ $("vao").addEventListener("keydown", e => {
 	const napZip = async () => { if (!window.JSZip) await napScript(CDN.jszip); };
 	const napOcr = async () => { if (!window.Tesseract) await napScript(CDN.tesseract); };
 	async function napPdf() { if (window.pdfjsLib) return; const m = await import(CDN.pdfjs); m.GlobalWorkerOptions.workerSrc = CDN.pdfWorker; window.pdfjsLib = m; }
+	const docO = k => { try { return localStorage.getItem("tdk_" + k); } catch (e) { return null; } };
+	const ghiO = (k, v) => { try { localStorage.setItem("tdk_" + k, v); } catch (e) { } };
 	// lưu file: trong Claude dùng hộp lưu của Claude; trên web thường dùng liên kết tải
 	let hopLuu;
 	async function taiVe(du, ten, kieu) {
@@ -417,14 +720,17 @@ $("vao").addEventListener("keydown", e => {
 		if ($("cheDoMau")) o.cheDoMau = $("cheDoMau").value;
 		return o;
 	}
-	function nho(ids) { ids.forEach(k => { try { const v = localStorage.getItem("tdk_" + k); if (v !== null) $(k).checked = v === "1"; } catch (e) {} $(k).addEventListener("change", () => { try { localStorage.setItem("tdk_" + k, $(k).checked ? "1" : "0"); } catch (e) {} }); }); }
-	nho(["ptChuan", "ptOcr", "pwLoiGiai", "pwGachDung", "pwBangDA", "pwOcr"]);
+	function nho(ids) { ids.forEach(k => { if (!$(k)) return; const v = docO(k); if (v !== null) $(k).checked = v === "1"; $(k).addEventListener("change", () => ghiO(k, $(k).checked ? "1" : "0")); }); }
+	nho(["ptChuan", "wTieuDe", "wLoiGiai", "wGach", "wBangDA"]);
+	["wFont", "wCo", "wLe", "wNgat", "ptScan"].forEach(k => { if (!$(k)) return; const v = docO(k); if (v) { const cu = $(k).value; $(k).value = v; if ($(k).value !== v) $(k).value = cu; } $(k).addEventListener("change", () => ghiO(k, $(k).value)); });
+	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 6.3.";
 
 	/* ---------- tab ngang ---------- */
 	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"]];
 	function chonTab(nut, luu) {
 		TAB.forEach(([n, m]) => { const on = n === nut; $(n).setAttribute("aria-selected", on); $(n).tabIndex = on ? 0 : -1; $(m).hidden = !on; });
-		if (luu) try { localStorage.setItem("tdk_tab", nut); } catch (e) {}
+		if (luu) ghiO("tab", nut);
+		if (nut === "nutTabPdfWord") khoiDongXuong();
 	}
 	TAB.forEach(([n], i) => {
 		$(n).addEventListener("click", () => chonTab(n, true));
@@ -434,22 +740,126 @@ $("vao").addEventListener("keydown", e => {
 			chonTab(TAB[j][0], true); $(TAB[j][0]).focus();
 		});
 	});
-	try { const t = localStorage.getItem("tdk_tab"); if (t && $(t)) chonTab(t, false); } catch (e) {}
 
 	/* ---------- ô chọn file (kéo thả) ---------- */
-	function oChon(tha, input, nhan) {
-		const capNhat = () => { const f = input.files && input.files[0]; if (f) $(nhan).textContent = f.name + " · " + Math.max(1, Math.round(f.size / 1024)) + " KB"; };
+	function oChon(tha, input, nhan, xong) {
+		const capNhat = () => { const f = input.files && input.files[0]; if (!f) return; if (nhan) $(nhan).textContent = f.name + " · " + Math.max(1, Math.round(f.size / 1024)) + " KB"; if (xong) xong(f); };
 		input.addEventListener("change", capNhat);
 		tha.addEventListener("dragover", e => { e.preventDefault(); tha.classList.add("keo"); });
 		tha.addEventListener("dragleave", () => tha.classList.remove("keo"));
 		tha.addEventListener("drop", e => { e.preventDefault(); tha.classList.remove("keo"); const f = e.dataTransfer.files && e.dataTransfer.files[0]; if (!f) return; const dt = new DataTransfer(); dt.items.add(f); input.files = dt.files; capNhat(); });
 	}
-	oChon($("thaPdfTex"), $("pdfTex"), "tenPdfTex");
-	oChon($("thaPdfWord"), $("pdfWord"), "tenPdfWord");
 	function dsCanhBao(id, ds) { const k = $(id); k.innerHTML = ds.length ? "<ul>" + ds.map(x => "<li>" + x + "</li>").join("") + "</ul>" : ""; k.hidden = !ds.length; }
-	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 6.2.";
 
-	/* ---------- CHỨC NĂNG 1: PDF -> LaTeX ---------- */
+	/* =================================================================
+	   CẤU HÌNH AI (dùng chung cho PDF → LaTeX và PDF → Word)
+	   ================================================================= */
+	let sampleClaude = null;
+	const AI = { nguon: window.claude ? "claude" : "gemini", khoaGemini: "", khoaAnthropic: "", mhGemini: "gemini-flash-lite-latest", mhAnthropic: "claude-sonnet-5-5", dsGemini: null, dsAnthropic: null, okGemini: false, okAnthropic: false, cheDo: "chinhxac", gop: 2, songSong: 2 };
+	try { Object.assign(AI, JSON.parse(docO("ai") || "{}")); } catch (e) { }
+	const luuAI = () => ghiO("ai", JSON.stringify(AI));
+	const TEN_NGUON = { gemini: "Gemini", claude: "Claude", anthropic: "Claude API", tesseract: "Tesseract" };
+	function aiSanSang() {
+		if (AI.nguon === "gemini") return !!AI.khoaGemini;
+		if (AI.nguon === "anthropic") return !!AI.khoaAnthropic;
+		if (AI.nguon === "claude") return !!sampleClaude;
+		return true;
+	}
+	function capNhatChip() {
+		const ten = AI.nguon === "gemini" ? "<b>Gemini</b> · " + esc(AI.mhGemini)
+			: AI.nguon === "anthropic" ? "<b>Claude API</b> · " + esc(AI.mhAnthropic)
+			: AI.nguon === "claude" ? "<b>Claude</b> · tài khoản của bạn" : "<b>Tesseract</b> · ngoại tuyến, chỉ chữ";
+		const tt = !aiSanSang() ? "loi" : AI.nguon === "gemini" ? (AI.okGemini ? "ok" : "chua") : AI.nguon === "anthropic" ? (AI.okAnthropic ? "ok" : "chua") : "ok";
+		if ($("chipAITen")) { $("chipAITen").innerHTML = aiSanSang() ? ten : "<b>" + TEN_NGUON[AI.nguon] + "</b> · chưa có khoá — bấm để cấu hình"; $("chipAI").dataset.tt = tt; $("chipAI").title = "Cấu hình AI đọc PDF scan"; }
+		if ($("ptCauHinh")) $("ptCauHinh").textContent = "AI: " + TEN_NGUON[AI.nguon] + (aiSanSang() ? "" : " (chưa cấu hình)");
+		if (typeof capNhatDem === "function") capNhatDem();
+	}
+	// tuỳ chọn đọc trang scan gửi cho bộ luật
+	function cauHinhQuet() {
+		if (AI.nguon === "tesseract") return { ocr: "tu", napOcr };
+		const ai = { nguon: AI.nguon, gopTrang: +AI.gop || 1, songSong: +AI.songSong || 2, cheDo: AI.cheDo };
+		if (AI.nguon === "gemini") { ai.khoa = AI.khoaGemini; ai.moHinh = AI.mhGemini; }
+		if (AI.nguon === "anthropic") { ai.khoa = AI.khoaAnthropic; ai.moHinh = AI.mhAnthropic; }
+		if (AI.nguon === "claude") ai.sample = sampleClaude;
+		return { ocr: "ai", ai };
+	}
+	const hop = $("hopAI");
+	function dienMoHinh(sel, ds, chon, macDinh) {
+		const list = (ds && ds.length ? ds : macDinh).slice();
+		if (chon && !list.some(m => m.id === chon)) list.unshift({ id: chon, ten: chon });
+		sel.innerHTML = list.map(m => '<option value="' + esc(m.id) + '">' + esc(m.id) + (m.ten && m.ten !== m.id ? " — " + esc(m.ten) : "") + "</option>").join("");
+		sel.value = chon || list[0].id;
+	}
+	const MD_GEMINI = [{ id: "gemini-flash-lite-latest", ten: "khuyên dùng, nhiều lượt miễn phí nhất" }, { id: "gemini-flash-latest", ten: "chính xác hơn, ít lượt miễn phí hơn" }];
+	const MD_ANTH = [{ id: "claude-sonnet-5-5", ten: "" }, { id: "claude-haiku-5-5", ten: "nhanh, rẻ" }];
+	function hienPhan() {
+		const n = (hop.querySelector('input[name="nguonAI"]:checked') || {}).value || "gemini";
+		hop.querySelectorAll(".phanAI").forEach(p => { p.hidden = p.dataset.nguon !== n; });
+		$("nangCaoAI").hidden = n === "tesseract";
+	}
+	function moHopAI() {
+		hop.querySelectorAll('input[name="nguonAI"]').forEach(r => { r.checked = r.value === AI.nguon; });
+		const coClaude = !!(window.claude && typeof window.claude.use === "function");
+		$("nhanClaude").classList.toggle("tat", !coClaude);
+		$("moTaClaude").textContent = coClaude ? "Tài khoản Claude, không cần khoá" : "Chỉ có khi mở web trong claude.ai";
+		$("ghiChuClaude").textContent = sampleClaude ? "Dùng chính tài khoản Claude của bạn, không cần khoá. Lần chạy đầu, Claude hỏi quyền cho trang gửi ảnh trang đề — bấm Cho phép." : "Chế độ này chỉ chạy khi mở web trong Claude (claude.ai). Ở trình duyệt thường, chọn Google Gemini với khoá miễn phí.";
+		$("khoaGemini").value = AI.khoaGemini; $("khoaAnthropic").value = AI.khoaAnthropic;
+		dienMoHinh($("mhGemini"), AI.dsGemini, AI.mhGemini, MD_GEMINI);
+		dienMoHinh($("mhAnthropic"), AI.dsAnthropic, AI.mhAnthropic, MD_ANTH);
+		$("cheDoClaude").value = AI.cheDo; $("gopTrang").value = String(AI.gop); $("songSongAI").value = String(AI.songSong);
+		$("ttGemini").textContent = AI.okGemini && AI.khoaGemini ? "✓ Khoá đã kiểm tra, dùng được." : ""; $("ttGemini").className = "ttKhoa" + (AI.okGemini ? " ok" : "");
+		$("ttAnthropic").textContent = AI.okAnthropic && AI.khoaAnthropic ? "✓ Khoá đã kiểm tra, dùng được." : ""; $("ttAnthropic").className = "ttKhoa" + (AI.okAnthropic ? " ok" : "");
+		hienPhan();
+		if (typeof hop.showModal === "function") hop.showModal(); else hop.setAttribute("open", "");
+	}
+	hop.querySelectorAll('input[name="nguonAI"]').forEach(r => r.addEventListener("change", () => {
+		hienPhan();
+		if (r.value === "claude" && r.checked) $("gopTrang").value = "1";
+	}));
+	[["hienKhoaGemini", "khoaGemini"], ["hienKhoaAnthropic", "khoaAnthropic"]].forEach(([n, o]) => $(n).addEventListener("click", () => { const an = $(o).type === "password"; $(o).type = an ? "text" : "password"; $(n).textContent = an ? "Ẩn" : "Hiện"; }));
+	async function kiemTra(nguon) {
+		const o = nguon === "gemini" ? { khoa: "khoaGemini", tt: "ttGemini", sel: "mhGemini", nut: "ktGemini" } : { khoa: "khoaAnthropic", tt: "ttAnthropic", sel: "mhAnthropic", nut: "ktAnthropic" };
+		const khoa = $(o.khoa).value.trim();
+		const tt = $(o.tt);
+		if (!khoa) { tt.textContent = "Dán khoá vào ô trên trước."; tt.className = "ttKhoa loi"; return; }
+		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 6.3."; tt.className = "ttKhoa loi"; return; }
+		$(o.nut).disabled = true; tt.textContent = "Đang kiểm tra…"; tt.className = "ttKhoa";
+		try {
+			const ds = await bo().aiDsMoHinh({ nguon, khoa });
+			const nho2 = ds.slice(0, 60).map(m => ({ id: m.id, ten: m.ten }));
+			const chonCu = $(o.sel).value;
+			if (nguon === "gemini") { AI.dsGemini = nho2; AI.okGemini = true; AI.khoaGemini = khoa; }
+			else { AI.dsAnthropic = nho2; AI.okAnthropic = true; AI.khoaAnthropic = khoa; }
+			const giu = nho2.some(m => m.id === chonCu) ? chonCu : nho2.length ? nho2[0].id : chonCu;
+			dienMoHinh($(o.sel), nho2, giu, nguon === "gemini" ? MD_GEMINI : MD_ANTH);
+			tt.textContent = "✓ Khoá dùng được — " + nho2.length + " mô hình. Đã chọn sẵn mô hình phù hợp nhất.";
+			tt.className = "ttKhoa ok";
+		} catch (e) { tt.textContent = "✗ " + e.message; tt.className = "ttKhoa loi"; if (nguon === "gemini") AI.okGemini = false; else AI.okAnthropic = false; }
+		finally { $(o.nut).disabled = false; }
+	}
+	$("ktGemini").addEventListener("click", () => kiemTra("gemini"));
+	$("ktAnthropic").addEventListener("click", () => kiemTra("anthropic"));
+	$("dongAI").addEventListener("click", () => hop.close());
+	$("formAI").addEventListener("submit", () => {
+		const n = (hop.querySelector('input[name="nguonAI"]:checked') || {}).value || AI.nguon;
+		const kG = $("khoaGemini").value.trim(), kA = $("khoaAnthropic").value.trim();
+		if (kG !== AI.khoaGemini) AI.okGemini = false;
+		if (kA !== AI.khoaAnthropic) AI.okAnthropic = false;
+		Object.assign(AI, { nguon: n, khoaGemini: kG, khoaAnthropic: kA, mhGemini: $("mhGemini").value, mhAnthropic: $("mhAnthropic").value, cheDo: $("cheDoClaude").value, gop: +$("gopTrang").value || 1, songSong: +$("songSongAI").value || 2 });
+		luuAI(); capNhatChip(); toast("Đã lưu cấu hình AI");
+	});
+	if ($("chipAI")) $("chipAI").addEventListener("click", moHopAI);
+	if ($("ptCauHinh")) $("ptCauHinh").addEventListener("click", moHopAI);
+	(async () => {
+		await Promise.resolve();
+		try { if (window.claude && typeof window.claude.use === "function") { const s = await window.claude.use("sample"); const lim = s ? await s.limits().catch(() => null) : null; if (s && lim && lim.images) sampleClaude = s; } } catch (e) { }
+		capNhatChip();
+	})();
+
+	/* =================================================================
+	   CHỨC NĂNG 1: PDF → LaTeX
+	   ================================================================= */
+	oChon($("thaPdfTex"), $("pdfTex"), "tenPdfTex");
 	let kqTex = null, tenTex = "de-thi";
 	$("nutPdfTex").addEventListener("click", async function () {
 		const f = $("pdfTex").files && $("pdfTex").files[0];
@@ -459,8 +869,9 @@ $("vao").addEventListener("keydown", e => {
 		try {
 			bao("ttPdfTex", "Đang tải thư viện đọc PDF…");
 			await Promise.all([napPdf(), napKatex()]);
-			const ocr = $("ptOcr").checked;
-			const r = await bo().pdfSangLatex(new Uint8Array(await f.arrayBuffer()), { ocr: ocr ? "tu" : "khong", napOcr: ocr ? napOcr : null, baoTienDo: m => bao("ttPdfTex", m) });
+			const scan = $("ptScan").value === "khong" ? { ocr: "khong" } : cauHinhQuet();
+			if (scan.ocr === "ai" && !(bo()._quet && bo()._quet.docNhomAI)) throw new Error(CHUA_CO);
+			const r = await bo().pdfSangLatex(new Uint8Array(await f.arrayBuffer()), Object.assign(scan, { baoTienDo: m => bao("ttPdfTex", m) }));
 			let code = r.tex, soSua = 0;
 			if ($("ptChuan").checked && coBo("chuanHoa")) { const c = bo().chuanHoa(r.tex, luatHienTai()); code = c.ketQua; soSua = c.canhBao.length; }
 			kqTex = { code, anh: r.anh }; tenTex = tenGoc(f);
@@ -488,32 +899,356 @@ $("vao").addEventListener("keydown", e => {
 		chonTab("nutTabChuan", true); const n = $("nutChay"); if (n) n.click();
 	});
 
-	/* ---------- CHỨC NĂNG 2: PDF -> Word (độc lập, một bước) ---------- */
-	let fileWord = null, tenWord = "de-thi";
-	$("nutPdfWord").addEventListener("click", async function () {
-		const f = $("pdfWord").files && $("pdfWord").files[0];
-		if (!coBo("pdfSangWord")) { bao("ttPdfWord", CHUA_CO, "loi"); return; }
-		if (!f) { bao("ttPdfWord", "Chọn file PDF đề trước.", "loi"); return; }
-		const nut = this; nut.disabled = true; $("nhomPdfWord").hidden = true; fileWord = null;
+	/* =================================================================
+	   CHỨC NĂNG 2: XƯỞNG PDF → WORD
+	   ================================================================= */
+	const W = { file: null, bytes: null, pdf: null, trang: [], kq: null, anhUrl: {}, ac: null, dangQuet: false };
+	const VI_DU = String.raw`\begin{ex}
+	Cho hàm số $y=\dfrac{2x+1}{x-1}$. Tiệm cận đứng của đồ thị hàm số là đường thẳng
+	\choice
+	{$x=-1$}
+	{\True $x=1$}
+	{$y=2$}
+	{$y=-\dfrac{1}{2}$}
+	\loigiai{Ta có $\lim\limits_{x\to 1^{+}} y=+\infty$ nên $x=1$ là tiệm cận đứng.}
+\end{ex}
+\begin{ex}
+	Cho hàm số $f(x)=x^3-3x+1$. Xét tính đúng sai của các mệnh đề sau.
+	\choiceTF
+	{\True $f'(x)=3x^2-3$}
+	{Hàm số đồng biến trên $(-1;1)$}
+	{\True $\displaystyle\int_{0}^{1} f(x)\,\mathrm{d}x=-\dfrac{1}{4}$}
+	{Giá trị cực đại của hàm số bằng $-1$}
+\end{ex}
+\begin{ex}
+	Một hộp có $5$ bi xanh và $3$ bi đỏ. Lấy ngẫu nhiên $2$ bi. Tính xác suất để lấy được hai bi khác màu (làm tròn kết quả đến hàng phần trăm).
+	\par\shortans[0]{0,54}
+\end{ex}`;
+	const dsTrangEl = $("dsTrang");
+	function theTrang(p) { return dsTrangEl.querySelector('.the[data-p="' + p + '"]'); }
+	function capNhatDem() {
+		if (!$("soQuet")) return;
+		const chon = W.trang.filter(t => t.chon), scan = chon.filter(t => t.scan === true);
+		$("soQuet").textContent = chon.length;
+		$("nutQuet").disabled = !W.file || !chon.length || W.dangQuet;
+		if (!W.file) { $("uocTinh").textContent = "Chọn file PDF để bắt đầu."; return; }
+		const daPhan = W.trang.every(t => t.scan !== undefined);
+		const luot = AI.nguon === "tesseract" ? 0 : Math.ceil(scan.length / Math.max(1, +AI.gop || 1));
+		let h = "<b>" + (chon.length - scan.length) + "</b> trang có chữ đọc trực tiếp · <b>" + scan.length + "</b> trang scan";
+		if (scan.length) h += AI.nguon === "tesseract" ? " đọc bằng Tesseract (chỉ chữ)" : " đọc bằng " + TEN_NGUON[AI.nguon] + " (khoảng <b>" + luot + "</b> lượt gọi)";
+		if (scan.length && !aiSanSang()) h += " — <b>cần cấu hình AI</b>";
+		if (!daPhan) h += " · đang phân loại trang…";
+		$("uocTinh").innerHTML = h;
+	}
+	function datTT(p, tt) {
+		const el = theTrang(p); if (!el) return;
+		if (!tt) { el.removeAttribute("data-tt"); return; }
+		el.dataset.tt = tt;
+		el.querySelector(".tinh").innerHTML = tt === "dang" ? '<span class="vongQuay" aria-hidden="true"></span>' : tt === "cho" ? "Chờ" : tt === "loi" ? "Lỗi" : "";
+		el.querySelector(".dau").textContent = tt === "loi" ? "!" : "✓";
+		el.querySelector(".ghi").textContent = tt === "nho" ? "từ bộ nhớ" : tt === "loi" ? "chưa đọc được" : tt === "xong" ? "đã đọc" : tt === "dang" ? "đang đọc…" : "";
+	}
+	function chonThe(t, chon) {
+		t.chon = chon; const el = theTrang(t.p); if (el) el.setAttribute("aria-checked", chon ? "true" : "false");
+	}
+	// vẽ ảnh thu nhỏ lần lượt (khi thẻ hiện ra)
+	let hangVe = Promise.resolve();
+	const quanSat = "IntersectionObserver" in window ? new IntersectionObserver(ds => ds.forEach(x => { if (x.isIntersecting) { quanSat.unobserve(x.target); veNho(+x.target.dataset.p); } }), { root: null, rootMargin: "300px" }) : null;
+	function veNho(p) {
+		const pdf = W.pdf;
+		hangVe = hangVe.then(async () => {
+			if (pdf !== W.pdf) return;
+			const el = theTrang(p); if (!el) return;
+			const pg = await pdf.getPage(p);
+			const vp0 = pg.getViewport({ scale: 1 });
+			const vp = pg.getViewport({ scale: 320 / vp0.width });
+			const c = el.querySelector("canvas"); c.width = Math.round(vp.width); c.height = Math.round(vp.height);
+			const ctx = c.getContext("2d"); ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, c.width, c.height);
+			await pg.render({ canvasContext: ctx, viewport: vp, canvas: c }).promise;
+		}).catch(() => { });
+	}
+	async function chonTepWord(f) {
+		if (!f) return;
+		if (!/\.pdf$/i.test(f.name) && f.type !== "application/pdf") { toast("Chọn file .pdf"); return; }
+		try { await napPdf(); } catch (e) { toast(e.message); return; }
+		W.file = f; W.bytes = new Uint8Array(await f.arrayBuffer());
+		if (W.pdf) try { W.pdf.destroy(); } catch (e) { }
+		W.pdf = await window.pdfjsLib.getDocument({ data: W.bytes.slice(), isEvalSupported: false }).promise;
+		const n = W.pdf.numPages;
+		W.trang = Array.from({ length: n }, (_, k) => ({ p: k + 1, chon: true, scan: undefined }));
+		$("tenTepW").textContent = f.name; $("demTrangW").textContent = n + " trang · " + Math.max(1, Math.round(f.size / 1024)) + " KB";
+		$("thaWord").hidden = true; $("daiDau").hidden = false; dsTrangEl.hidden = false;
+		dsTrangEl.innerHTML = W.trang.map(t => '<li class="the" role="checkbox" aria-checked="true" tabindex="0" data-p="' + t.p + '" aria-label="Trang ' + t.p + '"><div class="to"><canvas width="30" height="42"></canvas><span class="chon" aria-hidden="true"></span><span class="nhan" hidden></span><span class="tinh"></span><span class="dau" aria-hidden="true">✓</span></div><div class="so"><span>Trang ' + t.p + '</span><span class="ghi"></span></div></li>').join("");
+		dsTrangEl.querySelectorAll(".the").forEach(el => { if (quanSat) quanSat.observe(el); else veNho(+el.dataset.p); });
+		xoaKQ(); capNhatDem();
+		// phân loại trang: có lớp chữ hay chỉ là ảnh scan
+		const pdf = W.pdf;
+		for (const t of W.trang) {
+			if (pdf !== W.pdf) return;
+			try {
+				const pg = await pdf.getPage(t.p);
+				const tc = await pg.getTextContent();
+				const soChu = tc.items.filter(it => it.str && it.str.trim()).length;
+				t.scan = soChu < 8;
+			} catch (e) { t.scan = false; }
+			const el = theTrang(t.p);
+			if (el) { const nh = el.querySelector(".nhan"); nh.hidden = false; nh.textContent = t.scan ? "Scan" : "Chữ"; nh.className = "nhan" + (t.scan ? " scan" : ""); nh.title = t.scan ? "Trang ảnh scan — đọc bằng AI" : "Trang có lớp chữ — đọc trực tiếp, không tốn lượt AI"; }
+			if (t.p % 4 === 0) capNhatDem();
+		}
+		capNhatDem();
+	}
+	function xoaKQ() {
+		Object.values(W.anhUrl).forEach(u => URL.revokeObjectURL(u)); W.anhUrl = {};
+		W.kq = null; $("nutTaiWord").disabled = true; $("maTexW").value = ""; $("tienDo").hidden = true;
+		veCB([]); veXem();
+	}
+	dsTrangEl.addEventListener("click", e => { const el = e.target.closest(".the"); if (!el || W.dangQuet) return; const t = W.trang[+el.dataset.p - 1]; chonThe(t, !t.chon); capNhatDem(); });
+	dsTrangEl.addEventListener("keydown", e => { if (e.key !== " " && e.key !== "Enter") return; const el = e.target.closest(".the"); if (!el) return; e.preventDefault(); el.click(); });
+	document.querySelectorAll(".locTrang button").forEach(b => b.addEventListener("click", () => {
+		if (W.dangQuet) return;
+		const loc = b.dataset.loc;
+		W.trang.forEach(t => chonThe(t, loc === "tat" ? true : loc === "scan" ? t.scan === true : false));
+		capNhatDem();
+	}));
+	oChon($("thaWord"), $("pdfWord"), null, chonTepWord);
+	$("doiTepW").addEventListener("click", () => $("pdfWord").click());
+	const dai = document.querySelector(".dai");
+	dai.addEventListener("dragover", e => { if (W.file) e.preventDefault(); });
+	dai.addEventListener("drop", e => { if (!W.file) return; e.preventDefault(); const f = e.dataTransfer.files && e.dataTransfer.files[0]; if (f) chonTepWord(f); });
+
+	/* --- bản in thử: LaTeX ex_test -> HTML (công thức MathML qua KaTeX) --- */
+	const KI = { "%": "%", "&": "&amp;", "#": "#", "_": "_", "{": "{", "}": "}", "$": "$", "ldots": "…", "dots": "…", "cdots": "⋯", "lq": "‘", "rq": "’", "textdegree": "°", " ": " ", ",": " ", ";": " ", ":": " ", "!": "", "quad": "&emsp;", "qquad": "&emsp;&emsp;", "par": " ", "noindent": "", "newline": "<br>", "hfill": " ", "centering": "", "textbackslash": "\\", "-": "" };
+	const MACRO = { "\\heva": "\\left\\{\\begin{aligned}#1\\end{aligned}\\right.", "\\hoac": "\\left[\\begin{aligned}#1\\end{aligned}\\right." };
+	function nhomNgoac(s, i) {
+		while (s[i] === " " || s[i] === "\t") i++;
+		if (s[i] !== "{") return null;
+		let d = 0;
+		for (let k = i; k < s.length; k++) { const c = s[k]; if (c === "\\") { k++; continue; } if (c === "{") d++; else if (c === "}") { d--; if (!d) return { noi: s.slice(i + 1, k), het: k + 1 }; } }
+		return null;
+	}
+	function toan(tex, hienThi) {
+		if (!window.katex) return '<code>' + esc(tex) + '</code>';
 		try {
-			bao("ttPdfWord", "Đang tải thư viện…");
+			const T = bo(); let t2 = T && T._noiBo && T._noiBo.chuanBiTex ? T._noiBo.chuanBiTex(tex) : tex;
+			// tập số: kí tự Unicode để hiện đúng chữ kép trên mọi trình duyệt
+			t2 = t2.replace(/\\mathbb\s*\{\s*([RNZQC])\s*\}/g, (m, c) => ({ R: "ℝ", N: "ℕ", Z: "ℤ", Q: "ℚ", C: "ℂ" })[c]);
+			return window.katex.renderToString(t2, { output: "mathml", displayMode: !!hienThi, throwOnError: true, strict: "ignore", macros: Object.assign({}, MACRO) });
+		} catch (e) { return '<span class="loiTex" title="Công thức chưa đọc được — sửa ở tab Mã LaTeX">' + esc(tex) + '</span>'; }
+	}
+	function tachO(h) {
+		const out = []; let d = 0, cur = "";
+		for (let k = 0; k < h.length; k++) {
+			const c = h[k];
+			if (c === "\\") { cur += c + (h[k + 1] || ""); k++; continue; }
+			if (c === "$") { const e = h.indexOf("$", k + 1); if (e > 0) { cur += h.slice(k, e + 1); k = e; continue; } }
+			if (c === "{") d++; else if (c === "}") d--;
+			if (c === "&" && d === 0) { out.push(cur); cur = ""; continue; }
+			cur += c;
+		}
+		out.push(cur); return out;
+	}
+	function hinhHtml(de, i) {
+		const h = de.hinh[i]; if (!h) return "";
+		if (h.loai === "anh") {
+			const ten = (h.tep || "").replace(/^.*\//, "");
+			const u = W.anhUrl[h.tep] || W.anhUrl[ten];
+			const w = ((h.tuyChon || "").match(/width\s*=\s*([\d.]+)\s*cm/) || [])[1];
+			return u ? '<img src="' + u + '" alt="Hình ' + (i + 1) + '" loading="lazy"' + (w ? ' style="width:' + Math.min(100, +w / 17 * 100).toFixed(1) + '%"' : "") + ">" : '<span class="hinhTikz">Hình: ' + esc(ten) + '</span>';
+		}
+		return '<span class="hinhTikz">Hình TikZ ' + (i + 1) + ' — hiện khi biên dịch LaTeX</span>';
+	}
+	function moiTruong(env, than, de) {
+		if (env === "center") return '<div class="giua">' + html(than, de) + "</div>";
+		if (/^(itemize|enumerate|itemchoice)$/.test(env)) { const muc = than.split(/\\item(?:ch)?\b\s*/).slice(1); const tag = env === "itemize" ? "ul" : "ol"; return "<" + tag + (env === "itemchoice" ? ' type="a"' : "") + ">" + muc.map(m => "<li>" + html(m, de) + "</li>").join("") + "</" + tag + ">"; }
+		if (/^(tabular|tabularx|longtable)$/.test(env)) {
+			let t = than; let g = nhomNgoac(t, 0); if (g && env === "tabularx") { t = t.slice(g.het); g = nhomNgoac(t, 0); } if (g) t = t.slice(g.het);
+			const hang = t.split(/\\\\(?:\s*\[[^\]]*\])?/).map(h => h.replace(/\\hline|\\cline\{[^}]*\}/g, "").trim()).filter(Boolean);
+			return '<div class="boc"><table>' + hang.map(h => "<tr>" + tachO(h).map(x => "<td>" + html(x.trim(), de) + "</td>").join("") + "</tr>").join("") + "</table></div>";
+		}
+		if (/^(align\*?|aligned|eqnarray\*?|gather\*?|equation\*?|multline\*?)$/.test(env)) return '<span class="hienThi">' + toan("\\begin{aligned}" + than + "\\end{aligned}", true) + "</span>";
+		if (env === "minipage") { const g = nhomNgoac(than, 0); return html(g ? than.slice(g.het) : than, de); }
+		if (env === "tikzpicture") return '<span class="hinhTikz">Hình TikZ</span>';
+		return html(than, de);
+	}
+	function html(s, de) {
+		let o = "", i = 0;
+		s = String(s || "");
+		while (i < s.length) {
+			const c = s[i];
+			if (c === "") { const e = s.indexOf("", i); o += hinhHtml(de, +s.slice(i + 1, e)); i = e + 1; continue; }
+			if (c === "$") {
+				const kep = s[i + 1] === "$", m = kep ? 2 : 1;
+				let e = i + m; while (e < s.length && !(s[e] === "$" && s[e - 1] !== "\\")) e++;
+				const t = s.slice(i + m, e);
+				o += kep ? '<span class="hienThi">' + toan(t, true) + "</span>" : toan(t, false);
+				i = e + m; continue;
+			}
+			if (c === "\\") {
+				if (s[i + 1] === "[") { const e = s.indexOf("\\]", i); o += '<span class="hienThi">' + toan(s.slice(i + 2, e < 0 ? s.length : e), true) + "</span>"; i = e < 0 ? s.length : e + 2; continue; }
+				if (s[i + 1] === "(") { const e = s.indexOf("\\)", i); o += toan(s.slice(i + 2, e < 0 ? s.length : e), false); i = e < 0 ? s.length : e + 2; continue; }
+				if (s[i + 1] === "\\") { o += "<br>"; i += 2; const t = s.slice(i).match(/^\s*\[[^\]]*\]/); if (t) i += t[0].length; continue; }
+				const m = s.slice(i).match(/^\\([a-zA-Z@]+\*?|.)/); const ten = m[1]; i += m[0].length;
+				if (ten === "begin") {
+					const g = nhomNgoac(s, i); if (!g) continue;
+					const env = g.noi, re = new RegExp("\\\\(begin|end)\\{" + env.replace(/\*/g, "\\*") + "\\}", "g");
+					re.lastIndex = g.het; let d = 1, x, het = -1, sau = -1;
+					while ((x = re.exec(s)) !== null) { if (x[1] === "begin") d++; else if (--d === 0) { het = x.index; sau = re.lastIndex; break; } }
+					if (het < 0) { i = g.het; continue; }
+					o += moiTruong(env, s.slice(g.het, het), de); i = sau; continue;
+				}
+				if (ten === "end") { const g = nhomNgoac(s, i); if (g) i = g.het; continue; }
+				const DD = { textbf: "b", textit: "i", emph: "i", underline: "u", uline: "u", text: "span", textrm: "span", mbox: "span", textup: "span", textnormal: "span", textsl: "i" };
+				if (DD[ten]) { const g = nhomNgoac(s, i); if (g) { o += "<" + DD[ten] + ">" + html(g.noi, de) + "</" + DD[ten] + ">"; i = g.het; continue; } }
+				if (KI[ten] !== undefined) { o += KI[ten]; continue; }
+				if (ten === "textcolor") { const g1 = nhomNgoac(s, i), g2 = g1 && nhomNgoac(s, g1.het); if (g2) { o += html(g2.noi, de); i = g2.het; continue; } }
+				if (/^(label|ref|zlabel|zref|zpageref|pageref|vspace\*?|hspace\*?|color|index)$/.test(ten)) { const g = nhomNgoac(s, i); if (g) i = g.het; continue; }
+				if (ten === "item" || ten === "itemch") continue;
+				const g = nhomNgoac(s, i);
+				if (g && /^[a-zA-Z]+$/.test(ten)) { o += html(g.noi, de); i = g.het; }
+				continue;
+			}
+			if (c === "{" || c === "}") { i++; continue; }
+			if (c === "~") { o += "&nbsp;"; i++; continue; }
+			if (c === "\n" || c === "\t") { o += " "; i++; continue; }
+			if (c === "-" && s[i + 1] === "-") { o += "–"; i += 2; continue; }
+			o += esc(c); i++;
+		}
+		return o;
+	}
+	const doDai = p => //.test(p) ? 99 : p.replace(/\\[dt]?frac/g, "").replace(/\\[a-zA-Z]+/g, "x").replace(/[{}$^_]/g, "").length;
+	function veXem() {
+		const toDe = $("toDe"); if (!toDe) return;
+		const T = bo();
+		if (!T || typeof T.docDe !== "function") { toDe.innerHTML = '<p class="viDu">Bản in thử</p><p>' + esc(CHUA_CO) + "</p>"; return; }
+		const viDu = !W.kq;
+		const code = viDu ? VI_DU : $("maTexW").value;
+		let de;
+		try { de = T.docDe(code); } catch (e) { toDe.innerHTML = '<p class="loiTex">Mã LaTeX có lỗi cấu trúc: ' + esc(e.message) + "</p>"; return; }
+		const gach = $("wGach").checked, lg = $("wLoiGiai").checked;
+		let h = viDu ? '<p class="viDu">Ví dụ — bản in thử của đề bạn sẽ hiện ở đây, đúng như file Word</p>' : "";
+		const tieuDe = (!viDu && $("wTieuDe").checked) ? (de.tieuDe.length ? de.tieuDe : W.kq.tieuDe) : [];
+		if (tieuDe.length) h += '<div class="tieuDeDe">' + tieuDe.map(t => html(t, de)).join("<br>") + "</div>";
+		let so = 0, tong = 0;
+		de.cau.forEach(c => {
+			if (c.phanMoi) { so = 0; h += "<h3>" + esc(c.phanMoi) + "</h3>"; return; }
+			so++; tong++;
+			let x = '<article class="cau">';
+			if (c.hinhPhai) x += '<div class="hinhPhai">' + html(c.hinhPhai, de) + "</div>";
+			x += '<span class="nhanCau">Câu ' + so + ".</span> " + html(c.de, de);
+			if (c.loai === "tn" && c.phuongAn.length) {
+				const dmax = Math.max(...c.phuongAn.map(doDai)), coHinh = c.phuongAn.some(p => //.test(p));
+				const cot = c.soCot || (coHinh ? (c.phuongAn.length === 4 ? 4 : 2) : dmax <= 18 ? 4 : dmax <= 40 ? 2 : 1);
+				x += '<div class="pa c' + Math.min(4, cot) + '">' + c.phuongAn.map((p, k) => "<div" + (gach && c.dung[k] ? ' class="dung"' : "") + "><b>" + "ABCD"[k] + ".</b> " + html(p, de) + "</div>").join("") + "</div>";
+			}
+			if (c.loai === "ds" && c.phuongAn.length) {
+				const coDA = c.dung.some(Boolean);
+				x += '<div class="ds">' + c.phuongAn.map((p, k) => "<div><b>" + "abcd"[k] + ")</b> " + html(p, de) + (coDA && gach ? '<span class="dS' + (c.dung[k] ? "" : " sai") + '">' + (c.dung[k] ? "Đúng" : "Sai") + "</span>" : "") + "</div>").join("") + "</div>";
+			}
+			if (c.loai === "tln" && c.dapSo) x += '<div class="dapSo">Đáp án: <span>' + html(c.dapSo, de) + "</span></div>";
+			if (lg && c.loiGiai && c.loiGiai.trim()) x += '<details class="lg"><summary>Lời giải</summary>' + html(c.loiGiai, de) + "</details>";
+			h += x + "</article>";
+		});
+		if (!tong && !viDu) h += "<p>Chưa nhận ra câu hỏi nào. Kiểm tra lại ở tab Mã LaTeX.</p>";
+		toDe.innerHTML = h;
+	}
+	function veCB(ds, chua) {
+		const ul = $("dsCBW");
+		const muc = ds.map(x => "<li>" + esc(x) + "</li>");
+		if (chua && chua.length) muc.unshift('<li>Còn ' + chua.length + ' trang scan chưa đọc được. <button class="nut" type="button" id="quetLaiW">Quét lại</button> — các trang đã đọc được lấy lại từ bộ nhớ, không tốn thêm lượt.</li>');
+		ul.innerHTML = muc.length ? muc.join("") : '<li class="trong">Không có gì cần soát thêm. Vẫn nên đọc lại số liệu và công thức trước khi dùng.</li>';
+		$("demCB").textContent = muc.length;
+		const q = $("quetLaiW"); if (q) q.addEventListener("click", () => quet());
+	}
+	let henVe = 0;
+	$("maTexW").addEventListener("input", () => { clearTimeout(henVe); henVe = setTimeout(veXem, 450); });
+	["wTieuDe", "wLoiGiai", "wGach"].forEach(k => $(k).addEventListener("change", veXem));
+	const KQ_TAB = [["kqXem", "manXem"], ["kqMa", "manMa"], ["kqCB", "manCB"]];
+	KQ_TAB.forEach(([n, m], i) => {
+		$(n).addEventListener("click", () => KQ_TAB.forEach(([n2, m2]) => { const on = n2 === n; $(n2).setAttribute("aria-selected", on); $(n2).tabIndex = on ? 0 : -1; $(m2).hidden = !on; }));
+		$(n).addEventListener("keydown", e => { if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return; const j = (i + (e.key === "ArrowRight" ? 1 : KQ_TAB.length - 1)) % KQ_TAB.length; $(KQ_TAB[j][0]).click(); $(KQ_TAB[j][0]).focus(); });
+	});
+	// dạng công thức
+	function datCT(tex) { $("ctOmml").setAttribute("aria-pressed", !tex); $("ctTex").setAttribute("aria-pressed", !!tex); ghiO("wCT", tex ? "tex" : "omml"); }
+	$("ctOmml").addEventListener("click", () => datCT(false));
+	$("ctTex").addEventListener("click", () => datCT(true));
+	datCT(docO("wCT") === "tex");
+	$("chepMaW").addEventListener("click", () => {
+		const ta = $("maTexW"); if (!ta.value) return;
+		const chon = () => { ta.focus(); ta.select(); toast("Đã chọn toàn bộ — bấm Ctrl+C để sao chép"); };
+		if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value).then(() => toast("Đã sao chép mã"), chon); else chon();
+	});
+	function baoTD(msg, kieu, phan) {
+		$("tienDo").hidden = false;
+		$("chuTD").textContent = msg; $("chuTD").className = "chuTD" + (kieu ? " " + kieu : "");
+		if (phan !== undefined) $("thanhTD").style.width = Math.round(phan * 100) + "%";
+	}
+	async function quet() {
+		if (W.dangQuet || !W.file) return;
+		if (!coBo("pdfSangLatex")) { baoTD(CHUA_CO, "loi"); return; }
+		const chon = W.trang.filter(t => t.chon);
+		if (!chon.length) { baoTD("Chọn ít nhất một trang.", "loi"); return; }
+		const coScan = chon.some(t => t.scan === true);
+		if (coScan && !aiSanSang()) { baoTD("Có trang scan — cần cấu hình AI trước (hoặc chọn Không dùng AI).", "loi"); moHopAI(); return; }
+		const cfg = cauHinhQuet();
+		if (coScan && cfg.ocr === "ai" && !(bo()._quet && bo()._quet.docNhomAI)) { baoTD(CHUA_CO, "loi"); return; }
+		W.dangQuet = true; W.ac = new AbortController();
+		$("nutDung").hidden = false; capNhatDem();
+		W.trang.forEach(t => datTT(t.p, t.chon ? "cho" : null));
+		let daXong = 0;
+		const baoTrang = (p, tt) => { datTT(p, tt); if (tt === "xong" || tt === "nho" || tt === "loi") { daXong++; $("thanhTD").style.width = Math.round(daXong / chon.length * 100) + "%"; } };
+		try {
+			baoTD("Đang tải thư viện…", "", 0);
 			await Promise.all([napPdf(), napKatex(), napZip()]);
-			const ocr = $("pwOcr").checked;
-			const r = await bo().pdfSangWord(new Uint8Array(await f.arrayBuffer()), {
-				ocr: ocr ? "tu" : "khong", napOcr: ocr ? napOcr : null, baoTienDo: m => bao("ttPdfWord", m),
-				loiGiai: $("pwLoiGiai").checked, gachDung: $("pwGachDung").checked, bangDapAn: $("pwBangDA").checked, luat: luatHienTai()
+			const r = await bo().pdfSangLatex(W.bytes.slice(), Object.assign(cfg, { trangChon: chon.map(t => t.p), signal: W.ac.signal, baoTienDo: m => baoTD(m), baoTrang }));
+			const tieuDe = [];
+			for (const l of r.tex.split("\n")) { if (/^\\(caulc|cauds|caukq|cautl)|^\\begin\{ex\}/.test(l)) break; const m = l.match(/^%\s?(.*)$/); if (m && m[1].trim()) tieuDe.push("\\textbf{" + m[1].trim() + "}"); }
+			let code = r.tex;
+			if (coBo("chuanHoa")) code = bo().chuanHoa(r.tex, Object.assign(luatHienTai(), { ghiChuSuaTay: false, khoiDinhDanh: false })).ketQua;
+			Object.values(W.anhUrl).forEach(u => URL.revokeObjectURL(u)); W.anhUrl = {};
+			Object.keys(r.anh).forEach(k => { W.anhUrl[k] = URL.createObjectURL(new Blob([r.anh[k].png], { type: "image/png" })); });
+			W.kq = { code, anh: r.anh, tieuDe, canhBao: r.canhBao.filter(x => !/includegraphics/.test(x)), chua: r.trangChuaDoc || [] };
+			$("maTexW").value = code;
+			veXem(); veCB(W.kq.canhBao, W.kq.chua);
+			const soCau = (code.match(/\\begin\{ex\}/g) || []).length, soHinh = Object.keys(r.anh).length;
+			$("nutTaiWord").disabled = false;
+			$("thanhTD").style.width = "100%";
+			baoTD("Đã đọc " + chon.length + " trang: " + soCau + " câu, " + soHinh + " hình." + (W.kq.chua.length ? " Còn " + W.kq.chua.length + " trang chưa đọc — xem tab Cần soát." : " Xem bản in thử rồi tải file Word."), W.kq.chua.length ? "loi" : "ok");
+		} catch (e) {
+			if (e && e.dung) { baoTD("Đã dừng.", ""); W.trang.forEach(t => { const el = theTrang(t.p); if (el && (el.dataset.tt === "cho" || el.dataset.tt === "dang")) datTT(t.p, null); }); }
+			else baoTD("Không đọc được: " + (e && e.message || e), "loi");
+		} finally {
+			W.dangQuet = false; $("nutDung").hidden = true; capNhatDem();
+		}
+	}
+	$("nutQuet").addEventListener("click", quet);
+	$("nutDung").addEventListener("click", () => { if (W.ac) W.ac.abort(); baoTD("Đang dừng…"); });
+	const LE = { chuan: { tren: 1.5, duoi: 1.8, trai: 2, phai: 1.5 }, hep: { tren: 1.2, duoi: 1.2, trai: 1.5, phai: 1.2 }, rong: { tren: 2, duoi: 2, trai: 2.5, phai: 2 } };
+	$("nutTaiWord").addEventListener("click", async function () {
+		if (!W.kq) return;
+		const nut = this; nut.disabled = true;
+		try {
+			await napZip();
+			await napKatex();
+			const r = await bo().xuatWord($("maTexW").value, {
+				anhTep: W.kq.anh, tieuDe: W.kq.tieuDe, coTieuDe: $("wTieuDe").checked,
+				loiGiai: $("wLoiGiai").checked, gachDung: $("wGach").checked, bangDapAn: $("wBangDA").checked,
+				font: $("wFont").value, coChu: +$("wCo").value, le: LE[$("wLe").value] || LE.chuan, ngatTrang: $("wNgat").value,
+				congThuc: $("ctTex").getAttribute("aria-pressed") === "true" ? "tex" : "omml"
 			});
-			fileWord = r.file; tenWord = tenGoc(f);
-			await taiVe(fileWord, tenWord + ".docx");
-			$("nhomPdfWord").hidden = false;
-			bao("ttPdfWord", "Đã tạo file Word: " + r.soCau + " câu" + (r.soHinh ? ", " + r.soHinh + " hình đã chèn" : "") + ".", r.loi.length ? "loi" : "ok");
-			const ds = r.canhBao.filter(x => !/includegraphics/.test(x)).map(x => esc(x.replace(/đã đặt ô \[\?\] và ghi công thức gợi ý ở dòng comment % \[PDF\] ngay dưới/, "trong Word hiện ô ? — gõ lại công thức đó (xem PDF gốc)")));
-			if (r.loi.length) ds.push("Công thức chưa chuyển được sang Equation (đang để dạng chữ): " + r.loi.slice(0, 12).map(x => "Câu " + esc(x.cau) + " <code>" + esc(x.tex.slice(0, 80)) + "</code>").join("; "));
-			dsCanhBao("kqPdfWord", ds);
-		} catch (er) { bao("ttPdfWord", "Không chuyển được: " + er.message, "loi"); }
+			const daLuu = await taiVe(r.file, tenGoc(W.file) + ".docx");
+			if (daLuu) toast("Đã tạo file Word: " + r.soCau + " câu");
+			if (r.loi && r.loi.length) veCB(W.kq.canhBao.concat(r.loi.slice(0, 20).map(x => "Câu " + x.cau + ": công thức chưa chuyển được sang Equation (đang để dạng chữ): " + x.tex.slice(0, 80))), W.kq.chua);
+		} catch (e) { baoTD("Không tạo được file Word: " + (e && e.message || e), "loi"); }
 		finally { nut.disabled = false; }
 	});
-	$("pwTaiLai").addEventListener("click", async () => { if (fileWord) try { await taiVe(fileWord, tenWord + ".docx"); } catch (er) { bao("ttPdfWord", er.message, "loi"); } });
+	let daKhoiDong = false;
+	function khoiDongXuong() {
+		if (daKhoiDong) return; daKhoiDong = true;
+		veXem();
+		napKatex().then(veXem).catch(() => { });
+	}
+	try { const t = docO("tab"); if (t && $(t)) chonTab(t, false); } catch (e) { }
+	capNhatChip(); capNhatDem();
 })();
 </script>
 </body>
