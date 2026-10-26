@@ -406,7 +406,7 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 <section class="manTab" id="tabPdfWord" role="tabpanel" aria-labelledby="nutTabPdfWord" hidden>
 	<div class="xuong">
 		<div class="xuongDau">
-			<h2>PDF → Word <small>Công thức là Equation của Word · hình cắt từ PDF · đúng mẫu trắc nghiệm, đúng sai, trả lời ngắn</small></h2>
+			<h2>PDF → Word <small>Công thức MathType hoặc Equation · hình cắt từ PDF · đúng mẫu trắc nghiệm, đúng sai, trả lời ngắn</small></h2>
 			<button class="chipAI" id="chipAI" type="button" data-tt="chua" aria-haspopup="dialog">
 				<span class="cham" aria-hidden="true"></span>
 				<span class="tenAI" id="chipAITen">Chưa cấu hình AI</span>
@@ -451,7 +451,8 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 					<div class="tongKet" id="tongKet" hidden></div>
 					<div class="dinhDang" aria-label="Định dạng file Word">
 						<span class="manhGhep" role="group" aria-label="Dạng công thức">
-							<button type="button" id="ctOmml" aria-pressed="true" title="Công thức là Equation của Word — đổi sang MathType bằng Convert Equations">Equation (Word, MathType)</button>
+							<button type="button" id="ctMT" aria-pressed="true" title="Mỗi công thức là một đối tượng MathType — nháy đúp để sửa trong MathType">MathType</button>
+							<button type="button" id="ctOmml" aria-pressed="false" title="Công thức là Equation có sẵn của Word">Equation (Word)</button>
 							<button type="button" id="ctTex" aria-pressed="false" title="Công thức để dạng mã TeX $…$">Mã TeX $…$</button>
 						</span>
 						<label>Phông <select id="wFont"><option>Times New Roman</option><option>Arial</option><option>Cambria</option><option>Calibri</option></select></label>
@@ -767,7 +768,7 @@ $("vao").addEventListener("keydown", e => {
 	function nho(ids) { ids.forEach(k => { if (!$(k)) return; const v = docO(k); if (v !== null) $(k).checked = v === "1"; $(k).addEventListener("change", () => ghiO(k, $(k).checked ? "1" : "0")); }); }
 	nho(["ptChuan", "wTieuDe", "wLoiGiai", "wGach", "wBangDA"]);
 	["wFont", "wCo", "wLe", "wNgat", "ptScan"].forEach(k => { if (!$(k)) return; const v = docO(k); if (v) { const cu = $(k).value; $(k).value = v; if ($(k).value !== v) $(k).value = cu; } $(k).addEventListener("change", () => ghiO(k, $(k).value)); });
-	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 6.3.";
+	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 6.4.";
 
 	/* ---------- tab ngang ---------- */
 	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"]];
@@ -873,7 +874,7 @@ $("vao").addEventListener("keydown", e => {
 		const khoa = $(o.khoa).value.trim();
 		const tt = $(o.tt);
 		if (!khoa) { tt.textContent = "Dán khoá vào ô trên trước."; tt.className = "ttKhoa loi"; return; }
-		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 6.3."; tt.className = "ttKhoa loi"; return; }
+		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 6.4."; tt.className = "ttKhoa loi"; return; }
 		$(o.nut).disabled = true; tt.textContent = "Đang kiểm tra…"; tt.className = "ttKhoa";
 		try {
 			const ds = await bo().aiDsMoHinh({ nguon, khoa });
@@ -1245,15 +1246,20 @@ $("vao").addEventListener("keydown", e => {
 	});
 	// dạng công thức
 	function thoiGian(ms) { const s = Math.max(1, Math.round(ms / 1000)), p = Math.floor(s / 60); return p ? p + " phút" + (s % 60 ? " " + (s % 60) + " giây" : "") : s + " giây"; }
-	function datCT(tex) {
-		$("ctOmml").setAttribute("aria-pressed", !tex); $("ctTex").setAttribute("aria-pressed", !!tex); ghiO("wCT2", tex ? "tex" : "omml");
-		$("meoCT").innerHTML = tex
-			? "Công thức để dạng mã <b>$…$</b>. Đổi sang MathType: mở file Word → tab <b>MathType</b> → <kbd>Convert Equations</kbd> → tích <b>Text using MathType TeX input language</b> → <kbd>Convert</kbd>; hoặc bôi đen một công thức rồi bấm <kbd>Toggle TeX</kbd>."
-			: "Công thức là <b>Equation của Word</b>, bấm vào sửa được ngay. Đổi tất cả sang MathType: mở file Word → tab <b>MathType</b> → <kbd>Convert Equations</kbd> → chọn <b>Microsoft Word equations</b> (Office 2007 trở lên) → <kbd>Convert</kbd>.";
+	const KIEU_CT = { mathtype: "ctMT", omml: "ctOmml", tex: "ctTex" };
+	function datCT(k) {
+		if (!KIEU_CT[k]) k = "mathtype";
+		Object.entries(KIEU_CT).forEach(([x, id]) => $(id).setAttribute("aria-pressed", x === k));
+		ghiO("wCT3", k);
+		$("meoCT").innerHTML = k === "mathtype"
+			? "Mỗi công thức là một <b>đối tượng MathType</b> (Equation.DSMT4): mở file bằng Word đã cài MathType, <b>nháy đúp</b> vào công thức để sửa — không cần chuyển đổi gì thêm. Máy chưa cài MathType vẫn xem và in được bình thường."
+			: k === "tex"
+				? "Công thức để dạng mã <b>$…$</b>. Đổi sang MathType: mở file Word → tab <b>MathType</b> → <kbd>Convert Equations</kbd> → tích <b>Text using MathType TeX input language</b> → <kbd>Convert</kbd>; hoặc bôi đen một công thức rồi bấm <kbd>Toggle TeX</kbd>."
+				: "Công thức là <b>Equation của Word</b>, bấm vào sửa được ngay, không cần cài thêm gì. Muốn có MathType thì chọn ô <b>MathType</b> ở trên.";
 	}
-	$("ctOmml").addEventListener("click", () => datCT(false));
-	$("ctTex").addEventListener("click", () => datCT(true));
-	datCT(docO("wCT2") === "tex");
+	const kieuCT = () => Object.keys(KIEU_CT).find(x => $(KIEU_CT[x]).getAttribute("aria-pressed") === "true") || "mathtype";
+	Object.entries(KIEU_CT).forEach(([x, id]) => $(id).addEventListener("click", () => datCT(x)));
+	datCT(docO("wCT3") || "mathtype");
 	$("chepMaW").addEventListener("click", () => {
 		const ta = $("maTexW"); if (!ta.value) return;
 		const chon = () => { ta.focus(); ta.select(); toast("Đã chọn toàn bộ — bấm Ctrl+C để sao chép"); };
@@ -1322,11 +1328,12 @@ $("vao").addEventListener("keydown", e => {
 				anhTep: W.kq.anh, tieuDe: W.kq.tieuDe, coTieuDe: $("wTieuDe").checked,
 				loiGiai: $("wLoiGiai").checked, gachDung: $("wGach").checked, bangDapAn: $("wBangDA").checked,
 				font: $("wFont").value, coChu: +$("wCo").value, le: LE[$("wLe").value] || LE.chuan, ngatTrang: $("wNgat").value,
-				congThuc: $("ctTex").getAttribute("aria-pressed") === "true" ? "tex" : "omml"
+				congThuc: kieuCT(), baoTienDo: m => baoTD(m)
 			});
+			if (r.soCT) baoTD("Đã tạo " + r.soMathType + " công thức MathType" + (r.soCTLoi ? " (" + r.soCTLoi + " công thức trình duyệt không vẽ được, để dạng Equation)" : "") + " — file Word đã sẵn sàng.", "ok");
 			const daLuu = await taiVe(r.file, tenGoc(W.file) + ".docx");
 			if (daLuu) toast("Đã tạo file Word: " + r.soCau + " câu");
-			if (r.loi && r.loi.length) veCB(W.kq.canhBao.concat(r.loi.slice(0, 20).map(x => "Câu " + x.cau + ": công thức chưa chuyển được sang Equation (đang để dạng chữ): " + x.tex.slice(0, 80))), W.kq.chua);
+			if (r.loi && r.loi.length) veCB(W.kq.canhBao.concat(r.loi.slice(0, 20).map(x => "Câu " + x.cau + ": công thức chưa dựng được (đang để dạng chữ): " + x.tex.slice(0, 80))), W.kq.chua);
 		} catch (e) { baoTD("Không tạo được file Word: " + (e && e.message || e), "loi"); }
 		finally { nut.disabled = false; }
 	});
