@@ -303,6 +303,27 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 .dsLoiHinh li { font-size: .88em; line-height: 1.45; padding: 6px 9px; border-radius: 6px; background: var(--mat); border-left: 3px solid var(--do); word-break: break-word; }
 .buocHinh #bdLaiTW { width: fit-content; }
 .tongKet .chiTiet { grid-column: 1 / -1; margin: 0; padding: 7px 14px; border-top: 1px solid var(--vien); font-size: 12px; color: var(--phu); font-variant-numeric: tabular-nums; }
+/* --- LaTeX → Word: thông tin tiêu đề đầu đề --- */
+.dauDe { border: 1px solid var(--vien); border-radius: 8px; padding: 10px 14px 12px; margin: 0; background: var(--code); display: grid; gap: 10px; min-width: 0; }
+.dauDe[hidden] { display: none; }
+.dauDe legend { padding: 0 6px; font-weight: 600; font-size: 13.5px; }
+.dauDe legend small { font-weight: 400; color: var(--phu); }
+.dauDeLuoi { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: 14px; }
+.cotDD { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.nhanCot { font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--phu); }
+.dauDe label { display: grid; gap: 4px; font-size: 13px; min-width: 0; }
+.dauDe label small { color: var(--phu); font-weight: 400; }
+.dauDe input, .dauDe textarea { font: inherit; font-size: 13.5px; width: 100%; box-sizing: border-box; border: 1px solid var(--vien); border-radius: 6px; padding: 6px 9px; background: var(--mat); color: var(--chu); resize: vertical; min-width: 0; }
+.dauDe input:focus, .dauDe textarea:focus { outline: 2px solid var(--vang); outline-offset: -1px; border-color: transparent; }
+.hangDD { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: end; }
+.hangDD .maDe { width: 200px; }
+@media (max-width: 720px) { .dauDeLuoi { grid-template-columns: minmax(0, 1fr); } .hangDD .maDe { width: 100%; } }
+.toDe .dauDeXem { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 12px; text-align: center; line-height: 1.4; margin: 0 0 14px; }
+.toDe .dauDeXem b, .toDe .dauDeXem i { display: block; }
+.toDe .hangMaDe { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 0 0 18px; }
+.toDe .hangMaDe .oMaDe { border: 1.5px solid currentColor; padding: 6px 18px; font-weight: 700; white-space: nowrap; }
+.toDe .hangMaDe .oMaDe span { color: #C00000; }
+.dauDe textarea { height: 4.2em; min-height: 3em; max-height: 9em; flex: none; }
 
 </style>
 </head>
@@ -585,6 +606,27 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 						<label class="bat"><input type="checkbox" id="twGach"> Hiện đáp án đúng trên đề</label>
 						<label class="bat"><input type="checkbox" id="twDsBang" checked> Câu đúng/sai dạng bảng</label>
 					</div>
+					<fieldset class="dauDe" id="dauDeTW" aria-label="Thông tin tiêu đề đầu đề">
+						<legend>Tiêu đề đầu đề <small>· tự điền từ file đề, sửa được — tắt ô “Tiêu đề đầu đề” để bỏ hẳn phần này</small></legend>
+						<div class="dauDeLuoi">
+							<div class="cotDD">
+								<span class="nhanCot">Bên trái</span>
+								<label>Đơn vị <small>(mỗi dòng một dòng, in đậm)</small><textarea id="ddDonVi" rows="2" placeholder="TRƯỜNG THPT&#10;NGUYỄN THỊ MINH KHAI"></textarea></label>
+								<label>Dòng phụ <small>(in nghiêng)</small><input id="ddGhiChu" placeholder="(Đề thi có 04 trang)"></label>
+							</div>
+							<div class="cotDD">
+								<span class="nhanCot">Bên phải</span>
+								<label>Tên kì thi <small>(in đậm)</small><textarea id="ddKiThi" rows="2" placeholder="ĐỀ KIỂM TRA CUỐI KÌ I NĂM HỌC 2025 - 2026"></textarea></label>
+								<label>Môn <small>(in đậm)</small><input id="ddMon" placeholder="MÔN: TOÁN – LỚP 12"></label>
+								<label>Thời gian <small>(in nghiêng)</small><input id="ddThoiGian" placeholder="Thời gian làm bài: 90 phút, không kể thời gian phát đề"></label>
+							</div>
+						</div>
+						<div class="hangDD">
+							<label class="maDe">Mã đề <small>(bỏ trống nếu không cần)</small><input id="ddMaDe" placeholder="1201" inputmode="numeric"></label>
+							<button class="nut rong" id="ddLayLai" type="button">Lấy lại từ file đề</button>
+							<button class="nut rong" id="ddXoa" type="button">Xoá trắng</button>
+						</div>
+					</fieldset>
 					<p class="meoCT" id="meoTW"></p>
 				</div>
 				<div class="theKQ" role="tablist" aria-label="Đề LaTeX">
@@ -889,7 +931,7 @@ $("vao").addEventListener("keydown", e => {
 	function nho(ids) { ids.forEach(k => { if (!$(k)) return; const v = docO(k); if (v !== null) $(k).checked = v === "1"; $(k).addEventListener("change", () => ghiO(k, $(k).checked ? "1" : "0")); }); }
 	nho(["ptChuan", "wTieuDe", "wLoiGiai", "wGach", "wBangDA"]);
 	["wFont", "wCo", "wLe", "wNgat", "ptScan"].forEach(k => { if (!$(k)) return; const v = docO(k); if (v) { const cu = $(k).value; $(k).value = v; if ($(k).value !== v) $(k).value = cu; } $(k).addEventListener("change", () => ghiO(k, $(k).value)); });
-	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 7.5.";
+	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 7.6.";
 
 	/* ---------- tab ngang ---------- */
 	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"]];
@@ -996,7 +1038,7 @@ $("vao").addEventListener("keydown", e => {
 		const khoa = $(o.khoa).value.trim();
 		const tt = $(o.tt);
 		if (!khoa) { tt.textContent = "Dán khoá vào ô trên trước."; tt.className = "ttKhoa loi"; return; }
-		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 7.5."; tt.className = "ttKhoa loi"; return; }
+		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 7.6."; tt.className = "ttKhoa loi"; return; }
 		$(o.nut).disabled = true; tt.textContent = "Đang kiểm tra…"; tt.className = "ttKhoa";
 		try {
 			const ds = await bo().aiDsMoHinh({ nguon, khoa });
@@ -1330,8 +1372,16 @@ $("vao").addEventListener("keydown", e => {
 		try { de = T.docDe(code); } catch (e) { return { h: '<p class="loiTex">Mã LaTeX có lỗi cấu trúc: ' + esc(e.message) + "</p>", tong: 0 }; }
 		let h = o.dau || "";
 		const tieuDe = o.tieuDe ? (de.tieuDe.length ? de.tieuDe : (o.tieuDeThem || [])) : [];
-		if (tieuDe.length) h += '<div class="tieuDeDe">' + tieuDe.map(t => html(t, de)).join("<br>") + "</div>";
-		if (o.hoTen) h += '<p class="hoTenTS"><b>Họ và tên thí sinh:</b> ……………………………… <b>Số báo danh:</b> ……………</p>';
+		const dd = o.dauDe || (tieuDe.length && T.tachDauDe ? T.tachDauDe(tieuDe) : null);
+		const coDD = dd && (dd.donVi.length || dd.kiThi.length || dd.mon || dd.thoiGian || dd.ghiChu);
+		if (coDD) {
+			const trai = dd.donVi.map(t => "<b>" + esc(t) + "</b>").join("") + (dd.ghiChu ? "<i>" + esc(dd.ghiChu) + "</i>" : "");
+			const phai = dd.kiThi.map(t => "<b>" + esc(t) + "</b>").join("") + (dd.mon ? "<b>" + esc(dd.mon) + "</b>" : "") + (dd.thoiGian ? "<i>" + esc(dd.thoiGian) + "</i>" : "");
+			h += trai && phai ? '<div class="dauDeXem"><div>' + trai + "</div><div>" + phai + "</div></div>" : '<div class="tieuDeDe">' + trai + phai + "</div>";
+		}
+		else if (tieuDe.length) h += '<div class="tieuDeDe">' + tieuDe.map(t => html(t, de)).join("<br>") + "</div>";
+		const maDe = coDD && dd.maDe ? dd.maDe : "";
+		if (o.hoTen || maDe) h += '<div class="hangMaDe"><div>' + (o.hoTen ? "<i>Họ, tên thí sinh:</i> ………………………………………<br><i>Số báo danh:</i> …………………………………………" : "") + "</div>" + (maDe ? '<div class="oMaDe">MÃ ĐỀ: <span>' + esc(maDe) + "</span></div>" : "") + "</div>";
 		let so = 0, tong = 0;
 		de.cau.forEach(c => {
 			if (c.phanMoi) { so = 0; h += c.laDe ? '<h3 class="deMoi">' + esc(c.phanMoi) + "</h3>" : "<h3>" + esc(c.phanMoi) + "</h3>"; return; }
@@ -1495,6 +1545,32 @@ $("vao").addEventListener("keydown", e => {
 	nho(["twChuan", "twTieuDe", "twHoTen", "twGach", "twDsBang"]);
 	["twCheDo", "twFont", "twCo", "twLe", "twNgat"].forEach(k => { const v = docO(k); if (v) { const cu = $(k).value; $(k).value = v; if ($(k).value !== v) $(k).value = cu; } $(k).addEventListener("change", () => { ghiO(k, $(k).value); veXemTW(); }); });
 	["twTieuDe", "twHoTen", "twGach", "twDsBang"].forEach(k => $(k).addEventListener("change", veXemTW));
+	// --- thông tin tiêu đề đầu đề ---
+	const DD = { donVi: "ddDonVi", ghiChu: "ddGhiChu", kiThi: "ddKiThi", mon: "ddMon", thoiGian: "ddThoiGian", maDe: "ddMaDe" };
+	function docDD() {
+		const v = k => $(DD[k]).value.trim();
+		const dong = k => v(k).split(/\n+/).map(x => x.trim()).filter(Boolean);
+		return { donVi: dong("donVi"), ghiChu: v("ghiChu"), kiThi: dong("kiThi"), mon: v("mon"), thoiGian: v("thoiGian"), maDe: v("maDe") };
+	}
+	function datDD(d) {
+		d = d || {};
+		Object.keys(DD).forEach(k => { const x = d[k]; $(DD[k]).value = Array.isArray(x) ? x.join("\n") : (x || ""); });
+		ghiO("twDD", JSON.stringify(docDD()));
+	}
+	try { const d = JSON.parse(docO("twDD") || "null"); if (d) datDD(d); } catch (e) { }
+	Object.values(DD).forEach(id => $(id).addEventListener("input", () => { ghiO("twDD", JSON.stringify(docDD())); clearTimeout(TW.henDD); TW.henDD = setTimeout(veXemTW, 300); }));
+	function hienDD() { $("dauDeTW").hidden = !$("twTieuDe").checked; }
+	$("twTieuDe").addEventListener("change", hienDD); hienDD();
+	// lấy từ file đề (đề không có phần tiêu đề thì giữ thông tin đã điền lần trước, ví dụ tên trường)
+	function layDDTuDe(ep) {
+		if (!coBo("dauDeTuMa")) return;
+		let d = null; try { d = bo().dauDeTuMa($("maTW").value); } catch (e) { }
+		if (d) datDD(d);
+		else if (ep) toast("File đề không có phần tiêu đề để lấy");
+		veXemTW();
+	}
+	$("ddLayLai").addEventListener("click", () => layDDTuDe(true));
+	$("ddXoa").addEventListener("click", () => { datDD({}); veXemTW(); });
 	const KQ_TW = [["twXem", "manTWXem"], ["twMa", "manTWMa"], ["twCB", "manTWCB"]];
 	function chonKQTW(n) {
 		KQ_TW.forEach(([n2, m2]) => { const on = n2 === n; $(n2).setAttribute("aria-selected", on); $(n2).tabIndex = on ? 0 : -1; $(m2).hidden = !on; });
@@ -1601,7 +1677,7 @@ $("vao").addEventListener("keydown", e => {
 		if (!code.trim()) { toDe.innerHTML = '<p class="viDu">Dán code hoặc chọn file .tex — bản in thử sẽ hiện ở đây.</p>'; return; }
 		ANH = { url: TW.anhUrl, tikz: TW.tikzUrl.map((u, k) => ({ u, w: TW.tikz[k] && TW.tikz[k].wPt })) };
 		const cd = $("twCheDo").value;
-		const r = htmlDe(code, { gach: $("twGach").checked, lg: /lg/.test(cd), tieuDe: $("twTieuDe").checked, hoTen: $("twHoTen").checked && /de/.test(cd), dsBang: $("twDsBang").checked });
+		const r = htmlDe(code, { gach: $("twGach").checked, lg: /lg/.test(cd), tieuDe: $("twTieuDe").checked, dauDe: $("twTieuDe").checked ? docDD() : null, hoTen: $("twHoTen").checked && /de/.test(cd), dsBang: $("twDsBang").checked });
 		toDe.innerHTML = r.h + (!r.tong ? "<p>Chưa nhận ra câu hỏi nào.</p>" : "");
 		if (!window.katex) napKatex().then(veXemTW).catch(() => { });
 	}
@@ -1616,6 +1692,7 @@ $("vao").addEventListener("keydown", e => {
 		$("maTW").value = t;
 		TW.ten = tenGoc({ name: String(ten || "de-thi").replace(/\.(tex|zip)$/i, "") });
 		$("tenTepTW").textContent = moTa;
+		layDDTuDe(false);
 		capNhatTW();
 		chonKQTW("twXem");
 	}
@@ -1712,7 +1789,7 @@ $("vao").addEventListener("keydown", e => {
 			const cd = $("twCheDo").value;
 			const r = await bo().xuatWord(code, {
 				anhTep: TW.anh, anh: TW.tikz, cheDo: cd, dsBang: $("twDsBang").checked, hoTen: $("twHoTen").checked,
-				gachDung: $("twGach").checked, coTieuDe: $("twTieuDe").checked,
+				gachDung: $("twGach").checked, coTieuDe: $("twTieuDe").checked, dauDe: $("twTieuDe").checked ? docDD() : null,
 				font: $("twFont").value, coChu: +$("twCo").value, le: LE[$("twLe").value] || LE.chuan, ngatTrang: $("twNgat").value,
 				congThuc: kieuCTTW(), baoTienDo: m => baoTW(m, "", 0.6)
 			});
