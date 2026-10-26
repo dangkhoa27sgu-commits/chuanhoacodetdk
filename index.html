@@ -265,6 +265,31 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 .giaKhoa i { font-style: normal; color: var(--phu); }
 .huongDan kbd, .buocDai kbd { font-family: var(--f-ui); font-size: 11px; border: 1px solid var(--vien); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; background: var(--mat); color: var(--chu); }
 .luuY { margin: 4px 14px 12px; font-size: 12px; color: var(--phu); line-height: 1.55; border-top: 1px dashed var(--vang); padding-top: 9px; }
+/* ---------- LaTeX → Word ---------- */
+#tabTexWord .dai { overflow-y: auto; }
+.nut.rong { margin: 0 12px; justify-content: center; }
+.hinhKem { margin: 14px 12px 12px; padding-top: 12px; border-top: 1px solid var(--vien); display: grid; gap: 10px; font-size: 13px; }
+.hinhKem h3 { margin: 0; font-size: 13px; font-weight: 600; }
+.hinhKem .ttHinh { margin: 0; color: var(--phu); }
+.buocHinh { display: grid; gap: 8px; padding: 10px 12px; border-radius: 8px; background: var(--code); }
+.buocHinh p { margin: 0; line-height: 1.5; }
+.buocHinh ol { margin: 0; padding-left: 18px; display: grid; gap: 8px; line-height: 1.5; color: var(--phu); }
+.buocHinh ol .nut { color: var(--chu); }
+.buocHinh label.nut { cursor: pointer; width: fit-content; }
+.dsAnh { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-family: var(--f-ma, ui-monospace, monospace); font-size: 12px; }
+.dsAnh li { display: flex; align-items: center; gap: 6px; overflow-wrap: anywhere; }
+.dsAnh li::before { content: ""; flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--xanh); }
+.dsAnh li.thieu { color: var(--do); }
+.dsAnh li.thieu::before { background: var(--do); }
+#maTW { min-height: 460px; }
+#maTW.keo { outline: 2px dashed var(--vang); outline-offset: -4px; }
+.toDe .hoTenTS { margin: -6px 0 18px; }
+.toDe h3.deMoi { text-align: center; font-size: 17px; margin-top: 30px; }
+.toDe table.bangDS { width: 100%; margin: 6px 0 0; }
+.toDe table.bangDS th { border: 1px solid currentColor; padding: 3px 8px; font-family: var(--f-ui); font-size: 12.5px; background: color-mix(in srgb, var(--mucCau) 10%, transparent); }
+.toDe table.bangDS td { text-align: center; }
+.toDe table.bangDS td:first-child { text-align: left; }
+.toDe table.bangDS td + td { width: 56px; }
 
 </style>
 </head>
@@ -313,6 +338,7 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 		<button type="button" role="tab" id="nutTabChuan" aria-selected="true" aria-controls="tabChuan">Chuẩn hoá code <small>LaTeX</small></button>
 		<button type="button" role="tab" id="nutTabPdfTex" aria-selected="false" aria-controls="tabPdfTex" tabindex="-1">PDF → LaTeX</button>
 		<button type="button" role="tab" id="nutTabPdfWord" aria-selected="false" aria-controls="tabPdfWord" tabindex="-1">PDF → Word</button>
+		<button type="button" role="tab" id="nutTabTexWord" aria-selected="false" aria-controls="tabTexWord" tabindex="-1">LaTeX → Word</button>
 	</nav>
 		<div class="manTab" id="tabChuan" role="tabpanel" aria-labelledby="nutTabChuan">
 		<section class="thongtin" aria-label="Thông tin dự án">
@@ -476,6 +502,89 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 					<textarea class="maTex" id="maTexW" spellcheck="false" aria-label="Mã LaTeX của đề"></textarea>
 				</div>
 				<div class="manKQ" id="manCB" role="tabpanel" aria-labelledby="kqCB" hidden><ul class="dsCB" id="dsCBW"><li class="trong">Chưa có gì cần soát.</li></ul></div>
+			</div>
+		</div>
+	</div>
+</section>
+<section class="manTab" id="tabTexWord" role="tabpanel" aria-labelledby="nutTabTexWord" hidden>
+	<div class="xuong">
+		<div class="xuongDau">
+			<h2>LaTeX → Word <small>Đề ex_test sang Word · công thức MathType hoặc Equation · hình TikZ, ảnh, bảng, lời giải</small></h2>
+		</div>
+		<div class="xuongThan">
+			<aside class="khoi dai" aria-label="Nguồn đề LaTeX">
+				<label class="thaTep" id="thaTexW">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13l-2 2 2 2M15 13l2 2-2 2"/></svg>
+					<b>Chọn hoặc kéo thả file .tex</b>
+					<span>Hoặc dán code vào tab <b>Mã LaTeX</b>. Đề theo mẫu ex_test: \begin{ex}, \choice, \choiceTF, \shortans, \loigiai.</span>
+					<input type="file" id="tepTexW" accept=".tex,text/x-tex,text/plain">
+				</label>
+				<button class="nut rong" id="layTuChuan" type="button">Lấy code ở tab Chuẩn hoá</button>
+				<div class="hinhKem">
+					<h3>Hình trong đề</h3>
+					<p class="ttHinh" id="ttHinhTW">Chưa có đề.</p>
+					<div class="buocHinh" id="buocTikzTW" hidden>
+						<p><b>Hình TikZ</b> cần biên dịch một lần trên máy bạn:</p>
+						<ol>
+							<li><button class="nut" id="taiFileHinhTW" type="button">Tải file hình .tex</button></li>
+							<li>Biên dịch bằng pdfLaTeX (TeXstudio, MiKTeX…) ra file PDF.</li>
+							<li><label class="nut">Nạp PDF hình<input type="file" id="pdfHinhTW" accept="application/pdf,.pdf" hidden></label> <span id="ttPdfHinhTW"></span></li>
+						</ol>
+					</div>
+					<div class="buocHinh" id="buocAnhTW" hidden>
+						<p><b>Ảnh</b> (\includegraphics) — chọn các file ảnh đi kèm đề:</p>
+						<label class="nut">Thêm ảnh<input type="file" id="anhTW" accept="image/*" multiple hidden></label>
+						<ul class="dsAnh" id="dsAnhTW"></ul>
+					</div>
+				</div>
+			</aside>
+
+			<div class="khoi ban">
+				<div class="banDieuKhien">
+					<div class="hangNut">
+						<button class="nut chinh" id="nutTaoTW" type="button" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Tạo file Word</button>
+						<span class="uocTinh" id="uocTW">Chọn file .tex hoặc dán code để bắt đầu.</span>
+					</div>
+					<div class="tienDo" id="tienDoTW" hidden>
+						<div class="thanhTD" aria-hidden="true"><i id="thanhTDTW"></i></div>
+						<div class="hangTD"><span class="chuTD" id="chuTDTW" role="status"></span></div>
+					</div>
+					<div class="dinhDang" aria-label="Định dạng file Word">
+						<span class="manhGhep" role="group" aria-label="Dạng công thức">
+							<button type="button" id="twMT" aria-pressed="true" title="Mỗi công thức là một đối tượng MathType — nháy đúp để sửa trong MathType">MathType</button>
+							<button type="button" id="twOmml" aria-pressed="false" title="Công thức là Equation có sẵn của Word">Equation</button>
+						</span>
+						<label>Nội dung <select id="twCheDo">
+							<option value="de_da_lg">Đề + bảng đáp án + lời giải chi tiết</option>
+							<option value="de_lg">Đề, lời giải ngay sau mỗi câu</option>
+							<option value="de_da">Đề + bảng đáp án</option>
+							<option value="de">Chỉ đề</option>
+							<option value="lg">Chỉ lời giải chi tiết</option>
+							<option value="da">Chỉ bảng đáp án</option>
+						</select></label>
+						<label>Phông <select id="twFont"><option>Times New Roman</option><option>Arial</option><option>Cambria</option><option>Calibri</option></select></label>
+						<label>Cỡ chữ <select id="twCo"><option value="11">11 pt</option><option value="12" selected>12 pt</option><option value="13">13 pt</option><option value="14">14 pt</option></select></label>
+						<label>Lề <select id="twLe"><option value="chuan">Chuẩn · trái 2 cm</option><option value="hep">Hẹp · 1,5 cm</option><option value="rong">Rộng · 2,5 cm</option></select></label>
+						<label>Ngắt trang <select id="twNgat"><option value="lien">Liền mạch</option><option value="phan">Mỗi phần một trang</option></select></label>
+						<label class="bat"><input type="checkbox" id="twChuan" checked> Chuẩn hoá code trước khi chuyển</label>
+						<label class="bat"><input type="checkbox" id="twTieuDe" checked> Tiêu đề đầu đề</label>
+						<label class="bat"><input type="checkbox" id="twHoTen"> Dòng họ tên, số báo danh</label>
+						<label class="bat"><input type="checkbox" id="twGach"> Hiện đáp án đúng trên đề</label>
+						<label class="bat"><input type="checkbox" id="twDsBang" checked> Câu đúng/sai dạng bảng</label>
+					</div>
+					<p class="meoCT" id="meoTW"></p>
+				</div>
+				<div class="theKQ" role="tablist" aria-label="Đề LaTeX">
+					<button type="button" role="tab" id="twXem" aria-selected="false" aria-controls="manTWXem" tabindex="-1">Bản in thử</button>
+					<button type="button" role="tab" id="twMa" aria-selected="true" aria-controls="manTWMa">Mã LaTeX</button>
+					<button type="button" role="tab" id="twCB" aria-selected="false" aria-controls="manTWCB" tabindex="-1">Cần soát <span class="dem" id="demCBTW">0</span></button>
+				</div>
+				<div class="manKQ" id="manTWXem" role="tabpanel" aria-labelledby="twXem" hidden><div class="toDe" id="toDeTW"></div></div>
+				<div class="manKQ" id="manTWMa" role="tabpanel" aria-labelledby="twMa">
+					<div class="hangMa"><span id="tenTepTW">Dán code LaTeX của đề vào đây.</span><button class="nut" id="xoaMaTW" type="button">Xoá</button></div>
+					<textarea class="maTex" id="maTW" spellcheck="false" aria-label="Mã LaTeX của đề" placeholder="\begin{ex}&#10;Cho hàm số $y=\dfrac{2x+1}{x-1}$. Tiệm cận đứng của đồ thị hàm số là&#10;\choice&#10;{$x=-1$}&#10;{\True $x=1$}&#10;{$y=2$}&#10;{$y=-1$}&#10;\loigiai{Ta có $\lim\limits_{x\to 1^{+}} y=+\infty$.}&#10;\end{ex}"></textarea>
+				</div>
+				<div class="manKQ" id="manTWCB" role="tabpanel" aria-labelledby="twCB" hidden><ul class="dsCB" id="dsCBTW"><li class="trong">Chưa có gì cần soát.</li></ul></div>
 			</div>
 		</div>
 	</div>
@@ -767,14 +876,15 @@ $("vao").addEventListener("keydown", e => {
 	function nho(ids) { ids.forEach(k => { if (!$(k)) return; const v = docO(k); if (v !== null) $(k).checked = v === "1"; $(k).addEventListener("change", () => ghiO(k, $(k).checked ? "1" : "0")); }); }
 	nho(["ptChuan", "wTieuDe", "wLoiGiai", "wGach", "wBangDA"]);
 	["wFont", "wCo", "wLe", "wNgat", "ptScan"].forEach(k => { if (!$(k)) return; const v = docO(k); if (v) { const cu = $(k).value; $(k).value = v; if ($(k).value !== v) $(k).value = cu; } $(k).addEventListener("change", () => ghiO(k, $(k).value)); });
-	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 6.8.";
+	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 6.9.";
 
 	/* ---------- tab ngang ---------- */
-	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"]];
+	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"]];
 	function chonTab(nut, luu) {
 		TAB.forEach(([n, m]) => { const on = n === nut; $(n).setAttribute("aria-selected", on); $(n).tabIndex = on ? 0 : -1; $(m).hidden = !on; });
 		if (luu) ghiO("tab", nut);
 		if (nut === "nutTabPdfWord") khoiDongXuong();
+		if (nut === "nutTabTexWord") khoiDongTW();
 	}
 	TAB.forEach(([n], i) => {
 		$(n).addEventListener("click", () => chonTab(n, true));
@@ -873,7 +983,7 @@ $("vao").addEventListener("keydown", e => {
 		const khoa = $(o.khoa).value.trim();
 		const tt = $(o.tt);
 		if (!khoa) { tt.textContent = "Dán khoá vào ô trên trước."; tt.className = "ttKhoa loi"; return; }
-		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 6.8."; tt.className = "ttKhoa loi"; return; }
+		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 6.9."; tt.className = "ttKhoa loi"; return; }
 		$(o.nut).disabled = true; tt.textContent = "Đang kiểm tra…"; tt.className = "ttKhoa";
 		try {
 			const ds = await bo().aiDsMoHinh({ nguon, khoa });
@@ -1123,11 +1233,18 @@ $("vao").addEventListener("keydown", e => {
 		}
 		out.push(cur); return out;
 	}
+	// ảnh dùng cho bản in thử đang vẽ: { url: tên ảnh -> địa chỉ, tikz: [địa chỉ ảnh hình TikZ theo thứ tự] }
+	let ANH = { url: {}, tikz: [] };
 	function hinhHtml(de, i) {
 		const h = de.hinh[i]; if (!h) return "";
+		if (h.loai === "tikz") {
+			const thu = de.hinh.slice(0, i).filter(x => x.loai === "tikz").length;
+			const t = ANH.tikz[thu];
+			if (t) return '<img src="' + (t.u || t) + '" alt="Hình ' + (i + 1) + '" loading="lazy" style="width:' + (t.w ? Math.round(t.w) + "pt" : "60%") + ';max-width:100%">';
+		}
 		if (h.loai === "anh") {
 			const ten = (h.tep || "").replace(/^.*\//, "");
-			const u = W.anhUrl[h.tep] || W.anhUrl[ten];
+			const u = ANH.url[h.tep] || ANH.url[ten] || ANH.url[ten.replace(/\.\w+$/, "")];
 			const w = ((h.tuyChon || "").match(/width\s*=\s*([\d.]+)\s*cm/) || [])[1];
 			return u ? '<img src="' + u + '" alt="Hình ' + (i + 1) + '" loading="lazy"' + (w ? ' style="width:' + Math.min(100, +w / 17 * 100).toFixed(1) + '%"' : "") + ">" : '<span class="hinhTikz">Hình: ' + esc(ten) + '</span>';
 		}
@@ -1192,40 +1309,47 @@ $("vao").addEventListener("keydown", e => {
 		return o;
 	}
 	const doDai = p => //.test(p) ? 99 : p.replace(/\\[dt]?frac/g, "").replace(/\\[a-zA-Z]+/g, "x").replace(/[{}$^_]/g, "").length;
+	// dựng HTML bản in thử từ mã LaTeX ex_test (dùng chung cho PDF → Word và LaTeX → Word)
+	function htmlDe(code, o) {
+		const T = bo();
+		let de;
+		try { de = T.docDe(code); } catch (e) { return { h: '<p class="loiTex">Mã LaTeX có lỗi cấu trúc: ' + esc(e.message) + "</p>", tong: 0 }; }
+		let h = o.dau || "";
+		const tieuDe = o.tieuDe ? (de.tieuDe.length ? de.tieuDe : (o.tieuDeThem || [])) : [];
+		if (tieuDe.length) h += '<div class="tieuDeDe">' + tieuDe.map(t => html(t, de)).join("<br>") + "</div>";
+		if (o.hoTen) h += '<p class="hoTenTS"><b>Họ và tên thí sinh:</b> ……………………………… <b>Số báo danh:</b> ……………</p>';
+		let so = 0, tong = 0;
+		de.cau.forEach(c => {
+			if (c.phanMoi) { so = 0; h += c.laDe ? '<h3 class="deMoi">' + esc(c.phanMoi) + "</h3>" : "<h3>" + esc(c.phanMoi) + "</h3>"; return; }
+			so++; tong++;
+			let x = '<article class="cau">';
+			x += '<span class="nhanCau">Câu ' + so + ".</span> " + html(c.de, de);
+			if (c.hinhPhai) x += '<div class="giua">' + html(c.hinhPhai, de) + "</div>";
+			if (c.loai === "tn" && c.phuongAn.length) {
+				const dmax = Math.max(...c.phuongAn.map(doDai)), coHinh = c.phuongAn.some(p => /\uE100/.test(p));
+				const cot = c.soCot || (coHinh ? (c.phuongAn.length === 4 ? 4 : 2) : dmax <= 18 ? 4 : dmax <= 40 ? 2 : 1);
+				x += '<div class="pa c' + Math.min(4, cot) + '">' + c.phuongAn.map((p, k) => "<div" + (o.gach && c.dung[k] ? ' class="dung"' : "") + "><b>" + "ABCD"[k] + ".</b> " + html(p, de) + "</div>").join("") + "</div>";
+			}
+			if (c.loai === "ds" && c.phuongAn.length) {
+				const coDA = o.gach && c.dung.some(Boolean);
+				if (o.dsBang) x += '<div class="boc"><table class="bangDS"><tr><th>Mệnh đề</th><th>Đúng</th><th>Sai</th></tr>' + c.phuongAn.map((p, k) => "<tr><td><b>" + "abcd"[k] + ")</b> " + html(p, de) + "</td><td>" + (coDA && c.dung[k] ? "☒" : "☐") + "</td><td>" + (coDA && !c.dung[k] ? "☒" : "☐") + "</td></tr>").join("") + "</table></div>";
+				else x += '<div class="ds">' + c.phuongAn.map((p, k) => "<div><b>" + "abcd"[k] + ")</b> " + html(p, de) + (coDA ? '<span class="dS' + (c.dung[k] ? "" : " sai") + '">' + (c.dung[k] ? "Đúng" : "Sai") + "</span>" : "") + "</div>").join("") + "</div>";
+			}
+			if (c.loai === "tln" && c.dapSo && o.lg) x += '<div class="dapSo">Đáp án: <span>' + html(c.dapSo, de) + "</span></div>";
+			if (o.lg && c.loiGiai && c.loiGiai.trim()) x += '<details class="lg"><summary>Lời giải</summary>' + html(c.loiGiai, de) + "</details>";
+			h += x + "</article>";
+		});
+		return { h, tong, de };
+	}
 	function veXem() {
 		const toDe = $("toDe"); if (!toDe) return;
 		const T = bo();
 		if (!T || typeof T.docDe !== "function") { toDe.innerHTML = '<p class="viDu">Bản in thử</p><p>' + esc(CHUA_CO) + "</p>"; return; }
 		const viDu = !W.kq;
 		const code = viDu ? VI_DU : $("maTexW").value;
-		let de;
-		try { de = T.docDe(code); } catch (e) { toDe.innerHTML = '<p class="loiTex">Mã LaTeX có lỗi cấu trúc: ' + esc(e.message) + "</p>"; return; }
-		const gach = $("wGach").checked, lg = $("wLoiGiai").checked;
-		let h = viDu ? '<p class="viDu">Ví dụ — bản in thử của đề bạn sẽ hiện ở đây, đúng như file Word</p>' : "";
-		const tieuDe = (!viDu && $("wTieuDe").checked) ? (de.tieuDe.length ? de.tieuDe : W.kq.tieuDe) : [];
-		if (tieuDe.length) h += '<div class="tieuDeDe">' + tieuDe.map(t => html(t, de)).join("<br>") + "</div>";
-		let so = 0, tong = 0;
-		de.cau.forEach(c => {
-			if (c.phanMoi) { so = 0; h += "<h3>" + esc(c.phanMoi) + "</h3>"; return; }
-			so++; tong++;
-			let x = '<article class="cau">';
-			if (c.hinhPhai) x += '<div class="hinhPhai">' + html(c.hinhPhai, de) + "</div>";
-			x += '<span class="nhanCau">Câu ' + so + ".</span> " + html(c.de, de);
-			if (c.loai === "tn" && c.phuongAn.length) {
-				const dmax = Math.max(...c.phuongAn.map(doDai)), coHinh = c.phuongAn.some(p => //.test(p));
-				const cot = c.soCot || (coHinh ? (c.phuongAn.length === 4 ? 4 : 2) : dmax <= 18 ? 4 : dmax <= 40 ? 2 : 1);
-				x += '<div class="pa c' + Math.min(4, cot) + '">' + c.phuongAn.map((p, k) => "<div" + (gach && c.dung[k] ? ' class="dung"' : "") + "><b>" + "ABCD"[k] + ".</b> " + html(p, de) + "</div>").join("") + "</div>";
-			}
-			if (c.loai === "ds" && c.phuongAn.length) {
-				const coDA = c.dung.some(Boolean);
-				x += '<div class="ds">' + c.phuongAn.map((p, k) => "<div><b>" + "abcd"[k] + ")</b> " + html(p, de) + (coDA && gach ? '<span class="dS' + (c.dung[k] ? "" : " sai") + '">' + (c.dung[k] ? "Đúng" : "Sai") + "</span>" : "") + "</div>").join("") + "</div>";
-			}
-			if (c.loai === "tln" && c.dapSo) x += '<div class="dapSo">Đáp án: <span>' + html(c.dapSo, de) + "</span></div>";
-			if (lg && c.loiGiai && c.loiGiai.trim()) x += '<details class="lg"><summary>Lời giải</summary>' + html(c.loiGiai, de) + "</details>";
-			h += x + "</article>";
-		});
-		if (!tong && !viDu) h += "<p>Chưa nhận ra câu hỏi nào. Kiểm tra lại ở tab Mã LaTeX.</p>";
-		toDe.innerHTML = h;
+		ANH = { url: W.anhUrl || {}, tikz: [] };
+		const r = htmlDe(code, { gach: $("wGach").checked, lg: $("wLoiGiai").checked, tieuDe: !viDu && $("wTieuDe").checked, tieuDeThem: W.kq && W.kq.tieuDe, dau: viDu ? '<p class="viDu">Ví dụ — bản in thử của đề bạn sẽ hiện ở đây, đúng như file Word</p>' : "" });
+		toDe.innerHTML = r.h + (!r.tong && !viDu ? "<p>Chưa nhận ra câu hỏi nào. Kiểm tra lại ở tab Mã LaTeX.</p>" : "");
 	}
 	function veCB(ds, chua) {
 		const ul = $("dsCBW");
@@ -1334,6 +1458,190 @@ $("vao").addEventListener("keydown", e => {
 		} catch (e) { baoTD("Không tạo được file Word: " + (e && e.message || e), "loi"); }
 		finally { nut.disabled = false; }
 	});
+	/* ================= LaTeX → Word ================= */
+	const TW = { ten: "de-thi", anh: {}, anhUrl: {}, tikz: [], tikzUrl: [], hen: 0, de: null };
+	const KIEU_TW = { mathtype: "twMT", omml: "twOmml" };
+	function datCTTW(k) {
+		if (!KIEU_TW[k]) k = "mathtype";
+		Object.entries(KIEU_TW).forEach(([x, id]) => $(id).setAttribute("aria-pressed", x === k));
+		ghiO("twCT", k);
+		$("meoTW").innerHTML = k === "mathtype"
+			? "File Word nhận được có sẵn <b>công thức MathType</b>: mở bằng Word đã cài MathType, <b>nháy đúp</b> vào công thức để sửa — không cần chuyển đổi gì thêm."
+			: "Công thức là <b>Equation của Word</b>, bấm vào sửa được ngay, không cần cài thêm gì.";
+	}
+	const kieuCTTW = () => Object.keys(KIEU_TW).find(x => $(KIEU_TW[x]).getAttribute("aria-pressed") === "true") || "mathtype";
+	Object.entries(KIEU_TW).forEach(([x, id]) => $(id).addEventListener("click", () => datCTTW(x)));
+	datCTTW(docO("twCT") || "mathtype");
+	nho(["twChuan", "twTieuDe", "twHoTen", "twGach", "twDsBang"]);
+	["twCheDo", "twFont", "twCo", "twLe", "twNgat"].forEach(k => { const v = docO(k); if (v) { const cu = $(k).value; $(k).value = v; if ($(k).value !== v) $(k).value = cu; } $(k).addEventListener("change", () => { ghiO(k, $(k).value); veXemTW(); }); });
+	["twTieuDe", "twHoTen", "twGach", "twDsBang"].forEach(k => $(k).addEventListener("change", veXemTW));
+	const KQ_TW = [["twXem", "manTWXem"], ["twMa", "manTWMa"], ["twCB", "manTWCB"]];
+	function chonKQTW(n) {
+		KQ_TW.forEach(([n2, m2]) => { const on = n2 === n; $(n2).setAttribute("aria-selected", on); $(n2).tabIndex = on ? 0 : -1; $(m2).hidden = !on; });
+		if (n === "twXem") veXemTW();
+	}
+	KQ_TW.forEach(([n], i) => {
+		$(n).addEventListener("click", () => chonKQTW(n));
+		$(n).addEventListener("keydown", e => { if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return; const j = (i + (e.key === "ArrowRight" ? 1 : KQ_TW.length - 1)) % KQ_TW.length; chonKQTW(KQ_TW[j][0]); $(KQ_TW[j][0]).focus(); });
+	});
+	// mã dùng để dựng Word: chuẩn hoá trước (nếu chọn) — file hình TikZ cũng lấy từ mã này để thứ tự hình khớp
+	function maDungTW() {
+		const goc = $("maTW").value;
+		if ($("twChuan").checked && coBo("chuanHoa")) {
+			try { return bo().chuanHoa(goc, Object.assign(luatHienTai(), { ghiChuSuaTay: false, khoiDinhDanh: false })).ketQua; } catch (e) { return goc; }
+		}
+		return goc;
+	}
+	const tenAnh = t => String(t || "").replace(/^.*[\/\\]/, "");
+	function capNhatTW() {
+		const code = $("maTW").value;
+		const T = bo();
+		TW.de = null;
+		if (!code.trim()) { $("uocTW").textContent = "Chọn file .tex hoặc dán code để bắt đầu."; $("nutTaoTW").disabled = true; $("ttHinhTW").textContent = "Chưa có đề."; $("buocTikzTW").hidden = $("buocAnhTW").hidden = true; return; }
+		if (!T || typeof T.docDe !== "function") { $("uocTW").textContent = CHUA_CO; return; }
+		let de;
+		try { de = T.docDe(code); } catch (e) { $("uocTW").textContent = "Mã LaTeX có lỗi cấu trúc: " + e.message; $("nutTaoTW").disabled = true; return; }
+		TW.de = de;
+		const soCau = de.cau.filter(c => !c.phanMoi).length;
+		const tikz = de.hinh.filter(h => h.loai === "tikz").length;
+		const anh = [...new Set(de.hinh.filter(h => h.loai === "anh").map(h => tenAnh(h.tep)))];
+		const thieu = anh.filter(t => !TW.anh[t] && !TW.anh[t.replace(/\.\w+$/, "")]);
+		$("nutTaoTW").disabled = !soCau;
+		$("uocTW").innerHTML = soCau ? "<b>" + soCau + "</b> câu" + (tikz ? " · <b>" + tikz + "</b> hình TikZ" : "") + (anh.length ? " · <b>" + anh.length + "</b> ảnh" : "") : "Chưa nhận ra câu hỏi nào — đề cần có \\begin{ex} … \\end{ex}.";
+		$("ttHinhTW").textContent = !tikz && !anh.length ? "Đề không có hình." : (tikz ? tikz + " hình TikZ" + (TW.tikz.length ? " — đã nạp " + TW.tikz.length + " hình" : " — chưa nạp") : "") + (tikz && anh.length ? "; " : "") + (anh.length ? anh.length + " ảnh" + (thieu.length ? " — còn thiếu " + thieu.length : " — đủ") : "") + ".";
+		$("buocTikzTW").hidden = !tikz;
+		$("buocAnhTW").hidden = !anh.length;
+		$("dsAnhTW").innerHTML = anh.map(t => '<li class="' + (thieu.includes(t) ? "thieu" : "co") + '">' + esc(t) + "</li>").join("");
+		if (!$("manTWXem").hidden) veXemTW();
+	}
+	function veXemTW() {
+		const toDe = $("toDeTW"); if (!toDe || $("manTWXem").hidden) return;
+		const T = bo();
+		if (!T || typeof T.docDe !== "function") { toDe.innerHTML = "<p>" + esc(CHUA_CO) + "</p>"; return; }
+		const code = $("maTW").value;
+		if (!code.trim()) { toDe.innerHTML = '<p class="viDu">Dán code hoặc chọn file .tex — bản in thử sẽ hiện ở đây.</p>'; return; }
+		ANH = { url: TW.anhUrl, tikz: TW.tikzUrl.map((u, k) => ({ u, w: TW.tikz[k] && TW.tikz[k].wPt })) };
+		const cd = $("twCheDo").value;
+		const r = htmlDe(code, { gach: $("twGach").checked, lg: /lg/.test(cd), tieuDe: $("twTieuDe").checked, hoTen: $("twHoTen").checked && /de/.test(cd), dsBang: $("twDsBang").checked });
+		toDe.innerHTML = r.h + (!r.tong ? "<p>Chưa nhận ra câu hỏi nào.</p>" : "");
+		if (!window.katex) napKatex().then(veXemTW).catch(() => { });
+	}
+	$("maTW").addEventListener("input", () => { clearTimeout(TW.hen); TW.hen = setTimeout(capNhatTW, 350); });
+	$("xoaMaTW").addEventListener("click", () => { $("maTW").value = ""; TW.ten = "de-thi"; $("tenTepTW").textContent = "Dán code LaTeX của đề vào đây."; capNhatTW(); });
+	async function docTepTex(f) {
+		const b = new Uint8Array(await f.arrayBuffer());
+		let t = new TextDecoder("utf-8").decode(b);
+		if (/�/.test(t)) { try { t = new TextDecoder("windows-1258").decode(b); } catch (e) { } }
+		$("maTW").value = t.replace(/^﻿/, "");
+		TW.ten = tenGoc({ name: f.name.replace(/\.tex$/i, "") });
+		$("tenTepTW").textContent = f.name + " · " + Math.max(1, Math.round(f.size / 1024)) + " KB";
+		capNhatTW();
+		chonKQTW("twXem");
+	}
+	$("tepTexW").addEventListener("change", e => { const f = e.target.files && e.target.files[0]; if (f) docTepTex(f); e.target.value = ""; });
+	["thaTexW", "maTW"].forEach(id => {
+		const el = $(id);
+		el.addEventListener("dragover", e => { if (e.dataTransfer && [...e.dataTransfer.items || []].some(x => x.kind === "file")) { e.preventDefault(); el.classList.add("keo"); } });
+		el.addEventListener("dragleave", () => el.classList.remove("keo"));
+		el.addEventListener("drop", e => { const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (!f) return; e.preventDefault(); el.classList.remove("keo"); if (/\.tex$|^text\//i.test(f.name + " " + f.type)) docTepTex(f); else toast("Chỉ nhận file .tex"); });
+	});
+	$("layTuChuan").addEventListener("click", () => {
+		const t = ($("ra") && $("ra").value.trim()) || ($("vao") && $("vao").value.trim());
+		if (!t) { toast("Tab Chuẩn hoá chưa có code"); return; }
+		$("maTW").value = t; $("tenTepTW").textContent = "Code lấy từ tab Chuẩn hoá"; capNhatTW(); chonKQTW("twXem");
+	});
+	$("taiFileHinhTW").addEventListener("click", async () => {
+		if (!coBo("taoFileHinh")) { toast(CHUA_CO); return; }
+		const r = bo().taoFileHinh(maDungTW());
+		if (!r.soHinh) { toast("Đề không có hình TikZ"); return; }
+		await taiVe(r.tex, TW.ten + "-hinh.tex", "text/plain");
+	});
+	$("pdfHinhTW").addEventListener("change", async e => {
+		const f = e.target.files && e.target.files[0]; e.target.value = "";
+		if (!f) return;
+		try {
+			$("ttPdfHinhTW").textContent = "Đang đọc…";
+			await napPdf();
+			const ds = await bo().anhTuPdf(new Uint8Array(await f.arrayBuffer()), 4);
+			TW.tikzUrl.forEach(u => URL.revokeObjectURL(u));
+			// file hình có một trang cho mỗi hình của đề (cả TikZ lẫn ảnh), đúng thứ tự trong đề
+			const hinh = TW.de ? TW.de.hinh : [];
+			const can = hinh.filter(h => h.loai === "tikz").length;
+			let tikz = ds;
+			if (hinh.length && ds.length === hinh.length) {
+				tikz = ds.filter((x, k) => hinh[k].loai === "tikz");
+				hinh.forEach((h, k) => { if (h.loai !== "anh") return; const t = tenAnh(h.tep), g = t.replace(/\.\w+$/, ""); if (!TW.anh[t] && !TW.anh[g]) { [t, g, g + ".png"].forEach(x => { TW.anh[x] = ds[k]; }); const u = URL.createObjectURL(new Blob([ds[k].png], { type: "image/png" })); TW.anhUrl[t] = TW.anhUrl[g] = u; } });
+			}
+			TW.tikz = tikz; TW.tikzUrl = tikz.map(x => URL.createObjectURL(new Blob([x.png], { type: "image/png" })));
+			const khop = !hinh.length || ds.length === hinh.length || ds.length === can;
+			$("ttPdfHinhTW").textContent = "Đã nạp " + ds.length + " trang hình" + (khop ? " ✓" : " (đề có " + hinh.length + " hình — file PDF hình chưa khớp, tải lại file hình .tex rồi biên dịch)");
+			capNhatTW();
+		} catch (e2) { $("ttPdfHinhTW").textContent = "Không đọc được PDF: " + (e2 && e2.message || e2); }
+	});
+	$("anhTW").addEventListener("change", async e => {
+		const ds = [...(e.target.files || [])]; e.target.value = "";
+		for (const f of ds) {
+			try {
+				const bm = await createImageBitmap(f);
+				const c = document.createElement("canvas"); c.width = bm.width; c.height = bm.height;
+				const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); x.drawImage(bm, 0, 0);
+				const png = new Uint8Array(await (await new Promise(ok => c.toBlob(ok, "image/png"))).arrayBuffer());
+				const v = { png, wPt: Math.min(450, bm.width * 0.75), hPt: Math.min(450, bm.width * 0.75) * bm.height / bm.width };
+				const ten = tenAnh(f.name), goc = ten.replace(/\.\w+$/, "");
+				[ten, goc, goc + ".png"].forEach(k => { TW.anh[k] = v; });
+				const u = URL.createObjectURL(new Blob([png], { type: "image/png" }));
+				[ten, goc].forEach(k => { TW.anhUrl[k] = u; });
+			} catch (e2) { toast("Không đọc được ảnh " + f.name); }
+		}
+		capNhatTW();
+	});
+	function baoTW(msg, kieu, phan) {
+		$("tienDoTW").hidden = false;
+		$("chuTDTW").textContent = msg; $("chuTDTW").className = "chuTD" + (kieu ? " " + kieu : "");
+		if (phan !== undefined) $("thanhTDTW").style.width = Math.round(phan * 100) + "%";
+	}
+	function veCBTW(ds) {
+		$("dsCBTW").innerHTML = ds.length ? ds.map(x => "<li>" + esc(x) + "</li>").join("") : '<li class="trong">Không có gì cần soát.</li>';
+		$("demCBTW").textContent = ds.length;
+	}
+	$("nutTaoTW").addEventListener("click", async function () {
+		if (!coBo("xuatWord")) { baoTW(CHUA_CO, "loi"); return; }
+		const nut = this; nut.disabled = true;
+		const t0 = performance.now();
+		try {
+			baoTW("Đang tải thư viện…", "", 0.05);
+			await Promise.all([napZip(), napKatex()]);
+			baoTW("Đang dựng file Word…", "", 0.3);
+			const code = maDungTW();
+			const cd = $("twCheDo").value;
+			const r = await bo().xuatWord(code, {
+				anhTep: TW.anh, anh: TW.tikz, cheDo: cd, dsBang: $("twDsBang").checked, hoTen: $("twHoTen").checked,
+				gachDung: $("twGach").checked, coTieuDe: $("twTieuDe").checked,
+				font: $("twFont").value, coChu: +$("twCo").value, le: LE[$("twLe").value] || LE.chuan, ngatTrang: $("twNgat").value,
+				congThuc: kieuCTTW(), baoTienDo: m => baoTW(m, "", 0.6)
+			});
+			const daLuu = await taiVe(r.file, TW.ten + ".docx");
+			const tg = thoiGian(performance.now() - t0);
+			baoTW("Đã tạo file Word: " + r.soCau + " câu" + (r.soHinh ? ", " + r.soHinh + " hình" : "") + (r.soMathType ? ", " + r.soMathType + " công thức MathType" : "") + " — " + tg + "." + (daLuu ? "" : " (Chưa lưu file)"), "ok", 1);
+			const cb = [];
+			if (r.soCTLoi) cb.push(r.soCTLoi + " công thức trình duyệt không vẽ được nên để dạng Equation.");
+			(r.loi || []).slice(0, 30).forEach(x => cb.push("Câu " + x.cau + ": công thức chưa dựng được (đang để dạng chữ): " + String(x.tex).slice(0, 90)));
+			if (TW.de) {
+				const tikz = TW.de.hinh.filter(h => h.loai === "tikz").length;
+				if (tikz && TW.tikz.length < tikz) cb.push("Còn " + (tikz - TW.tikz.length) + " hình TikZ chưa có ảnh — tải file hình .tex, biên dịch rồi nạp PDF hình.");
+				const thieu = [...new Set(TW.de.hinh.filter(h => h.loai === "anh").map(h => tenAnh(h.tep)))].filter(t => !TW.anh[t] && !TW.anh[t.replace(/\.\w+$/, "")]);
+				if (thieu.length) cb.push("Chưa có ảnh: " + thieu.join(", ") + " — bấm Thêm ảnh.");
+			}
+			veCBTW(cb);
+		} catch (e) { baoTW("Không tạo được file Word: " + (e && e.message || e), "loi"); }
+		finally { nut.disabled = false; }
+	});
+	let daKhoiDongTW = false;
+	function khoiDongTW() {
+		if (daKhoiDongTW) return; daKhoiDongTW = true;
+		capNhatTW();
+		napKatex().then(veXemTW).catch(() => { });
+	}
 	let daKhoiDong = false;
 	function khoiDongXuong() {
 		if (daKhoiDong) return; daKhoiDong = true;
