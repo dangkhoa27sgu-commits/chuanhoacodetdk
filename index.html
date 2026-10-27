@@ -324,6 +324,57 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 .toDe .hangMaDe .oMaDe { border: 1.5px solid currentColor; padding: 6px 18px; font-weight: 700; white-space: nowrap; }
 .toDe .hangMaDe .oMaDe span { color: #C00000; }
 .dauDe textarea { height: 4.2em; min-height: 3em; max-height: 9em; flex: none; }
+/* --- Word → LaTeX --- */
+#tabWordTex .hinhKem { display: grid; gap: 10px; }
+#tabWordTex .hinhKem label { font-size: 13px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+#tabWordTex .hinhKem select { font: inherit; }
+.ttKho { margin: 0; font-size: 12.5px; color: var(--phu); line-height: 1.5; }
+.ttKho b { color: var(--chu); }
+.nutChu { background: none; border: 0; padding: 0; font: inherit; color: var(--vang); text-decoration: underline; cursor: pointer; }
+.nhomNut { display: inline-flex; gap: 8px; flex-wrap: wrap; }
+.tongKet .tkTG b { font-size: 15px; color: var(--xanh); }
+#tabWordTex .hinhKem label.bat { flex-wrap: nowrap; align-items: flex-start; }
+#tabWordTex .hinhKem label.bat input { margin-top: 3px; flex: none; }
+.dsHinhWL { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 12px; padding: 12px; }
+.dsHinhWL > .trong { color: var(--phu); margin: 8px; }
+.theHinh { border: 1px solid var(--vien); border-radius: 8px; background: var(--mat); display: grid; gap: 8px; padding: 10px 12px; min-width: 0; }
+.theHinh header { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; font-size: 13px; }
+.theHinh header b { margin-right: auto; }
+.nhanCach, .nhanLoai, .theHinh .diem, .theHinh .tg { font-size: 11.5px; border-radius: 999px; padding: 1px 8px; border: 1px solid var(--vien); color: var(--phu); white-space: nowrap; }
+.nhanCach.vector, .nhanCach.khuhoi, .nhanCach.ai { color: var(--xanh); border-color: currentColor; }
+.nhanCach.vet { color: var(--vang); border-color: currentColor; }
+.nhanCach.bo { color: var(--phu); border-style: dashed; }
+.nhanCach.loi { color: var(--do); border-color: currentColor; }
+.haiAnh { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 8px; }
+.haiAnh figure { margin: 0; display: grid; gap: 4px; min-width: 0; }
+.haiAnh img { width: 100%; height: 150px; object-fit: contain; background: #fff; border: 1px solid var(--vien); border-radius: 6px; }
+.haiAnh figcaption { font-size: 11.5px; color: var(--phu); text-align: center; }
+.khongAnh { height: 150px; display: grid; place-items: center; text-align: center; padding: 8px; font-size: 12.5px; color: var(--phu); border: 1px dashed var(--vien); border-radius: 6px; }
+.theHinh .ghiChu { margin: 0; font-size: 12px; color: var(--phu); }
+.theHinh details summary { cursor: pointer; font-size: 12.5px; color: var(--phu); }
+.maHinh { width: 100%; min-height: 140px; resize: vertical; font-family: var(--f-code); font-size: 12px; border: 1px solid var(--vien); border-radius: 6px; background: var(--code); color: var(--chu); padding: 8px; margin-top: 6px; white-space: pre; }
+.theHinh .hangNut { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 6px; }
+.ttSua { font-size: 12px; color: var(--phu); }
+.ttSua.loi { color: var(--do); }
+.hopHoi { border: 1px solid var(--vien); border-radius: 12px; padding: 0; width: min(920px, calc(100vw - 32px)); max-height: calc(100vh - 48px); background: var(--mat); color: var(--chu); box-shadow: var(--bong); }
+.hopHoi::backdrop { background: var(--toi); }
+.hopHoi form { display: grid; gap: 12px; padding: 18px 20px; max-height: calc(100vh - 48px); overflow: auto; box-sizing: border-box; }
+.hopHoi h3 { margin: 0; font-size: 17px; }
+.moTaHoi { margin: 0; font-size: 13.5px; color: var(--phu); line-height: 1.55; }
+.moTaHoi b { color: var(--chu); }
+.nutNhanh { display: flex; flex-wrap: wrap; gap: 8px; }
+.luoiTT { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 12px; }
+.theTT { border: 1px solid var(--vien); border-radius: 8px; overflow: hidden; display: grid; grid-template-rows: auto 1fr; background: var(--code); }
+.theTT img { width: 100%; height: 160px; object-fit: contain; background: #fff; border-bottom: 1px solid var(--vien); }
+.ttTT { display: grid; gap: 6px; padding: 10px 12px; font-size: 13px; align-content: start; }
+.goiY { font-size: 12px; line-height: 1.45; }
+.goiY.can { color: var(--xanh); }
+.goiY.bo { color: var(--vang); }
+.ngCanh { font-size: 12px; color: var(--phu); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.chonTT { display: flex; gap: 14px; flex-wrap: wrap; padding-top: 4px; }
+.chonTT label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; font-weight: 500; }
+.chanHoi { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; position: sticky; bottom: -18px; background: var(--mat); padding: 10px 0 0; border-top: 1px solid var(--vien); }
+.chanHoi span { font-size: 13px; color: var(--phu); }
 
 </style>
 </head>
@@ -373,6 +424,7 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 		<button type="button" role="tab" id="nutTabPdfTex" aria-selected="false" aria-controls="tabPdfTex" tabindex="-1">PDF → LaTeX</button>
 		<button type="button" role="tab" id="nutTabPdfWord" aria-selected="false" aria-controls="tabPdfWord" tabindex="-1">PDF → Word</button>
 		<button type="button" role="tab" id="nutTabTexWord" aria-selected="false" aria-controls="tabTexWord" tabindex="-1">LaTeX → Word</button>
+		<button type="button" role="tab" id="nutTabWordTex" aria-selected="false" aria-controls="tabWordTex" tabindex="-1">Word → LaTeX</button>
 	</nav>
 		<div class="manTab" id="tabChuan" role="tabpanel" aria-labelledby="nutTabChuan">
 		<section class="thongtin" aria-label="Thông tin dự án">
@@ -643,6 +695,73 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 			</div>
 		</div>
 	</div>
+</section>
+<section class="manTab" id="tabWordTex" role="tabpanel" aria-labelledby="nutTabWordTex" hidden>
+	<div class="xuong">
+		<div class="xuongDau">
+			<h2>Word → LaTeX <small>File .docx sang đề ex_test · công thức MathType / Equation · mọi hình vẽ lại bằng TikZ · đáp án và lời giải</small></h2>
+		</div>
+		<div class="xuongThan">
+			<aside class="khoi dai" aria-label="File Word nguồn">
+				<label class="thaTep" id="thaWL">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M8 12l1.5 6 2.5-4.5 2.5 4.5L16 12"/></svg>
+					<b>Chọn hoặc kéo thả file Word (.docx)</b>
+					<span id="tenTepWL">Đề có “Câu 1.”, “PHẦN I/II/III”, đáp án, lời giải — web tự nhận ra. File .doc cũ hãy lưu lại thành .docx trước.</span>
+					<input type="file" id="tepWL" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+				</label>
+				<div class="hinhKem">
+					<h3>Hình trong đề</h3>
+					<p class="ttHinh" id="ttHinhWL">Mọi hình đều được viết lại thành code TikZ — không chèn ảnh. Hình thực tế (ảnh chụp, tranh) web sẽ <b>dừng lại hỏi bạn</b> vẽ TikZ hay lược bỏ.</p>
+					<label class="bat"><input type="checkbox" id="wlAI" checked> Dùng AI để viết TikZ cho bảng biến thiên, đồ thị, hình học</label>
+					<button class="nut rong" id="wlCauHinh" type="button">Cấu hình AI</button>
+					<label>Hình thực tế <select id="wlKieuAnh"><option value="mau">Vẽ màu</option><option value="xam">Đen trắng (in đề)</option></select></label>
+					<label class="bat"><input type="checkbox" id="wlKho" checked> Dùng lại hình đã vẽ trong kho (nhanh hơn)</label>
+					<p class="ttKho" id="ttKhoWL"></p>
+				</div>
+			</aside>
+
+			<div class="khoi ban">
+				<div class="banDieuKhien">
+					<div class="hangNut">
+						<button class="nut chinh" id="nutChayWL" type="button" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Chuyển sang LaTeX</button>
+						<button class="nut" id="nutDungWL" type="button" hidden>Dừng</button>
+						<span class="uocTinh" id="uocWL">Chọn file Word để bắt đầu.</span>
+					</div>
+					<div class="tienDo" id="tienDoWL" hidden>
+						<div class="thanhTD" aria-hidden="true"><i id="thanhTDWL"></i></div>
+						<div class="hangTD"><span class="chuTD" id="chuTDWL" role="status"></span><span class="dongHo" id="dongHoWL" aria-label="Thời gian đã chạy"></span></div>
+					</div>
+					<div class="tongKet" id="tongKetWL" hidden></div>
+					<div class="dinhDang" aria-label="Tuỳ chọn">
+						<label class="bat"><input type="checkbox" id="wlChuan" checked> Chuẩn hoá code sau khi chuyển</label>
+						<label class="bat"><input type="checkbox" id="wlLG" checked> Giữ lời giải</label>
+					</div>
+				</div>
+				<div class="theKQ" role="tablist" aria-label="Kết quả Word → LaTeX">
+					<button type="button" role="tab" id="wlXem" aria-selected="false" aria-controls="manWLXem" tabindex="-1">Bản in thử</button>
+					<button type="button" role="tab" id="wlMa" aria-selected="true" aria-controls="manWLMa">Mã LaTeX</button>
+					<button type="button" role="tab" id="wlHinh" aria-selected="false" aria-controls="manWLHinh" tabindex="-1">Hình <span class="dem" id="demHinhWL">0</span></button>
+					<button type="button" role="tab" id="wlCB" aria-selected="false" aria-controls="manWLCB" tabindex="-1">Cần soát <span class="dem" id="demCBWL">0</span></button>
+				</div>
+				<div class="manKQ" id="manWLXem" role="tabpanel" aria-labelledby="wlXem" hidden><div class="toDe" id="toDeWL"></div></div>
+				<div class="manKQ" id="manWLMa" role="tabpanel" aria-labelledby="wlMa">
+					<div class="hangMa"><span id="ttMaWL">Mã LaTeX sẽ hiện ở đây.</span><span class="nhomNut"><button class="nut" id="chepWL" type="button">Sao chép</button><button class="nut chinh" id="taiWL" type="button" disabled>Tải file .tex</button></span></div>
+					<textarea class="maTex" id="maWL" spellcheck="false" aria-label="Mã LaTeX kết quả" readonly></textarea>
+				</div>
+				<div class="manKQ" id="manWLHinh" role="tabpanel" aria-labelledby="wlHinh" hidden><div class="dsHinhWL" id="dsHinhWL"><p class="trong">Chưa có hình.</p></div></div>
+				<div class="manKQ" id="manWLCB" role="tabpanel" aria-labelledby="wlCB" hidden><ul class="dsCB" id="dsCBWL"><li class="trong">Chưa có gì cần soát.</li></ul></div>
+			</div>
+		</div>
+	</div>
+	<dialog class="hopHoi" id="hopHinhTT" aria-labelledby="tieuDeHoiTT">
+		<form method="dialog">
+			<h3 id="tieuDeHoiTT">Hình thực tế trong đề</h3>
+			<p class="moTaHoi">Các hình dưới đây là <b>ảnh chụp / tranh thực tế</b>. Chọn hình nào cần <b>vẽ lại bằng TikZ</b> và hình nào <b>lược bỏ</b> (bỏ đi không ảnh hưởng bài toán). Gợi ý đã được đánh dấu sẵn.</p>
+			<div class="nutNhanh"><button class="nut" type="button" id="ttVeHet">Vẽ TikZ tất cả</button><button class="nut" type="button" id="ttBoHet">Lược bỏ tất cả</button><button class="nut" type="button" id="ttGoiY">Theo gợi ý</button></div>
+			<div class="luoiTT" id="luoiTT"></div>
+			<div class="chanHoi"><span id="demTT"></span><button class="nut chinh" value="ok" id="ttTiep">Tiếp tục</button></div>
+		</form>
+	</dialog>
 </section>
 
 
@@ -931,15 +1050,16 @@ $("vao").addEventListener("keydown", e => {
 	function nho(ids) { ids.forEach(k => { if (!$(k)) return; const v = docO(k); if (v !== null) $(k).checked = v === "1"; $(k).addEventListener("change", () => ghiO(k, $(k).checked ? "1" : "0")); }); }
 	nho(["ptChuan", "wTieuDe", "wLoiGiai", "wGach", "wBangDA"]);
 	["wFont", "wCo", "wLe", "wNgat", "ptScan"].forEach(k => { if (!$(k)) return; const v = docO(k); if (v) { const cu = $(k).value; $(k).value = v; if ($(k).value !== v) $(k).value = cu; } $(k).addEventListener("change", () => ghiO(k, $(k).value)); });
-	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 7.6.";
+	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 7.7.";
 
 	/* ---------- tab ngang ---------- */
-	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"]];
+	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"]];
 	function chonTab(nut, luu) {
 		TAB.forEach(([n, m]) => { const on = n === nut; $(n).setAttribute("aria-selected", on); $(n).tabIndex = on ? 0 : -1; $(m).hidden = !on; });
 		if (luu) ghiO("tab", nut);
 		if (nut === "nutTabPdfWord") khoiDongXuong();
 		if (nut === "nutTabTexWord") khoiDongTW();
+		if (nut === "nutTabWordTex") khoiDongWL();
 	}
 	TAB.forEach(([n], i) => {
 		$(n).addEventListener("click", () => chonTab(n, true));
@@ -1038,7 +1158,7 @@ $("vao").addEventListener("keydown", e => {
 		const khoa = $(o.khoa).value.trim();
 		const tt = $(o.tt);
 		if (!khoa) { tt.textContent = "Dán khoá vào ô trên trước."; tt.className = "ttKhoa loi"; return; }
-		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 7.6."; tt.className = "ttKhoa loi"; return; }
+		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 7.7."; tt.className = "ttKhoa loi"; return; }
 		$(o.nut).disabled = true; tt.textContent = "Đang kiểm tra…"; tt.className = "ttKhoa";
 		try {
 			const ds = await bo().aiDsMoHinh({ nguon, khoa });
@@ -1834,6 +1954,265 @@ $("vao").addEventListener("keydown", e => {
 		veXem();
 		napKatex().then(veXem).catch(() => { });
 	}
+	/* =================================================================
+	   WORD → LATEX (mọi hình thành TikZ, hỏi khách với hình thực tế)
+	   ================================================================= */
+	const WL = { file: null, buf: null, kq: null, hinh: [], ketQua: null, texGoc: "", tex: "", url: [], ten: "de-thi", dang: false, ac: null };
+	nho(["wlAI", "wlKho", "wlChuan", "wlLG"]);
+	(() => { const v = docO("wlKieuAnh"); if (v) $("wlKieuAnh").value = v; $("wlKieuAnh").addEventListener("change", () => ghiO("wlKieuAnh", $("wlKieuAnh").value)); })();
+	$("wlCauHinh").addEventListener("click", () => moHopAI());
+	const TEN_CACH = { khuhoi: "Code gốc", kho: "Từ kho", vector: "Vector chính xác", ai: "AI viết TikZ", vet: "Dò theo ảnh", bo: "Đã lược bỏ", loi: "Chưa vẽ được" };
+	const TEN_LOAI = { bbt: "Bảng biến thiên", dothi: "Đồ thị", hinhhoc: "Hình học", bang: "Bảng", minhhoa: "Hình thực tế", net: "Hình nét", vector: "Hình vector", shapes: "Hình vẽ Word", tikz: "TikZ" };
+	function baoWL(msg, kieu, phan) {
+		$("tienDoWL").hidden = false;
+		$("chuTDWL").textContent = msg; $("chuTDWL").className = "chuTD" + (kieu ? " " + kieu : "");
+		if (phan !== undefined) $("thanhTDWL").style.width = Math.round(Math.max(0, Math.min(1, phan)) * 100) + "%";
+	}
+	async function capNhatKho() {
+		const W2 = bo() && bo()._w2t;
+		if (!W2 || !W2.khoDem) { $("ttKhoWL").textContent = ""; return; }
+		const n = await W2.khoDem();
+		$("ttKhoWL").innerHTML = n ? "Kho đang có <b>" + n + "</b> mục hình đã vẽ. <button class=\"nutChu\" type=\"button\" id=\"xoaKhoWL\">Xoá kho</button>" : "Kho hình đang trống — hình vẽ xong sẽ được lưu lại để lần sau dùng ngay.";
+		const x = $("xoaKhoWL");
+		if (x) x.addEventListener("click", async () => { try { indexedDB.deleteDatabase("tdk-hinh-w2t"); } catch (e) { } setTimeout(capNhatKho, 300); toast("Đã xoá kho hình"); });
+	}
+	function chonFileWL(f) {
+		if (!f) return;
+		if (!/\.docx$/i.test(f.name)) { baoWL("Chỉ nhận file .docx — file .doc cũ hãy mở bằng Word rồi lưu lại thành .docx.", "loi"); return; }
+		WL.file = f; WL.ten = tenGoc(f).replace(/\.docx$/i, "").replace(/-docx$/i, "") || "de-thi";
+		$("tenTepWL").textContent = f.name + " · " + Math.max(1, Math.round(f.size / 1024)) + " KB";
+		$("nutChayWL").disabled = false;
+		$("uocWL").textContent = "Bấm Chuyển sang LaTeX — web đọc câu hỏi, công thức, đáp án, lời giải và vẽ lại mọi hình bằng TikZ.";
+	}
+	oChon($("thaWL"), $("tepWL"), null, chonFileWL);
+
+	// ---- hộp hỏi hình thực tế ----
+	function hoiHinhThucTe(ds) {
+		return new Promise(ok => {
+			const hop = $("hopHinhTT"), luoi = $("luoiTT");
+			const url = [];
+			luoi.innerHTML = ds.map((h, k) => {
+				const u = URL.createObjectURL(new Blob([h.bytes], { type: "image/" + (bo()._w2t.loaiTep(h.bytes) === "jpeg" ? "jpeg" : "png") })); url.push(u);
+				const goiY = h.goiY === "bo" ? "bo" : "ve";
+				return '<div class="theTT" data-k="' + k + '"><img src="' + u + '" alt="Hình thực tế ' + (k + 1) + '"><div class="ttTT"><b>' + (h.cau ? "Câu " + h.cau : "Hình " + (h.so + 1)) + "</b>" +
+					(h.lyDo ? '<span class="goiY ' + (h.canThiet === false ? "bo" : "can") + '">' + (h.canThiet === false ? "Gợi ý: có thể lược bỏ — " : "Gợi ý: nên vẽ — ") + esc(h.lyDo) + "</span>" : "") +
+					(h.ngCanh ? '<span class="ngCanh">' + esc(h.ngCanh.slice(0, 220)) + (h.ngCanh.length > 220 ? "…" : "") + "</span>" : "") +
+					'<span class="chonTT" role="radiogroup" aria-label="Xử lí hình"><label><input type="radio" name="tt' + k + '" value="ve"' + (goiY === "ve" ? " checked" : "") + "> Vẽ TikZ</label><label><input type=\"radio\" name=\"tt" + k + '" value="bo"' + (goiY === "bo" ? " checked" : "") + "> Lược bỏ</label></span></div></div>";
+			}).join("");
+			const dem = () => { const ve = luoi.querySelectorAll('input[value="ve"]:checked').length; $("demTT").textContent = ve + " hình vẽ TikZ · " + (ds.length - ve) + " hình lược bỏ"; };
+			luoi.addEventListener("change", dem); dem();
+			const datHet = v => { luoi.querySelectorAll('input[value="' + v + '"]').forEach(r => { r.checked = true; }); dem(); };
+			$("ttVeHet").onclick = () => datHet("ve"); $("ttBoHet").onclick = () => datHet("bo");
+			$("ttGoiY").onclick = () => { ds.forEach((h, k) => { const r = luoi.querySelector('input[name="tt' + k + '"][value="' + (h.goiY === "bo" ? "bo" : "ve") + '"]'); if (r) r.checked = true; }); dem(); };
+			const xong = () => {
+				const m = new Map();
+				ds.forEach((h, k) => { const r = luoi.querySelector('input[name="tt' + k + '"]:checked'); m.set(h, r ? r.value : h.goiY); });
+				url.forEach(u => URL.revokeObjectURL(u));
+				hop.removeEventListener("close", xong);
+				ok(m);
+			};
+			hop.addEventListener("close", xong);
+			if (typeof hop.showModal === "function") hop.showModal(); else { hop.setAttribute("open", ""); $("ttTiep").onclick = e => { e.preventDefault(); hop.removeAttribute("open"); xong(); }; }
+		});
+	}
+
+	// ---- dựng mã từ kết quả hình ----
+	function dungMaWL() {
+		const W2 = bo()._w2t;
+		let tex = WL.texGoc;
+		if (!$("wlLG").checked) tex = tex.replace(/\\loigiai\{/g, "\\TDKBOLG{");
+		if ($("wlChuan").checked && coBo("chuanHoa")) {
+			try {
+				const giu = tex.replace(/(\d+)/g, "\\TDKHINH{$1}");
+				const c = bo().chuanHoa(giu, Object.assign(luatHienTai(), { ghiChuSuaTay: false, khoiDinhDanh: false })).ketQua;
+				if (/\\TDKHINH\{\d+\}/.test(c) || !/\\TDKHINH/.test(giu)) tex = c.replace(/\\TDKHINH\{(\d+)\}/g, "$1");
+			} catch (e) { }
+		}
+		if (!$("wlLG").checked) tex = boLoiGiai(tex);
+		WL.texTruoc = tex;
+		WL.tex = W2.ghepHinh(tex, WL.ketQua, WL.hinh);
+		return WL.tex;
+	}
+	function boLoiGiai(tex) {
+		let ra = "", i = 0;
+		for (;;) {
+			const a = tex.indexOf("\\TDKBOLG{", i); if (a < 0) { ra += tex.slice(i); break; }
+			ra += tex.slice(i, a); let d = 0, k = a + 8;
+			for (; k < tex.length; k++) { if (tex[k] === "\\") { k++; continue; } if (tex[k] === "{") d++; else if (tex[k] === "}") { d--; if (!d) break; } }
+			i = k + 1;
+		}
+		return ra.replace(/\\TDKBOLG\{/g, "\\loigiai{");
+	}
+	function hienMaWL() {
+		const tex = dungMaWL();
+		$("maWL").value = tex;
+		$("taiWL").disabled = !tex.trim();
+		$("ttMaWL").textContent = Math.max(1, Math.round(new Blob([tex]).size / 1024)) + " KB · " + (tex.match(/\\begin\{ex\}/g) || []).length + " câu";
+		veXemWL(); veHinhWL();
+	}
+	function veXemWL() {
+		const toDe = $("toDeWL"); if (!toDe || $("manWLXem").hidden) return;
+		if (!WL.tex) { toDe.innerHTML = '<p class="viDu">Bản in thử của đề sẽ hiện ở đây.</p>'; return; }
+		// ảnh xem trước của từng hình TikZ, đúng thứ tự xuất hiện
+		WL.url.forEach(u => URL.revokeObjectURL(u)); WL.url = [];
+		const tikz = [];
+		const theoSo = new Map(WL.hinh.map(h => [h.so, WL.ketQua.get(h)]));
+		(WL.texTruoc.match(/(\d+)/g) || []).forEach(m => {
+			const r = theoSo.get(+m.slice(1, -1));
+			if (!r || r.cach === "bo" || r.latex || !r.tikz) return;
+			const u = r.png ? URL.createObjectURL(new Blob([r.png], { type: "image/png" })) : null; if (u) WL.url.push(u);
+			tikz.push({ u, w: r.wPt });
+		});
+		ANH = { url: {}, tikz };
+		const r = htmlDe(WL.tex, { lg: $("wlLG").checked, tieuDe: true, dsBang: true });
+		toDe.innerHTML = r.h + (!r.tong ? "<p>Chưa nhận ra câu hỏi nào.</p>" : "");
+		if (!window.katex) napKatex().then(veXemWL).catch(() => { });
+	}
+	function anhUrlGoc(h) {
+		if (!h.bytes) return null;
+		const lt = bo()._w2t.loaiTep(h.bytes);
+		if (!/^(png|jpeg|gif|bmp|webp)$/.test(lt)) return null;
+		const u = URL.createObjectURL(new Blob([h.bytes], { type: "image/" + lt })); WL.url.push(u); return u;
+	}
+	function veHinhWL() {
+		const k = $("dsHinhWL");
+		if (!WL.hinh.length) { k.innerHTML = '<p class="trong">Đề không có hình.</p>'; $("demHinhWL").textContent = 0; return; }
+		const daCo = new Set();
+		const ds = WL.hinh.filter(h => { const r = WL.ketQua.get(h); if (!r || daCo.has(r)) return false; daCo.add(r); return true; });
+		$("demHinhWL").textContent = ds.length;
+		k.innerHTML = ds.map(h => {
+			const r = WL.ketQua.get(h);
+			const ug = anhUrlGoc(h);
+			const uv = r.png ? URL.createObjectURL(new Blob([r.png], { type: "image/png" })) : null; if (uv) WL.url.push(uv);
+			const cung = WL.hinh.filter(x => WL.ketQua.get(x) === r).map(x => x.cau ? "Câu " + x.cau : "Hình " + (x.so + 1));
+			return '<article class="theHinh" data-so="' + h.so + '"><header><b>' + esc([...new Set(cung)].join(", ")) + '</b><span class="nhanCach ' + r.cach + '">' + esc(TEN_CACH[r.cach] || r.cach) + (r.tuKho ? " · từ kho" : "") + "</span>" +
+				(r.loai ? '<span class="nhanLoai">' + esc(TEN_LOAI[r.loai] || r.loai) + "</span>" : "") +
+				(r.diem && r.cach !== "vector" && r.cach !== "khuhoi" && r.png ? '<span class="diem">giống ' + Math.round(r.diem * 100) + "%</span>" : "") +
+				(r.giay ? '<span class="tg">' + thoiGianCX(r.giay * 1000) + "</span>" : "") + "</header>" +
+				'<div class="haiAnh">' + (ug ? '<figure><img src="' + ug + '" alt="Ảnh gốc"><figcaption>Ảnh gốc</figcaption></figure>' : "") +
+				'<figure>' + (uv ? '<img src="' + uv + '" alt="Hình TikZ">' : '<div class="khongAnh">' + esc(r.cach === "bo" ? "Hình này được lược bỏ khỏi đề" : r.latex ? "Bảng LaTeX (xem ở Bản in thử)" : (r.ghiChu || "Chưa vẽ được")) + "</div>") + "<figcaption>TikZ</figcaption></figure></div>" +
+				(r.ghiChu && r.cach !== "loi" ? '<p class="ghiChu">' + esc(r.ghiChu) + "</p>" : "") +
+				'<details><summary>Code TikZ</summary><textarea class="maHinh" spellcheck="false">' + esc(r.latex || r.tikz || "") + '</textarea><div class="hangNut"><button class="nut" type="button" data-lam="ve">Vẽ lại từ code</button>' +
+				(r.cach === "bo" ? '<button class="nut" type="button" data-lam="khoiphuc">Vẽ lại hình này</button>' : '<button class="nut" type="button" data-lam="bo">Lược bỏ hình</button>') + '<span class="ttSua"></span></div></details></article>';
+		}).join("");
+	}
+	$("dsHinhWL").addEventListener("click", async e => {
+		const b = e.target.closest("button[data-lam]"); if (!b) return;
+		const the = b.closest(".theHinh"); const so = +the.dataset.so;
+		const h = WL.hinh.find(x => x.so === so); const r = WL.ketQua.get(h); if (!r) return;
+		const cung = WL.hinh.filter(x => WL.ketQua.get(x) === r);
+		const tt = the.querySelector(".ttSua");
+		const W2 = bo()._w2t;
+		const datTatCa = moi => cung.forEach(x => WL.ketQua.set(x, moi));
+		if (b.dataset.lam === "bo") { datTatCa(Object.assign({}, r, { cach: "bo", truocBo: r })); if (h.khoa) W2.khoGhi("qd:" + h.khoa, { chon: "bo" }); hienMaWL(); return; }
+		if (b.dataset.lam === "khoiphuc") {
+			if (r.truocBo) { datTatCa(r.truocBo); hienMaWL(); return; }
+			b.disabled = true; tt.textContent = "Đang vẽ…";
+			cung.forEach(x => { x.quyetDinh = "ve"; });
+			const moi = await W2.xuLiMotHinh(Object.assign(h, { quyetDinh: "ve" }), tuyChonHinh());
+			if (h.khoa) W2.khoGhi("qd:" + h.khoa, { chon: "ve" });
+			datTatCa(moi); hienMaWL(); return;
+		}
+		const ma = the.querySelector(".maHinh").value.trim(); if (!ma) return;
+		b.disabled = true; tt.textContent = "Đang vẽ…";
+		const laBang = /^\\begin\{tabular/.test(ma);
+		const v = await bo().veTikz(laBang ? "\\begin{tikzpicture}\\node{" + ma + "};\\end{tikzpicture}" : ma, {});
+		b.disabled = false;
+		if (v.loi) { tt.textContent = "Lỗi: " + v.loi; tt.className = "ttSua loi"; return; }
+		const moi = Object.assign({}, r, laBang ? { latex: ma, tikz: null } : { tikz: ma, latex: null }, { png: v.png, wPt: v.wPt, cach: r.cach === "bo" ? "vet" : r.cach, ghiChu: "đã sửa tay" });
+		datTatCa(moi);
+		if (h.khoa) W2.khoGhi(h.khoa, { cach: moi.cach, loai: moi.loai, tikz: moi.tikz, latex: moi.latex, diem: moi.diem || 1, png: moi.png });
+		hienMaWL(); toast("Đã cập nhật hình");
+	});
+	function tuyChonHinh() {
+		const dungAI = $("wlAI").checked && aiSanSang() && AI.nguon !== "tesseract";
+		return { ai: dungAI ? Object.assign(cauHinhQuet().ai, { signal: WL.ac && WL.ac.signal }) : null, khongAI: !dungAI, khongNho: !$("wlKho").checked, xam: $("wlKieuAnh").value === "xam", signal: WL.ac && WL.ac.signal, songSong: 2 };
+	}
+
+	$("nutChayWL").addEventListener("click", async () => {
+		if (WL.dang || !WL.file) return;
+		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 7.7.", "loi"); return; }
+		WL.dang = true; $("nutChayWL").disabled = true; $("nutDungWL").hidden = false;
+		WL.ac = new AbortController();
+		$("tongKetWL").hidden = true;
+		const t0 = performance.now(); let choKhach = 0, tHoi = 0;
+		const tg = { doc: 0, hinh: 0, ma: 0 };
+		const dh = setInterval(() => { $("dongHoWL").textContent = thoiGianCX(performance.now() - t0 - choKhach - (tHoi ? performance.now() - tHoi : 0)) ; }, 250);
+		try {
+			baoWL("Đang tải thư viện…", "", 0.03);
+			await Promise.all([napZip(), napKatex()]);
+			const W2 = bo()._w2t;
+			const t1 = performance.now();
+			baoWL("Đang đọc file Word và giải mã công thức…", "", 0.08);
+			WL.buf = await WL.file.arrayBuffer();
+			const r = await bo().wordSangLatex(WL.buf, {});
+			// chỉ xử lí hình thật sự có mặt trong đề (hình của phần lời giải chép lại câu hỏi bị bỏ thì thôi)
+			const coMat = new Set((r.tex.match(/\uE100(\d+)\uE101/g) || []).map(m => +m.slice(1, -1)));
+			WL.kq = r; WL.texGoc = r.tex; WL.hinh = r.hinh.filter(h => coMat.has(h.so));
+			for (const h of WL.hinh) { if (h.tep) { try { h.bytes = await r.tepNhiPhan(h.tep); } catch (e) { } } const nc = W2.ngCanhHinh(r.tex, h.so); h.cau = nc.cau; h.ngCanh = nc.ngCanh; }
+			tg.doc = performance.now() - t1;
+			const t2 = performance.now();
+			WL.ketQua = new Map();
+			if (WL.hinh.length) {
+				baoWL("Đang vẽ lại " + WL.hinh.length + " hình bằng TikZ (lần đầu tải bộ vẽ khoảng 10 MB)…", "", 0.15);
+				const o = Object.assign(tuyChonHinh(), {
+					hoiKhach: async ds => { tHoi = performance.now(); baoWL("Có " + ds.length + " hình thực tế — chọn vẽ TikZ hay lược bỏ.", "", undefined); try { return await hoiHinhThucTe(ds); } finally { choKhach += performance.now() - tHoi; tHoi = 0; } },
+					giaiDoan: (g, n) => { if (g === "phanloai") baoWL("AI đang phân loại " + n + " hình…", "", 0.2); if (g === "tiep") baoWL("Đang vẽ hình…", "", 0.25); },
+					bao: (x, n, kq) => baoWL("Đã vẽ " + x + "/" + n + " hình" + (kq && kq.tuKho ? " (lấy từ kho)" : "") + "…", "", 0.25 + 0.7 * x / n)
+				});
+				WL.ketQua = await W2.xuLiHinh(WL.hinh, o);
+			}
+			tg.hinh = performance.now() - t2 - choKhach;
+			const t3 = performance.now();
+			baoWL("Đang dựng mã LaTeX…", "", 0.97);
+			hienMaWL();
+			tg.ma = performance.now() - t3;
+			const tong = performance.now() - t0 - choKhach;
+			// tổng kết
+			const tk = r.thongKe;
+			const dem = {}; const daDem = new Set();
+			WL.hinh.forEach(h => { const x = WL.ketQua.get(h); if (!x || daDem.has(x)) return; daDem.add(x); const k = x.tuKho ? "kho" : x.cach; dem[k] = (dem[k] || 0) + 1; });
+			const soHinh = daDem.size;
+			const chiTiet = Object.entries(dem).map(([k, v]) => v + " " + (TEN_CACH[k] || k).toLowerCase()).join(" · ");
+			$("tongKetWL").innerHTML =
+				"<div><b>" + tk.cau + "</b><span>câu · " + tk.tn + " trắc nghiệm, " + tk.ds + " đúng/sai, " + tk.tl + " trả lời ngắn</span></div>" +
+				"<div><b>" + ((tk.soOle || 0) + (tk.soOmml || 0)) + "</b><span>công thức · " + (tk.soOle || 0) + " MathType, " + (tk.soOmml || 0) + " Equation</span></div>" +
+				"<div><b>" + soHinh + "</b><span>hình TikZ" + (chiTiet ? " · " + esc(chiTiet) : "") + "</span></div>" +
+				"<div" + (tk.coDapAn < tk.cau ? ' class="xau"' : ' class="tot"') + "><b>" + tk.coDapAn + "/" + tk.cau + "</b><span>câu có đáp án · " + tk.coLoiGiai + " câu có lời giải</span></div>" +
+				'<p class="chiTiet tkTG">Hoàn thành trong <b>' + thoiGianCX(tong) + "</b> — đọc file và công thức " + thoiGianCX(tg.doc) + " · vẽ hình " + thoiGianCX(Math.max(0, tg.hinh)) + " · dựng mã " + thoiGianCX(tg.ma) + (choKhach > 500 ? " · không tính " + thoiGianCX(choKhach) + " bạn chọn hình" : "") + "</p>";
+			$("tongKetWL").hidden = false;
+			baoWL("Xong: " + tk.cau + " câu, " + soHinh + " hình — " + thoiGianCX(tong) + ".", "ok", 1);
+			// cần soát
+			const cb = [];
+			(r.canhBao || []).forEach(x => cb.push(x));
+			if (tk.coDapAn < tk.cau) cb.push((tk.cau - tk.coDapAn) + " câu chưa tìm thấy đáp án trong file — kiểm tra lại ở Mã LaTeX.");
+			WL.hinh.forEach(h => { const x = WL.ketQua.get(h); if (x && x.cach === "loi") cb.push((h.cau ? "Câu " + h.cau : "Hình " + (h.so + 1)) + ": " + (x.ghiChu || "hình chưa vẽ được") + " — xem tab Hình."); });
+			WL.hinh.forEach(h => { const x = WL.ketQua.get(h); if (x && x.cach === "vet" && x.loai !== "minhhoa") cb.push((h.cau ? "Câu " + h.cau : "Hình " + (h.so + 1)) + ": hình được dò theo nét ảnh" + (x.ghiChu ? " (" + x.ghiChu + ")" : "") + " — nên xem lại ở tab Hình."); });
+			$("dsCBWL").innerHTML = cb.length ? [...new Set(cb)].map(x => "<li>" + esc(x) + "</li>").join("") : '<li class="trong">Không có gì cần soát thêm. Vẫn nên đọc lại trước khi dùng.</li>';
+			$("demCBWL").textContent = new Set(cb).size;
+			capNhatKho();
+		} catch (e) {
+			baoWL((WL.ac && WL.ac.signal.aborted ? "Đã dừng." : "Không chuyển được: " + (e && e.message || e)), WL.ac && WL.ac.signal.aborted ? "" : "loi");
+		} finally {
+			clearInterval(dh); WL.dang = false; $("nutChayWL").disabled = false; $("nutDungWL").hidden = true;
+			$("dongHoWL").textContent = "";
+		}
+	});
+	$("nutDungWL").addEventListener("click", () => { if (WL.ac) WL.ac.abort(); const hop = $("hopHinhTT"); if (hop.open) hop.close(); });
+	$("taiWL").addEventListener("click", async () => { if (!WL.tex) return; try { await taiVe(new Blob([WL.tex], { type: "text/x-tex;charset=utf-8" }), WL.ten + ".tex"); } catch (e) { toast(e.message); } });
+	$("chepWL").addEventListener("click", () => {
+		const ta = $("maWL"); if (!ta.value) return;
+		const chon = () => { ta.focus(); ta.select(); toast("Đã chọn toàn bộ — bấm Ctrl+C để sao chép"); };
+		if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value).then(() => toast("Đã sao chép mã"), chon); else chon();
+	});
+	["wlChuan", "wlLG"].forEach(k => $(k).addEventListener("change", () => { if (WL.ketQua) hienMaWL(); }));
+	const WL_TAB = [["wlXem", "manWLXem"], ["wlMa", "manWLMa"], ["wlHinh", "manWLHinh"], ["wlCB", "manWLCB"]];
+	WL_TAB.forEach(([n], i) => {
+		$(n).addEventListener("click", () => { WL_TAB.forEach(([n2, m2]) => { const on = n2 === n; $(n2).setAttribute("aria-selected", on); $(n2).tabIndex = on ? 0 : -1; $(m2).hidden = !on; }); if (n === "wlXem") veXemWL(); });
+		$(n).addEventListener("keydown", e => { if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return; const j = (i + (e.key === "ArrowRight" ? 1 : WL_TAB.length - 1)) % WL_TAB.length; $(WL_TAB[j][0]).click(); $(WL_TAB[j][0]).focus(); });
+	});
+	let daKhoiDongWL = false;
+	function khoiDongWL() { if (daKhoiDongWL) return; daKhoiDongWL = true; capNhatKho(); }
 	try { const t = docO("tab"); if (t && $(t)) chonTab(t, false); } catch (e) { }
 	capNhatChip(); capNhatDem();
 })();
