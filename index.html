@@ -373,6 +373,7 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 .ngCanh { font-size: 12px; color: var(--phu); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .chonTT { display: flex; gap: 14px; flex-wrap: wrap; padding-top: 4px; }
 .chonTT label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; font-weight: 500; }
+.chonTT label.tat { opacity: .45; cursor: not-allowed; }
 .chanHoi { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; position: sticky; bottom: -18px; background: var(--mat); padding: 10px 0 0; border-top: 1px solid var(--vien); }
 .chanHoi span { font-size: 13px; color: var(--phu); }
 .theHinh .diem.dc { color: var(--xanh); border-color: currentColor; }
@@ -712,7 +713,7 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 				</label>
 				<div class="hinhKem">
 					<h3>Hình trong đề</h3>
-					<p class="ttHinh" id="ttHinhWL">Mọi hình đều được viết lại thành code TikZ — không chèn ảnh. Hình thực tế (ảnh chụp, tranh) web sẽ <b>dừng lại hỏi bạn</b> vẽ TikZ hay lược bỏ.</p>
+					<p class="ttHinh" id="ttHinhWL">Mọi hình đều được viết lại thành code TikZ — không chèn ảnh. Hình thực tế (ảnh chụp, tranh) web sẽ <b>dừng lại hỏi bạn</b>: AI vẽ mô phỏng theo đề bài, dò theo ảnh, hay lược bỏ.</p>
 					<label class="bat"><input type="checkbox" id="wlAI" checked> Dùng AI để viết TikZ cho bảng biến thiên, đồ thị, hình học</label>
 					<button class="nut rong" id="wlCauHinh" type="button">Cấu hình AI</button>
 					<label>Hình thực tế <select id="wlKieuAnh"><option value="mau">Vẽ màu</option><option value="xam">Đen trắng (in đề)</option></select></label>
@@ -757,8 +758,8 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 	<dialog class="hopHoi" id="hopHinhTT" aria-labelledby="tieuDeHoiTT">
 		<form method="dialog">
 			<h3 id="tieuDeHoiTT">Hình thực tế trong đề</h3>
-			<p class="moTaHoi">Các hình dưới đây là <b>ảnh chụp / tranh thực tế</b>. Chọn hình nào cần <b>vẽ lại bằng TikZ</b> và hình nào <b>lược bỏ</b> (bỏ đi không ảnh hưởng bài toán). Gợi ý đã được đánh dấu sẵn.</p>
-			<div class="nutNhanh"><button class="nut" type="button" id="ttVeHet">Vẽ TikZ tất cả</button><button class="nut" type="button" id="ttBoHet">Lược bỏ tất cả</button><button class="nut" type="button" id="ttGoiY">Theo gợi ý</button></div>
+			<p class="moTaHoi">Các hình dưới đây là <b>ảnh chụp / tranh thực tế</b>. Với mỗi hình chọn: <b>Vẽ mô phỏng (AI)</b> — AI đọc đề bài và dựa vào thư viện hình mẫu để vẽ sơ đồ TikZ rõ nét (hợp với ảnh mờ, phức tạp); <b>Dò theo ảnh</b> — vẽ lại theo đường nét của ảnh; hoặc <b>Lược bỏ</b> (bỏ đi không ảnh hưởng bài toán). Gợi ý đã được đánh dấu sẵn.</p>
+			<div class="nutNhanh"><button class="nut" type="button" id="ttVeHet">Vẽ hết</button><button class="nut" type="button" id="ttBoHet">Lược bỏ tất cả</button><button class="nut" type="button" id="ttGoiY">Theo gợi ý</button></div>
 			<div class="luoiTT" id="luoiTT"></div>
 			<div class="chanHoi"><span id="demTT"></span><button class="nut chinh" value="ok" id="ttTiep">Tiếp tục</button></div>
 		</form>
@@ -1051,7 +1052,7 @@ $("vao").addEventListener("keydown", e => {
 	function nho(ids) { ids.forEach(k => { if (!$(k)) return; const v = docO(k); if (v !== null) $(k).checked = v === "1"; $(k).addEventListener("change", () => ghiO(k, $(k).checked ? "1" : "0")); }); }
 	nho(["ptChuan", "wTieuDe", "wLoiGiai", "wGach", "wBangDA"]);
 	["wFont", "wCo", "wLe", "wNgat", "ptScan"].forEach(k => { if (!$(k)) return; const v = docO(k); if (v) { const cu = $(k).value; $(k).value = v; if ($(k).value !== v) $(k).value = cu; } $(k).addEventListener("change", () => ghiO(k, $(k).value)); });
-	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 7.9.";
+	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 8.0.";
 
 	/* ---------- tab ngang ---------- */
 	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"]];
@@ -1159,7 +1160,7 @@ $("vao").addEventListener("keydown", e => {
 		const khoa = $(o.khoa).value.trim();
 		const tt = $(o.tt);
 		if (!khoa) { tt.textContent = "Dán khoá vào ô trên trước."; tt.className = "ttKhoa loi"; return; }
-		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 7.9."; tt.className = "ttKhoa loi"; return; }
+		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 8.0."; tt.className = "ttKhoa loi"; return; }
 		$(o.nut).disabled = true; tt.textContent = "Đang kiểm tra…"; tt.className = "ttKhoa";
 		try {
 			const ds = await bo().aiDsMoHinh({ nguon, khoa });
@@ -1994,17 +1995,18 @@ $("vao").addEventListener("keydown", e => {
 			const url = [];
 			luoi.innerHTML = ds.map((h, k) => {
 				const u = URL.createObjectURL(new Blob([h.bytes], { type: "image/" + (bo()._w2t.loaiTep(h.bytes) === "jpeg" ? "jpeg" : "png") })); url.push(u);
-				const goiY = h.goiY === "bo" ? "bo" : "ve";
+				const goiY = h.goiY === "bo" ? "bo" : h.goiY === "mophong" && h.coAI ? "mophong" : "ve";
+				const radio = (v, t, tat) => '<label' + (tat ? ' class="tat" title="Cần cấu hình AI"' : "") + '><input type="radio" name="tt' + k + '" value="' + v + '"' + (goiY === v ? " checked" : "") + (tat ? " disabled" : "") + "> " + t + "</label>";
 				return '<div class="theTT" data-k="' + k + '"><img src="' + u + '" alt="Hình thực tế ' + (k + 1) + '"><div class="ttTT"><b>' + (h.cau ? "Câu " + h.cau : "Hình " + (h.so + 1)) + "</b>" +
 					(h.lyDo ? '<span class="goiY ' + (h.canThiet === false ? "bo" : "can") + '">' + (h.canThiet === false ? "Gợi ý: có thể lược bỏ — " : "Gợi ý: nên vẽ — ") + esc(h.lyDo) + "</span>" : "") +
 					(h.ngCanh ? '<span class="ngCanh">' + esc(h.ngCanh.slice(0, 220)) + (h.ngCanh.length > 220 ? "…" : "") + "</span>" : "") +
-					'<span class="chonTT" role="radiogroup" aria-label="Xử lí hình"><label><input type="radio" name="tt' + k + '" value="ve"' + (goiY === "ve" ? " checked" : "") + "> Vẽ TikZ</label><label><input type=\"radio\" name=\"tt" + k + '" value="bo"' + (goiY === "bo" ? " checked" : "") + "> Lược bỏ</label></span></div></div>";
+					'<span class="chonTT" role="radiogroup" aria-label="Xử lí hình">' + radio("mophong", "Vẽ mô phỏng (AI)", !h.coAI) + radio("ve", "Dò theo ảnh") + radio("bo", "Lược bỏ") + "</span></div></div>";
 			}).join("");
-			const dem = () => { const ve = luoi.querySelectorAll('input[value="ve"]:checked').length; $("demTT").textContent = ve + " hình vẽ TikZ · " + (ds.length - ve) + " hình lược bỏ"; };
+			const dem = () => { const mp = luoi.querySelectorAll('input[value="mophong"]:checked').length, ve = luoi.querySelectorAll('input[value="ve"]:checked').length; $("demTT").textContent = (mp ? mp + " hình vẽ mô phỏng · " : "") + (ve ? ve + " hình dò theo ảnh · " : "") + (ds.length - ve - mp) + " hình lược bỏ"; };
 			luoi.addEventListener("change", dem); dem();
-			const datHet = v => { luoi.querySelectorAll('input[value="' + v + '"]').forEach(r => { r.checked = true; }); dem(); };
-			$("ttVeHet").onclick = () => datHet("ve"); $("ttBoHet").onclick = () => datHet("bo");
-			$("ttGoiY").onclick = () => { ds.forEach((h, k) => { const r = luoi.querySelector('input[name="tt' + k + '"][value="' + (h.goiY === "bo" ? "bo" : "ve") + '"]'); if (r) r.checked = true; }); dem(); };
+			const datHet = v => { luoi.querySelectorAll('input[value="' + v + '"]').forEach(r => { if (!r.disabled) r.checked = true; }); dem(); };
+			$("ttVeHet").onclick = () => datHet(ds.some(h => h.coAI) ? "mophong" : "ve"); $("ttBoHet").onclick = () => datHet("bo");
+			$("ttGoiY").onclick = () => { ds.forEach((h, k) => { const r = luoi.querySelector('input[name="tt' + k + '"][value="' + (h.goiY === "bo" ? "bo" : h.goiY === "mophong" && h.coAI ? "mophong" : "ve") + '"]'); if (r) r.checked = true; }); dem(); };
 			const xong = () => {
 				const m = new Map();
 				ds.forEach((h, k) => { const r = luoi.querySelector('input[name="tt' + k + '"]:checked'); m.set(h, r ? r.value : h.goiY); });
@@ -2106,7 +2108,7 @@ $("vao").addEventListener("keydown", e => {
 				'<figure>' + (uv ? '<img src="' + uv + '" alt="Hình TikZ">' : '<div class="khongAnh">' + esc(r.cach === "bo" ? "Hình này được lược bỏ khỏi đề" : r.latex ? "Bảng LaTeX (xem ở Bản in thử)" : (r.ghiChu || "Chưa vẽ được")) + "</div>") + "<figcaption>TikZ</figcaption></figure></div>" +
 				(r.ghiChu && r.cach !== "loi" ? '<p class="ghiChu">' + esc(r.ghiChu) + "</p>" : "") +
 				'<details><summary>Code TikZ</summary><textarea class="maHinh" spellcheck="false">' + esc(r.latex || r.tikz || "") + '</textarea><div class="hangNut"><button class="nut" type="button" data-lam="ve">Vẽ lại từ code</button>' +
-				(r.cach === "bo" ? '<button class="nut" type="button" data-lam="khoiphuc">Vẽ lại hình này</button>' : '<button class="nut" type="button" data-lam="bo">Lược bỏ hình</button>') + '<span class="ttSua"></span></div></details></article>';
+				(r.loai === "minhhoa" && WL.coAI ? '<button class="nut" type="button" data-lam="mophong">Vẽ mô phỏng (AI)</button>' : "") + (r.cach === "bo" ? '<button class="nut" type="button" data-lam="khoiphuc">Vẽ lại hình này</button>' : '<button class="nut" type="button" data-lam="bo">Lược bỏ hình</button>') + '<span class="ttSua"></span></div></details></article>';
 		}).join("");
 	}
 	$("dsHinhWL").addEventListener("click", async e => {
@@ -2118,12 +2120,13 @@ $("vao").addEventListener("keydown", e => {
 		const W2 = bo()._w2t;
 		const datTatCa = moi => cung.forEach(x => WL.ketQua.set(x, moi));
 		if (b.dataset.lam === "bo") { datTatCa(Object.assign({}, r, { cach: "bo", truocBo: r })); if (h.khoa) W2.khoGhi("qd:" + h.khoa, { chon: "bo" }); hienMaWL(); return; }
-		if (b.dataset.lam === "khoiphuc") {
-			if (r.truocBo) { datTatCa(r.truocBo); hienMaWL(); return; }
-			b.disabled = true; tt.textContent = "Đang vẽ…";
-			cung.forEach(x => { x.quyetDinh = "ve"; });
-			const moi = await W2.xuLiMotHinh(Object.assign(h, { quyetDinh: "ve" }), tuyChonHinh());
-			if (h.khoa) W2.khoGhi("qd:" + h.khoa, { chon: "ve" });
+		if (b.dataset.lam === "khoiphuc" || b.dataset.lam === "mophong") {
+			if (b.dataset.lam === "khoiphuc" && r.truocBo) { datTatCa(r.truocBo); hienMaWL(); return; }
+			const qd = b.dataset.lam === "mophong" ? "mophong" : "ve";
+			b.disabled = true; tt.textContent = qd === "mophong" ? "AI đang vẽ mô phỏng…" : "Đang vẽ…";
+			cung.forEach(x => { x.quyetDinh = qd; });
+			let moi; try { moi = await W2.xuLiMotHinh(Object.assign(h, { quyetDinh: qd }), tuyChonHinh()); } catch (e) { b.disabled = false; tt.textContent = "Lỗi: " + ((e && e.message) || e); return; }
+			if (h.khoa) W2.khoGhi("qd:" + h.khoa, { chon: qd });
 			datTatCa(moi); hienMaWL(); return;
 		}
 		const ma = the.querySelector(".maHinh").value.trim(); if (!ma) return;
@@ -2139,12 +2142,13 @@ $("vao").addEventListener("keydown", e => {
 	});
 	function tuyChonHinh() {
 		const dungAI = $("wlAI").checked && aiSanSang() && AI.nguon !== "tesseract";
+		WL.coAI = dungAI;
 		return { ai: dungAI ? Object.assign(cauHinhQuet().ai, { signal: WL.ac && WL.ac.signal }) : null, khongAI: !dungAI, khongNho: !$("wlKho").checked, xam: $("wlKieuAnh").value === "xam", signal: WL.ac && WL.ac.signal, songSong: 2 };
 	}
 
 	$("nutChayWL").addEventListener("click", async () => {
 		if (WL.dang || !WL.file) return;
-		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 7.9.", "loi"); return; }
+		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 8.0.", "loi"); return; }
 		WL.dang = true; $("nutChayWL").disabled = true; $("nutDungWL").hidden = false;
 		WL.ac = new AbortController();
 		$("tongKetWL").hidden = true;
@@ -2169,7 +2173,7 @@ $("vao").addEventListener("keydown", e => {
 			if (WL.hinh.length) {
 				baoWL("Đang vẽ lại " + WL.hinh.length + " hình bằng TikZ (lần đầu tải bộ vẽ khoảng 10 MB)…", "", 0.15);
 				const o = Object.assign(tuyChonHinh(), {
-					hoiKhach: async ds => { tHoi = performance.now(); baoWL("Có " + ds.length + " hình thực tế — chọn vẽ TikZ hay lược bỏ.", "", undefined); try { return await hoiHinhThucTe(ds); } finally { choKhach += performance.now() - tHoi; tHoi = 0; } },
+					hoiKhach: async ds => { tHoi = performance.now(); baoWL("Có " + ds.length + " hình thực tế — chọn vẽ mô phỏng, dò theo ảnh hay lược bỏ.", "", undefined); try { return await hoiHinhThucTe(ds); } finally { choKhach += performance.now() - tHoi; tHoi = 0; } },
 					giaiDoan: (g, n) => { if (g === "phanloai") baoWL("AI đang phân loại " + n + " hình…", "", 0.2); if (g === "tiep") baoWL("Đang vẽ hình…", "", 0.25); },
 					bao: (x, n, kq) => baoWL("Đã vẽ " + x + "/" + n + " hình" + (kq && kq.tuKho ? " (lấy từ kho)" : "") + "…", "", 0.25 + 0.7 * x / n)
 				});
