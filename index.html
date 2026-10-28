@@ -792,18 +792,24 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 							<input type="search" id="timKT" placeholder="Tìm theo đề bài, từ khoá, tên điểm…" aria-label="Tìm trong kho TikZ">
 							<select id="locKT" aria-label="Lọc theo loại hình"><option value="">Mọi loại</option><option value="bbt">Bảng biến thiên</option><option value="dothi">Đồ thị</option><option value="hinhhoc">Hình học</option><option value="minhhoa">Hình thực tế</option><option value="loi">Web chưa vẽ được</option></select>
 							<button class="nut" type="button" id="taiLaiKT">Tải lại</button>
-							<button class="nut" type="button" id="xoaLoiKT" hidden>Xoá hết hình chưa vẽ được</button>
+							<button class="nut" type="button" id="veLaiLoiKT" hidden>Thử vẽ lại hình lỗi</button><button class="nut" type="button" id="xoaLoiKT" hidden>Xoá hết hình chưa vẽ được</button>
 							<span class="ttKT" id="ttKT"></span>
 						</div>
 						<details class="themKT" id="themKT" hidden>
 							<summary>Thêm hình vào kho <small>(quản trị viên)</small></summary>
-							<p class="moTaKT"><b>Nạp nhiều file .tex</b> (chọn hoặc kéo thả cả chục, cả trăm file một lúc): web tự tách mọi hình TikZ trong từng file kèm câu hỏi chứa nó, vẽ thử, bỏ hình trùng rồi lưu thẳng vào kho. Hoặc dán code vào ô dưới.</p>
+							<p class="moTaKT"><b>Nạp nhiều file .tex</b> (chọn hoặc kéo thả cả chục, cả trăm file một lúc): web tự tách mọi hình TikZ trong từng file kèm câu hỏi chứa nó, vẽ thử, bỏ hình trùng rồi lưu thẳng vào kho. Hoặc dán code vào ô dưới. Hình dùng lệnh riêng (\IntervalLR, \tikzset…) định nghĩa trong file <b>.sty</b> của bạn: chọn kèm file .sty đó, hoặc dán định nghĩa vào mục “Lệnh dùng chung”.</p>
 							<textarea id="maKT" spellcheck="false" placeholder="Dán code TikZ: một hoặc nhiều \begin{tikzpicture}…\end{tikzpicture}. Có thể dán cả một đề .tex — web tự tách từng hình kèm câu hỏi chứa nó." aria-label="Code TikZ cần thêm"></textarea>
 							<div class="hangKT">
 								<input type="text" id="deKT" placeholder="Đề bài / từ khoá kèm hình (tuỳ chọn) — vd: cột cờ, bóng nắng, góc nâng" aria-label="Đề bài hoặc từ khoá">
 								<select id="loaiThemKT" aria-label="Loại hình"><option value="">Tự nhận loại</option><option value="bbt">Bảng biến thiên</option><option value="dothi">Đồ thị</option><option value="hinhhoc">Hình học</option><option value="minhhoa">Hình thực tế</option></select>
 							</div>
-							<div class="hangNut"><button class="nut chinh" type="button" id="nutThemKT">Thêm vào kho</button><label class="nut" for="tepKT" id="nutNapKT">Nạp nhiều file .tex…</label><input type="file" id="tepKT" accept=".tex,text/x-tex" multiple hidden><button class="nut" type="button" id="dungNapKT" hidden>Dừng nạp</button><span class="ttKT" id="ttThemKT" role="status"></span></div>
+							<div class="hangNut"><button class="nut chinh" type="button" id="nutThemKT">Thêm vào kho</button><label class="nut" for="tepKT" id="nutNapKT">Nạp nhiều file .tex…</label><input type="file" id="tepKT" accept=".tex,.sty,text/x-tex" multiple hidden><button class="nut" type="button" id="dungNapKT" hidden>Dừng nạp</button><span class="ttKT" id="ttThemKT" role="status"></span></div>
+						</details>
+						<details class="themKT" id="dauKhoKT">
+							<summary>Lệnh dùng chung <small id="ttDauKT"></small></summary>
+							<p class="moTaKT">Dán định nghĩa các lệnh riêng mà hình của bạn dùng (\newcommand, \def, \tikzset, \colorlet… — thường nằm trong file .sty hoặc phần đầu đề). Web nạp kèm khi vẽ hình trong kho. Mọi tài khoản dùng chung, chỉ quản trị viên sửa được.</p>
+							<textarea id="dauKT" spellcheck="false" placeholder="\newcommand{\IntervalLR}[2]{…}&#10;\tikzset{filled/.style={…}}" aria-label="Lệnh dùng chung"></textarea>
+							<div class="hangNut"><button class="nut chinh" type="button" id="luuDauKT">Lưu lệnh dùng chung</button></div>
 						</details>
 						<div class="luoiKT" id="luoiKT"></div>
 						<div class="hangNut"><button class="nut" type="button" id="themNuaKT" hidden>Xem thêm</button></div>
@@ -1048,6 +1054,9 @@ window.__khoTikz = {
 		return ra;
 	},
 	async xoa(id) { return this.xoaNhieu([id]); },
+	// lệnh dùng chung (định nghĩa \newcommand, \tikzset, màu… mà hình trong kho dùng tới)
+	async taiDau() { try { const s = await getDoc(doc(db, KHO_MUC, "_dau")); return s.exists() ? (s.data().chu || "") : ""; } catch (e) { return ""; } },
+	async ghiDau(chu) { try { await setDoc(doc(db, KHO_MUC, "_dau"), { chu: String(chu || ""), capNhat: serverTimestamp() }); } catch (e) { throw loiQuyen(e, "hệ thống từ chối lưu lệnh dùng chung"); } },
 	async xoaNhieu(ids) {
 		if (!KHO.phan) await this.tai();
 		const bo = new Set(ids); if (!bo.size) return;
@@ -1194,7 +1203,7 @@ $("vao").addEventListener("keydown", e => {
 	function nho(ids) { ids.forEach(k => { if (!$(k)) return; const v = docO(k); if (v !== null) $(k).checked = v === "1"; $(k).addEventListener("change", () => ghiO(k, $(k).checked ? "1" : "0")); }); }
 	nho(["ptChuan", "wTieuDe", "wLoiGiai", "wGach", "wBangDA"]);
 	["wFont", "wCo", "wLe", "wNgat", "ptScan"].forEach(k => { if (!$(k)) return; const v = docO(k); if (v) { const cu = $(k).value; $(k).value = v; if ($(k).value !== v) $(k).value = cu; } $(k).addEventListener("change", () => ghiO(k, $(k).value)); });
-	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 8.3.";
+	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 8.4.";
 
 	/* ---------- tab ngang ---------- */
 	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"]];
@@ -1302,7 +1311,7 @@ $("vao").addEventListener("keydown", e => {
 		const khoa = $(o.khoa).value.trim();
 		const tt = $(o.tt);
 		if (!khoa) { tt.textContent = "Dán khoá vào ô trên trước."; tt.className = "ttKhoa loi"; return; }
-		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 8.3."; tt.className = "ttKhoa loi"; return; }
+		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 8.4."; tt.className = "ttKhoa loi"; return; }
 		$(o.nut).disabled = true; tt.textContent = "Đang kiểm tra…"; tt.className = "ttKhoa";
 		try {
 			const ds = await bo().aiDsMoHinh({ nguon, khoa });
@@ -2146,7 +2155,9 @@ $("vao").addEventListener("keydown", e => {
 			layMa: async id => { const m = (await docDs()).find(x => x.id === id); return m ? m.ma : null; },
 			them: async ds => { const cu = await docDs(); await W2.khoGhi("khotikz:cucbo", { ds: ds.concat(cu) }); return ds.map(bo1); },
 			xoa: async id => { await W2.khoGhi("khotikz:cucbo", { ds: (await docDs()).filter(x => x.id !== id) }); },
-			xoaNhieu: async ids => { const bo = new Set(ids); await W2.khoGhi("khotikz:cucbo", { ds: (await docDs()).filter(x => !bo.has(x.id)) }); }
+			xoaNhieu: async ids => { const bo = new Set(ids); await W2.khoGhi("khotikz:cucbo", { ds: (await docDs()).filter(x => !bo.has(x.id)) }); },
+			taiDau: async () => { const c = await W2.khoDoc("khotikz:dau"); return (c && c.chu) || ""; },
+			ghiDau: async chu => { await W2.khoGhi("khotikz:dau", { chu }); }
 		};
 		return cauNoiCucBo;
 	}
@@ -2154,10 +2165,12 @@ $("vao").addEventListener("keydown", e => {
 	function taiKT(epTai) {
 		if (KT.hua && !epTai) return KT.hua;
 		KT.hua = (async () => {
-			if (!bo() || !bo()._w2t || !bo()._w2t.taoMuc) { $("ttKhoTikzWL").textContent = "Bộ luật chưa có kho TikZ — quản trị viên cần cập nhật bộ luật 8.3."; return; }
+			if (!bo() || !bo()._w2t || !bo()._w2t.taoMuc) { $("ttKhoTikzWL").textContent = "Bộ luật chưa có kho TikZ — quản trị viên cần cập nhật bộ luật 8.4."; return; }
 			const cn = cauNoiKT(); KT.cucBo = !!cn.cucBo;
 			try { KT.laQT = !!(cn.laQT && cn.laQT()); } catch (e) { KT.laQT = false; }
-			$("themKT").hidden = !KT.laQT;
+			$("themKT").hidden = $("dauKhoKT").hidden = !KT.laQT;
+			try { KT.dau = (cn.taiDau && await cn.taiDau()) || ""; } catch (e) { KT.dau = ""; }
+			KT.soLenh = bo()._w2t.datDauKho(KT.dau); $("dauKT").value = KT.dau; baoDauKT();
 			try { const r = await cn.tai(epTai); KT.ds = (r && r.ds) || []; KT.capNhat = r && r.capNhat; KT.loiTai = ""; }
 			catch (e) { KT.ds = []; KT.loiTai = (e && e.message) || String(e); }
 			KT.daTai = true; baoKT();
@@ -2197,6 +2210,41 @@ $("vao").addEventListener("keydown", e => {
 		await day();
 		return kq;
 	}
+	function baoDauKT() { $("ttDauKT").textContent = KT.soLenh ? "Đang dùng " + KT.soLenh + " lệnh dùng chung." : "Chưa có lệnh dùng chung."; }
+	async function luuDauKT(chu) {
+		const n = bo()._w2t.datDauKho(chu);
+		await cauNoiKT().ghiDau(chu);
+		KT.dau = chu; KT.soLenh = n; $("dauKT").value = chu; baoDauKT();
+		return n;
+	}
+	$("luuDauKT").addEventListener("click", async () => {
+		const tt = $("ttDauKT"); tt.className = "ttKT";
+		try { const n = await luuDauKT($("dauKT").value); tt.textContent = "Đã lưu — nhận được " + n + " lệnh." + (KT.ds.some(m => m.loi) ? " Chọn lọc “Web chưa vẽ được” rồi bấm “Thử vẽ lại hình lỗi”." : ""); }
+		catch (e) { tt.className = "ttKT loi"; tt.textContent = "Không lưu được: " + ((e && e.message) || e); }
+	});
+	// thêm nội dung file .sty / phần đầu đề vào lệnh dùng chung (bỏ qua nếu đã có)
+	async function themDauTuTep(f, chu) {
+		const cu = KT.dau || "";
+		if (cu.includes(chu.trim().slice(0, 400))) return 0;
+		return luuDauKT((cu ? cu + "\n" : "") + "% ---- từ file " + f.name + " ----\n" + chu);
+	}
+	// vẽ lại các hình lỗi (sau khi đã thêm lệnh dùng chung)
+	$("veLaiLoiKT").addEventListener("click", async () => {
+		const b = $("veLaiLoiKT"), tt = $("ttThemKT"); const loi = KT.ds.filter(m => m.loi); if (!loi.length) return;
+		b.disabled = true; tt.className = "ttKT"; let duoc = 0;
+		try {
+			const W2 = bo()._w2t, cn = cauNoiKT(); const moi = [], cu = [];
+			for (let i = 0; i < loi.length; i++) {
+				tt.textContent = "Đang vẽ thử lại hình " + (i + 1) + "/" + loi.length + "…";
+				const ma = await layMaKT(loi[i]); if (!ma) continue;
+				const m = await W2.taoMuc(ma, { de: loi[i].de, loai: loi[i].loai, the: loi[i].the });
+				if (!m.loi) { moi.push(m); cu.push(loi[i].id); } else if (m.loi !== loi[i].loi) loi[i].loi = m.loi;
+			}
+			if (moi.length) { await cn.xoaNhieu(cu); const bo1 = new Set(cu); KT.ds = KT.ds.filter(x => !bo1.has(x.id)); const ra = await cn.them(moi); ra.forEach(x => KT.ds.unshift(x)); duoc = ra.length; }
+			tt.textContent = "Đã vẽ được thêm " + duoc + "/" + loi.length + " hình." + (loi.length - duoc ? " Còn " + (loi.length - duoc) + " hình lỗi — xem lí do trên từng thẻ." : "");
+		} catch (e) { tt.className = "ttKT loi"; tt.textContent = "Dừng: " + ((e && e.message) || e); }
+		b.disabled = false; baoKT();
+	});
 	const moTaKq = (kq, tong) => "thêm " + kq.them + (tong ? "/" + tong : "") + " hình" + (kq.trung ? " · " + kq.trung + " hình đã có sẵn" : "") + (kq.capNhat ? " · " + kq.capNhat + " hình được bổ sung ảnh gốc" : "") + (kq.loiVe ? " · " + kq.loiVe + " hình web chưa vẽ thử được (vẫn lưu, chỉ tìm theo đề)" : "");
 	function dangNap(bat) { $("nutThemKT").disabled = bat; $("nutNapKT").hidden = bat; $("dungNapKT").hidden = !bat; KT.dung = false; }
 	$("nutThemKT").addEventListener("click", async () => {
@@ -2212,7 +2260,11 @@ $("vao").addEventListener("keydown", e => {
 	});
 	// nạp nhiều file .tex: tách từng tikzpicture kèm câu hỏi chứa nó, lưu thẳng vào kho
 	async function napTepKT(tep) {
-		tep = tep.filter(f => /\.tex$/i.test(f.name)); if (!tep.length) return;
+		const sty = tep.filter(f => /\.(sty|cls)$/i.test(f.name));
+		tep = tep.filter(f => /\.tex$/i.test(f.name)); if (!tep.length && !sty.length) return;
+		let soLenhThem = 0;
+		for (const f of sty) { try { soLenhThem += await themDauTuTep(f, await f.text()); } catch (e) { $("ttThemKT").className = "ttKT loi"; $("ttThemKT").textContent = "Không lưu được lệnh dùng chung từ " + f.name + ": " + ((e && e.message) || e); return; } }
+		if (!tep.length) { $("ttThemKT").textContent = "Đã thêm lệnh dùng chung từ " + sty.length + " file .sty (" + KT.soLenh + " lệnh)."; return; }
 		const tt = $("ttThemKT"); tt.className = "ttKT";
 		$("themKT").open = true; dangNap(true);
 		const tong = { them: 0, trung: 0, loiVe: 0, capNhat: 0 }; let soHinh = 0, khongHinh = 0, f0 = 0;
@@ -2227,7 +2279,7 @@ $("vao").addEventListener("keydown", e => {
 				const kq = await themVaoKho(ds, (i, n, k) => { tt.textContent = "File " + f0 + "/" + tep.length + " (" + f.name + "): hình " + (i + 1) + "/" + n + " · đã lưu " + (tong.them + k.them) + " hình…"; });
 				for (const k in tong) tong[k] += kq[k];
 			}
-			tt.textContent = (KT.dung ? "Đã dừng sau " + f0 + "/" + tep.length + " file: " : "Xong " + tep.length + " file: ") + moTaKq(tong, soHinh) + (khongHinh ? " · " + khongHinh + " file không có hình" : "") + ".";
+			tt.textContent = (sty.length ? "Lệnh dùng chung: " + KT.soLenh + " lệnh. " : "") + (KT.dung ? "Đã dừng sau " + f0 + "/" + tep.length + " file: " : "Xong " + tep.length + " file: ") + moTaKq(tong, soHinh) + (khongHinh ? " · " + khongHinh + " file không có hình" : "") + ".";
 		} catch (e) { tt.className = "ttKT loi"; tt.textContent = "Dừng ở file " + f0 + ": " + ((e && e.message) || e) + " — đã lưu " + tong.them + " hình trước đó."; }
 		dangNap(false);
 	}
@@ -2258,12 +2310,12 @@ $("vao").addEventListener("keydown", e => {
 		const ds = locDsKT();
 		if (!ds.length) { luoi.innerHTML = '<p class="trong">' + (KT.ds.length ? "Không có hình phù hợp." : "Kho chưa có hình." + (KT.laQT ? " Nạp file .tex hoặc dán code ở phần “Thêm hình vào kho”." : "")) + "</p>"; $("themNuaKT").hidden = true; return; }
 		const hien = ds.slice(0, KT.soHien);
-		luoi.innerHTML = hien.map(m => '<article class="theKT" data-id="' + m.id + '"><div class="anhKT">' + (m.loi ? '<span class="loiKT">Web chưa vẽ thử được' + (m.loi ? ":<br>" + esc(String(m.loi).slice(0, 110)) : "") + "</span>" : '<span class="choKT">Đang vẽ…</span>') + "</div>" +
+		luoi.innerHTML = hien.map(m => '<article class="theKT" data-id="' + m.id + '"><div class="anhKT">' + (m.loi ? '<span class="loiKT">Web chưa vẽ thử được' + (m.loi ? ":<br>" + esc(String(m.loi).slice(0, 220)) : "") + "</span>" : '<span class="choKT">Đang vẽ…</span>') + "</div>" +
 			'<div class="ttTheKT"><span class="nhanLoai">' + esc(TEN_LOAI_KT[m.loai] || "Hình") + "</span>" + (m.khoaAnh ? '<span class="nhanLoai">có ảnh gốc</span>' : "") +
 			'<p class="deKT">' + esc((m.de || m.the || "(không có đề bài kèm)").slice(0, 160)) + "</p>" +
 			'<div class="hangNut"><button class="nut" type="button" data-kt="chep">Chép code</button><button class="nut" type="button" data-kt="xem">Xem code</button>' + (KT.laQT ? '<button class="nut" type="button" data-kt="xoa">Xoá</button>' : "") + "</div></div></article>").join("");
 		$("themNuaKT").hidden = ds.length <= KT.soHien;
-		$("xoaLoiKT").hidden = !(KT.laQT && $("locKT").value === "loi" && ds.length);
+		$("xoaLoiKT").hidden = $("veLaiLoiKT").hidden = !(KT.laQT && $("locKT").value === "loi" && ds.length);
 		$("themNuaKT").textContent = "Xem thêm (còn " + (ds.length - KT.soHien) + " hình)";
 		const luot = ++luotVeKT;
 		(async () => {
@@ -2457,7 +2509,7 @@ $("vao").addEventListener("keydown", e => {
 
 	$("nutChayWL").addEventListener("click", async () => {
 		if (WL.dang || !WL.file) return;
-		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 8.3.", "loi"); return; }
+		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 8.4.", "loi"); return; }
 		WL.dang = true; $("nutChayWL").disabled = true; $("nutDungWL").hidden = false;
 		WL.ac = new AbortController();
 		$("tongKetWL").hidden = true;
