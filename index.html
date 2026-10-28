@@ -1051,7 +1051,7 @@ $("vao").addEventListener("keydown", e => {
 	function nho(ids) { ids.forEach(k => { if (!$(k)) return; const v = docO(k); if (v !== null) $(k).checked = v === "1"; $(k).addEventListener("change", () => ghiO(k, $(k).checked ? "1" : "0")); }); }
 	nho(["ptChuan", "wTieuDe", "wLoiGiai", "wGach", "wBangDA"]);
 	["wFont", "wCo", "wLe", "wNgat", "ptScan"].forEach(k => { if (!$(k)) return; const v = docO(k); if (v) { const cu = $(k).value; $(k).value = v; if ($(k).value !== v) $(k).value = cu; } $(k).addEventListener("change", () => ghiO(k, $(k).value)); });
-	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 7.8.";
+	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 7.9.";
 
 	/* ---------- tab ngang ---------- */
 	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"]];
@@ -1159,7 +1159,7 @@ $("vao").addEventListener("keydown", e => {
 		const khoa = $(o.khoa).value.trim();
 		const tt = $(o.tt);
 		if (!khoa) { tt.textContent = "Dán khoá vào ô trên trước."; tt.className = "ttKhoa loi"; return; }
-		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 7.8."; tt.className = "ttKhoa loi"; return; }
+		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 7.9."; tt.className = "ttKhoa loi"; return; }
 		$(o.nut).disabled = true; tt.textContent = "Đang kiểm tra…"; tt.className = "ttKhoa";
 		try {
 			const ds = await bo().aiDsMoHinh({ nguon, khoa });
@@ -2018,20 +2018,32 @@ $("vao").addEventListener("keydown", e => {
 	}
 
 	// ---- dựng mã từ kết quả hình ----
+	// số hình → chữ (0→a … 9→j) để chuẩn hoá không bọc số trong chỗ giữ
+	const maChu = n => String(n).split("").map(d => "abcdefghij"[+d]).join("");
+	const soChu = t => +t.split("").map(c => "abcdefghij".indexOf(c)).join("");
 	function dungMaWL() {
 		const W2 = bo()._w2t;
 		let tex = WL.texGoc;
 		if (!$("wlLG").checked) tex = tex.replace(/\\loigiai\{/g, "\\TDKBOLG{");
+		if (!$("wlLG").checked) tex = boLoiGiai(tex);
+		WL.texTruoc = tex; // bản còn chỗ giữ hình (dùng cho thứ tự ảnh xem trước)
+		// chuẩn hoá giống hệt tab Chuẩn hoá code: cùng tuỳ chọn, chuẩn hoá luôn cả code hình (bảng biến thiên, đồ thị, hình vector);
+		// riêng hình dò theo ảnh (hàng nghìn toạ độ) được giữ nguyên, ghép vào sau
+		const theoSo = new Map(WL.hinh.map(h => [h.so, WL.ketQua.get(h)]));
+		const giuLai = new Map();
+		const tam = new Map(WL.ketQua);
+		WL.hinh.forEach(h => { const r = WL.ketQua.get(h); if (r && r.cach === "vet" && r.tikz) { giuLai.set(h.so, r.tikz); tam.set(h, Object.assign({}, r, { tikz: "\\TDKHINH" + maChu(h.so) })); } });
+		let day = W2.ghepHinh(tex, tam, WL.hinh);
 		if ($("wlChuan").checked && coBo("chuanHoa")) {
 			try {
-				const giu = tex.replace(/(\d+)/g, "\\TDKHINH{$1}");
-				const c = bo().chuanHoa(giu, Object.assign(luatHienTai(), { ghiChuSuaTay: false, khoiDinhDanh: false })).ketQua;
-				if (/\\TDKHINH\{\d+\}/.test(c) || !/\\TDKHINH/.test(giu)) tex = c.replace(/\\TDKHINH\{(\d+)\}/g, "$1");
+				const c = bo().chuanHoa(day, luatHienTai()).ketQua;
+				const du = [...giuLai.keys()].every(k => c.indexOf("\\TDKHINH" + maChu(k)) >= 0);
+				if (du) day = c;
 			} catch (e) { }
 		}
-		if (!$("wlLG").checked) tex = boLoiGiai(tex);
-		WL.texTruoc = tex;
-		WL.tex = W2.ghepHinh(tex, WL.ketQua, WL.hinh);
+		day = day.replace(/\\TDKHINH([a-j]+)/g, (m, k) => giuLai.get(soChu(k)) || "");
+		void theoSo;
+		WL.tex = day;
 		return WL.tex;
 	}
 	function boLoiGiai(tex) {
@@ -2132,7 +2144,7 @@ $("vao").addEventListener("keydown", e => {
 
 	$("nutChayWL").addEventListener("click", async () => {
 		if (WL.dang || !WL.file) return;
-		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 7.8.", "loi"); return; }
+		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 7.9.", "loi"); return; }
 		WL.dang = true; $("nutChayWL").disabled = true; $("nutDungWL").hidden = false;
 		WL.ac = new AbortController();
 		$("tongKetWL").hidden = true;
