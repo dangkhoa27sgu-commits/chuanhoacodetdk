@@ -375,6 +375,7 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 .chonTT label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; font-weight: 500; }
 .chanHoi { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; position: sticky; bottom: -18px; background: var(--mat); padding: 10px 0 0; border-top: 1px solid var(--vien); }
 .chanHoi span { font-size: 13px; color: var(--phu); }
+.theHinh .diem.dc { color: var(--xanh); border-color: currentColor; }
 
 </style>
 </head>
@@ -1050,7 +1051,7 @@ $("vao").addEventListener("keydown", e => {
 	function nho(ids) { ids.forEach(k => { if (!$(k)) return; const v = docO(k); if (v !== null) $(k).checked = v === "1"; $(k).addEventListener("change", () => ghiO(k, $(k).checked ? "1" : "0")); }); }
 	nho(["ptChuan", "wTieuDe", "wLoiGiai", "wGach", "wBangDA"]);
 	["wFont", "wCo", "wLe", "wNgat", "ptScan"].forEach(k => { if (!$(k)) return; const v = docO(k); if (v) { const cu = $(k).value; $(k).value = v; if ($(k).value !== v) $(k).value = cu; } $(k).addEventListener("change", () => ghiO(k, $(k).value)); });
-	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 7.7.";
+	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 7.8.";
 
 	/* ---------- tab ngang ---------- */
 	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"]];
@@ -1158,7 +1159,7 @@ $("vao").addEventListener("keydown", e => {
 		const khoa = $(o.khoa).value.trim();
 		const tt = $(o.tt);
 		if (!khoa) { tt.textContent = "Dán khoá vào ô trên trước."; tt.className = "ttKhoa loi"; return; }
-		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 7.7."; tt.className = "ttKhoa loi"; return; }
+		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 7.8."; tt.className = "ttKhoa loi"; return; }
 		$(o.nut).disabled = true; tt.textContent = "Đang kiểm tra…"; tt.className = "ttKhoa";
 		try {
 			const ds = await bo().aiDsMoHinh({ nguon, khoa });
@@ -2087,7 +2088,7 @@ $("vao").addEventListener("keydown", e => {
 			const cung = WL.hinh.filter(x => WL.ketQua.get(x) === r).map(x => x.cau ? "Câu " + x.cau : "Hình " + (x.so + 1));
 			return '<article class="theHinh" data-so="' + h.so + '"><header><b>' + esc([...new Set(cung)].join(", ")) + '</b><span class="nhanCach ' + r.cach + '">' + esc(TEN_CACH[r.cach] || r.cach) + (r.tuKho ? " · từ kho" : "") + "</span>" +
 				(r.loai ? '<span class="nhanLoai">' + esc(TEN_LOAI[r.loai] || r.loai) + "</span>" : "") +
-				(r.diem && r.cach !== "vector" && r.cach !== "khuhoi" && r.png ? '<span class="diem">giống ' + Math.round(r.diem * 100) + "%</span>" : "") +
+				(r.daDoiChieu ? '<span class="diem dc">AI đã đối chiếu ✓</span>' : r.diem && r.cach !== "vector" && r.cach !== "khuhoi" && !(r.cach === "ai" && /^(bbt|dothi)$/.test(r.loai)) && r.png ? '<span class="diem">giống ' + Math.round(r.diem * 100) + "%</span>" : "") +
 				(r.giay ? '<span class="tg">' + thoiGianCX(r.giay * 1000) + "</span>" : "") + "</header>" +
 				'<div class="haiAnh">' + (ug ? '<figure><img src="' + ug + '" alt="Ảnh gốc"><figcaption>Ảnh gốc</figcaption></figure>' : "") +
 				'<figure>' + (uv ? '<img src="' + uv + '" alt="Hình TikZ">' : '<div class="khongAnh">' + esc(r.cach === "bo" ? "Hình này được lược bỏ khỏi đề" : r.latex ? "Bảng LaTeX (xem ở Bản in thử)" : (r.ghiChu || "Chưa vẽ được")) + "</div>") + "<figcaption>TikZ</figcaption></figure></div>" +
@@ -2131,7 +2132,7 @@ $("vao").addEventListener("keydown", e => {
 
 	$("nutChayWL").addEventListener("click", async () => {
 		if (WL.dang || !WL.file) return;
-		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 7.7.", "loi"); return; }
+		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 7.8.", "loi"); return; }
 		WL.dang = true; $("nutChayWL").disabled = true; $("nutDungWL").hidden = false;
 		WL.ac = new AbortController();
 		$("tongKetWL").hidden = true;
@@ -2184,6 +2185,8 @@ $("vao").addEventListener("keydown", e => {
 			baoWL("Xong: " + tk.cau + " câu, " + soHinh + " hình — " + thoiGianCX(tong) + ".", "ok", 1);
 			// cần soát
 			const cb = [];
+			const coToan = WL.hinh.some(h => { const x = WL.ketQua.get(h); return x && x.cach === "vet" && x.loai !== "minhhoa"; });
+			if (coToan && !tuyChonHinh().ai) cb.push("Chưa bật AI nên bảng biến thiên, đồ thị đang được vẽ theo nét ảnh (ảnh nhòe thì hình cũng nhòe). Bấm “Cấu hình AI” (Gemini có khoá miễn phí) rồi chuyển lại: web sẽ đọc giá trị và viết code tkz-tab / đồ thị hàm số chuẩn.");
 			(r.canhBao || []).forEach(x => cb.push(x));
 			if (tk.coDapAn < tk.cau) cb.push((tk.cau - tk.coDapAn) + " câu chưa tìm thấy đáp án trong file — kiểm tra lại ở Mã LaTeX.");
 			WL.hinh.forEach(h => { const x = WL.ketQua.get(h); if (x && x.cach === "loi") cb.push((h.cau ? "Câu " + h.cau : "Hình " + (h.so + 1)) + ": " + (x.ghiChu || "hình chưa vẽ được") + " — xem tab Hình."); });
