@@ -1230,7 +1230,7 @@ $("vao").addEventListener("keydown", e => {
 	function nho(ids) { ids.forEach(k => { if (!$(k)) return; const v = docO(k); if (v !== null) $(k).checked = v === "1"; $(k).addEventListener("change", () => ghiO(k, $(k).checked ? "1" : "0")); }); }
 	nho(["ptChuan", "wTieuDe", "wLoiGiai", "wGach", "wBangDA"]);
 	["wFont", "wCo", "wLe", "wNgat", "ptScan"].forEach(k => { if (!$(k)) return; const v = docO(k); if (v) { const cu = $(k).value; $(k).value = v; if ($(k).value !== v) $(k).value = cu; } $(k).addEventListener("change", () => ghiO(k, $(k).value)); });
-	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 9.3.";
+	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 9.4.";
 
 	/* ---------- tab ngang ---------- */
 	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"]];
@@ -1340,7 +1340,7 @@ $("vao").addEventListener("keydown", e => {
 		const khoa = $(o.khoa).value.trim();
 		const tt = $(o.tt);
 		if (!khoa) { tt.textContent = "Dán khoá vào ô trên trước."; tt.className = "ttKhoa loi"; return; }
-		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 9.3."; tt.className = "ttKhoa loi"; return; }
+		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 9.4."; tt.className = "ttKhoa loi"; return; }
 		$(o.nut).disabled = true; tt.textContent = "Đang kiểm tra…"; tt.className = "ttKhoa";
 		try {
 			const ds = await bo().aiDsMoHinh({ nguon, khoa });
@@ -2196,7 +2196,7 @@ $("vao").addEventListener("keydown", e => {
 	function taiKT(epTai) {
 		if (KT.hua && !epTai) return KT.hua;
 		KT.hua = (async () => {
-			if (!bo() || !bo()._w2t || !bo()._w2t.taoMuc) { $("ttKhoTikzWL").textContent = "Bộ luật chưa có kho TikZ — quản trị viên cần cập nhật bộ luật 9.3."; return; }
+			if (!bo() || !bo()._w2t || !bo()._w2t.taoMuc) { $("ttKhoTikzWL").textContent = "Bộ luật chưa có kho TikZ — quản trị viên cần cập nhật bộ luật 9.4."; return; }
 			const cn = cauNoiKT(); KT.cucBo = !!cn.cucBo;
 			try { KT.laQT = !!(cn.laQT && cn.laQT()); } catch (e) { KT.laQT = false; }
 			$("themKT").hidden = $("dauKhoKT").hidden = $("gopKT").hidden = !KT.laQT;
@@ -2609,7 +2609,7 @@ $("vao").addEventListener("keydown", e => {
 
 	$("nutChayWL").addEventListener("click", async () => {
 		if (WL.dang || !WL.file) return;
-		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 9.3.", "loi"); return; }
+		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 9.4.", "loi"); return; }
 		WL.dang = true; $("nutChayWL").disabled = true; $("nutDungWL").hidden = false;
 		WL.ac = new AbortController();
 		$("tongKetWL").hidden = true;
@@ -2666,6 +2666,7 @@ $("vao").addEventListener("keydown", e => {
 			const coToan = WL.hinh.some(h => { const x = WL.ketQua.get(h); return x && x.cach === "vet" && x.loai !== "minhhoa"; });
 			if (coToan && !tuyChonHinh().ai) cb.push("Chưa bật AI nên bảng biến thiên, đồ thị đang được vẽ theo nét ảnh (ảnh nhòe thì hình cũng nhòe). Bấm “Cấu hình AI” (Gemini có khoá miễn phí) rồi chuyển lại: web sẽ đọc giá trị và viết code tkz-tab / đồ thị hàm số chuẩn.");
 			(r.canhBao || []).forEach(x => cb.push(x));
+			try { const g = window.TDK && TDK._quet && TDK._quet.goiAI; if (g) { const bd = g._baoDoi || {}; Object.keys(bd).forEach(k => cb.push("Mô hình " + k + " đã hết lượt miễn phí hôm nay — web tự chuyển sang " + bd[k] + " (nhận hình có thể kém hơn). Lượt được cấp lại khoảng 14–15 giờ.")); if (g._hetHet) cb.push("Mọi mô hình Gemini của khoá đều hết lượt hôm nay — các hình còn lại được vẽ không dùng AI. Chuyển lại sau 14–15 giờ để AI vẽ đẹp hơn."); g._baoDoi = {}; g._hetHet = false; } } catch (e) { }
 			if (tk.coDapAn < tk.cau) cb.push((tk.cau - tk.coDapAn) + " câu chưa tìm thấy đáp án trong file — kiểm tra lại ở Mã LaTeX.");
 			WL.hinh.forEach(h => { const x = WL.ketQua.get(h); if (x && x.cach === "loi") cb.push((h.cau ? "Câu " + h.cau : "Hình " + (h.so + 1)) + ": " + (x.ghiChu || "hình chưa vẽ được") + " — xem tab Hình."); });
 			WL.hinh.forEach(h => { const x = WL.ketQua.get(h); if (x && x.cach === "vet" && x.loai !== "minhhoa") cb.push((h.cau ? "Câu " + h.cau : "Hình " + (h.so + 1)) + ": hình được dò theo nét ảnh" + (x.ghiChu ? " (" + x.ghiChu + ")" : "") + " — nên xem lại ở tab Hình."); });
