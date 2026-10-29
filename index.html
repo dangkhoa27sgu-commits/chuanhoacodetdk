@@ -408,6 +408,14 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 .themKT.keo { border-color: var(--xanh); background: color-mix(in srgb, var(--xanh) 8%, transparent); }
 .ttKT.loi { color: var(--do); }
 .moTaKT.nho { font-size: 12px; }
+.theHinh .ungVien summary { cursor: pointer; font-size: 12.5px; color: var(--phu); }
+.dsUV { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; margin-top: 8px; }
+.dsUV figure { margin: 0; display: grid; gap: 4px; border: 1px solid var(--vien); border-radius: 6px; padding: 4px; background: var(--mat); }
+.dsUV figure.dangChon { border-color: var(--xanh); box-shadow: 0 0 0 1px var(--xanh); }
+.dsUV img { width: 100%; height: 90px; object-fit: contain; background: #fff; border-radius: 4px; }
+.dsUV figcaption { font-size: 11px; color: var(--phu); line-height: 1.35; }
+.dsUV .nut { padding: 3px 8px; font-size: 11.5px; }
+.nhanCach.vecto { color: var(--xanh); border-color: currentColor; }
 
 </style>
 </head>
@@ -747,6 +755,7 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 					<p class="ttHinh" id="ttHinhWL">Mọi hình đều được viết lại thành code TikZ — không chèn ảnh. Hình thực tế (ảnh chụp, tranh) web sẽ <b>dừng lại hỏi bạn</b>: AI vẽ mô phỏng theo đề bài, dò theo ảnh, hay lược bỏ.</p>
 					<label class="bat"><input type="checkbox" id="wlAI" checked> Dùng AI để viết TikZ cho bảng biến thiên, đồ thị, hình học</label>
 					<button class="nut rong" id="wlCauHinh" type="button">Cấu hình AI</button>
+					<label>Cách vẽ hình <select id="wlMucHinh"><option value="ki">Kĩ — dựng nhiều bản, AI chọn bản giống nhất rồi sửa</option><option value="nhanh">Nhanh — một bản, ít lượt AI</option></select></label>
 					<label>Hình thực tế <select id="wlKieuAnh"><option value="mau">Vẽ màu</option><option value="xam">Đen trắng (in đề)</option></select></label>
 					<label class="bat"><input type="checkbox" id="wlKho" checked> Dùng lại hình đã vẽ trong kho (nhanh hơn)</label>
 					<p class="ttKho" id="ttKhoWL"></p>
@@ -868,6 +877,8 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 				<div class="oKhoa"><input type="password" id="khoaGemini" autocomplete="off" spellcheck="false" placeholder="Dán khoá AIza... vào đây"><button class="nut" type="button" id="danGemini">Dán</button><button class="nut" type="button" id="hienKhoaGemini">Hiện</button><button class="nut" type="button" id="ktGemini">Kiểm tra khoá</button></div>
 				<div class="ttKhoa" id="ttGemini" role="status"></div>
 				<label class="truong">Mô hình<select id="mhGemini"><option value="gemini-flash-lite-latest">gemini-flash-lite-latest (khuyên dùng)</option></select></label>
+				<label class="truong">Mô hình cho hình vẽ (Word → LaTeX)<select id="mhHinhGemini"><option value="gemini-flash-latest">gemini-flash-latest</option></select></label>
+				<p class="ghiChuAI">Nhận dạng hình (đồ thị, hình không gian, ảnh thực tế) cần mô hình nhìn ảnh tốt hơn chữ: nên chọn <b>gemini-flash-latest</b> hoặc bản <b>pro</b> nếu khoá của bạn có. Chữ và công thức vẫn dùng mô hình ở trên.</p>
 				<p class="ghiChuAI">Gói miễn phí của Google giới hạn số lượt gọi mỗi ngày (mỗi lượt đọc 1–3 trang), lượt được cấp lại lúc 14–15 giờ chiều giờ Việt Nam. Ở gói miễn phí, Google có thể dùng nội dung gửi lên để cải thiện dịch vụ, nên không gửi đề cần giữ kín. Khoá chỉ lưu trong trình duyệt máy này và chỉ gửi tới Google.</p>
 			</div>
 
@@ -1219,7 +1230,7 @@ $("vao").addEventListener("keydown", e => {
 	function nho(ids) { ids.forEach(k => { if (!$(k)) return; const v = docO(k); if (v !== null) $(k).checked = v === "1"; $(k).addEventListener("change", () => ghiO(k, $(k).checked ? "1" : "0")); }); }
 	nho(["ptChuan", "wTieuDe", "wLoiGiai", "wGach", "wBangDA"]);
 	["wFont", "wCo", "wLe", "wNgat", "ptScan"].forEach(k => { if (!$(k)) return; const v = docO(k); if (v) { const cu = $(k).value; $(k).value = v; if ($(k).value !== v) $(k).value = cu; } $(k).addEventListener("change", () => ghiO(k, $(k).value)); });
-	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 8.9.";
+	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 9.0.";
 
 	/* ---------- tab ngang ---------- */
 	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"]];
@@ -1253,7 +1264,7 @@ $("vao").addEventListener("keydown", e => {
 	   CẤU HÌNH AI (dùng chung cho PDF → LaTeX và PDF → Word)
 	   ================================================================= */
 	let sampleClaude = null;
-	const AI = { nguon: window.claude ? "claude" : "gemini", khoaGemini: "", khoaAnthropic: "", mhGemini: "gemini-flash-lite-latest", mhAnthropic: "claude-sonnet-5-5", dsGemini: null, dsAnthropic: null, okGemini: false, okAnthropic: false, cheDo: "chinhxac", gop: 2, songSong: 2 };
+	const AI = { nguon: window.claude ? "claude" : "gemini", khoaGemini: "", khoaAnthropic: "", mhGemini: "gemini-flash-lite-latest", mhHinhGemini: "gemini-flash-latest", mhAnthropic: "claude-sonnet-5-5", dsGemini: null, dsAnthropic: null, okGemini: false, okAnthropic: false, cheDo: "chinhxac", gop: 2, songSong: 2 };
 	try { Object.assign(AI, JSON.parse(docO("ai") || "{}")); } catch (e) { }
 	const luuAI = () => ghiO("ai", JSON.stringify(AI));
 	const TEN_NGUON = { gemini: "Gemini", claude: "Claude", anthropic: "Claude API", tesseract: "Tesseract" };
@@ -1276,7 +1287,7 @@ $("vao").addEventListener("keydown", e => {
 	function cauHinhQuet() {
 		if (AI.nguon === "tesseract") return { ocr: "tu", napOcr };
 		const ai = { nguon: AI.nguon, gopTrang: +AI.gop || 1, songSong: +AI.songSong || 2, cheDo: AI.cheDo };
-		if (AI.nguon === "gemini") { ai.khoa = AI.khoaGemini; ai.moHinh = AI.mhGemini; }
+		if (AI.nguon === "gemini") { ai.khoa = AI.khoaGemini; ai.moHinh = AI.mhGemini; ai.moHinhHinh = AI.mhHinhGemini || AI.mhGemini; }
 		if (AI.nguon === "anthropic") { ai.khoa = AI.khoaAnthropic; ai.moHinh = AI.mhAnthropic; }
 		if (AI.nguon === "claude") ai.sample = sampleClaude;
 		return { ocr: "ai", ai };
@@ -1289,6 +1300,7 @@ $("vao").addEventListener("keydown", e => {
 		sel.value = chon || list[0].id;
 	}
 	const MD_GEMINI = [{ id: "gemini-flash-lite-latest", ten: "khuyên dùng, nhiều lượt miễn phí nhất" }, { id: "gemini-flash-latest", ten: "chính xác hơn, ít lượt miễn phí hơn" }];
+	const MD_GEMINI_HINH = [{ id: "gemini-flash-latest", ten: "khuyên dùng cho hình" }, { id: "gemini-pro-latest", ten: "nhìn hình tốt nhất, ít lượt miễn phí" }, { id: "gemini-flash-lite-latest", ten: "nhanh, nhiều lượt" }];
 	const MD_ANTH = [{ id: "claude-sonnet-5-5", ten: "" }, { id: "claude-haiku-5-5", ten: "nhanh, rẻ" }];
 	function hienPhan() {
 		const n = (hop.querySelector('input[name="nguonAI"]:checked') || {}).value || "gemini";
@@ -1303,6 +1315,7 @@ $("vao").addEventListener("keydown", e => {
 		$("ghiChuClaude").textContent = sampleClaude ? "Dùng chính tài khoản Claude của bạn, không cần khoá. Lần chạy đầu, Claude hỏi quyền cho trang gửi ảnh trang đề — bấm Cho phép." : "Chế độ này chỉ chạy khi mở web trong Claude (claude.ai). Ở trình duyệt thường, chọn Google Gemini với khoá miễn phí.";
 		$("khoaGemini").value = AI.khoaGemini; $("khoaAnthropic").value = AI.khoaAnthropic;
 		dienMoHinh($("mhGemini"), AI.dsGemini, AI.mhGemini, MD_GEMINI);
+		dienMoHinh($("mhHinhGemini"), AI.dsGemini, AI.mhHinhGemini || "gemini-flash-latest", MD_GEMINI_HINH);
 		dienMoHinh($("mhAnthropic"), AI.dsAnthropic, AI.mhAnthropic, MD_ANTH);
 		$("cheDoClaude").value = AI.cheDo; $("gopTrang").value = String(AI.gop); $("songSongAI").value = String(AI.songSong);
 		$("ttGemini").textContent = AI.okGemini && AI.khoaGemini ? "✓ Khoá đã kiểm tra, dùng được." : ""; $("ttGemini").className = "ttKhoa" + (AI.okGemini ? " ok" : "");
@@ -1327,7 +1340,7 @@ $("vao").addEventListener("keydown", e => {
 		const khoa = $(o.khoa).value.trim();
 		const tt = $(o.tt);
 		if (!khoa) { tt.textContent = "Dán khoá vào ô trên trước."; tt.className = "ttKhoa loi"; return; }
-		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 8.9."; tt.className = "ttKhoa loi"; return; }
+		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 9.0."; tt.className = "ttKhoa loi"; return; }
 		$(o.nut).disabled = true; tt.textContent = "Đang kiểm tra…"; tt.className = "ttKhoa";
 		try {
 			const ds = await bo().aiDsMoHinh({ nguon, khoa });
@@ -1337,6 +1350,7 @@ $("vao").addEventListener("keydown", e => {
 			else { AI.dsAnthropic = nho2; AI.okAnthropic = true; AI.khoaAnthropic = khoa; }
 			const giu = nho2.some(m => m.id === chonCu) ? chonCu : nho2.length ? nho2[0].id : chonCu;
 			dienMoHinh($(o.sel), nho2, giu, nguon === "gemini" ? MD_GEMINI : MD_ANTH);
+			if (nguon === "gemini") { const cu2 = $("mhHinhGemini").value; const uu = ["gemini-flash-latest", "gemini-2.5-flash", "gemini-pro-latest"]; const giu2 = nho2.some(m => m.id === cu2) ? cu2 : (uu.find(x => nho2.some(m => m.id === x)) || giu); dienMoHinh($("mhHinhGemini"), nho2, giu2, MD_GEMINI_HINH); }
 			tt.textContent = "✓ Khoá dùng được — " + nho2.length + " mô hình. Đã chọn sẵn mô hình phù hợp nhất. Bấm Lưu cấu hình.";
 			if (nguon === "gemini") $("hdGemini").open = false;
 			tt.className = "ttKhoa ok";
@@ -1351,7 +1365,7 @@ $("vao").addEventListener("keydown", e => {
 		const kG = $("khoaGemini").value.trim(), kA = $("khoaAnthropic").value.trim();
 		if (kG !== AI.khoaGemini) AI.okGemini = false;
 		if (kA !== AI.khoaAnthropic) AI.okAnthropic = false;
-		Object.assign(AI, { nguon: n, khoaGemini: kG, khoaAnthropic: kA, mhGemini: $("mhGemini").value, mhAnthropic: $("mhAnthropic").value, cheDo: $("cheDoClaude").value, gop: +$("gopTrang").value || 1, songSong: +$("songSongAI").value || 2 });
+		Object.assign(AI, { nguon: n, khoaGemini: kG, khoaAnthropic: kA, mhGemini: $("mhGemini").value, mhHinhGemini: $("mhHinhGemini").value, mhAnthropic: $("mhAnthropic").value, cheDo: $("cheDoClaude").value, gop: +$("gopTrang").value || 1, songSong: +$("songSongAI").value || 2 });
 		luuAI(); capNhatChip(); toast("Đã lưu cấu hình AI");
 	});
 	if ($("chipAI")) $("chipAI").addEventListener("click", moHopAI);
@@ -2128,9 +2142,9 @@ $("vao").addEventListener("keydown", e => {
 	   ================================================================= */
 	const WL = { file: null, buf: null, kq: null, hinh: [], ketQua: null, texGoc: "", tex: "", url: [], ten: "de-thi", dang: false, ac: null };
 	nho(["wlAI", "wlKho", "wlKhoTikz", "wlChuan", "wlLG"]);
-	(() => { const v = docO("wlKieuAnh"); if (v) $("wlKieuAnh").value = v; $("wlKieuAnh").addEventListener("change", () => ghiO("wlKieuAnh", $("wlKieuAnh").value)); })();
+	["wlKieuAnh", "wlMucHinh"].forEach(id => { const v = docO(id); if (v) $(id).value = v; $(id).addEventListener("change", () => ghiO(id, $(id).value)); });
 	$("wlCauHinh").addEventListener("click", () => moHopAI());
-	const TEN_CACH = { khotikz: "Kho TikZ", khuhoi: "Code gốc", kho: "Từ kho", vector: "Vector chính xác", ai: "AI viết TikZ", vet: "Dò theo ảnh", bo: "Đã lược bỏ", loi: "Chưa vẽ được" };
+	const TEN_CACH = { khotikz: "Kho TikZ", vecto: "Vector hoá nét", khuhoi: "Code gốc", kho: "Từ kho", vector: "Vector chính xác", ai: "AI viết TikZ", vet: "Dò theo ảnh", bo: "Đã lược bỏ", loi: "Chưa vẽ được" };
 	const TEN_LOAI = { bbt: "Bảng biến thiên", dothi: "Đồ thị", hinhhoc: "Hình học", bang: "Bảng", minhhoa: "Hình thực tế", net: "Hình nét", vector: "Hình vector", shapes: "Hình vẽ Word", tikz: "TikZ" };
 	function baoWL(msg, kieu, phan) {
 		$("tienDoWL").hidden = false;
@@ -2182,7 +2196,7 @@ $("vao").addEventListener("keydown", e => {
 	function taiKT(epTai) {
 		if (KT.hua && !epTai) return KT.hua;
 		KT.hua = (async () => {
-			if (!bo() || !bo()._w2t || !bo()._w2t.taoMuc) { $("ttKhoTikzWL").textContent = "Bộ luật chưa có kho TikZ — quản trị viên cần cập nhật bộ luật 8.9."; return; }
+			if (!bo() || !bo()._w2t || !bo()._w2t.taoMuc) { $("ttKhoTikzWL").textContent = "Bộ luật chưa có kho TikZ — quản trị viên cần cập nhật bộ luật 9.0."; return; }
 			const cn = cauNoiKT(); KT.cucBo = !!cn.cucBo;
 			try { KT.laQT = !!(cn.laQT && cn.laQT()); } catch (e) { KT.laQT = false; }
 			$("themKT").hidden = $("dauKhoKT").hidden = $("gopKT").hidden = !KT.laQT;
@@ -2539,6 +2553,7 @@ $("vao").addEventListener("keydown", e => {
 				'<div class="haiAnh">' + (ug ? '<figure><img src="' + ug + '" alt="Ảnh gốc"><figcaption>Ảnh gốc</figcaption></figure>' : "") +
 				'<figure>' + (uv ? '<img src="' + uv + '" alt="Hình TikZ">' : '<div class="khongAnh">' + esc(r.cach === "bo" ? "Hình này được lược bỏ khỏi đề" : r.latex ? "Bảng LaTeX (xem ở Bản in thử)" : (r.ghiChu || "Chưa vẽ được")) + "</div>") + "<figcaption>TikZ</figcaption></figure></div>" +
 				(r.ghiChu && r.cach !== "loi" ? '<p class="ghiChu">' + esc(r.ghiChu) + "</p>" : "") +
+				(r.ungVien && r.ungVien.length > 1 ? '<details class="ungVien"><summary>Các bản ứng viên (' + r.ungVien.length + ") — bấm để đổi bản khác</summary><div class=\"dsUV\">" + r.ungVien.map((u, i) => { const uu = URL.createObjectURL(new Blob([u.png], { type: "image/png" })); WL.url.push(uu); return '<figure class="uv' + (u.chon ? " dangChon" : "") + '"><img src="' + uu + '" alt="Ứng viên ' + (i + 1) + '"><figcaption>' + esc(u.ten) + " · " + Math.round(u.diem * 100) + "%" + (u.chon ? " · đang dùng" : "") + '</figcaption>' + (u.chon ? "" : '<button class="nut" type="button" data-lam="uv" data-i="' + i + '">Dùng bản này</button>') + "</figure>"; }).join("") + "</div></details>" : "") +
 				'<details><summary>Code TikZ</summary><textarea class="maHinh" spellcheck="false">' + esc(r.latex || r.tikz || "") + '</textarea><div class="hangNut"><button class="nut" type="button" data-lam="ve">Vẽ lại từ code</button>' +
 				(r.loai === "minhhoa" && WL.coAI ? '<button class="nut" type="button" data-lam="mophong">Vẽ mô phỏng (AI)</button>' : "") + (r.cach === "bo" ? '<button class="nut" type="button" data-lam="khoiphuc">Vẽ lại hình này</button>' : '<button class="nut" type="button" data-lam="bo">Lược bỏ hình</button>') + (KT.laQT && r.tikz && r.cach !== "bo" ? '<button class="nut" type="button" data-lam="luukho">Lưu vào kho TikZ</button>' : "") + '<span class="ttSua"></span></div></details></article>';
 		}).join("");
@@ -2551,6 +2566,13 @@ $("vao").addEventListener("keydown", e => {
 		const tt = the.querySelector(".ttSua");
 		const W2 = bo()._w2t;
 		const datTatCa = moi => cung.forEach(x => WL.ketQua.set(x, moi));
+		if (b.dataset.lam === "uv") {
+			const u = r.ungVien && r.ungVien[+b.dataset.i]; if (!u) return;
+			const moi = Object.assign({}, r, { tikz: u.tikz, latex: null, png: u.png, diem: u.diem, cach: u.nguon === "kho" ? "khotikz" : u.nguon === "do" ? "vet" : u.nguon === "vector" ? "vecto" : "ai", daDoiChieu: false, ghiChu: "bạn chọn bản " + u.ten, ungVien: r.ungVien.map(x => Object.assign({}, x, { chon: x === u })) });
+			datTatCa(moi);
+			if (h.khoa) W2.khoGhi(h.khoa, { cach: moi.cach, loai: moi.loai, tikz: moi.tikz, latex: null, diem: moi.diem || 1, png: moi.png });
+			hienMaWL(); toast("Đã đổi sang bản " + u.ten); return;
+		}
 		if (b.dataset.lam === "luukho") {
 			const ma = the.querySelector(".maHinh").value.trim(); if (!ma) return;
 			b.disabled = true; tt.className = "ttSua"; tt.textContent = "Đang lưu vào kho…";
@@ -2582,12 +2604,12 @@ $("vao").addEventListener("keydown", e => {
 	function tuyChonHinh() {
 		const dungAI = $("wlAI").checked && aiSanSang() && AI.nguon !== "tesseract";
 		WL.coAI = dungAI;
-		return { khoTikz: $("wlKhoTikz").checked && KT.ds.length ? KT.ds : null, layMaKho: id => cauNoiKT().layMa(id), ai: dungAI ? Object.assign(cauHinhQuet().ai, { signal: WL.ac && WL.ac.signal }) : null, khongAI: !dungAI, khongNho: !$("wlKho").checked, xam: $("wlKieuAnh").value === "xam", signal: WL.ac && WL.ac.signal, songSong: 2 };
+		return { ungVien: $("wlMucHinh").value !== "nhanh", soVongSua: $("wlMucHinh").value !== "nhanh" ? 2 : 0, khoTikz: $("wlKhoTikz").checked && KT.ds.length ? KT.ds : null, layMaKho: id => cauNoiKT().layMa(id), ai: dungAI ? Object.assign(cauHinhQuet().ai, { signal: WL.ac && WL.ac.signal }) : null, khongAI: !dungAI, khongNho: !$("wlKho").checked, xam: $("wlKieuAnh").value === "xam", signal: WL.ac && WL.ac.signal, songSong: 2 };
 	}
 
 	$("nutChayWL").addEventListener("click", async () => {
 		if (WL.dang || !WL.file) return;
-		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 8.9.", "loi"); return; }
+		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 9.0.", "loi"); return; }
 		WL.dang = true; $("nutChayWL").disabled = true; $("nutDungWL").hidden = false;
 		WL.ac = new AbortController();
 		$("tongKetWL").hidden = true;
