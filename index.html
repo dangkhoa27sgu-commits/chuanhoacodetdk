@@ -1232,7 +1232,7 @@ $("vao").addEventListener("keydown", e => {
 	function nho(ids) { ids.forEach(k => { if (!$(k)) return; const v = docO(k); if (v !== null) $(k).checked = v === "1"; $(k).addEventListener("change", () => ghiO(k, $(k).checked ? "1" : "0")); }); }
 	nho(["ptChuan", "wTieuDe", "wLoiGiai", "wGach", "wBangDA"]);
 	["wFont", "wCo", "wLe", "wNgat", "ptScan"].forEach(k => { if (!$(k)) return; const v = docO(k); if (v) { const cu = $(k).value; $(k).value = v; if ($(k).value !== v) $(k).value = cu; } $(k).addEventListener("change", () => ghiO(k, $(k).value)); });
-	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 9.7.";
+	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 9.8.";
 
 	/* ---------- tab ngang ---------- */
 	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"]];
@@ -1342,7 +1342,7 @@ $("vao").addEventListener("keydown", e => {
 		const khoa = $(o.khoa).value.trim();
 		const tt = $(o.tt);
 		if (!khoa) { tt.textContent = "Dán khoá vào ô trên trước."; tt.className = "ttKhoa loi"; return; }
-		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 9.7."; tt.className = "ttKhoa loi"; return; }
+		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 9.8."; tt.className = "ttKhoa loi"; return; }
 		$(o.nut).disabled = true; tt.textContent = "Đang kiểm tra…"; tt.className = "ttKhoa";
 		try {
 			const ds = await bo().aiDsMoHinh({ nguon, khoa });
@@ -2198,7 +2198,7 @@ $("vao").addEventListener("keydown", e => {
 	function taiKT(epTai) {
 		if (KT.hua && !epTai) return KT.hua;
 		KT.hua = (async () => {
-			if (!bo() || !bo()._w2t || !bo()._w2t.taoMuc) { $("ttKhoTikzWL").textContent = "Bộ luật chưa có kho TikZ — quản trị viên cần cập nhật bộ luật 9.7."; return; }
+			if (!bo() || !bo()._w2t || !bo()._w2t.taoMuc) { $("ttKhoTikzWL").textContent = "Bộ luật chưa có kho TikZ — quản trị viên cần cập nhật bộ luật 9.8."; return; }
 			const cn = cauNoiKT(); KT.cucBo = !!cn.cucBo;
 			try { KT.laQT = !!(cn.laQT && cn.laQT()); } catch (e) { KT.laQT = false; }
 			$("themKT").hidden = $("dauKhoKT").hidden = $("gopKT").hidden = !KT.laQT;
@@ -2522,7 +2522,7 @@ $("vao").addEventListener("keydown", e => {
 		const tex = dungMaWL();
 		$("maWL").value = tex;
 		$("taiWL").disabled = !tex.trim();
-		$("taiWL").textContent = WL.dsAnh && WL.dsAnh.length ? "Tải .zip (main.tex + " + WL.dsAnh.length + " ảnh)" : "Tải file .tex";
+		$("taiWL").textContent = "Tải .zip (main.tex, de/, " + (WL.dsAnh && WL.dsAnh.length ? WL.dsAnh.length + " ảnh trong hinh/" : "hinh/") + ")";
 		$("ttMaWL").textContent = Math.max(1, Math.round(new Blob([tex]).size / 1024)) + " KB · " + (tex.match(/\\begin\{ex\}/g) || []).length + " câu";
 		veXemWL(); veHinhWL();
 	}
@@ -2642,7 +2642,7 @@ $("vao").addEventListener("keydown", e => {
 
 	$("nutChayWL").addEventListener("click", async () => {
 		if (WL.dang || !WL.file) return;
-		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 9.7.", "loi"); return; }
+		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 9.8.", "loi"); return; }
 		WL.dang = true; $("nutChayWL").disabled = true; $("nutDungWL").hidden = false;
 		WL.ac = new AbortController();
 		$("tongKetWL").hidden = true;
@@ -2714,13 +2714,25 @@ $("vao").addEventListener("keydown", e => {
 		}
 	});
 	$("nutDungWL").addEventListener("click", () => { if (WL.ac) WL.ac.abort(); const hop = $("hopHinhTT"); if (hop.open) hop.close(); });
+	// main.tex chuẩn của dự án: đề tách theo phần vào de/phan1..4.tex, ảnh chèn ở hinh/, thư mục ans/ rỗng
+	const MAIN_TEX = "%==================================================================\n%  MAIN CHUẨN — DỰ ÁN LATEX ĐỀ THI\n%  Trưởng dự án: Trương Đăng Khoa\n%  Biên dịch: pdfLaTeX (2 lần)  |  Mã hoá: UTF-8\n%  Cấu trúc thư mục:  main.tex, ex_test.sty, ans/ (thư mục rỗng), de/ (file đề)\n%==================================================================\n\\documentclass[12pt,a4paper]{article}\n\\usepackage{fourier} \n% 1. TRANG GIẤY\n\\usepackage[top=1.5cm,bottom=1.8cm,left=2cm,right=1.5cm,headsep=4mm,footskip=8mm]{geometry}\n\n% 2. TOÁN (nạp trước ex_test)\n\\usepackage{amsmath,amssymb}\n\n% 3. GÓI ĐỀ THI — đổi tuỳ chọn để xuất bản cần dùng:\n%    [dethi]    : đề cho học sinh (ẩn đáp án, ẩn lời giải)\n%    [loigiai]  : hiện đáp án và lời giải\n%    [solcolor] : tô màu phương án đúng, không hiện lời giải\n\\usepackage[dethi]{ex_test}\n\n% 4. TIKZ — toàn bộ thư viện dùng trong dự án\n\\usepackage{tikz}\n\\usetikzlibrary{calc,angles,quotes,intersections,patterns,arrows,arrows.meta,\n\tpositioning,through,backgrounds,fit,shapes,shapes.geometric,shapes.misc,\n\tdecorations.pathreplacing,decorations.markings,decorations.pathmorphing,\n\tshadows,fadings,matrix,math,plotmarks,3d,babel}\n\\usepackage{tkz-tab}\n\\usepackage{graphicx}\n\n% 5. TRÌNH BÀY\n\\usepackage{lastpage}\n\\setlength{\\parindent}{0pt}\n\n% 6. ĐẦU TRANG, CHÂN TRANG\n\\pagestyle{fancy}\n\\fancyhf{}\n\\renewcommand{\\headrulewidth}{0.4pt}\n\\fancyhead[L]{\\small Dự án \\LaTeX\\ đề thi}\n\\fancyhead[R]{\\small Trưởng dự án: Trương Đăng Khoa}\n\\fancyfoot[C]{\\small Trang \\thepage/\\pageref{LastPage}}\n\n% 7. LỆNH TOÁN DÙNG CHUNG (quy định mục 12)\n\\newcommand{\\heva}[1]{\\left\\{\\begin{aligned}#1\\end{aligned}\\right.}\n\\newcommand{\\hoac}[1]{\\left[\\begin{aligned}#1\\end{aligned}\\right.}\n\n% 8. MÔI TRƯỜNG ĐỊNH LÍ (gói ntheorem do ex_test nạp sẵn)\n\\theoremstyle{plain}\n\\theoremseparator{.}\n\\theoremheaderfont{\\normalfont\\bfseries}\n\\theorembodyfont{\\itshape}\n\\newtheorem{dinhli}{Định lí}\n\\newtheorem{hequa}{Hệ quả}\n\\newtheorem{bode}{Bổ đề}\n\\newtheorem{menhde}{Mệnh đề}\n\\theorembodyfont{\\normalfont}\n\\newtheorem{dinhnghia}{Định nghĩa}\n\\newtheorem{tinhchat}{Tính chất}\n\\newtheorem{quytac}{Quy tắc}\n\\theoremstyle{nonumberplain}\n\\theoremheaderfont{\\normalfont\\bfseries\\itshape}\n\\newtheorem{nhanxet}{Nhận xét}\n\\newtheorem{chuy}{Chú ý}\n\\newtheorem{luuy}{Lưu ý}\n% Ví dụ, bài tập: dùng chung kiểu với câu hỏi {ex} để có \\choice, \\loigiai\n\\theoremstyle{immini}\n\\theoremheaderfont{\\normalfont\\bfseries}\n\\newtheorem{vd}{Ví dụ}\n\\newtheorem{bt}{Bài}\n\n% 9. TIÊU ĐỀ ĐỀ THI: \\tieude{Tên kì thi}{Môn}{Thời gian}\n\\newcommand{\\tieude}[3]{%\n\t\\begin{center}\n\t\t{\\bfseries\\large #1}\\\\[2pt]\n\t\t{\\bfseries Môn: #2}\\\\[2pt]\n\t\t{\\itshape Thời gian làm bài: #3, không kể thời gian phát đề}\n\t\\end{center}\n\t\\vspace*{-6pt}\\noindent\\rule{\\linewidth}{0.4pt}\\par}\n\n% 10. TIÊU ĐỀ PHẦN THI\n\\newcommand{\\caulc}{\\par\\vspace*{15pt}\\noindent\\begin{tikzpicture}\\fill[black!85] (0, 0.05) rectangle (0.25, 0.3);\\node[anchor=west, text=black!90, font=\\bfseries\\large, inner sep=0pt] at (0.4, 0.175) {PHẦN 1. Câu trắc nghiệm nhiều phương án lựa chọn.};\\draw[black!60, line width=1pt] (0, -0.15) -- (\\linewidth, -0.15);\\end{tikzpicture}\\par\\vspace*{10pt}\\setcounter{ex}{0}}\n\n\\newcommand{\\cauds}{\\par\\vspace*{15pt}\\noindent\\begin{tikzpicture}\\fill[black!85] (0, 0.05) rectangle (0.25, 0.3);\\node[anchor=west, text=black!90, font=\\bfseries\\large, inner sep=0pt] at (0.4, 0.175) {PHẦN 2. Trắc nghiệm đúng sai.};\\draw[black!60, line width=1pt] (0, -0.15) -- (\\linewidth, -0.15);\\end{tikzpicture}\\par\\vspace*{10pt}\\setcounter{ex}{0}}\n\n\\newcommand{\\caukq}{\\par\\vspace*{15pt}\\noindent\\begin{tikzpicture}\\fill[black!85] (0, 0.05) rectangle (0.25, 0.3);\\node[anchor=west, text=black!90, font=\\bfseries\\large, inner sep=0pt] at (0.4, 0.175) {PHẦN 3. Trắc nghiệm trả lời ngắn.};\\draw[black!60, line width=1pt] (0, -0.15) -- (\\linewidth, -0.15);\\end{tikzpicture}\\par\\vspace*{10pt}\\setcounter{ex}{0}}\n\n\\newcommand{\\cautl}{\\par\\vspace*{15pt}\\noindent\\begin{tikzpicture}\\fill[black!85] (0, 0.05) rectangle (0.25, 0.3);\\node[anchor=west, text=black!90, font=\\bfseries\\large, inner sep=0pt] at (0.4, 0.175) {PHẦN 4. Tự luận.};\\draw[black!60, line width=1pt] (0, -0.15) -- (\\linewidth, -0.15);\\end{tikzpicture}\\par\\vspace*{10pt}\\setcounter{ex}{0}}\n\n% 11. BẢNG ĐÁP ÁN: \\indapan[TN|TF|TLN]{số cột}{file đáp án}\n\\newsavebox{\\boxDA}\n\\newlength{\\oDA}\n\\NewDocumentCommand{\\indapan}{O{TN} m m}{%\n\t\\par\\medskip\n\t\\begingroup\n\t\\setlength{\\fboxsep}{0pt}\\setlength{\\fboxrule}{0.4pt}%\n\t\\setlength{\\parindent}{0pt}\\raggedright\n\t\\setlength{\\baselineskip}{0pt}\\setlength{\\lineskip}{-\\fboxrule}\\setlength{\\lineskiplimit}{0pt}%\n\t\\setlength{\\oDA}{\\dimexpr(\\linewidth+#2\\fboxrule-\\fboxrule)/#2-0.1pt\\relax}%\n\t\\IfStrEqCase{#1}{%\n\t\t{TN}{\\def\\tenDA{PHẦN 1. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN LỰA CHỌN}}%\n\t\t{TF}{\\def\\tenDA{PHẦN 2. TRẮC NGHIỆM ĐÚNG SAI}}%\n\t\t{TLN}{\\def\\tenDA{PHẦN 3. TRẮC NGHIỆM TRẢ LỜI NGẮN}}}%\n\t\t[\\def\\tenDA{BẢNG ĐÁP ÁN}]%\n\t\\fbox{\\colorbox{black!8}{\\parbox[c][7mm][c]{\\dimexpr\\linewidth-2\\fboxrule\\relax}%\n\t\t{\\centering\\bfseries\\tenDA}}}\\par\n\t\\renewcommand{\\circT}[2][]{##2)\\,Đ\\enspace}%\n\t\\renewcommand{\\circF}[2][]{##2)\\,S\\enspace}%\n\t\\renewcommand{\\dapsoSA}[2][]{\\StrSubstitute{##2}{-}{$-$}}%\n\t\\renewenvironment{Solution}[2][]%\n\t\t{\\begin{lrbox}{\\boxDA}\\textbf{##2.}\\enspace\\ignorespaces}%\n\t\t{\\unskip\\end{lrbox}\\fbox{\\parbox[c][7mm][c]{\\dimexpr\\oDA-2\\fboxrule\\relax}%\n\t\t\t{\\centering\\usebox{\\boxDA}}}\\hspace{-\\fboxrule}\\ignorespacesafterend}%\n\t\\IfFileExists{#3.tex}{\\input{#3}}{\\fbox{\\parbox[c][7mm][c]{\\linewidth}%\n\t\t{\\centering\\itshape Chưa có file #3.tex --- biên dịch thêm một lần}}}%\n\t\\par\n\t\\endgroup\n\t\\medskip}\n\n%==================================================================\n\\begin{document}\n\n\\tieude{ĐỀ THI THỬ TỐT NGHIỆP THPT NĂM 2027}{TOÁN}{90 phút}\n\n\\Opensolutionfile{ans}[ans/ans1]\n\\caulc\n\\input{de/phan1}\n\\Closesolutionfile{ans}\n\n\\Opensolutionfile{ans}[ans/ans2]\n\\cauds\n\\input{de/phan2}\n\\Closesolutionfile{ans}\n\n\\Opensolutionfile{ans}[ans/ans3]\n\\caukq\n\\input{de/phan3}\n\\Closesolutionfile{ans}\n\n\\cautl\n\\input{de/phan4}\n\n\\newpage\n\\begin{center}\n\t{\\bfseries\\large BẢNG ĐÁP ÁN}\n\\end{center}\n\\indapan[TN]{6}{ans/ans1}\n\\indapan[TF]{2}{ans/ans2}\n\\indapan[TLN]{3}{ans/ans3}\n\n\n\n\n\\end{document}\n";
+	function tachPhan(tex) {
+		const ex = tex.match(/\\begin\{ex\}[\s\S]*?\\end\{ex\}/g) || [];
+		const dau = tex.slice(0, Math.max(0, tex.indexOf("\\begin{ex}"))).trim();
+		const p = ["", "", "", ""];
+		ex.forEach(e => { const k = /\\choiceTF\b/.test(e) ? 1 : /\\choice\b/.test(e) ? 0 : /\\shortans\b/.test(e) ? 2 : 3; p[k] += e + "\n\n"; });
+		if (dau) p[0] = dau + "\n\n" + p[0];
+		return p;
+	}
 	$("taiWL").addEventListener("click", async () => {
 		if (!WL.tex) return;
 		try {
 			// có ảnh chèn → gói .zip: main.tex + thư mục hinh/ (hinh1, hinh2… theo thứ tự trong đề)
-			if (WL.dsAnh && WL.dsAnh.length) {
+			if (true) {
 				await napZip(); const z = new window.JSZip();
-				z.file("main.tex", WL.tex);
+				z.file("main.tex", MAIN_TEX);
+				tachPhan(WL.tex).forEach((t, i) => z.file("de/phan" + (i + 1) + ".tex", t || "% (không có câu)\n"));
+				z.folder("ans"); z.folder("hinh");
 				WL.dsAnh.forEach(a => z.file(a.ten, a.bytes));
 				await taiVe(await z.generateAsync({ type: "blob" }), WL.ten + ".zip");
 			} else await taiVe(new Blob([WL.tex], { type: "text/x-tex;charset=utf-8" }), WL.ten + ".tex");
