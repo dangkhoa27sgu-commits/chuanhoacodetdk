@@ -393,8 +393,10 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 .luoiKT { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); gap: 10px; }
 .luoiKT > .trong { color: var(--phu); margin: 4px; }
 .theKT { border: 1px solid var(--vien); border-radius: 8px; background: var(--mat); display: grid; gap: 6px; padding: 8px; min-width: 0; align-content: start; }
-.anhKT { height: 150px; display: grid; place-items: center; background: #fff; border: 1px solid var(--vien); border-radius: 6px; overflow: hidden; }
-.anhKT img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.anhKT { min-height: 120px; display: grid; place-items: center; background: #fff; border: 1px solid var(--vien); border-radius: 6px; padding: 8px; }
+.anhKT img { max-width: 100%; height: auto; max-height: 360px; object-fit: contain; display: block; }
+.khoAnh { padding: 0; }
+#tabKhoAnh .luoiKT { grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); }
 .choKT, .loiKT { font-size: 12px; color: #6b7280; }
 .loiKT { color: #b45309; }
 .ttTheKT { display: grid; gap: 6px; min-width: 0; }
@@ -466,6 +468,7 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 		<button type="button" role="tab" id="nutTabPdfWord" aria-selected="false" aria-controls="tabPdfWord" tabindex="-1">PDF → Word</button>
 		<button type="button" role="tab" id="nutTabTexWord" aria-selected="false" aria-controls="tabTexWord" tabindex="-1">LaTeX → Word</button>
 		<button type="button" role="tab" id="nutTabWordTex" aria-selected="false" aria-controls="tabWordTex" tabindex="-1">Word → LaTeX</button>
+		<button type="button" role="tab" id="nutTabKhoAnh" aria-selected="false" aria-controls="tabKhoAnh" tabindex="-1">Kho ảnh TikZ</button>
 	</nav>
 		<div class="manTab" id="tabChuan" role="tabpanel" aria-labelledby="nutTabChuan">
 		<section class="thongtin" aria-label="Thông tin dự án">
@@ -740,7 +743,7 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 <section class="manTab" id="tabWordTex" role="tabpanel" aria-labelledby="nutTabWordTex" hidden>
 	<div class="xuong">
 		<div class="xuongDau">
-			<h2>Word → LaTeX <small>File .docx sang đề ex_test · công thức MathType / Equation · mọi hình vẽ lại bằng TikZ · đáp án và lời giải</small></h2>
+			<h2>Word → LaTeX <small>File .docx sang đề ex_test · công thức MathType / Equation · bảng biến thiên, hình học phẳng → TikZ · đồ thị, hình thực tế → chèn ảnh · tải .zip</small></h2>
 		</div>
 		<div class="xuongThan">
 			<aside class="khoi dai" aria-label="File Word nguồn">
@@ -752,17 +755,17 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 				</label>
 				<div class="hinhKem">
 					<h3>Hình trong đề</h3>
-					<p class="ttHinh" id="ttHinhWL">Mọi hình đều được viết lại thành code TikZ — không chèn ảnh. Hình thực tế (ảnh chụp, tranh) web sẽ <b>dừng lại hỏi bạn</b>: AI vẽ mô phỏng theo đề bài, dò theo ảnh, hay lược bỏ.</p>
-					<label class="bat"><input type="checkbox" id="wlAI" checked> Dùng AI để viết TikZ cho bảng biến thiên, đồ thị, hình học</label>
+					<p class="ttHinh" id="ttHinhWL"><b>Bảng biến thiên, bảng xét dấu, hình học phẳng, bảng số liệu</b>: AI chuyển sang TikZ/LaTeX. <b>Đồ thị, biểu đồ, hình không gian, hình thực tế</b>: cắt đúng ảnh trong Word, chèn bằng <code>\includegraphics</code> đúng câu, đúng kích thước. Tải về file <b>.zip</b> gồm <code>main.tex</code> và thư mục <code>hinh/</code>.</p>
+					<label class="bat"><input type="checkbox" id="wlAI" checked> Dùng AI để nhận loại hình và viết TikZ</label>
 					<button class="nut rong" id="wlCauHinh" type="button">Cấu hình AI</button>
-					<label>Cách vẽ hình <select id="wlMucHinh"><option value="ki">Kĩ — dựng nhiều bản, AI chọn bản giống nhất rồi sửa</option><option value="nhanh">Nhanh — một bản, ít lượt AI</option></select></label>
-					<label>Hình thực tế, hình học… <select id="wlHinhKhac"><option value="anh">Tìm trong kho TikZ, không có thì chèn ảnh gốc (tải về .zip)</option><option value="tikz">Vẽ lại bằng TikZ (AI / dò ảnh)</option></select></label>
-					<label>Lấy hình kho khi giống từ <select id="wlNguongKho"><option value="0.8">80%</option><option value="0.9">90%</option><option value="0.7">70% (chỉ hình học)</option></select></label>
-					<label>Hình thực tế <select id="wlKieuAnh"><option value="mau">Vẽ màu</option><option value="xam">Đen trắng (in đề)</option></select></label>
-					<label class="bat"><input type="checkbox" id="wlKho" checked> Dùng lại hình đã vẽ trong kho (nhanh hơn)</label>
-					<p class="ttKho" id="ttKhoWL"></p>
-					<label class="bat"><input type="checkbox" id="wlKhoTikz" checked> Tìm hình trong <b>kho TikZ</b> trước (trùng thì lấy luôn, gần giống thì AI sửa code kho)</label>
-					<p class="ttKho" id="ttKhoTikzWL">Đang tải kho TikZ…</p>
+					<div hidden>
+						<select id="wlMucHinh"><option value="nhanh">Nhanh</option></select>
+						<select id="wlHinhKhac"><option value="anh">anh</option></select>
+						<select id="wlNguongKho"><option value="0.8">0.8</option></select>
+						<select id="wlKieuAnh"><option value="mau">mau</option></select>
+						<input type="checkbox" id="wlKho"><p id="ttKhoWL"></p>
+						<input type="checkbox" id="wlKhoTikz"><p id="ttKhoTikzWL"></p>
+					</div>
 				</div>
 			</aside>
 
@@ -788,7 +791,6 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 					<button type="button" role="tab" id="wlMa" aria-selected="true" aria-controls="manWLMa">Mã LaTeX</button>
 					<button type="button" role="tab" id="wlHinh" aria-selected="false" aria-controls="manWLHinh" tabindex="-1">Hình <span class="dem" id="demHinhWL">0</span></button>
 					<button type="button" role="tab" id="wlCB" aria-selected="false" aria-controls="manWLCB" tabindex="-1">Cần soát <span class="dem" id="demCBWL">0</span></button>
-					<button type="button" role="tab" id="wlKT" aria-selected="false" aria-controls="manWLKT" tabindex="-1">Kho TikZ <span class="dem" id="demKT">0</span></button>
 				</div>
 				<div class="manKQ" id="manWLXem" role="tabpanel" aria-labelledby="wlXem" hidden><div class="toDe" id="toDeWL"></div></div>
 				<div class="manKQ" id="manWLMa" role="tabpanel" aria-labelledby="wlMa">
@@ -797,9 +799,25 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 				</div>
 				<div class="manKQ" id="manWLHinh" role="tabpanel" aria-labelledby="wlHinh" hidden><div class="dsHinhWL" id="dsHinhWL"><p class="trong">Chưa có hình.</p></div></div>
 				<div class="manKQ" id="manWLCB" role="tabpanel" aria-labelledby="wlCB" hidden><ul class="dsCB" id="dsCBWL"><li class="trong">Chưa có gì cần soát.</li></ul></div>
-				<div class="manKQ" id="manWLKT" role="tabpanel" aria-labelledby="wlKT" hidden>
-					<div class="khoTikz">
-						<p class="moTaKT">Kho hình TikZ dùng chung: khi chuyển đề, web so từng hình trong file Word với kho — <b>trùng thì lấy nguyên code</b>, <b>gần giống thì AI sửa code kho</b> cho khớp, không có mới để AI vẽ mới.</p>
+			</div>
+		</div>
+	</div>
+	<dialog class="hopHoi" id="hopHinhTT" aria-labelledby="tieuDeHoiTT">
+		<form method="dialog">
+			<h3 id="tieuDeHoiTT">Hình thực tế trong đề</h3>
+			<p class="moTaHoi">Các hình dưới đây là <b>ảnh chụp / tranh thực tế</b>. Với mỗi hình chọn: <b>Vẽ mô phỏng (AI)</b> — AI đọc đề bài và dựa vào thư viện hình mẫu để vẽ sơ đồ TikZ rõ nét (hợp với ảnh mờ, phức tạp); <b>Dò theo ảnh</b> — vẽ lại theo đường nét của ảnh; hoặc <b>Lược bỏ</b> (bỏ đi không ảnh hưởng bài toán). Gợi ý đã được đánh dấu sẵn.</p>
+			<div class="nutNhanh"><button class="nut" type="button" id="ttVeHet">Vẽ hết</button><button class="nut" type="button" id="ttBoHet">Lược bỏ tất cả</button><button class="nut" type="button" id="ttGoiY">Theo gợi ý</button></div>
+			<div class="luoiTT" id="luoiTT"></div>
+			<div class="chanHoi"><span id="demTT"></span><button class="nut chinh" value="ok" id="ttTiep">Tiếp tục</button></div>
+		</form>
+	</dialog>
+</section>
+<section class="manTab" id="tabKhoAnh" role="tabpanel" aria-labelledby="nutTabKhoAnh" hidden>
+	<div class="xuong">
+		<div class="xuongDau"><h2>Kho ảnh TikZ <small>Tìm hình theo chủ đề, tên gợi ý · xem code · copy · <span id="demKT">0</span> hình</small></h2></div>
+		<div class="khoi khoAnh">
+			<div class="khoTikz">
+						<p class="moTaKT">Thư viện hình TikZ dùng chung. Tìm theo <b>chủ đề, tên gợi ý</b> (rubik, máy bay, hình chóp…) hoặc đề bài, bấm <b>Xem code</b> hoặc <b>Copy</b> để dùng.</p>
 						<div class="hangKT">
 							<input type="search" id="timKT" placeholder="Tìm theo tên gợi ý (rubik, máy bay…), đề bài, từ khoá…" aria-label="Tìm trong kho TikZ">
 							<select id="locKT" aria-label="Lọc theo loại hình"><option value="">Mọi loại</option><option value="bbt">Bảng biến thiên</option><option value="dothi">Đồ thị</option><option value="hinhhoc">Hình học</option><option value="minhhoa">Hình thực tế</option><option value="loi">Web chưa vẽ được</option></select>
@@ -828,19 +846,8 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 						<div class="hangNut"><button class="nut" type="button" id="themNuaKT" hidden>Xem thêm</button></div>
 						<p class="moTaKT nho">Bộ vẽ hỗ trợ TikZ, pgfplots, tkz-tab, tkz-euclide, tikz-3dplot, circuitikz, tikz-cd, venndiagram và biểu tượng <code>\faUser</code>, <code>\faIcon{…}</code> (Font Awesome Free, giấy phép CC BY 4.0).</p>
 					</div>
-				</div>
-			</div>
 		</div>
 	</div>
-	<dialog class="hopHoi" id="hopHinhTT" aria-labelledby="tieuDeHoiTT">
-		<form method="dialog">
-			<h3 id="tieuDeHoiTT">Hình thực tế trong đề</h3>
-			<p class="moTaHoi">Các hình dưới đây là <b>ảnh chụp / tranh thực tế</b>. Với mỗi hình chọn: <b>Vẽ mô phỏng (AI)</b> — AI đọc đề bài và dựa vào thư viện hình mẫu để vẽ sơ đồ TikZ rõ nét (hợp với ảnh mờ, phức tạp); <b>Dò theo ảnh</b> — vẽ lại theo đường nét của ảnh; hoặc <b>Lược bỏ</b> (bỏ đi không ảnh hưởng bài toán). Gợi ý đã được đánh dấu sẵn.</p>
-			<div class="nutNhanh"><button class="nut" type="button" id="ttVeHet">Vẽ hết</button><button class="nut" type="button" id="ttBoHet">Lược bỏ tất cả</button><button class="nut" type="button" id="ttGoiY">Theo gợi ý</button></div>
-			<div class="luoiTT" id="luoiTT"></div>
-			<div class="chanHoi"><span id="demTT"></span><button class="nut chinh" value="ok" id="ttTiep">Tiếp tục</button></div>
-		</form>
-	</dialog>
 </section>
 
 
@@ -1232,16 +1239,17 @@ $("vao").addEventListener("keydown", e => {
 	function nho(ids) { ids.forEach(k => { if (!$(k)) return; const v = docO(k); if (v !== null) $(k).checked = v === "1"; $(k).addEventListener("change", () => ghiO(k, $(k).checked ? "1" : "0")); }); }
 	nho(["ptChuan", "wTieuDe", "wLoiGiai", "wGach", "wBangDA"]);
 	["wFont", "wCo", "wLe", "wNgat", "ptScan"].forEach(k => { if (!$(k)) return; const v = docO(k); if (v) { const cu = $(k).value; $(k).value = v; if ($(k).value !== v) $(k).value = cu; } $(k).addEventListener("change", () => ghiO(k, $(k).value)); });
-	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 9.9.";
+	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 10.0.";
 
 	/* ---------- tab ngang ---------- */
-	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"]];
+	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"], ["nutTabKhoAnh", "tabKhoAnh"]];
 	function chonTab(nut, luu) {
 		TAB.forEach(([n, m]) => { const on = n === nut; $(n).setAttribute("aria-selected", on); $(n).tabIndex = on ? 0 : -1; $(m).hidden = !on; });
 		if (luu) ghiO("tab", nut);
 		if (nut === "nutTabPdfWord") khoiDongXuong();
 		if (nut === "nutTabTexWord") khoiDongTW();
 		if (nut === "nutTabWordTex") khoiDongWL();
+		if (nut === "nutTabKhoAnh") khoiDongKho();
 	}
 	TAB.forEach(([n], i) => {
 		$(n).addEventListener("click", () => chonTab(n, true));
@@ -1342,7 +1350,7 @@ $("vao").addEventListener("keydown", e => {
 		const khoa = $(o.khoa).value.trim();
 		const tt = $(o.tt);
 		if (!khoa) { tt.textContent = "Dán khoá vào ô trên trước."; tt.className = "ttKhoa loi"; return; }
-		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 9.9."; tt.className = "ttKhoa loi"; return; }
+		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 10.0."; tt.className = "ttKhoa loi"; return; }
 		$(o.nut).disabled = true; tt.textContent = "Đang kiểm tra…"; tt.className = "ttKhoa";
 		try {
 			const ds = await bo().aiDsMoHinh({ nguon, khoa });
@@ -2198,7 +2206,7 @@ $("vao").addEventListener("keydown", e => {
 	function taiKT(epTai) {
 		if (KT.hua && !epTai) return KT.hua;
 		KT.hua = (async () => {
-			if (!bo() || !bo()._w2t || !bo()._w2t.taoMuc) { $("ttKhoTikzWL").textContent = "Bộ luật chưa có kho TikZ — quản trị viên cần cập nhật bộ luật 9.9."; return; }
+			if (!bo() || !bo()._w2t || !bo()._w2t.taoMuc) { $("ttKhoTikzWL").textContent = "Bộ luật chưa có kho TikZ — quản trị viên cần cập nhật bộ luật 10.0."; return; }
 			const cn = cauNoiKT(); KT.cucBo = !!cn.cucBo;
 			try { KT.laQT = !!(cn.laQT && cn.laQT()); } catch (e) { KT.laQT = false; }
 			$("themKT").hidden = $("dauKhoKT").hidden = $("gopKT").hidden = !KT.laQT;
@@ -2216,7 +2224,7 @@ $("vao").addEventListener("keydown", e => {
 		$("ttKhoTikzWL").textContent = KT.loiTai ? "Không tải được kho TikZ: " + KT.loiTai : KT.ds.length ? "Kho TikZ có " + KT.ds.length + " hình" + noi + "." : "Kho TikZ đang trống" + (KT.laQT ? " — vào tab “Kho TikZ” để nạp hình." : ".");
 		$("ttKT").textContent = KT.loiTai ? "Lỗi: " + KT.loiTai : KT.ds.length + " hình" + noi + (KT.capNhat ? " · cập nhật " + new Date(KT.capNhat).toLocaleString("vi-VN") : "");
 		$("ttKT").className = "ttKT" + (KT.loiTai ? " loi" : "");
-		if (!$("manWLKT").hidden) veKT();
+		if (!$("tabKhoAnh").hidden) veKT();
 	}
 	// thêm hình: vẽ thử lấy dấu vân tay, bỏ trùng, lưu lên hệ thống theo lô 25 hình (lỗi giữa chừng không mất phần đã lưu)
 	async function themVaoKho(ds, bao) {
@@ -2408,7 +2416,7 @@ $("vao").addEventListener("keydown", e => {
 			'<div class="ttTheKT"><span class="nhanLoai">' + esc(TEN_LOAI_KT[m.loai] || "Hình") + "</span>" + (m.khoaAnh ? '<span class="nhanLoai">có ảnh gốc</span>' : "") +
 			(m.the ? '<p class="theTen">' + String(m.the).split(/\s*[,;]\s*/).filter(Boolean).map(t => '<span class="nhanLoai">' + esc(t) + "</span>").join("") + "</p>" : "") +
 			'<p class="deKT">' + esc((m.de || "(không có đề bài kèm)").slice(0, 160)) + "</p>" +
-			'<div class="hangNut"><button class="nut" type="button" data-kt="chep">Chép code</button><button class="nut" type="button" data-kt="xem">Xem code</button>' + (KT.laQT ? '<button class="nut" type="button" data-kt="ten">Tên gợi ý</button><button class="nut" type="button" data-kt="xoa">Xoá</button>' : "") + "</div></div></article>").join("");
+			'<div class="hangNut"><button class="nut" type="button" data-kt="xem">Xem code</button><button class="nut chinh" type="button" data-kt="chep">Copy</button>' + (KT.laQT ? '<button class="nut" type="button" data-kt="ten">Tên gợi ý</button><button class="nut" type="button" data-kt="xoa">Xoá</button>' : "") + "</div></div></article>").join("");
 		$("themNuaKT").hidden = ds.length <= KT.soHien;
 		$("xoaLoiKT").hidden = $("veLaiLoiKT").hidden = !(KT.laQT && $("locKT").value === "loi" && ds.length);
 		$("themNuaKT").textContent = "Xem thêm (còn " + (ds.length - KT.soHien) + " hình)";
@@ -2522,7 +2530,7 @@ $("vao").addEventListener("keydown", e => {
 		const tex = dungMaWL();
 		$("maWL").value = tex;
 		$("taiWL").disabled = !tex.trim();
-		$("taiWL").textContent = "Tải .zip (main.tex, de/, " + (WL.dsAnh && WL.dsAnh.length ? WL.dsAnh.length + " ảnh trong hinh/" : "hinh/") + ")";
+		$("taiWL").textContent = "Tải .zip (main.tex, " + (WL.dsAnh && WL.dsAnh.length ? WL.dsAnh.length + " ảnh trong hinh/" : "hinh/") + ")";
 		$("ttMaWL").textContent = Math.max(1, Math.round(new Blob([tex]).size / 1024)) + " KB · " + (tex.match(/\\begin\{ex\}/g) || []).length + " câu";
 		veXemWL(); veHinhWL();
 	}
@@ -2637,12 +2645,12 @@ $("vao").addEventListener("keydown", e => {
 	function tuyChonHinh() {
 		const dungAI = $("wlAI").checked && aiSanSang() && AI.nguon !== "tesseract";
 		WL.coAI = dungAI;
-		return { cheDoAnh: $("wlHinhKhac").value === "anh", nguongKho: +$("wlNguongKho").value || 0.8, ungVien: $("wlMucHinh").value !== "nhanh", soVongSua: $("wlMucHinh").value !== "nhanh" ? 2 : 0, khoTikz: $("wlKhoTikz").checked && KT.ds.length ? KT.ds : null, layMaKho: id => cauNoiKT().layMa(id), ai: dungAI ? Object.assign(cauHinhQuet().ai, { signal: WL.ac && WL.ac.signal }) : null, khongAI: !dungAI, khongNho: !$("wlKho").checked, xam: $("wlKieuAnh").value === "xam", signal: WL.ac && WL.ac.signal, songSong: 2 };
+		return { cheDoAnh: true, nguongKho: 0.8, ungVien: false, soVongSua: 0, khoTikz: null, layMaKho: id => cauNoiKT().layMa(id), ai: dungAI ? Object.assign(cauHinhQuet().ai, { signal: WL.ac && WL.ac.signal }) : null, khongAI: !dungAI, khongNho: true, xam: $("wlKieuAnh").value === "xam", signal: WL.ac && WL.ac.signal, songSong: 2 };
 	}
 
 	$("nutChayWL").addEventListener("click", async () => {
 		if (WL.dang || !WL.file) return;
-		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 9.9.", "loi"); return; }
+		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 10.0.", "loi"); return; }
 		WL.dang = true; $("nutChayWL").disabled = true; $("nutDungWL").hidden = false;
 		WL.ac = new AbortController();
 		$("tongKetWL").hidden = true;
@@ -2715,7 +2723,7 @@ $("vao").addEventListener("keydown", e => {
 	});
 	$("nutDungWL").addEventListener("click", () => { if (WL.ac) WL.ac.abort(); const hop = $("hopHinhTT"); if (hop.open) hop.close(); });
 	// main.tex chuẩn của dự án: đề tách theo phần vào de/phan1..4.tex, ảnh chèn ở hinh/, thư mục ans/ rỗng
-	const MAIN_TEX = "%==================================================================\n%  MAIN CHUẨN — DỰ ÁN LATEX ĐỀ THI\n%  Trưởng dự án: Trương Đăng Khoa\n%  Biên dịch: pdfLaTeX (2 lần)  |  Mã hoá: UTF-8\n%  Cấu trúc thư mục:  main.tex, ex_test.sty, ans/ (thư mục rỗng), de/ (file đề)\n%==================================================================\n\\documentclass[12pt,a4paper]{article}\n\\usepackage{fourier} \n% 1. TRANG GIẤY\n\\usepackage[top=1.5cm,bottom=1.8cm,left=2cm,right=1.5cm,headsep=4mm,footskip=8mm]{geometry}\n\n% 2. TOÁN (nạp trước ex_test)\n\\usepackage{amsmath,amssymb}\n\n% 3. GÓI ĐỀ THI — đổi tuỳ chọn để xuất bản cần dùng:\n%    [dethi]    : đề cho học sinh (ẩn đáp án, ẩn lời giải)\n%    [loigiai]  : hiện đáp án và lời giải\n%    [solcolor] : tô màu phương án đúng, không hiện lời giải\n\\usepackage[dethi]{ex_test}\n\n% 4. TIKZ — toàn bộ thư viện dùng trong dự án\n\\usepackage{tikz}\n\\usetikzlibrary{calc,angles,quotes,intersections,patterns,arrows,arrows.meta,\n\tpositioning,through,backgrounds,fit,shapes,shapes.geometric,shapes.misc,\n\tdecorations.pathreplacing,decorations.markings,decorations.pathmorphing,\n\tshadows,fadings,matrix,math,plotmarks,3d,babel}\n\\usepackage{tkz-tab}\n\\usepackage{graphicx}\n\n% 5. TRÌNH BÀY\n\\usepackage{lastpage}\n\\setlength{\\parindent}{0pt}\n\n% 6. ĐẦU TRANG, CHÂN TRANG\n\\pagestyle{fancy}\n\\fancyhf{}\n\\renewcommand{\\headrulewidth}{0.4pt}\n\\fancyhead[L]{\\small Dự án \\LaTeX\\ đề thi}\n\\fancyhead[R]{\\small Trưởng dự án: Trương Đăng Khoa}\n\\fancyfoot[C]{\\small Trang \\thepage/\\pageref{LastPage}}\n\n% 7. LỆNH TOÁN DÙNG CHUNG (quy định mục 12)\n\\newcommand{\\heva}[1]{\\left\\{\\begin{aligned}#1\\end{aligned}\\right.}\n\\newcommand{\\hoac}[1]{\\left[\\begin{aligned}#1\\end{aligned}\\right.}\n\n% 8. MÔI TRƯỜNG ĐỊNH LÍ (gói ntheorem do ex_test nạp sẵn)\n\\theoremstyle{plain}\n\\theoremseparator{.}\n\\theoremheaderfont{\\normalfont\\bfseries}\n\\theorembodyfont{\\itshape}\n\\newtheorem{dinhli}{Định lí}\n\\newtheorem{hequa}{Hệ quả}\n\\newtheorem{bode}{Bổ đề}\n\\newtheorem{menhde}{Mệnh đề}\n\\theorembodyfont{\\normalfont}\n\\newtheorem{dinhnghia}{Định nghĩa}\n\\newtheorem{tinhchat}{Tính chất}\n\\newtheorem{quytac}{Quy tắc}\n\\theoremstyle{nonumberplain}\n\\theoremheaderfont{\\normalfont\\bfseries\\itshape}\n\\newtheorem{nhanxet}{Nhận xét}\n\\newtheorem{chuy}{Chú ý}\n\\newtheorem{luuy}{Lưu ý}\n% Ví dụ, bài tập: dùng chung kiểu với câu hỏi {ex} để có \\choice, \\loigiai\n\\theoremstyle{immini}\n\\theoremheaderfont{\\normalfont\\bfseries}\n\\newtheorem{vd}{Ví dụ}\n\\newtheorem{bt}{Bài}\n\n% 9. TIÊU ĐỀ ĐỀ THI: \\tieude{Tên kì thi}{Môn}{Thời gian}\n\\newcommand{\\tieude}[3]{%\n\t\\begin{center}\n\t\t{\\bfseries\\large #1}\\\\[2pt]\n\t\t{\\bfseries Môn: #2}\\\\[2pt]\n\t\t{\\itshape Thời gian làm bài: #3, không kể thời gian phát đề}\n\t\\end{center}\n\t\\vspace*{-6pt}\\noindent\\rule{\\linewidth}{0.4pt}\\par}\n\n% 10. TIÊU ĐỀ PHẦN THI\n\\newcommand{\\caulc}{\\par\\vspace*{15pt}\\noindent\\begin{tikzpicture}\\fill[black!85] (0, 0.05) rectangle (0.25, 0.3);\\node[anchor=west, text=black!90, font=\\bfseries\\large, inner sep=0pt] at (0.4, 0.175) {PHẦN 1. Câu trắc nghiệm nhiều phương án lựa chọn.};\\draw[black!60, line width=1pt] (0, -0.15) -- (\\linewidth, -0.15);\\end{tikzpicture}\\par\\vspace*{10pt}\\setcounter{ex}{0}}\n\n\\newcommand{\\cauds}{\\par\\vspace*{15pt}\\noindent\\begin{tikzpicture}\\fill[black!85] (0, 0.05) rectangle (0.25, 0.3);\\node[anchor=west, text=black!90, font=\\bfseries\\large, inner sep=0pt] at (0.4, 0.175) {PHẦN 2. Trắc nghiệm đúng sai.};\\draw[black!60, line width=1pt] (0, -0.15) -- (\\linewidth, -0.15);\\end{tikzpicture}\\par\\vspace*{10pt}\\setcounter{ex}{0}}\n\n\\newcommand{\\caukq}{\\par\\vspace*{15pt}\\noindent\\begin{tikzpicture}\\fill[black!85] (0, 0.05) rectangle (0.25, 0.3);\\node[anchor=west, text=black!90, font=\\bfseries\\large, inner sep=0pt] at (0.4, 0.175) {PHẦN 3. Trắc nghiệm trả lời ngắn.};\\draw[black!60, line width=1pt] (0, -0.15) -- (\\linewidth, -0.15);\\end{tikzpicture}\\par\\vspace*{10pt}\\setcounter{ex}{0}}\n\n\\newcommand{\\cautl}{\\par\\vspace*{15pt}\\noindent\\begin{tikzpicture}\\fill[black!85] (0, 0.05) rectangle (0.25, 0.3);\\node[anchor=west, text=black!90, font=\\bfseries\\large, inner sep=0pt] at (0.4, 0.175) {PHẦN 4. Tự luận.};\\draw[black!60, line width=1pt] (0, -0.15) -- (\\linewidth, -0.15);\\end{tikzpicture}\\par\\vspace*{10pt}\\setcounter{ex}{0}}\n\n% 11. BẢNG ĐÁP ÁN: \\indapan[TN|TF|TLN]{số cột}{file đáp án}\n\\newsavebox{\\boxDA}\n\\newlength{\\oDA}\n\\NewDocumentCommand{\\indapan}{O{TN} m m}{%\n\t\\par\\medskip\n\t\\begingroup\n\t\\setlength{\\fboxsep}{0pt}\\setlength{\\fboxrule}{0.4pt}%\n\t\\setlength{\\parindent}{0pt}\\raggedright\n\t\\setlength{\\baselineskip}{0pt}\\setlength{\\lineskip}{-\\fboxrule}\\setlength{\\lineskiplimit}{0pt}%\n\t\\setlength{\\oDA}{\\dimexpr(\\linewidth+#2\\fboxrule-\\fboxrule)/#2-0.1pt\\relax}%\n\t\\IfStrEqCase{#1}{%\n\t\t{TN}{\\def\\tenDA{PHẦN 1. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN LỰA CHỌN}}%\n\t\t{TF}{\\def\\tenDA{PHẦN 2. TRẮC NGHIỆM ĐÚNG SAI}}%\n\t\t{TLN}{\\def\\tenDA{PHẦN 3. TRẮC NGHIỆM TRẢ LỜI NGẮN}}}%\n\t\t[\\def\\tenDA{BẢNG ĐÁP ÁN}]%\n\t\\fbox{\\colorbox{black!8}{\\parbox[c][7mm][c]{\\dimexpr\\linewidth-2\\fboxrule\\relax}%\n\t\t{\\centering\\bfseries\\tenDA}}}\\par\n\t\\renewcommand{\\circT}[2][]{##2)\\,Đ\\enspace}%\n\t\\renewcommand{\\circF}[2][]{##2)\\,S\\enspace}%\n\t\\renewcommand{\\dapsoSA}[2][]{\\StrSubstitute{##2}{-}{$-$}}%\n\t\\renewenvironment{Solution}[2][]%\n\t\t{\\begin{lrbox}{\\boxDA}\\textbf{##2.}\\enspace\\ignorespaces}%\n\t\t{\\unskip\\end{lrbox}\\fbox{\\parbox[c][7mm][c]{\\dimexpr\\oDA-2\\fboxrule\\relax}%\n\t\t\t{\\centering\\usebox{\\boxDA}}}\\hspace{-\\fboxrule}\\ignorespacesafterend}%\n\t\\IfFileExists{#3.tex}{\\input{#3}}{\\fbox{\\parbox[c][7mm][c]{\\linewidth}%\n\t\t{\\centering\\itshape Chưa có file #3.tex --- biên dịch thêm một lần}}}%\n\t\\par\n\t\\endgroup\n\t\\medskip}\n\n%==================================================================\n\\begin{document}\n\n\\tieude{ĐỀ THI THỬ TỐT NGHIỆP THPT NĂM 2027}{TOÁN}{90 phút}\n\n\\Opensolutionfile{ans}[ans/ans1]\n\\caulc\n\\input{de/phan1}\n\\Closesolutionfile{ans}\n\n\\Opensolutionfile{ans}[ans/ans2]\n\\cauds\n\\input{de/phan2}\n\\Closesolutionfile{ans}\n\n\\Opensolutionfile{ans}[ans/ans3]\n\\caukq\n\\input{de/phan3}\n\\Closesolutionfile{ans}\n\n\\cautl\n\\input{de/phan4}\n\n\\newpage\n\\begin{center}\n\t{\\bfseries\\large BẢNG ĐÁP ÁN}\n\\end{center}\n\\indapan[TN]{6}{ans/ans1}\n\\indapan[TF]{2}{ans/ans2}\n\\indapan[TLN]{3}{ans/ans3}\n\n\n\n\n\\end{document}\n";
+	const MAIN_TEX = "%==================================================================\n%  MAIN CHUẨN — DỰ ÁN LATEX ĐỀ THI\n%  Trưởng dự án: Trương Đăng Khoa\n%  Biên dịch: pdfLaTeX (2 lần)  |  Mã hoá: UTF-8\n%  Cấu trúc thư mục:  main.tex, ex_test.sty, ans/ (thư mục rỗng), de/ (file đề)\n%==================================================================\n\\documentclass[12pt,a4paper]{article}\n\\usepackage{fourier} \n% 1. TRANG GIẤY\n\\usepackage[top=1.5cm,bottom=1.8cm,left=2cm,right=1.5cm,headsep=4mm,footskip=8mm]{geometry}\n\n% 2. TOÁN (nạp trước ex_test)\n\\usepackage{amsmath,amssymb}\n\n% 3. GÓI ĐỀ THI — đổi tuỳ chọn để xuất bản cần dùng:\n%    [dethi]    : đề cho học sinh (ẩn đáp án, ẩn lời giải)\n%    [loigiai]  : hiện đáp án và lời giải\n%    [solcolor] : tô màu phương án đúng, không hiện lời giải\n\\usepackage[dethi]{ex_test}\n\n% 4. TIKZ — toàn bộ thư viện dùng trong dự án\n\\usepackage{tikz}\n\\usetikzlibrary{calc,angles,quotes,intersections,patterns,arrows,arrows.meta,\n\tpositioning,through,backgrounds,fit,shapes,shapes.geometric,shapes.misc,\n\tdecorations.pathreplacing,decorations.markings,decorations.pathmorphing,\n\tshadows,fadings,matrix,math,plotmarks,3d,babel}\n\\usepackage{tkz-tab}\n\\usepackage{graphicx} % ảnh chèn từ Word (thư mục hinh/)\n\n% 5. TRÌNH BÀY\n\\usepackage{lastpage}\n\\setlength{\\parindent}{0pt}\n\n% 6. ĐẦU TRANG, CHÂN TRANG\n\\pagestyle{fancy}\n\\fancyhf{}\n\\renewcommand{\\headrulewidth}{0.4pt}\n\\fancyhead[L]{\\small Dự án \\LaTeX\\ đề thi}\n\\fancyhead[R]{\\small Trưởng dự án: Trương Đăng Khoa}\n\\fancyfoot[C]{\\small Trang \\thepage/\\pageref{LastPage}}\n\n% 7. LỆNH TOÁN DÙNG CHUNG (quy định mục 12)\n\\newcommand{\\heva}[1]{\\left\\{\\begin{aligned}#1\\end{aligned}\\right.}\n\\newcommand{\\hoac}[1]{\\left[\\begin{aligned}#1\\end{aligned}\\right.}\n\n% 8. MÔI TRƯỜNG ĐỊNH LÍ (gói ntheorem do ex_test nạp sẵn)\n\\theoremstyle{plain}\n\\theoremseparator{.}\n\\theoremheaderfont{\\normalfont\\bfseries}\n\\theorembodyfont{\\itshape}\n\\newtheorem{dinhli}{Định lí}\n\\newtheorem{hequa}{Hệ quả}\n\\newtheorem{bode}{Bổ đề}\n\\newtheorem{menhde}{Mệnh đề}\n\\theorembodyfont{\\normalfont}\n\\newtheorem{dinhnghia}{Định nghĩa}\n\\newtheorem{tinhchat}{Tính chất}\n\\newtheorem{quytac}{Quy tắc}\n\\theoremstyle{nonumberplain}\n\\theoremheaderfont{\\normalfont\\bfseries\\itshape}\n\\newtheorem{nhanxet}{Nhận xét}\n\\newtheorem{chuy}{Chú ý}\n\\newtheorem{luuy}{Lưu ý}\n% Ví dụ, bài tập: dùng chung kiểu với câu hỏi {ex} để có \\choice, \\loigiai\n\\theoremstyle{immini}\n\\theoremheaderfont{\\normalfont\\bfseries}\n\\newtheorem{vd}{Ví dụ}\n\\newtheorem{bt}{Bài}\n\n% 9. TIÊU ĐỀ ĐỀ THI: \\tieude{Tên kì thi}{Môn}{Thời gian}\n\\newcommand{\\tieude}[3]{%\n\t\\begin{center}\n\t\t{\\bfseries\\large #1}\\\\[2pt]\n\t\t{\\bfseries Môn: #2}\\\\[2pt]\n\t\t{\\itshape Thời gian làm bài: #3, không kể thời gian phát đề}\n\t\\end{center}\n\t\\vspace*{-6pt}\\noindent\\rule{\\linewidth}{0.4pt}\\par}\n\n% 10. TIÊU ĐỀ PHẦN THI\n\\newcommand{\\caulc}{\\par\\vspace*{15pt}\\noindent\\begin{tikzpicture}\\fill[black!85] (0, 0.05) rectangle (0.25, 0.3);\\node[anchor=west, text=black!90, font=\\bfseries\\large, inner sep=0pt] at (0.4, 0.175) {PHẦN 1. Câu trắc nghiệm nhiều phương án lựa chọn.};\\draw[black!60, line width=1pt] (0, -0.15) -- (\\linewidth, -0.15);\\end{tikzpicture}\\par\\vspace*{10pt}\\setcounter{ex}{0}}\n\n\\newcommand{\\cauds}{\\par\\vspace*{15pt}\\noindent\\begin{tikzpicture}\\fill[black!85] (0, 0.05) rectangle (0.25, 0.3);\\node[anchor=west, text=black!90, font=\\bfseries\\large, inner sep=0pt] at (0.4, 0.175) {PHẦN 2. Trắc nghiệm đúng sai.};\\draw[black!60, line width=1pt] (0, -0.15) -- (\\linewidth, -0.15);\\end{tikzpicture}\\par\\vspace*{10pt}\\setcounter{ex}{0}}\n\n\\newcommand{\\caukq}{\\par\\vspace*{15pt}\\noindent\\begin{tikzpicture}\\fill[black!85] (0, 0.05) rectangle (0.25, 0.3);\\node[anchor=west, text=black!90, font=\\bfseries\\large, inner sep=0pt] at (0.4, 0.175) {PHẦN 3. Trắc nghiệm trả lời ngắn.};\\draw[black!60, line width=1pt] (0, -0.15) -- (\\linewidth, -0.15);\\end{tikzpicture}\\par\\vspace*{10pt}\\setcounter{ex}{0}}\n\n\\newcommand{\\cautl}{\\par\\vspace*{15pt}\\noindent\\begin{tikzpicture}\\fill[black!85] (0, 0.05) rectangle (0.25, 0.3);\\node[anchor=west, text=black!90, font=\\bfseries\\large, inner sep=0pt] at (0.4, 0.175) {PHẦN 4. Tự luận.};\\draw[black!60, line width=1pt] (0, -0.15) -- (\\linewidth, -0.15);\\end{tikzpicture}\\par\\vspace*{10pt}\\setcounter{ex}{0}}\n\n% 11. BẢNG ĐÁP ÁN: \\indapan[TN|TF|TLN]{số cột}{file đáp án}\n\\newsavebox{\\boxDA}\n\\newlength{\\oDA}\n\\NewDocumentCommand{\\indapan}{O{TN} m m}{%\n\t\\par\\medskip\n\t\\begingroup\n\t\\setlength{\\fboxsep}{0pt}\\setlength{\\fboxrule}{0.4pt}%\n\t\\setlength{\\parindent}{0pt}\\raggedright\n\t\\setlength{\\baselineskip}{0pt}\\setlength{\\lineskip}{-\\fboxrule}\\setlength{\\lineskiplimit}{0pt}%\n\t\\setlength{\\oDA}{\\dimexpr(\\linewidth+#2\\fboxrule-\\fboxrule)/#2-0.1pt\\relax}%\n\t\\IfStrEqCase{#1}{%\n\t\t{TN}{\\def\\tenDA{PHẦN 1. TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN LỰA CHỌN}}%\n\t\t{TF}{\\def\\tenDA{PHẦN 2. TRẮC NGHIỆM ĐÚNG SAI}}%\n\t\t{TLN}{\\def\\tenDA{PHẦN 3. TRẮC NGHIỆM TRẢ LỜI NGẮN}}}%\n\t\t[\\def\\tenDA{BẢNG ĐÁP ÁN}]%\n\t\\fbox{\\colorbox{black!8}{\\parbox[c][7mm][c]{\\dimexpr\\linewidth-2\\fboxrule\\relax}%\n\t\t{\\centering\\bfseries\\tenDA}}}\\par\n\t\\renewcommand{\\circT}[2][]{##2)\\,Đ\\enspace}%\n\t\\renewcommand{\\circF}[2][]{##2)\\,S\\enspace}%\n\t\\renewcommand{\\dapsoSA}[2][]{\\StrSubstitute{##2}{-}{$-$}}%\n\t\\renewenvironment{Solution}[2][]%\n\t\t{\\begin{lrbox}{\\boxDA}\\textbf{##2.}\\enspace\\ignorespaces}%\n\t\t{\\unskip\\end{lrbox}\\fbox{\\parbox[c][7mm][c]{\\dimexpr\\oDA-2\\fboxrule\\relax}%\n\t\t\t{\\centering\\usebox{\\boxDA}}}\\hspace{-\\fboxrule}\\ignorespacesafterend}%\n\t\\IfFileExists{#3.tex}{\\input{#3}}{\\fbox{\\parbox[c][7mm][c]{\\linewidth}%\n\t\t{\\centering\\itshape Chưa có file #3.tex --- biên dịch thêm một lần}}}%\n\t\\par\n\t\\endgroup\n\t\\medskip}\n\n%==================================================================\n\\begin{document}\n\n\\caulc\n\\Opensolutionfile{ans}[ans/ansTN-tenfile]\n%%PHAN1%%\n\\Closesolutionfile{ans}\n\n\\cauds\n\\Opensolutionfile{ans}[ans/ansDS-tenfile]\n%%PHAN2%%\n\\Closesolutionfile{ans}\n\n\\caukq\n\\Opensolutionfile{ans}[ans/ansTLN-tenfile]\n%%PHAN3%%\n\\Closesolutionfile{ans}\n\n%%PHAN4%%\n\\end{document}\n";
 	function tachPhan(tex) {
 		const ex = tex.match(/\\begin\{ex\}[\s\S]*?\\end\{ex\}/g) || [];
 		const dau = tex.slice(0, Math.max(0, tex.indexOf("\\begin{ex}"))).trim();
@@ -2730,8 +2738,8 @@ $("vao").addEventListener("keydown", e => {
 			// có ảnh chèn → gói .zip: main.tex + thư mục hinh/ (hinh1, hinh2… theo thứ tự trong đề)
 			if (true) {
 				await napZip(); const z = new window.JSZip();
-				z.file("main.tex", MAIN_TEX);
-				tachPhan(WL.tex).forEach((t, i) => z.file("de/phan" + (i + 1) + ".tex", t || "% (không có câu)\n"));
+				const ph = tachPhan(WL.tex);
+				z.file("main.tex", MAIN_TEX.replace("%%PHAN1%%", ph[0].trim()).replace("%%PHAN2%%", ph[1].trim()).replace("%%PHAN3%%", ph[2].trim()).replace("%%PHAN4%%", ph[3].trim() ? "\\cautl\n" + ph[3].trim() + "\n" : ""));
 				z.folder("ans"); z.folder("hinh");
 				WL.dsAnh.forEach(a => z.file(a.ten, a.bytes));
 				await taiVe(await z.generateAsync({ type: "blob" }), WL.ten + ".zip");
@@ -2744,13 +2752,15 @@ $("vao").addEventListener("keydown", e => {
 		if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value).then(() => toast("Đã sao chép mã"), chon); else chon();
 	});
 	["wlChuan", "wlLG"].forEach(k => $(k).addEventListener("change", () => { if (WL.ketQua) hienMaWL(); }));
-	const WL_TAB = [["wlXem", "manWLXem"], ["wlMa", "manWLMa"], ["wlHinh", "manWLHinh"], ["wlCB", "manWLCB"], ["wlKT", "manWLKT"]];
+	const WL_TAB = [["wlXem", "manWLXem"], ["wlMa", "manWLMa"], ["wlHinh", "manWLHinh"], ["wlCB", "manWLCB"]];
 	WL_TAB.forEach(([n], i) => {
-		$(n).addEventListener("click", () => { WL_TAB.forEach(([n2, m2]) => { const on = n2 === n; $(n2).setAttribute("aria-selected", on); $(n2).tabIndex = on ? 0 : -1; $(m2).hidden = !on; }); if (n === "wlXem") veXemWL(); if (n === "wlKT") veKT(); });
+		$(n).addEventListener("click", () => { WL_TAB.forEach(([n2, m2]) => { const on = n2 === n; $(n2).setAttribute("aria-selected", on); $(n2).tabIndex = on ? 0 : -1; $(m2).hidden = !on; }); if (n === "wlXem") veXemWL(); });
 		$(n).addEventListener("keydown", e => { if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return; const j = (i + (e.key === "ArrowRight" ? 1 : WL_TAB.length - 1)) % WL_TAB.length; $(WL_TAB[j][0]).click(); $(WL_TAB[j][0]).focus(); });
 	});
 	let daKhoiDongWL = false;
-	function khoiDongWL() { if (daKhoiDongWL) return; daKhoiDongWL = true; capNhatKho(); taiKT(); }
+	function khoiDongWL() { if (daKhoiDongWL) return; daKhoiDongWL = true; }
+	let daKhoiDongKho = false;
+	function khoiDongKho() { if (daKhoiDongKho) { veKT(); return; } daKhoiDongKho = true; taiKT(); }
 	try { const t = docO("tab"); if (t && $(t)) chonTab(t, false); } catch (e) { }
 	capNhatChip(); capNhatDem();
 })();
