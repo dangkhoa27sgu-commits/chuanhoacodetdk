@@ -442,8 +442,15 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 .vhDDs { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px; font-size: 13px; } .vhDDs li { display: flex; justify-content: space-between; gap: 6px; padding: 3px 6px; background: var(--mat); border-radius: 5px; } .vhDDs li.trong { color: var(--phu); background: none; }
 .vhCay { display: grid; gap: 6px; } .vhNhanh { border-left: 3px solid var(--vien); padding-left: 8px; display: grid; gap: 4px; } .vhCay input { width: 110px; padding: 4px 6px; font: inherit; font-size: 12px; } .vhCon { padding-left: 14px; }
 .vhtKhung { display: grid; grid-template-columns: minmax(380px, 1.4fr) minmax(300px, 1fr); gap: 12px; align-items: start; } @media (max-width: 1000px) { .vhtKhung { grid-template-columns: 1fr; } }
-#vhtGeo { width: 100%; min-height: 560px; border: 1px solid var(--vien); border-radius: 8px; background: #fff; overflow: hidden; }
+
 .vhtTrai { display: grid; gap: 8px; } .vhtTrai textarea { width: 100%; box-sizing: border-box; min-height: 110px; font-family: "JetBrains Mono", monospace; font-size: 12px; }
+
+.vtLog { max-height: 260px; overflow: auto; display: grid; gap: 6px; border: 1px solid var(--vien); border-radius: 8px; padding: 8px; background: var(--mat); }
+.vtTin { padding: 6px 8px; border-radius: 8px; font-size: 13px; max-width: 92%; } .vtTin.ban { justify-self: end; background: #e0e7ff; color: #1e1b4b; } .vtTin.ai { justify-self: start; background: #fff; border: 1px solid var(--vien); }
+.vtTin img { max-width: 220px; max-height: 160px; display: block; }
+.vtDan { min-height: 90px; border: 2px dashed var(--vien); border-radius: 8px; display: grid; place-items: center; color: var(--phu); font-size: 13px; cursor: text; padding: 6px; background: #fff; } .vtDan:focus { outline: 2px solid #6366f1; } .vtDan img { max-width: 100%; max-height: 220px; }
+#vtYeu { width: 100%; box-sizing: border-box; font: inherit; padding: 6px 8px; min-height: 0; height: 56px; resize: vertical; }
+.vtTuy { display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 13px; } .vtTuy label { display: flex; gap: 6px; align-items: center; } .vtTuy input[type=number] { width: 70px; }
 
 </style>
 </head>
@@ -898,20 +905,31 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 </section>
 <section class="manTab" id="tabVeThucTe" role="tabpanel" aria-labelledby="nutTabVeThucTe" hidden>
 	<div class="xuong">
-		<div class="xuongDau"><h2>Vẽ hình TikZ thực tế <small>Vẽ trên GeoGebra (dán ảnh làm nền rồi đồ theo) · web làm gọn code · Xem hình · Copy</small></h2></div>
+		<div class="xuongDau"><h2>Vẽ hình TikZ thực tế <small>Dán ảnh (cắt màn hình, ảnh scan) · web tự sinh code · Xem hình · Copy</small></h2></div>
 		<div class="vhtKhung">
 			<div class="vhtTrai khoi">
-				<p class="vhMoTa"><b>Cách dùng:</b> (1) Bấm <b>Chọn ảnh nền</b> hoặc bấm vào khung GeoGebra rồi Ctrl+V để dán ảnh. (2) Dùng công cụ GeoGebra đồ điểm, đoạn, đường tròn, đồ thị theo ảnh (đặt tên điểm như A, B, C). (3) Bấm <b>Lấy code từ GeoGebra</b>.</p>
-				<div class="hangNut"><label class="nut" for="vhtAnh">Chọn ảnh nền</label><input type="file" id="vhtAnh" accept="image/*" hidden><button class="nut chinh" type="button" id="vhtLay">Lấy code từ GeoGebra</button><span class="ttSua" id="vhtTT">Đang tải GeoGebra…</span></div>
-				<div id="vhtGeo"></div>
-				<details><summary>Hoặc dán code TikZ xuất từ GeoGebra (bản cài máy) để làm gọn</summary>
-					<textarea id="vhtGoc" spellcheck="false" placeholder="Dán code từ GeoGebra: Tệp → Xuất → Graphics View as PGF/TikZ"></textarea>
+				<div class="vtLog" id="vtLog"><p class="trong">Dán ảnh vào ô bên dưới (Ctrl+V) hoặc bấm <b>Chọn ảnh</b>, rồi bấm <b>Tạo code</b>.</p></div>
+				<div class="vtDan" id="vtDan" tabindex="0" aria-label="Ô dán ảnh"><span id="vtDanChu">Bấm vào đây rồi Ctrl+V để dán ảnh</span></div>
+				<textarea id="vtYeu" rows="2" spellcheck="false" placeholder="Yêu cầu thêm (tuỳ chọn): bỏ nền lưới, kim phút dài hơn, đổi sang đen trắng…"></textarea>
+				<div class="vtTuy">
+					<label>Cách làm <select id="vtCach"><option value="ai">AI dựng lại bằng hình cơ bản (code gọn)</option><option value="do">Dò ảnh y hệt (code dài)</option></select></label>
+					<label>Màu <select id="vtMau"><option value="mau">Giữ màu</option><option value="xam">Đen trắng</option></select></label>
+					<label>Rộng (cm) <input type="number" id="vtRong" value="6" step="0.5" min="2" max="16"></label>
+					<label class="bat vtAI"><input type="checkbox" id="vtBoNen" checked> Bỏ nền chi tiết</label>
+					<label class="bat vtAI"><input type="checkbox" id="vtTinh" checked> AI tự so và chỉnh thêm 1 vòng</label>
+					<label class="vtDo" hidden>Số màu <select id="vtSoMau"><option>2</option><option>3</option><option>4</option><option selected>6</option><option>8</option></select></label>
+					<label class="vtDo" hidden>Độ chi tiết <select id="vtChiTiet"><option value="1">1 (gọn)</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5 (sát ảnh)</option></select></label>
+					<label class="vtDo" hidden>Làm nét ảnh mờ <select id="vtLamNet"><option value="tu">Tự động</option><option value="luon">Luôn làm</option><option value="khong">Không</option></select></label>
+				</div>
+				<div class="hangNut"><button class="nut chinh" type="button" id="vtTao">Tạo code</button><button class="nut" type="button" id="vtSua">Sửa theo yêu cầu</button><label class="nut" for="vtTep">Chọn ảnh</label><input type="file" id="vtTep" accept="image/*" hidden><span class="ttSua" id="vtTT"></span></div>
+				<details><summary>Dán code TikZ xuất từ GeoGebra để làm gọn</summary>
+					<textarea id="vhtGoc" spellcheck="false" placeholder="GeoGebra: Tệp → Xuất → Graphics View as PGF/TikZ"></textarea>
 					<div class="hangNut"><button class="nut" type="button" id="vhtGon">Làm gọn code</button></div>
 				</details>
 			</div>
 			<div class="vhKetQua khoi">
 				<div class="hangNut"><button class="nut chinh" type="button" id="vhtXem" disabled>Xem hình</button><span class="ttSua" id="vhtTT2"></span></div>
-				<div class="vhAnh" id="vhtHinh"><p class="trong">Lấy code từ GeoGebra rồi bấm <b>Xem hình</b>.</p></div>
+				<div class="vhAnh" id="vhtHinh"><p class="trong">Hình sẽ hiện ở đây khi có code.</p></div>
 				<div class="hangNut"><button class="nut chinh" type="button" id="vhtChep" disabled>Copy code</button><button class="nut" type="button" id="vhtChepHinh" disabled>Copy hình</button></div>
 				<textarea class="maTex vhMa" id="vhtMa" spellcheck="false" aria-label="Code TikZ"></textarea>
 			</div>
@@ -1308,7 +1326,7 @@ $("vao").addEventListener("keydown", e => {
 	function nho(ids) { ids.forEach(k => { if (!$(k)) return; const v = docO(k); if (v !== null) $(k).checked = v === "1"; $(k).addEventListener("change", () => ghiO(k, $(k).checked ? "1" : "0")); }); }
 	nho(["ptChuan", "wTieuDe", "wLoiGiai", "wGach", "wBangDA"]);
 	["wFont", "wCo", "wLe", "wNgat", "ptScan"].forEach(k => { if (!$(k)) return; const v = docO(k); if (v) { const cu = $(k).value; $(k).value = v; if ($(k).value !== v) $(k).value = cu; } $(k).addEventListener("change", () => ghiO(k, $(k).value)); });
-	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 10.4.";
+	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 10.5.";
 
 	/* ---------- tab ngang ---------- */
 	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"], ["nutTabVeHinh", "tabVeHinh"], ["nutTabVeThucTe", "tabVeThucTe"], ["nutTabKhoAnh", "tabKhoAnh"]];
@@ -1421,7 +1439,7 @@ $("vao").addEventListener("keydown", e => {
 		const khoa = $(o.khoa).value.trim();
 		const tt = $(o.tt);
 		if (!khoa) { tt.textContent = "Dán khoá vào ô trên trước."; tt.className = "ttKhoa loi"; return; }
-		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 10.4."; tt.className = "ttKhoa loi"; return; }
+		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 10.5."; tt.className = "ttKhoa loi"; return; }
 		$(o.nut).disabled = true; tt.textContent = "Đang kiểm tra…"; tt.className = "ttKhoa";
 		try {
 			const ds = await bo().aiDsMoHinh({ nguon, khoa });
@@ -2277,7 +2295,7 @@ $("vao").addEventListener("keydown", e => {
 	function taiKT(epTai) {
 		if (KT.hua && !epTai) return KT.hua;
 		KT.hua = (async () => {
-			if (!bo() || !bo()._w2t || !bo()._w2t.taoMuc) { $("ttKhoTikzWL").textContent = "Bộ luật chưa có kho TikZ — quản trị viên cần cập nhật bộ luật 10.4."; return; }
+			if (!bo() || !bo()._w2t || !bo()._w2t.taoMuc) { $("ttKhoTikzWL").textContent = "Bộ luật chưa có kho TikZ — quản trị viên cần cập nhật bộ luật 10.5."; return; }
 			const cn = cauNoiKT(); KT.cucBo = !!cn.cucBo;
 			try { KT.laQT = !!(cn.laQT && cn.laQT()); } catch (e) { KT.laQT = false; }
 			$("themKT").hidden = $("dauKhoKT").hidden = $("gopKT").hidden = !KT.laQT;
@@ -2722,7 +2740,7 @@ $("vao").addEventListener("keydown", e => {
 
 	$("nutChayWL").addEventListener("click", async () => {
 		if (WL.dang || !WL.file) return;
-		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 10.4.", "loi"); return; }
+		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 10.5.", "loi"); return; }
 		WL.dang = true; $("nutChayWL").disabled = true; $("nutDungWL").hidden = false;
 		WL.ac = new AbortController();
 		$("tongKetWL").hidden = true;
@@ -2941,14 +2959,26 @@ $("vao").addEventListener("keydown", e => {
 			return veDoThi(g, duong, duy, r.tc, lay_mau(r.f, xmin, xmax));
 		} };
 	}
-	// ngoại suy bậc hai qua 3 điểm đầu/cuối để đường cong thừa ra 0,5 ở hai đầu mà vẫn qua đúng các điểm đã nhập
-	const ngoaiSuy = (p, x) => { const [[x0, y0], [x1, y1], [x2, y2]] = p; return y0 * (x - x1) * (x - x2) / ((x0 - x1) * (x0 - x2)) + y1 * (x - x0) * (x - x2) / ((x1 - x0) * (x1 - x2)) + y2 * (x - x0) * (x - x1) / ((x2 - x0) * (x2 - x1)); };
-	const doThiDiem = { ten: "Đồ thị đường cong qua các điểm (liên tục trên R)", mota: "Nhập các điểm đồ thị đi qua (nên có giao điểm với Ox, Oy, cực trị). Web vẽ đường cong trơn qua đúng các điểm, hai đầu kéo dài thêm 0,5.", truong: [{ k: "qua", nhan: "Các điểm đi qua", kieu: "vung", mac: "(-2;-2), (-1;2), (1;-2), (2;2)" }, { k: "them", nhan: "Kéo dài hai đầu thêm", kieu: "so", mac: 0.5 }, { k: "cang", nhan: "Độ căng đường cong (0,4 – 1)", kieu: "so", mac: 0.7 }].concat(TRUC), ve: g => {
-		let ds = vhDiem(g.qua).sort((a, b) => a[0] - b[0]); if (ds.length < 2) throw new Error("cần ít nhất 2 điểm");
-		const d = +g.them || 0, du = ds.slice();
-		if (d > 0 && ds.length >= 3) { const x0 = ds[0][0] - d, x1 = ds[ds.length - 1][0] + d; du.unshift([x0, ngoaiSuy(ds.slice(0, 3), x0)]); du.push([x1, ngoaiSuy(ds.slice(-3), x1)]); }
-		const duong = ["\t\\draw[semithick] plot[smooth,tension=" + vhSo(+g.cang || .7) + "] coordinates {" + du.map(p => "(" + vhSo(p[0]) + "," + vhSo(p[1]) + ")").join(" ") + "}" + (g.tenDT ? " node[right]{$" + g.tenDT + "$}" : "") + ";"];
-		return veDoThi(g, duong, ds, null, du);
+	// spline bậc ba tự nhiên qua các điểm → các đoạn Bézier (.. controls ..) trơn; hai đầu kéo dài theo đúng đoạn cong cuối
+	function splineBez(ds, them) {
+		const n = ds.length, x = ds.map(p => p[0]), y = ds.map(p => p[1]);
+		const hh = []; for (let i = 0; i < n - 1; i++) hh.push(x[i + 1] - x[i]);
+		const M = new Array(n).fill(0);
+		if (n > 2) { const a = [], b = [], c = [], d = []; for (let i = 1; i < n - 1; i++) { a.push(hh[i - 1]); b.push(2 * (hh[i - 1] + hh[i])); c.push(hh[i]); d.push(6 * ((y[i + 1] - y[i]) / hh[i] - (y[i] - y[i - 1]) / hh[i - 1])); } const m = b.length; for (let i = 1; i < m; i++) { const w = a[i] / b[i - 1]; b[i] -= w * c[i - 1]; d[i] -= w * d[i - 1]; } const z = new Array(m); z[m - 1] = d[m - 1] / b[m - 1]; for (let i = m - 2; i >= 0; i--) z[i] = (d[i] - c[i] * z[i + 1]) / b[i]; for (let i = 0; i < m; i++) M[i + 1] = z[i]; }
+		const f = (i, t) => { const A = (x[i + 1] - t) / hh[i], B = (t - x[i]) / hh[i]; return A * y[i] + B * y[i + 1] + ((A ** 3 - A) * M[i] + (B ** 3 - B) * M[i + 1]) * hh[i] * hh[i] / 6; };
+		const df = (i, t) => { const A = (x[i + 1] - t) / hh[i], B = (t - x[i]) / hh[i]; return (y[i + 1] - y[i]) / hh[i] + (-(3 * A * A - 1) * M[i] + (3 * B * B - 1) * M[i + 1]) * hh[i] / 6; };
+		const doan = []; const them1 = (i, u, v) => { const k = (v - u) / 3; doan.push([[u, f(i, u)], [u + k, f(i, u) + k * df(i, u)], [v - k, f(i, v) - k * df(i, v)], [v, f(i, v)]]); };
+		if (them > 0) them1(0, x[0] - them, x[0]);
+		for (let i = 0; i < n - 1; i++) them1(i, x[i], x[i + 1]);
+		if (them > 0) them1(n - 2, x[n - 1], x[n - 1] + them);
+		return doan;
+	}
+	const doThiDiem = { ten: "Đồ thị đường cong qua các điểm (liên tục trên R)", mota: "Nhập các điểm đồ thị đi qua (nên có giao điểm với Ox, Oy, cực trị). Web vẽ đường cong trơn (spline) qua đúng các điểm, hai đầu kéo dài theo chiều đồ thị.", truong: [{ k: "qua", nhan: "Các điểm đi qua", kieu: "vung", mac: "(-2;-2), (-1;2), (1;-2), (2;2)" }, { k: "them", nhan: "Kéo dài hai đầu thêm", kieu: "so", mac: 0.1 }].concat(TRUC), ve: g => {
+		const ds = vhDiem(g.qua).sort((a, b) => a[0] - b[0]).filter((p, i, a) => !i || p[0] - a[i - 1][0] > 1e-9); if (ds.length < 2) throw new Error("cần ít nhất 2 điểm có hoành độ khác nhau");
+		const bz = splineBez(ds, Math.max(0, +g.them || 0)), P = q => "(" + vhSo(q[0]) + "," + vhSo(q[1]) + ")";
+		const duong = ["\t\\draw[semithick] " + P(bz[0][0]) + bz.map(b => " .. controls " + P(b[1]) + " and " + P(b[2]) + " .. " + P(b[3])).join("") + (g.tenDT ? " node[right]{$" + g.tenDT + "$}" : "") + ";"];
+		const mau = []; bz.forEach(b => { for (let t = 0; t <= 1; t += .1) { const m = 1 - t; mau.push([0, 1].map(k => m * m * m * b[0][k] + 3 * m * m * t * b[1][k] + 3 * m * t * t * b[2][k] + t * t * t * b[3][k])); } });
+		return veDoThi(g, duong, ds, null, mau);
 	} };
 	// y = a + k/(x - c) và y = mx + n + k/(x - c): k tính từ các điểm (bình phương tối thiểu)
 	function phanThucQuaDiem(loai) {
@@ -3507,7 +3537,7 @@ $("vao").addEventListener("keydown", e => {
 	$("vhChepHinh").addEventListener("click", async () => { if (!VH.png) return; try { await navigator.clipboard.write([new ClipboardItem({ "image/png": new Blob([VH.png], { type: "image/png" }) })]); toast("Đã copy hình"); } catch (e) { toast("Trình duyệt không cho copy hình"); } });
 	$("vhTang").addEventListener("click", () => { VH.co = Math.min(22, VH.co + 1); $("vhMa").style.fontSize = VH.co + "px"; });
 	$("vhGiam").addEventListener("click", () => { VH.co = Math.max(10, VH.co - 1); $("vhMa").style.fontSize = VH.co + "px"; });
-	// ===== Tab Vẽ hình TikZ thực tế: GeoGebra nhúng + làm gọn code TikZ xuất từ GeoGebra =====
+	// ===== Tab Vẽ hình TikZ thực tế: dán ảnh → AI dựng lại / dò ảnh; làm gọn code GeoGebra =====
 	const VHT = { api: null, daXem: false, maXem: "", png: null };
 	const r2 = v => vhSo(+v);
 	// code PGF/TikZ GeoGebra xuất ra (nhiều số lẻ, màu, \clip, axis…) → code gọn theo chuẩn dự án
@@ -3560,63 +3590,92 @@ $("vao").addEventListener("keydown", e => {
 		if (!Object.keys(P).length) P.O_ = [0, 0], an.push("O_");
 		return xuatHinh({ tile: 1 }, P, net, them, an, null, truoc);
 	}
-	// đọc thẳng các đối tượng của GeoGebra khi không có exportPGF
-	function docGeoGebra(api) {
-		const P = {}, net = [], them = [], an = [];
-		const ds = api.getAllObjectNames();
-		ds.forEach(n => { if (api.getObjectType(n) === "point" && api.getVisible(n)) P[n.replace(/_\{?(\w+)\}?/, "_$1")] = [Math.round(api.getXcoord(n) * 100) / 100, Math.round(api.getYcoord(n) * 100) / 100]; });
-		const ten = n => n.replace(/_\{?(\w+)\}?/, "_$1");
-		const thamSo = n => (api.getCommandString(n, false) || "").replace(/^[^(]*\(|\)$/g, "").split(",").map(x => x.trim());
-		ds.forEach(n => {
-			if (!api.getVisible(n)) return; const loai = api.getObjectType(n); const dut = api.getLineStyle && api.getLineStyle(n) > 0;
-			if (loai === "segment") { const t = thamSo(n).map(ten).filter(x => P[x]); if (t.length >= 2) net.push([t[0], t[1], dut ? "dut" : "lien"]); }
-			else if (loai === "vector") { const t = thamSo(n).map(ten).filter(x => P[x]); if (t.length >= 2) them.push("\t\\draw[->] (" + t[0] + ")--(" + t[1] + ");"); }
-			else if (loai === "circle") { const v = String(api.getValueString(n)); const m = v.match(/\(x\s*([+-])\s*([\d.]+)\)².*?\(y\s*([+-])\s*([\d.]+)\)²\s*=\s*([\d.]+)/) || v.match(/x²\s*\+\s*y²\s*=\s*([\d.]+)/); if (m) { const cx = m.length > 3 ? (m[1] === "-" ? +m[2] : -m[2]) : 0, cy = m.length > 3 ? (m[3] === "-" ? +m[4] : -m[4]) : 0, r = Math.sqrt(+(m.length > 3 ? m[5] : m[1])); const k = Object.keys(P).find(q => Math.abs(P[q][0] - cx) < .02 && Math.abs(P[q][1] - cy) < .02); them.push("\t\\draw" + (dut ? "[dashed]" : "") + " " + (k ? "(" + k + ")" : "(" + r2(cx) + "," + r2(cy) + ")") + " circle (" + r2(r) + ");"); } }
-		});
-		if (!Object.keys(P).length) throw new Error("GeoGebra chưa có điểm nào");
-		return xuatHinh({ tile: 1 }, P, net, them, an);
-	}
 	function vhtDoi() { VHT.daXem = false; $("vhtChep").disabled = $("vhtChepHinh").disabled = true; $("vhtXem").disabled = !$("vhtMa").value.trim(); $("vhtTT2").textContent = $("vhtMa").value.trim() ? "Bấm Xem hình trước khi Copy." : ""; }
 	function datMa(ma) { $("vhtMa").value = themTacGia(ma); vhtDoi(); }
-	function khoiDongVHT() {
-		if (VHT.da) return; VHT.da = true;
-		const tao = () => {
-			try {
-				const app = new window.GGBApplet({ appName: "classic", width: Math.max(380, $("vhtGeo").clientWidth || 640), height: 560, showToolBar: true, showAlgebraInput: true, showMenuBar: false, allowStyleBar: true, enableRightClick: true, enableShiftDragZoom: true, showResetIcon: false, language: "vi", appletOnLoad: api => { VHT.api = api; $("vhtTT").textContent = "GeoGebra sẵn sàng."; } }, true);
-				app.inject("vhtGeo");
-			} catch (e) { $("vhtTT").textContent = "Không mở được GeoGebra: " + ((e && e.message) || e); }
-		};
-		if (window.GGBApplet) tao();
-		else { const sc = document.createElement("script"); sc.src = "https://www.geogebra.org/apps/deployggb.js"; sc.onload = tao; sc.onerror = () => { $("vhtTT").textContent = "Không tải được GeoGebra (cần mạng). Vẫn dùng được phần dán code TikZ bên dưới."; }; document.head.appendChild(sc); }
-	}
-	$("vhtAnh").addEventListener("change", async () => {
-		const f = $("vhtAnh").files && $("vhtAnh").files[0]; if (!f) return;
-		if (!VHT.api) { toast("GeoGebra chưa sẵn sàng"); return; }
-		const url = await new Promise(ok => { const r = new FileReader(); r.onload = () => ok(r.result); r.readAsDataURL(f); });
-		try {
-			if (typeof VHT.api.insertImage === "function") { VHT.api.insertImage(url); toast("Đã chèn ảnh nền — đồ theo ảnh rồi bấm Lấy code"); }
-			else toast("Bấm vào khung GeoGebra rồi Ctrl+V để dán ảnh");
-		} catch (e) { toast("Bấm vào khung GeoGebra rồi Ctrl+V để dán ảnh"); }
-		$("vhtAnh").value = "";
-	});
-	$("vhtLay").addEventListener("click", () => {
-		const api = VHT.api; if (!api) { toast("GeoGebra chưa sẵn sàng"); return; }
-		const loi = e => { $("vhtTT").textContent = "Chưa lấy được code: " + ((e && e.message) || e); };
-		const xong = ma => { try { datMa(ma); $("vhtTT").textContent = "Đã lấy code — bấm Xem hình."; } catch (e) { loi(e); } };
-		try {
-			if (typeof api.exportPGF === "function") api.exportPGF(goc => { try { xong(lamGonGeo(goc)); } catch (e) { try { xong(docGeoGebra(api)); } catch (e2) { loi(e2); } } });
-			else xong(docGeoGebra(api));
-		} catch (e) { loi(e); }
-	});
-	$("vhtGon").addEventListener("click", () => { try { datMa(lamGonGeo($("vhtGoc").value)); $("vhtTT2").textContent = "Đã làm gọn — bấm Xem hình."; } catch (e) { $("vhtTT2").textContent = "Chưa làm gọn được: " + ((e && e.message) || e); } });
-	$("vhtMa").addEventListener("input", vhtDoi);
-	$("vhtXem").addEventListener("click", async () => {
-		const ma = $("vhtMa").value; const B = bo(); if (!B || !B.veTikz) { $("vhtTT2").textContent = "Bộ vẽ chưa sẵn sàng — tải lại trang."; return; }
+	async function vhtXem() {
+		const ma = $("vhtMa").value; const B = bo(); if (!B || !B.veTikz) { $("vhtTT2").textContent = "Bộ vẽ chưa sẵn sàng — tải lại trang."; return null; }
 		$("vhtTT2").textContent = "Đang vẽ…"; const v = await B.veTikz(ma, {});
-		if (v.loi) { $("vhtTT2").textContent = "Lỗi biên dịch: " + String(v.loi).slice(0, 200); return; }
+		if (v.loi) { $("vhtTT2").textContent = "Lỗi biên dịch: " + String(v.loi).slice(0, 200); return v; }
 		$("vhtHinh").innerHTML = '<img alt="Hình TikZ" src="' + URL.createObjectURL(new Blob([v.png], { type: "image/png" })) + '">';
-		VHT.png = v.png; VHT.maXem = ma; VHT.daXem = true; $("vhtChep").disabled = $("vhtChepHinh").disabled = false; $("vhtTT2").textContent = "Đã vẽ xong — có thể Copy code.";
-	});
+		VHT.png = v.png; VHT.maXem = ma; VHT.daXem = true; $("vhtChep").disabled = $("vhtChepHinh").disabled = false; $("vhtTT2").textContent = "Đã vẽ xong — có thể Copy code (" + Math.max(1, Math.round(ma.length / 1024)) + " KB).";
+		return v;
+	}
+	const vtLog = (ai, html) => { const l = $("vtLog"); if (l.querySelector(".trong")) l.innerHTML = ""; const d = document.createElement("div"); d.className = "vtTin " + (ai ? "ai" : "ban"); d.innerHTML = html; l.appendChild(d); l.scrollTop = l.scrollHeight; };
+	async function vtNhanAnh(blob) {
+		if (!blob || !/^image\//.test(blob.type || "image/")) return;
+		VHT.anh = new Uint8Array(await blob.arrayBuffer());
+		const u = URL.createObjectURL(new Blob([VHT.anh], { type: blob.type || "image/png" }));
+		$("vtDan").innerHTML = '<img alt="Ảnh đã dán" src="' + u + '">';
+		vtLog(false, '<img alt="Ảnh" src="' + u + '">');
+	}
+	const LOI_NHAC_THUCTE = `Ảnh 1 là một hình trong tài liệu Toán (có thể là ảnh chụp màn hình hoặc ảnh scan, có thể mờ). Ảnh 2 là CÙNG hình đó có phủ LƯỚI TOẠ ĐỘ xanh: gốc (0,0) ở góc dưới-trái, số ghi ở mép là toạ độ TikZ (cm).
+Hãy VẼ LẠI hình bằng TikZ sao cho khi biên dịch ra PDF nhìn GIỐNG ẢNH NHẤT có thể: đúng bố cục, tỉ lệ, vị trí, hình dạng, màu sắc, chữ/số trên hình.
+Cách làm: phân tích hình thành các hình cơ bản (đường tròn, elip, cung, hình chữ nhật bo góc, đa giác, đoạn thẳng, đường cong .. controls .., chữ bằng node), đọc toạ độ TRÊN LƯỚI rồi viết code.
+Quy định code:
+- Toạ độ số nguyên hoặc tối đa 2 chữ số thập phân, đơn vị cm, khớp với lưới.
+- Phần tử lặp lại (vạch chia, số trên mặt đồng hồ, ô lưới, bậc thang, hàng rào…) PHẢI dùng \\foreach với phép quay/tịnh tiến.
+- Màu: khai báo tối đa 8 màu bằng \\definecolor{tên}{RGB}{r,g,b} ở đầu tikzpicture rồi dùng tên màu; vẽ lớp dưới trước, lớp trên sau ({MAU}).
+- Không dùng \\clip, ảnh ngoài, gói lạ; chỉ TikZ chuẩn (calc, arrows.meta, patterns, shapes). Chữ tiếng Việt viết trong node bình thường, công thức trong $…$.
+- {NEN}
+- Code dưới 150 dòng, có chú thích ngắn bằng % cho từng bộ phận.
+{YEU}
+Trả về DUY NHẤT JSON: {"tikz":"\\\\begin{tikzpicture}…\\\\end{tikzpicture}"} (nhân đôi mọi dấu \\ trong chuỗi JSON).`;
+	const LOI_NHAC_SUA = `Ảnh 1 là hình gốc. Ảnh 2 là hình vẽ từ code TikZ dưới đây. Hãy sửa code theo yêu cầu: {YEU}
+Giữ nguyên phong cách: toạ độ tối đa 2 chữ số thập phân, \\foreach cho phần lặp, màu khai báo bằng \\definecolor, không \\clip.
+Code hiện tại:
+{MA}
+Trả về DUY NHẤT JSON: {"tikz":"…"} (nhân đôi mọi dấu \\ trong chuỗi JSON).`;
+	function vtAI() { if (!aiSanSang() || AI.nguon === "tesseract") throw new Error("cần cấu hình AI (Gemini hoặc Claude) — bấm Cấu hình AI ở tab Word → LaTeX"); return { ai: cauHinhQuet().ai }; }
+	async function vtGoi(nhac, anh) { const W2 = bo()._w2t; const t = await W2.goiHinh(vtAI().ai, nhac, anh, { loai: "vethucte" }); const j = W2.layJSON(t); if (!j || !j.tikz) throw new Error("AI chưa trả về code"); return String(j.tikz); }
+	async function vtTao() {
+		if (!VHT.anh) { toast("Hãy dán hoặc chọn ảnh trước"); return; }
+		const tt = $("vtTT"), W2 = bo()._w2t, wCm = +$("vtRong").value || 6;
+		$("vtTao").disabled = true;
+		try {
+			if ($("vtCach").value === "do") {
+				tt.textContent = "Đang làm nét, gom màu, dò ảnh…";
+				const r = await W2.doAnhYHe(VHT.anh, { wCm, mau: $("vtMau").value, soMau: +$("vtSoMau").value, chiTiet: +$("vtChiTiet").value, lamNet: $("vtLamNet").value });
+				datMa(r.tikz); vtLog(true, "Đã dò ảnh: " + r.soMau + " màu" + (r.lamNet ? ", có làm nét ảnh mờ" : "") + ".");
+			} else {
+				const o = vtAI();
+				tt.textContent = "AI đang phân tích ảnh…";
+				const anh = [await W2.anhChoAI(VHT.anh), await W2.anhLuoi(VHT.anh, wCm)];
+				const nhac = LOI_NHAC_THUCTE.replace("{MAU}", $("vtMau").value === "xam" ? "chỉ dùng đen, trắng và các mức xám black!10…black!80" : "giữ đúng màu như ảnh").replace("{NEN}", $("vtBoNen").checked ? "Nền phía sau quá chi tiết (lưới phối cảnh, hoa văn, phong cảnh) thì bỏ, chỉ vẽ đối tượng chính." : "Vẽ cả nền phía sau ở mức đơn giản.").replace("{YEU}", $("vtYeu").value.trim() ? "Yêu cầu thêm của giáo viên: " + $("vtYeu").value.trim() : "");
+				let ma = await vtGoi(nhac, anh);
+				let v = await bo().veTikz(ma, {});
+				for (let lan = 0; lan < 2 && v.loi; lan++) { tt.textContent = "Code lỗi, AI đang sửa…"; const m2 = await W2.suaBangAI(VHT.anh, null, ma, v.loi, o); if (!m2) break; ma = m2; v = await bo().veTikz(ma, {}); }
+				if (!v.loi && $("vtTinh").checked) { tt.textContent = "AI đang so với ảnh gốc và chỉnh thêm…"; try { const m3 = await vtGoi(LOI_NHAC_SUA.replace("{YEU}", "so sánh hai ảnh, sửa mọi chỗ khác biệt về vị trí, kích thước, màu, chữ để giống ảnh gốc hơn").replace("{MA}", ma), [await W2.anhChoAI(VHT.anh), await W2.anhJpeg(await W2.anhCanvas(v.png), 0.92)]); const v3 = await bo().veTikz(m3, {}); if (!v3.loi) ma = m3; } catch (e) { } }
+				datMa(ma); vtLog(true, "AI đã dựng lại hình bằng các hình cơ bản. Nhắn yêu cầu rồi bấm <b>Sửa theo yêu cầu</b> nếu cần chỉnh.");
+			}
+			tt.textContent = ""; await vhtXem();
+		} catch (e) { tt.textContent = "Chưa tạo được: " + ((e && e.message) || e); }
+		$("vtTao").disabled = false;
+	}
+	async function vtSua() {
+		const yeu = $("vtYeu").value.trim(); const ma = $("vhtMa").value.trim();
+		if (!ma) { toast("Chưa có code để sửa — bấm Tạo code trước"); return; }
+		if (!yeu) { toast("Nhập yêu cầu sửa vào ô bên trên"); return; }
+		const tt = $("vtTT"), W2 = bo()._w2t; $("vtSua").disabled = true; vtLog(false, esc(yeu));
+		try {
+			tt.textContent = "AI đang sửa…";
+			const anh = []; if (VHT.anh) anh.push(await W2.anhChoAI(VHT.anh)); if (VHT.png) anh.push(await W2.anhJpeg(await W2.anhCanvas(VHT.png), 0.92));
+			let m = await vtGoi(LOI_NHAC_SUA.replace("{YEU}", yeu).replace("{MA}", ma.replace(/^%Tác giả web:[^\n]*\n/, "")), anh);
+			let v = await bo().veTikz(m, {}); if (v.loi) { const m2 = await W2.suaBangAI(VHT.anh || VHT.png, null, m, v.loi, vtAI()); if (m2) m = m2; }
+			datMa(m); $("vtYeu").value = ""; vtLog(true, "Đã sửa theo yêu cầu."); tt.textContent = ""; await vhtXem();
+		} catch (e) { tt.textContent = "Chưa sửa được: " + ((e && e.message) || e); }
+		$("vtSua").disabled = false;
+	}
+	function khoiDongVHT() {}
+	$("vtCach").addEventListener("change", () => { const ai = $("vtCach").value === "ai"; document.querySelectorAll("#tabVeThucTe .vtAI").forEach(e => e.hidden = !ai); document.querySelectorAll("#tabVeThucTe .vtDo").forEach(e => e.hidden = ai); });
+	document.addEventListener("paste", e => { if ($("tabVeThucTe").hidden) return; const it = [...((e.clipboardData && e.clipboardData.items) || [])].find(x => /^image\//.test(x.type)); if (!it) return; e.preventDefault(); vtNhanAnh(it.getAsFile()); });
+	$("vtDan").addEventListener("dragover", e => e.preventDefault());
+	$("vtDan").addEventListener("drop", e => { e.preventDefault(); const f = e.dataTransfer.files && e.dataTransfer.files[0]; if (f) vtNhanAnh(f); });
+	$("vtTep").addEventListener("change", () => { const f = $("vtTep").files && $("vtTep").files[0]; if (f) vtNhanAnh(f); $("vtTep").value = ""; });
+	$("vtTao").addEventListener("click", vtTao);
+	$("vtSua").addEventListener("click", vtSua);
+	$("vhtGon").addEventListener("click", async () => { try { datMa(lamGonGeo($("vhtGoc").value)); await vhtXem(); } catch (e) { $("vhtTT2").textContent = "Chưa làm gọn được: " + ((e && e.message) || e); } });
+	$("vhtMa").addEventListener("input", vhtDoi);
+	$("vhtXem").addEventListener("click", vhtXem);
 	$("vhtChep").addEventListener("click", () => { if (!VHT.daXem) return; const ma = themTacGia(VHT.maXem); if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ma).then(() => toast("Đã copy code"), () => { $("vhtMa").select(); toast("Bấm Ctrl+C để sao chép"); }); else { $("vhtMa").select(); toast("Bấm Ctrl+C để sao chép"); } });
 	$("vhtChepHinh").addEventListener("click", async () => { if (!VHT.png) return; try { await navigator.clipboard.write([new ClipboardItem({ "image/png": new Blob([VHT.png], { type: "image/png" }) })]); toast("Đã copy hình"); } catch (e) { toast("Trình duyệt không cho copy hình"); } });
 	try { const t = docO("tab"); if (t && $(t)) chonTab(t, false); } catch (e) { }
