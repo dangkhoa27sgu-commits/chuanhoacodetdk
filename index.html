@@ -419,6 +419,23 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 .dsUV .nut { padding: 3px 8px; font-size: 11.5px; }
 .nhanCach.vecto { color: var(--xanh); border-color: currentColor; }
 
+/* Vẽ hình TikZ */
+.vhKhung { display: grid; grid-template-columns: minmax(200px, 260px) minmax(260px, 1fr) minmax(300px, 1.2fr); gap: 12px; align-items: start; }
+@media (max-width: 1000px) { .vhKhung { grid-template-columns: 1fr; } }
+.vhMenu { border: 1px solid var(--vien); border-radius: 8px; background: var(--mat); padding: 6px; max-height: 78vh; overflow: auto; }
+.vhMenu details { margin: 2px 0; } .vhMenu summary { font-weight: 600; cursor: pointer; padding: 6px 4px; }
+.vhMuc { display: block; width: 100%; text-align: left; background: none; border: 0; padding: 5px 8px 5px 18px; border-radius: 6px; cursor: pointer; color: inherit; font: inherit; font-size: 13px; }
+.vhMuc:hover { background: var(--nen, rgba(0,0,0,.05)); } .vhMuc.dangChon { color: #4f46e5; font-weight: 600; }
+.vhForm { padding: 12px; display: grid; gap: 8px; } .vhForm h3 { margin: 0; font-size: 15px; } .vhMoTa { margin: 0; font-size: 12px; color: var(--phu); }
+.vhTruong { display: grid; gap: 8px; } .vhTruong label { display: grid; gap: 3px; font-size: 13px; } .vhTruong label.bat { display: flex; gap: 6px; align-items: center; }
+.vhTruong input[type=text], .vhTruong input[type=number], .vhTruong select, .vhTruong textarea { width: 100%; box-sizing: border-box; font: inherit; padding: 5px 7px; }
+.vhTruong textarea { font-family: "JetBrains Mono", monospace; font-size: 12px; }
+.vhGoiY { display: flex; flex-wrap: wrap; gap: 4px; } .vhGoiY .nutChu { font-size: 11px; padding: 2px 6px; border: 1px dashed var(--vien); border-radius: 5px; }
+.vhKetQua { padding: 12px; display: grid; gap: 8px; }
+.vhAnh { min-height: 220px; display: grid; place-items: center; background: #fff; border: 1px solid var(--vien); border-radius: 8px; padding: 10px; }
+.vhAnh img { max-width: 100%; height: auto; max-height: 520px; }
+.vhMa { min-height: 220px; font-size: 13px; }
+
 </style>
 </head>
 <body>
@@ -468,6 +485,7 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 		<button type="button" role="tab" id="nutTabPdfWord" aria-selected="false" aria-controls="tabPdfWord" tabindex="-1">PDF → Word</button>
 		<button type="button" role="tab" id="nutTabTexWord" aria-selected="false" aria-controls="tabTexWord" tabindex="-1">LaTeX → Word</button>
 		<button type="button" role="tab" id="nutTabWordTex" aria-selected="false" aria-controls="tabWordTex" tabindex="-1">Word → LaTeX</button>
+		<button type="button" role="tab" id="nutTabVeHinh" aria-selected="false" aria-controls="tabVeHinh" tabindex="-1">Vẽ hình TikZ</button>
 		<button type="button" role="tab" id="nutTabKhoAnh" aria-selected="false" aria-controls="tabKhoAnh" tabindex="-1">Kho ảnh TikZ</button>
 	</nav>
 		<div class="manTab" id="tabChuan" role="tabpanel" aria-labelledby="nutTabChuan">
@@ -846,6 +864,25 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 						<div class="hangNut"><button class="nut" type="button" id="themNuaKT" hidden>Xem thêm</button></div>
 						<p class="moTaKT nho">Bộ vẽ hỗ trợ TikZ, pgfplots, tkz-tab, tkz-euclide, tikz-3dplot, circuitikz, tikz-cd, venndiagram và biểu tượng <code>\faUser</code>, <code>\faIcon{…}</code> (Font Awesome Free, giấy phép CC BY 4.0).</p>
 					</div>
+		</div>
+	</div>
+</section>
+<section class="manTab" id="tabVeHinh" role="tabpanel" aria-labelledby="nutTabVeHinh" hidden>
+	<div class="xuong">
+		<div class="xuongDau"><h2>Vẽ hình TikZ <small>Chọn dạng hình · điền thông số · Xem hình · Copy code</small></h2></div>
+		<div class="vhKhung">
+			<nav class="vhMenu" id="vhMenu" aria-label="Dạng hình"></nav>
+			<div class="vhForm khoi">
+				<h3 id="vhTen">Chọn một dạng hình bên trái</h3>
+				<p class="vhMoTa" id="vhMoTa"></p>
+				<div class="vhTruong" id="vhTruong"></div>
+				<div class="hangNut"><button class="nut chinh" type="button" id="vhXem" disabled>Xem hình</button><span class="ttSua" id="vhTT"></span></div>
+			</div>
+			<div class="vhKetQua khoi">
+				<div class="vhAnh" id="vhAnh"><p class="trong">Điền thông số rồi bấm <b>Xem hình</b>.</p></div>
+				<div class="hangNut"><button class="nut chinh" type="button" id="vhChep" disabled>Copy code</button><button class="nut" type="button" id="vhChepHinh" disabled>Copy hình</button><button class="nut" type="button" id="vhTang">Tăng font</button><button class="nut" type="button" id="vhGiam">Giảm font</button></div>
+				<textarea class="maTex vhMa" id="vhMa" spellcheck="false" aria-label="Code TikZ"></textarea>
+			</div>
 		</div>
 	</div>
 </section>
@@ -1239,10 +1276,10 @@ $("vao").addEventListener("keydown", e => {
 	function nho(ids) { ids.forEach(k => { if (!$(k)) return; const v = docO(k); if (v !== null) $(k).checked = v === "1"; $(k).addEventListener("change", () => ghiO(k, $(k).checked ? "1" : "0")); }); }
 	nho(["ptChuan", "wTieuDe", "wLoiGiai", "wGach", "wBangDA"]);
 	["wFont", "wCo", "wLe", "wNgat", "ptScan"].forEach(k => { if (!$(k)) return; const v = docO(k); if (v) { const cu = $(k).value; $(k).value = v; if ($(k).value !== v) $(k).value = cu; } $(k).addEventListener("change", () => ghiO(k, $(k).value)); });
-	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 10.2.";
+	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 10.3.";
 
 	/* ---------- tab ngang ---------- */
-	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"], ["nutTabKhoAnh", "tabKhoAnh"]];
+	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"], ["nutTabVeHinh", "tabVeHinh"], ["nutTabKhoAnh", "tabKhoAnh"]];
 	function chonTab(nut, luu) {
 		TAB.forEach(([n, m]) => { const on = n === nut; $(n).setAttribute("aria-selected", on); $(n).tabIndex = on ? 0 : -1; $(m).hidden = !on; });
 		if (luu) ghiO("tab", nut);
@@ -1250,6 +1287,7 @@ $("vao").addEventListener("keydown", e => {
 		if (nut === "nutTabTexWord") khoiDongTW();
 		if (nut === "nutTabWordTex") khoiDongWL();
 		if (nut === "nutTabKhoAnh") khoiDongKho();
+		if (nut === "nutTabVeHinh") khoiDongVH();
 	}
 	TAB.forEach(([n], i) => {
 		$(n).addEventListener("click", () => chonTab(n, true));
@@ -1350,7 +1388,7 @@ $("vao").addEventListener("keydown", e => {
 		const khoa = $(o.khoa).value.trim();
 		const tt = $(o.tt);
 		if (!khoa) { tt.textContent = "Dán khoá vào ô trên trước."; tt.className = "ttKhoa loi"; return; }
-		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 10.2."; tt.className = "ttKhoa loi"; return; }
+		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 10.3."; tt.className = "ttKhoa loi"; return; }
 		$(o.nut).disabled = true; tt.textContent = "Đang kiểm tra…"; tt.className = "ttKhoa";
 		try {
 			const ds = await bo().aiDsMoHinh({ nguon, khoa });
@@ -2206,7 +2244,7 @@ $("vao").addEventListener("keydown", e => {
 	function taiKT(epTai) {
 		if (KT.hua && !epTai) return KT.hua;
 		KT.hua = (async () => {
-			if (!bo() || !bo()._w2t || !bo()._w2t.taoMuc) { $("ttKhoTikzWL").textContent = "Bộ luật chưa có kho TikZ — quản trị viên cần cập nhật bộ luật 10.2."; return; }
+			if (!bo() || !bo()._w2t || !bo()._w2t.taoMuc) { $("ttKhoTikzWL").textContent = "Bộ luật chưa có kho TikZ — quản trị viên cần cập nhật bộ luật 10.3."; return; }
 			const cn = cauNoiKT(); KT.cucBo = !!cn.cucBo;
 			try { KT.laQT = !!(cn.laQT && cn.laQT()); } catch (e) { KT.laQT = false; }
 			$("themKT").hidden = $("dauKhoKT").hidden = $("gopKT").hidden = !KT.laQT;
@@ -2435,7 +2473,7 @@ $("vao").addEventListener("keydown", e => {
 	$("luoiKT").addEventListener("click", async e => {
 		const b = e.target.closest("button[data-kt]"); if (!b) return;
 		const the = b.closest(".theKT"), id = the.dataset.id; const m = KT.ds.find(x => x.id === id); if (!m) return;
-		if (b.dataset.kt === "chep") { const ma = await layMaKT(m); if (ma && navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ma).then(() => toast("Đã chép code"), () => toast("Không chép được")); else toast("Không lấy được code"); return; }
+		if (b.dataset.kt === "chep") { const ma = themTacGia(await layMaKT(m)); if (ma && navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ma).then(() => toast("Đã chép code"), () => toast("Không chép được")); else toast("Không lấy được code"); return; }
 		if (b.dataset.kt === "xem") { let ta = the.querySelector("textarea"); if (ta) { ta.remove(); return; } ta = document.createElement("textarea"); ta.className = "maHinh"; ta.readOnly = true; ta.spellcheck = false; ta.value = "Đang tải…"; the.appendChild(ta); ta.value = (await layMaKT(m)) || "(không lấy được code)"; return; }
 		if (b.dataset.kt === "ten") {
 			const ten = window.prompt("Tên gợi ý cho hình (nhiều tên cách nhau bởi dấu phẩy, ví dụ: rubik, khối lập phương, xếp khối):", m.the || "");
@@ -2645,12 +2683,12 @@ $("vao").addEventListener("keydown", e => {
 	function tuyChonHinh() {
 		const dungAI = $("wlAI").checked && aiSanSang() && AI.nguon !== "tesseract";
 		WL.coAI = dungAI;
-		return { cheDoAnh: true, nguongKho: 0.8, ungVien: false, soVongSua: 0, khoTikz: null, layMaKho: id => cauNoiKT().layMa(id), ai: dungAI ? Object.assign(cauHinhQuet().ai, { signal: WL.ac && WL.ac.signal }) : null, khongAI: !dungAI, khongNho: true, xam: $("wlKieuAnh").value === "xam", signal: WL.ac && WL.ac.signal, songSong: 2 };
+		return { cheDoAnh: true, soVong: 0, nguongKho: 0.8, ungVien: false, soVongSua: 0, khoTikz: null, layMaKho: id => cauNoiKT().layMa(id), ai: dungAI ? Object.assign(cauHinhQuet().ai, { signal: WL.ac && WL.ac.signal }) : null, khongAI: !dungAI, khongNho: true, xam: $("wlKieuAnh").value === "xam", signal: WL.ac && WL.ac.signal, songSong: 2 };
 	}
 
 	$("nutChayWL").addEventListener("click", async () => {
 		if (WL.dang || !WL.file) return;
-		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 10.2.", "loi"); return; }
+		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 10.3.", "loi"); return; }
 		WL.dang = true; $("nutChayWL").disabled = true; $("nutDungWL").hidden = false;
 		WL.ac = new AbortController();
 		$("tongKetWL").hidden = true;
@@ -2761,6 +2799,400 @@ $("vao").addEventListener("keydown", e => {
 	function khoiDongWL() { if (daKhoiDongWL) return; daKhoiDongWL = true; }
 	let daKhoiDongKho = false;
 	function khoiDongKho() { if (daKhoiDongKho) { veKT(); return; } daKhoiDongKho = true; taiKT(); }
+	// ===== Tab Vẽ hình TikZ: chọn dạng, điền thông số, web sinh code (không dùng AI) =====
+	const TAC_GIA = "%Tác giả web: ThS. Trương Đăng Khoa";
+	const themTacGia = ma => { ma = String(ma || "").replace(/^\s*%Tác giả web:[^\n]*\n?/, ""); return TAC_GIA + "\n" + ma; };
+	const vhSo = v => { if (!isFinite(v)) return "0"; const r = Math.round(v * 100) / 100; return String(Object.is(r, -0) ? 0 : r); };
+	const vhDs = s => String(s || "").split(";").map(t => t.trim()).filter(t => t !== "");
+	const vhSoDs = s => String(s || "").split(/[;,\s]+/).map(t => t.trim().replace(/{,}/g, ".")).filter(t => t !== "" && isFinite(+t)).map(Number);
+	// số → LaTeX đẹp: nguyên, phân số (mẫu ≤ 12), a√b/c, còn lại 2 chữ số thập phân
+	function vhLatex(v) {
+		if (!isFinite(v)) return v > 0 ? "+\\infty" : "-\\infty";
+		if (Math.abs(v - Math.round(v)) < 1e-9) return String(Math.round(v));
+		for (let q = 2; q <= 12; q++) { const p = Math.round(v * q); if (Math.abs(v - p / q) < 1e-9) return (p < 0 ? "-" : "") + "\\dfrac{" + Math.abs(p) + "}{" + q + "}"; }
+		for (let c = 1; c <= 6; c++) for (const b of [2, 3, 5, 6, 7, 10, 11, 13, 14, 15]) { const t = v * c / Math.sqrt(b); const a = Math.round(t); if (a && Math.abs(t - a) < 1e-9) { const n = (Math.abs(a) === 1 ? "" : Math.abs(a)) + "\\sqrt{" + b + "}"; return (a < 0 ? "-" : "") + (c === 1 ? n : "\\dfrac{" + n + "}{" + c + "}"); } }
+		return vhSo(v).replace(".", "{,}");
+	}
+	const vhNhan = v => vhLatex(v);
+	// điểm "(1;2), (-1;0)" → [[1,2],[-1,0]]
+	const vhDiem = s => (String(s || "").match(/\(\s*-?[\d.,{}]+\s*;\s*-?[\d.,{}]+\s*\)/g) || []).map(t => t.replace(/[(){}\s]/g, "").split(";").map(x => +x.replace(",", "."))).filter(p => p.every(isFinite));
+	const DAU_DONG = "\\begin{tikzpicture}[scale={S},font=\\footnotesize,line join=round,line cap=round,>=stealth]";
+	const moDau = g => DAU_DONG.replace("{S}", vhSo(+g.tile || 1));
+
+	// ---------- đa thức / hàm ----------
+	function nghiemBac2(a, b, c) { if (Math.abs(a) < 1e-12) return Math.abs(b) < 1e-12 ? [] : [-c / b]; const d = b * b - 4 * a * c; if (d < -1e-12) return []; if (Math.abs(d) < 1e-12) return [-b / (2 * a)]; const r = Math.sqrt(d); return [(-b - r) / (2 * a), (-b + r) / (2 * a)].sort((x, y) => x - y); }
+	function nghiemSo(f, a, b) { const r = []; const N = 800; let x0 = a, y0 = f(a); for (let i = 1; i <= N; i++) { const x1 = a + (b - a) * i / N, y1 = f(x1); if (!isFinite(y0) || !isFinite(y1)) { x0 = x1; y0 = y1; continue; } if (y0 === 0) r.push(x0); else if (y0 * y1 < 0 && Math.abs(y1 - y0) < 1e6) { let l = x0, h = x1; for (let k = 0; k < 60; k++) { const m = (l + h) / 2; if (f(l) * f(m) <= 0) h = m; else l = m; } r.push((l + h) / 2); } x0 = x1; y0 = y1; } return r.filter((v, i) => !i || Math.abs(v - r[i - 1]) > 1e-6); }
+	// biểu thức pgf của đa thức hệ số [a_n…a_0]
+	function daThucPgf(he) {
+		const n = he.length - 1; let s = "";
+		he.forEach((c, i) => { const k = n - i; if (Math.abs(c) < 1e-12) return; const tri = Math.abs(c), dau = c < 0 ? "-" : (s ? "+" : ""); const hs = (tri === 1 && k) ? "" : vhSo(tri) + (k ? "*" : ""); s += dau + hs + (k === 0 ? "" : k === 1 ? "(\\x)" : "(\\x)^" + k); });
+		return s || "0";
+	}
+	const HAM = {
+		bac1: { ten: "Hàm số bậc nhất y = ax + b", he: ["a", "b"], mac: [1, 1], tao: h => ({ f: x => h.a * x + h.b, pgf: daThucPgf([h.a, h.b]), da: [h.a, h.b] }) },
+		bac2: { ten: "Hàm số bậc hai y = ax² + bx + c", he: ["a", "b", "c"], mac: [1, -2, -1], tao: h => ({ f: x => h.a * x * x + h.b * x + h.c, pgf: daThucPgf([h.a, h.b, h.c]), da: [h.a, h.b, h.c] }) },
+		bac3: { ten: "Hàm số bậc ba y = ax³ + bx² + cx + d", he: ["a", "b", "c", "d"], mac: [1, 0, -3, 1], tao: h => ({ f: x => ((h.a * x + h.b) * x + h.c) * x + h.d, pgf: daThucPgf([h.a, h.b, h.c, h.d]), da: [h.a, h.b, h.c, h.d] }) },
+		trung: { ten: "Hàm trùng phương y = ax⁴ + bx² + c", he: ["a", "b", "c"], mac: [1, -2, 0], tao: h => ({ f: x => h.a * x ** 4 + h.b * x * x + h.c, pgf: daThucPgf([h.a, 0, h.b, 0, h.c]), da: [h.a, 0, h.b, 0, h.c] }) },
+		pt11: { ten: "Phân thức y = (ax + b)/(cx + d)", he: ["a", "b", "c", "d"], mac: [1, 1, 1, -1], tao: h => ({ f: x => (h.a * x + h.b) / (h.c * x + h.d), pgf: "(" + daThucPgf([h.a, h.b]) + ")/(" + daThucPgf([h.c, h.d]) + ")", tc: { dung: h.c ? [-h.d / h.c] : [], ngang: h.c ? [h.a / h.c] : [] } }) },
+		pt21: { ten: "Phân thức y = (ax² + bx + c)/(dx + e)", he: ["a", "b", "c", "d", "e"], mac: [1, 0, 1, 1, 0], tao: h => { const tc = { dung: h.d ? [-h.e / h.d] : [], xien: null }; if (h.d) { const A = h.a / h.d, B = (h.b - A * h.e) / h.d; tc.xien = [A, B]; } return { f: x => (h.a * x * x + h.b * x + h.c) / (h.d * x + h.e), pgf: "(" + daThucPgf([h.a, h.b, h.c]) + ")/(" + daThucPgf([h.d, h.e]) + ")", tc }; } }
+	};
+	// điểm cực trị theo đạo hàm số
+	function cucTri(f, a, b) { const d = x => (f(x + 1e-5) - f(x - 1e-5)) / 2e-5; return nghiemSo(d, a, b).filter(x => { const l = d(x - 1e-3), r = d(x + 1e-3); return isFinite(l) && isFinite(r) && l * r < 0; }).map(x => { const r = Math.round(x * 1e6) / 1e6; return [r, f(r)]; }); }
+
+	// ---------- trục toạ độ + đồ thị ----------
+	const TRUC = [
+		{ k: "xmin", nhan: "Ox từ", kieu: "so", mac: -3 }, { k: "xmax", nhan: "Ox đến", kieu: "so", mac: 3 },
+		{ k: "ymin", nhan: "Oy từ", kieu: "so", mac: -3 }, { k: "ymax", nhan: "Oy đến", kieu: "so", mac: 3 },
+		{ k: "soOx", nhan: "Số ghi trên Ox (để trống: tự lấy)", kieu: "chu", mac: "" }, { k: "vtOx", nhan: "Vị trí số trên Ox", kieu: "chon", lua: [["below", "Dưới trục"], ["above", "Trên trục"]] },
+		{ k: "soOy", nhan: "Số ghi trên Oy (để trống: tự lấy)", kieu: "chu", mac: "" }, { k: "vtOy", nhan: "Vị trí số trên Oy", kieu: "chon", lua: [["left", "Bên trái"], ["right", "Bên phải"]] },
+		{ k: "toDB", nhan: "Tô điểm đặc biệt (cực trị, giao trục)", kieu: "hop", mac: true }, { k: "gion", nhan: "Đường gióng nét đứt tới hai trục", kieu: "hop", mac: true },
+		{ k: "diemThem", nhan: "Điểm tô thêm, ví dụ (1;2), (-1;0)", kieu: "chu", mac: "" }, { k: "tenDT", nhan: "Tên đồ thị", kieu: "chu", mac: "(C)" },
+		{ k: "tile", nhan: "Tỉ lệ (scale)", kieu: "so", mac: 1 }
+	];
+	// các khúc trong khung [ymin,ymax] (cắt tại tiệm cận đứng)
+	function mienVe(f, a, b, y0, y1, cat) {
+		const N = 1200, ds = []; let cur = null; const trong = x => { const y = f(x); return isFinite(y) && y >= y0 - 1e-9 && y <= y1 + 1e-9; };
+		const bien = (u, v) => { for (let k = 0; k < 50; k++) { const m = (u + v) / 2; if (trong(m) === trong(u)) u = m; else v = m; } return trong(u) ? u : v; };
+		let xt = a;
+		for (let i = 0; i <= N; i++) {
+			const x = a + (b - a) * i / N; const gan = (cat || []).some(c => Math.abs(x - c) < (b - a) / N);
+			const ok = !gan && trong(x);
+			if (ok && !cur) cur = [i ? bien(x, xt) : x, x];
+			else if (ok) cur[1] = x;
+			else if (cur) { cur[1] = gan ? cur[1] : bien(cur[1], x); ds.push(cur); cur = null; }
+			xt = x;
+		}
+		if (cur) ds.push(cur);
+		return ds.filter(([u, v]) => v - u > 1e-3);
+	}
+	function veDoThi(g, duong, diemDB, tc) {
+		const xmin = +g.xmin, xmax = +g.xmax, ymin = +g.ymin, ymax = +g.ymax;
+		const ra = [moDau(g)];
+		ra.push("\t\\draw[->] (" + vhSo(xmin - .4) + ",0)--(" + vhSo(xmax + .5) + ",0) node[below]{$x$};");
+		ra.push("\t\\draw[->] (0," + vhSo(ymin - .4) + ")--(0," + vhSo(ymax + .5) + ") node[left]{$y$};");
+		ra.push("\t\\path (0,0) node[below left]{$O$};");
+		const to = (g.toDB ? diemDB : []).concat(vhDiem(g.diemThem)).filter(p => p[0] >= xmin - 1e-9 && p[0] <= xmax + 1e-9 && p[1] >= ymin - 1e-9 && p[1] <= ymax + 1e-9);
+		const tuDong = (k) => [...new Set(to.map(p => Math.round(p[k] * 100) / 100).filter(v => Math.abs(v) > 1e-9 && Math.abs(v * 2 - Math.round(v * 2)) < 1e-6))].sort((a, b) => a - b); // chỉ ghi số đẹp (nguyên, nửa)
+		const sx = g.soOx.trim() ? vhSoDs(g.soOx) : tuDong(0), sy = g.soOy.trim() ? vhSoDs(g.soOy) : tuDong(1);
+		const cap = v => vhSo(v) + "/{" + vhNhan(v) + "}";
+		if (sx.length) ra.push("\t\\foreach \\x/\\t in {" + sx.map(cap).join(",") + "} \\draw (\\x,2pt)--(\\x,-2pt) node[" + (g.vtOx || "below") + "]{$\\t$};");
+		if (sy.length) ra.push("\t\\foreach \\y/\\t in {" + sy.map(cap).join(",") + "} \\draw (2pt,\\y)--(-2pt,\\y) node[" + (g.vtOy || "left") + "]{$\\t$};");
+		(tc && tc.dung || []).filter(v => v >= xmin && v <= xmax).forEach(v => ra.push("\t\\draw[dashed] (" + vhSo(v) + "," + vhSo(ymin) + ")--(" + vhSo(v) + "," + vhSo(ymax) + ");"));
+		(tc && tc.ngang || []).filter(v => v >= ymin && v <= ymax).forEach(v => ra.push("\t\\draw[dashed] (" + vhSo(xmin) + "," + vhSo(v) + ")--(" + vhSo(xmax) + "," + vhSo(v) + ");"));
+		if (tc && tc.xien) { const [A, B] = tc.xien; const m = mienVe(x => A * x + B, xmin, xmax, ymin, ymax)[0]; if (m) ra.push("\t\\draw[dashed] (" + vhSo(m[0]) + "," + vhSo(A * m[0] + B) + ")--(" + vhSo(m[1]) + "," + vhSo(A * m[1] + B) + ");"); }
+		if (g.gion) { const gi = to.filter(p => Math.abs(p[0]) > 1e-9 && Math.abs(p[1]) > 1e-9); if (gi.length) ra.push("\t\\draw[dashed] " + gi.map(p => "(" + vhSo(p[0]) + ",0)|-(0," + vhSo(p[1]) + ")").join(" ") + ";"); }
+		ra.push(...duong);
+		if (to.length) ra.push("\t\\foreach \\p in {" + to.map(p => "(" + vhSo(p[0]) + "," + vhSo(p[1]) + ")").join(",") + "} \\fill \\p circle (1.2pt);");
+		ra.push("\\end{tikzpicture}");
+		return ra.join("\n");
+	}
+	function doThiHam(loai) {
+		const H = HAM[loai];
+		return { ten: H.ten, truong: H.he.map((k, i) => ({ k, nhan: k, kieu: "so", mac: H.mac[i] })).concat(TRUC), ve: g => {
+			const h = {}; H.he.forEach(k => h[k] = +g[k]); const r = H.tao(h);
+			const xmin = +g.xmin, xmax = +g.xmax, ymin = +g.ymin, ymax = +g.ymax;
+			const cat = r.tc ? r.tc.dung : [];
+			const db = cucTri(r.f, xmin, xmax).concat(nghiemSo(r.f, xmin, xmax).map(x => [x, 0])); if (!cat.some(c => Math.abs(c) < 1e-9) && isFinite(r.f(0))) db.push([0, r.f(0)]);
+			const duy = []; db.forEach(p => { if (!duy.some(q => Math.abs(q[0] - p[0]) < 1e-6 && Math.abs(q[1] - p[1]) < 1e-6)) duy.push(p); });
+			const mien = mienVe(r.f, xmin, xmax, ymin, ymax, cat);
+			const duong = mien.map((m, i) => "\t\\draw[semithick,smooth,samples=100,domain=" + vhSo(Math.ceil(m[0] * 100 - 1e-9) / 100) + ":" + vhSo(Math.floor(m[1] * 100 + 1e-9) / 100) + "] plot(\\x,{" + r.pgf + "})" + (i === mien.length - 1 && g.tenDT ? " node[right]{$" + g.tenDT + "$}" : "") + ";");
+			return veDoThi(g, duong, duy, r.tc);
+		} };
+	}
+	const doThiDiem = { ten: "Đồ thị đi qua các điểm (chưa biết hàm)", mota: "Nhập các điểm đồ thị đi qua theo thứ tự từ trái sang phải (nên có giao điểm với Ox, Oy, cực trị). Web vẽ đường cong trơn đi qua đúng các điểm đó.", truong: [{ k: "qua", nhan: "Các điểm đi qua", kieu: "vung", mac: "(-2;-2), (-1;2), (0;0), (1;-2), (2;2)" }, { k: "cang", nhan: "Độ căng đường cong (0,4 – 1)", kieu: "so", mac: 0.7 }].concat(TRUC), ve: g => {
+		const ds = vhDiem(g.qua).sort((a, b) => a[0] - b[0]); if (ds.length < 2) throw new Error("cần ít nhất 2 điểm");
+		const duong = ["\t\\draw[semithick] plot[smooth,tension=" + vhSo(+g.cang || .7) + "] coordinates {" + ds.map(p => "(" + vhSo(p[0]) + "," + vhSo(p[1]) + ")").join(" ") + "}" + (g.tenDT ? " node[right]{$" + g.tenDT + "$}" : "") + ";"];
+		return veDoThi(g, duong, ds, null);
+	} };
+
+	// ---------- bảng biến thiên ----------
+	function viTriBien(dau, gt) { // dau: mảng 2n-1; gt: n giá trị (chuỗi, "a|b" tại nét đôi)
+		const n = gt.length, o = [];
+		for (let i = 0; i < n; i++) {
+			const truoc = i ? dau[2 * i - 1] : null, sau = i < n - 1 ? dau[2 * i + 1] : null, tai = dau[2 * i];
+			const vt = s => s === "+" ? "tren" : "duoi";
+			if (tai === "||") { const [l, r] = String(gt[i]).split("|"); o.push({ vt: "gian", trai: truoc && truoc !== "h" ? { vt: vt(truoc), gt: l || "" } : null, phai: sau && sau !== "h" ? { vt: sau === "+" ? "duoi" : "tren", gt: (r != null ? r : l) || "" } : null }); continue; }
+			if (truoc && sau && truoc === sau && !String(gt[i]).trim()) { o.push({ vt: "khong" }); continue; }
+			o.push({ vt: truoc ? vt(truoc) : (sau === "+" ? "duoi" : "tren"), gt: String(gt[i]) });
+		}
+		return o;
+	}
+	function dauDayDu(chuoi, n) { let t = String(chuoi || "").trim().split(/\s+/).map(v => v === "_" ? "" : v); if (t.length === 2 * n - 3) t = [""].concat(t, [""]); while (t.length < 2 * n - 1) t.push(""); return t.slice(0, 2 * n - 1); }
+	const W2b = () => bo()._w2t;
+	const bbtTay = { ten: "Bảng biến thiên (nhập tay)", mota: "Giá trị cách nhau bởi dấu ; — Dấu f'(x) gồm dấu trên các khoảng và tại các điểm, cách nhau bởi dấu cách: + 0 - 0 + (|| là không xác định, h là gạch bỏ). Tại nét đôi ghi hai giới hạn a|b. Mũi tên lên/xuống web tự tính theo dấu.", truong: [
+		{ k: "x", nhan: "Hàng x", kieu: "chu", mac: "-\\infty; -1; 1; +\\infty" }, { k: "tenD", nhan: "Tên đạo hàm", kieu: "chu", mac: "f'(x)" },
+		{ k: "dau", nhan: "Dấu đạo hàm", kieu: "chu", mac: "+ 0 - 0 +" }, { k: "tenF", nhan: "Tên hàm", kieu: "chu", mac: "f(x)" },
+		{ k: "gt", nhan: "Giá trị của hàm tại từng x", kieu: "chu", mac: "-\\infty; 3; -1; +\\infty" }, { k: "rong", nhan: "Độ rộng bảng (cm)", kieu: "so", mac: 11 }], ve: g => {
+		const x = vhDs(g.x), n = x.length; if (n < 2) throw new Error("hàng x cần ít nhất 2 giá trị");
+		const dau = dauDayDu(g.dau, n), gt = vhDs(g.gt); while (gt.length < n) gt.push("");
+		const ma = W2b().dungBBT({ x, hang: [{ ten: g.tenD, kieu: "dau", o: dau }, { ten: g.tenF, kieu: "bien", o: viTriBien(dau, gt) }] }, +g.rong || 11);
+		if (!ma) throw new Error("dữ liệu bảng chưa đủ"); return ma;
+	} };
+	const bxd = { ten: "Bảng xét dấu", mota: "Nhập hàng x và dấu (như bảng biến thiên).", truong: [{ k: "x", nhan: "Hàng x", kieu: "chu", mac: "-\\infty; -2; 1; +\\infty" }, { k: "ten", nhan: "Biểu thức", kieu: "chu", mac: "f(x)" }, { k: "dau", nhan: "Dấu", kieu: "chu", mac: "- 0 + 0 -" }, { k: "rong", nhan: "Độ rộng bảng (cm)", kieu: "so", mac: 10 }], ve: g => {
+		const x = vhDs(g.x); if (x.length < 2) throw new Error("hàng x cần ít nhất 2 giá trị");
+		return W2b().dungBBT({ x, hang: [{ ten: g.ten, kieu: "dau", o: dauDayDu(g.dau, x.length) }] }, +g.rong || 10);
+	} };
+	function bbtHam(loai) {
+		const H = HAM[loai];
+		return { ten: "BBT — " + H.ten, mota: "Nhập hệ số, web tự tính đạo hàm, điểm cực trị, giá trị và vẽ bảng.", truong: H.he.map((k, i) => ({ k, nhan: k, kieu: "so", mac: H.mac[i] })).concat([{ k: "tenD", nhan: "Tên đạo hàm", kieu: "chu", mac: "y'" }, { k: "tenF", nhan: "Tên hàm", kieu: "chu", mac: "y" }, { k: "rong", nhan: "Độ rộng bảng (cm)", kieu: "so", mac: 11 }]), ve: g => {
+			const h = {}; H.he.forEach(k => h[k] = +g[k]); const r = H.tao(h); const f = r.f;
+			const dung = (r.tc && r.tc.dung || []).filter(isFinite);
+			const ct = cucTri(f, -60, 60).map(p => p[0]);
+			const moc = [...new Set(ct.concat(dung).map(v => Math.round(v * 1e6) / 1e6))].sort((a, b) => a - b);
+			const xs = [-Infinity].concat(moc, [Infinity]);
+			const d = x => (f(x + 1e-6) - f(x - 1e-6)) / 2e-6;
+			const gioiHan = (x, ben) => { const v = f(x + ben * 1e-7); return Math.abs(v) > 1e5 ? (v > 0 ? Infinity : -Infinity) : v; };
+			const dauDu = [], gt = [];
+			xs.forEach((x, i) => {
+				const laTC = dung.some(c => Math.abs(c - x) < 1e-6);
+				if (!isFinite(x)) { const v = f(x > 0 ? 1e6 : -1e6); dauDu.push(""); gt.push(vhLatex(Math.abs(v) > 1e4 ? (v > 0 ? Infinity : -Infinity) : Math.round(v * 1e4) / 1e4)); }
+				else if (laTC) { dauDu.push("||"); gt.push(vhLatex(gioiHan(x, -1)) + "|" + vhLatex(gioiHan(x, 1))); }
+				else { dauDu.push("0"); gt.push(vhLatex(Math.round(f(x) * 1e6) / 1e6)); }
+				if (i < xs.length - 1) { const u = xs[i], w = xs[i + 1]; const m = isFinite(u) && isFinite(w) ? (u + w) / 2 : isFinite(w) ? w - 1 : u + 1; dauDu.push(d(m) > 0 ? "+" : "-"); }
+			});
+			const xl = xs.map(vhLatex);
+			const ma = W2b().dungBBT({ x: xl, hang: [{ ten: g.tenD, kieu: "dau", o: dauDu }, { ten: g.tenF, kieu: "bien", o: viTriBien(dauDu, gt) }] }, +g.rong || 11);
+			if (!ma) throw new Error("không dựng được bảng"); return ma;
+		} };
+	}
+
+	// ---------- dựng thêm (dùng chung hình phẳng / không gian) ----------
+	const GOI_Y_DUNG = [
+		["duongcao A B C H", "Đường cao từ A xuống BC, chân H"], ["trungtuyen A B C M", "Trung tuyến từ A, M là trung điểm BC"], ["phangiac A B C D", "Phân giác góc A, cắt BC tại D"],
+		["trungdiem M A B", "M là trung điểm AB"], ["chia M A B 1/3", "M trên AB với AM = 1/3 AB"], ["giao I A C B D", "I là giao điểm AC và BD"],
+		["noi A C", "Nối A, C (nét liền)"], ["noidut A C", "Nối A, C (nét đứt)"], ["duongtron O 2", "Đường tròn tâm O bán kính 2"], ["duongtron O A", "Đường tròn tâm O qua A"],
+		["ngoaitiep O A B C", "Đường tròn ngoại tiếp ABC, tâm O"], ["noitiep I A B C", "Đường tròn nội tiếp ABC, tâm I"], ["vuong A H C", "Kí hiệu góc vuông tại H"], ["goc B A C", "Kí hiệu góc tại A"]
+	];
+	function dungThem(chuoi, P, net, khac, khongGian) {
+		const loi = [];
+		const lay = t => { if (!P[t]) throw new Error("chưa có điểm " + t); return P[t]; };
+		const giaoDT = (a, b, c, d) => { const [x1, y1] = a, [x2, y2] = b, [x3, y3] = c, [x4, y4] = d; const m = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4); if (Math.abs(m) < 1e-9) throw new Error("hai đường song song"); const t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / m; return [x1 + t * (x2 - x1), y1 + t * (y2 - y1)]; };
+		String(chuoi || "").split("\n").map(l => l.trim()).filter(Boolean).forEach(l => {
+			const t = l.split(/\s+/), lenh = t[0].toLowerCase();
+			try {
+				if (lenh === "duongcao") { const [A, B, C] = [lay(t[1]), lay(t[2]), lay(t[3])]; const ux = C[0] - B[0], uy = C[1] - B[1]; const k = ((A[0] - B[0]) * ux + (A[1] - B[1]) * uy) / (ux * ux + uy * uy); P[t[4]] = [B[0] + k * ux, B[1] + k * uy]; net.push([t[1], t[4], khongGian ? "dut" : "lien"]); if (!khongGian) khac.push("\t\\draw pic[draw,angle radius=2mm]{right angle=" + t[1] + "--" + t[4] + "--" + (Math.abs(k - 1) > 1e-6 ? t[3] : t[2]) + "};"); }
+				else if (lenh === "trungtuyen") { const [B, C] = [lay(t[2]), lay(t[3])]; lay(t[1]); P[t[4]] = [(B[0] + C[0]) / 2, (B[1] + C[1]) / 2]; net.push([t[1], t[4], khongGian ? "dut" : "lien"]); }
+				else if (lenh === "phangiac") { const [A, B, C] = [lay(t[1]), lay(t[2]), lay(t[3])]; const c = Math.hypot(A[0] - B[0], A[1] - B[1]), b = Math.hypot(A[0] - C[0], A[1] - C[1]); const k = c / (b + c); P[t[4]] = [B[0] + k * (C[0] - B[0]), B[1] + k * (C[1] - B[1])]; net.push([t[1], t[4], "lien"]); }
+				else if (lenh === "trungdiem") { const [A, B] = [lay(t[2]), lay(t[3])]; P[t[1]] = [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2]; }
+				else if (lenh === "chia") { const [A, B] = [lay(t[2]), lay(t[3])]; const ps = String(t[4] || "1/2").replace(",", ".").split("/"); const k = ps.length === 2 ? +ps[0] / +ps[1] : +ps[0]; if (!isFinite(k)) throw new Error("tỉ số chưa đúng"); P[t[1]] = [A[0] + k * (B[0] - A[0]), A[1] + k * (B[1] - A[1])]; }
+				else if (lenh === "giao") { P[t[1]] = giaoDT(lay(t[2]), lay(t[3]), lay(t[4]), lay(t[5])); }
+				else if (lenh === "noi" || lenh === "noidut") { lay(t[1]); lay(t[2]); net.push([t[1], t[2], lenh === "noi" ? "lien" : "dut"]); }
+				else if (lenh === "duongtron") { const O = lay(t[1]); const R = P[t[2]] ? Math.hypot(P[t[2]][0] - O[0], P[t[2]][1] - O[1]) : +String(t[2]).replace(",", "."); if (!(R > 0)) throw new Error("bán kính chưa đúng"); khac.push("\t\\draw (" + t[1] + ") circle (" + vhSo(R) + ");"); }
+				else if (lenh === "ngoaitiep" || lenh === "noitiep") {
+					const [A, B, C] = [lay(t[2]), lay(t[3]), lay(t[4])];
+					if (lenh === "ngoaitiep") { const d = 2 * (A[0] * (B[1] - C[1]) + B[0] * (C[1] - A[1]) + C[0] * (A[1] - B[1])); const s2 = p => p[0] * p[0] + p[1] * p[1]; const O = [(s2(A) * (B[1] - C[1]) + s2(B) * (C[1] - A[1]) + s2(C) * (A[1] - B[1])) / d, (s2(A) * (C[0] - B[0]) + s2(B) * (A[0] - C[0]) + s2(C) * (B[0] - A[0])) / d]; P[t[1]] = O; khac.push("\t\\draw (" + t[1] + ") circle (" + vhSo(Math.hypot(A[0] - O[0], A[1] - O[1])) + ");"); }
+					else { const a = Math.hypot(B[0] - C[0], B[1] - C[1]), b = Math.hypot(A[0] - C[0], A[1] - C[1]), c = Math.hypot(A[0] - B[0], A[1] - B[1]), p = a + b + c; const I = [(a * A[0] + b * B[0] + c * C[0]) / p, (a * A[1] + b * B[1] + c * C[1]) / p]; P[t[1]] = I; const s = p / 2; khac.push("\t\\draw (" + t[1] + ") circle (" + vhSo(Math.sqrt(s * (s - a) * (s - b) * (s - c)) / s) + ");"); }
+				}
+				else if (lenh === "vuong") { lay(t[1]); lay(t[2]); lay(t[3]); khac.push("\t\\draw pic[draw,angle radius=2mm]{right angle=" + t[1] + "--" + t[2] + "--" + t[3] + "};"); }
+				else if (lenh === "goc") { lay(t[1]); lay(t[2]); lay(t[3]); khac.push("\t\\draw pic[draw,angle radius=3mm]{angle=" + t[1] + "--" + t[2] + "--" + t[3] + "};"); }
+				else throw new Error("không hiểu lệnh “" + t[0] + "”");
+			} catch (e) { loi.push(l + ": " + e.message); }
+		});
+		if (loi.length) throw new Error(loi.join(" · "));
+	}
+	const DUNG = { k: "dung", nhan: "Dựng thêm (mỗi dòng một lệnh — bấm gợi ý bên dưới để chèn)", kieu: "vung", mac: "", goiY: true };
+	// xuất hình nét: điểm (foreach), nét đứt trước, nét liền sau, nhãn hướng ra ngoài
+	function xuatHinh(g, P, net, khac, an) {
+		const ten = Object.keys(P); const tb = ten.reduce((s, k) => [s[0] + P[k][0] / ten.length, s[1] + P[k][1] / ten.length], [0, 0]);
+		const ra = [moDau(g)];
+		ra.push("\t\\foreach \\p/\\x/\\y in {" + ten.map(k => k + "/" + vhSo(P[k][0]) + "/" + vhSo(P[k][1])).join(",") + "}\n\t\t\\path (\\x,\\y) coordinate (\\p);");
+		const dut = net.filter(n => n[2] === "dut"), lien = net.filter(n => n[2] !== "dut");
+		const chuoi = ds => { const r = []; ds.forEach(([a, b]) => { const c = r.find(x => x[x.length - 1] === a); if (c) c.push(b); else r.push([a, b]); }); return r.map(x => "(" + x.join(")--(") + ")").join(" "); };
+		if (dut.length) ra.push("\t\\draw[dashed] " + chuoi(dut) + ";");
+		if (lien.length) ra.push("\t\\draw " + chuoi(lien) + ";");
+		ra.push(...khac);
+		const goc = k => { const dx = P[k][0] - tb[0], dy = P[k][1] - tb[1]; if (Math.hypot(dx, dy) < 1e-6) return -90; return Math.round(Math.atan2(dy, dx) * 180 / Math.PI / 45) * 45; };
+		const hien = ten.filter(k => !(an || []).includes(k));
+		ra.push("\t\\foreach \\p/\\g in {" + hien.map(k => k + "/" + goc(k)).join(",") + "}{\\fill (\\p) circle (1pt); \\path (\\p)+(\\g:3mm) node{$\\p$};}");
+		ra.push("\\end{tikzpicture}");
+		return ra.join("\n");
+	}
+
+	// ---------- hình phẳng ----------
+	const tenDs = (s, n) => { const t = String(s || "").split(/[,;\s]+/).filter(Boolean); if (t.length < n) throw new Error("cần " + n + " tên điểm"); return t.slice(0, n); };
+	function hinhPhang(ten, mota, truong, dinh) {
+		return { ten, mota, truong: truong.concat([DUNG, { k: "tile", nhan: "Tỉ lệ (scale)", kieu: "so", mac: 1 }]), ve: g => {
+			const { P, canh } = dinh(g); const net = canh.map(([a, b]) => [a, b, "lien"]), khac = [];
+			dungThem(g.dung, P, net, khac, false);
+			return xuatHinh(g, P, net, khac);
+		} };
+	}
+	const daGiac = (ten, ds) => { const P = {}; ten.forEach((k, i) => P[k] = ds[i]); return { P, canh: ten.map((k, i) => [k, ten[(i + 1) % ten.length]]) }; };
+	const PHANG = [
+		hinhPhang("Tam giác thường", "Đáy BC nằm ngang; A ở trên, cách BC một khoảng bằng chiều cao; chân đường cao cách B một đoạn “lệch”.", [{ k: "ten", nhan: "Tên đỉnh", kieu: "chu", mac: "A, B, C" }, { k: "a", nhan: "Độ dài đáy BC", kieu: "so", mac: 5 }, { k: "h", nhan: "Chiều cao", kieu: "so", mac: 3 }, { k: "l", nhan: "Chân đường cao cách B", kieu: "so", mac: 1.5 }], g => { const [A, B, C] = tenDs(g.ten, 3); return daGiac([A, B, C], [[+g.l, +g.h], [0, 0], [+g.a, 0]]); }),
+		hinhPhang("Tam giác vuông", "Vuông tại đỉnh đầu tiên.", [{ k: "ten", nhan: "Tên đỉnh (đỉnh góc vuông trước)", kieu: "chu", mac: "A, B, C" }, { k: "b", nhan: "Cạnh góc vuông nằm ngang", kieu: "so", mac: 4 }, { k: "c", nhan: "Cạnh góc vuông thẳng đứng", kieu: "so", mac: 3 }, { k: "vg", nhan: "Kí hiệu góc vuông", kieu: "hop", mac: true }], g => { const [A, B, C] = tenDs(g.ten, 3); const r = daGiac([A, B, C], [[0, 0], [0, +g.c], [+g.b, 0]]); if (g.vg) g.dung = "vuong " + B + " " + A + " " + C + "\n" + (g.dung || ""); return r; }),
+		hinhPhang("Tam giác cân", "Cân tại đỉnh đầu tiên.", [{ k: "ten", nhan: "Tên đỉnh", kieu: "chu", mac: "A, B, C" }, { k: "a", nhan: "Độ dài đáy", kieu: "so", mac: 4 }, { k: "h", nhan: "Chiều cao", kieu: "so", mac: 3 }], g => { const [A, B, C] = tenDs(g.ten, 3); return daGiac([A, B, C], [[+g.a / 2, +g.h], [0, 0], [+g.a, 0]]); }),
+		hinhPhang("Tam giác đều", "", [{ k: "ten", nhan: "Tên đỉnh", kieu: "chu", mac: "A, B, C" }, { k: "a", nhan: "Cạnh", kieu: "so", mac: 4 }], g => { const [A, B, C] = tenDs(g.ten, 3); return daGiac([A, B, C], [[+g.a / 2, +g.a * Math.sqrt(3) / 2], [0, 0], [+g.a, 0]]); }),
+		hinhPhang("Hình vuông", "", [{ k: "ten", nhan: "Tên đỉnh (ngược chiều kim đồng hồ từ góc dưới trái)", kieu: "chu", mac: "A, B, C, D" }, { k: "a", nhan: "Cạnh", kieu: "so", mac: 4 }], g => daGiac(tenDs(g.ten, 4), [[0, 0], [+g.a, 0], [+g.a, +g.a], [0, +g.a]])),
+		hinhPhang("Hình chữ nhật", "", [{ k: "ten", nhan: "Tên đỉnh", kieu: "chu", mac: "A, B, C, D" }, { k: "a", nhan: "Chiều dài", kieu: "so", mac: 5 }, { k: "b", nhan: "Chiều rộng", kieu: "so", mac: 3 }], g => daGiac(tenDs(g.ten, 4), [[0, 0], [+g.a, 0], [+g.a, +g.b], [0, +g.b]])),
+		hinhPhang("Hình bình hành", "", [{ k: "ten", nhan: "Tên đỉnh", kieu: "chu", mac: "A, B, C, D" }, { k: "a", nhan: "Đáy", kieu: "so", mac: 4 }, { k: "h", nhan: "Chiều cao", kieu: "so", mac: 2.5 }, { k: "l", nhan: "Độ lệch cạnh trên (âm: trái, dương: phải)", kieu: "so", mac: 1.5 }], g => daGiac(tenDs(g.ten, 4), [[0, 0], [+g.a, 0], [+g.a + +g.l, +g.h], [+g.l, +g.h]])),
+		hinhPhang("Hình thang", "Đáy lớn ở dưới.", [{ k: "ten", nhan: "Tên đỉnh", kieu: "chu", mac: "A, B, C, D" }, { k: "a", nhan: "Đáy lớn", kieu: "so", mac: 6 }, { k: "b", nhan: "Đáy nhỏ", kieu: "so", mac: 3 }, { k: "h", nhan: "Chiều cao", kieu: "so", mac: 2.5 }, { k: "l", nhan: "Đáy nhỏ cách lề trái", kieu: "so", mac: 1 }], g => daGiac(tenDs(g.ten, 4), [[0, 0], [+g.a, 0], [+g.l + +g.b, +g.h], [+g.l, +g.h]])),
+		hinhPhang("Hình thoi", "", [{ k: "ten", nhan: "Tên đỉnh", kieu: "chu", mac: "A, B, C, D" }, { k: "d1", nhan: "Đường chéo ngang", kieu: "so", mac: 6 }, { k: "d2", nhan: "Đường chéo đứng", kieu: "so", mac: 4 }], g => daGiac(tenDs(g.ten, 4), [[0, 0], [+g.d1 / 2, -g.d2 / 2], [+g.d1, 0], [+g.d1 / 2, +g.d2 / 2]]))
+	];
+	const tronElip = [
+		{ ten: "Đường tròn", truong: [{ k: "tam", nhan: "Tên tâm", kieu: "chu", mac: "O" }, { k: "R", nhan: "Bán kính", kieu: "so", mac: 2 }, { k: "bk", nhan: "Vẽ bán kính tới điểm", kieu: "chu", mac: "A" }, DUNG, { k: "tile", nhan: "Tỉ lệ", kieu: "so", mac: 1 }], ve: g => { const P = { [g.tam]: [0, 0] }; const net = [], khac = ["\t\\draw (" + g.tam + ") circle (" + vhSo(+g.R) + ");"]; if (g.bk.trim()) { P[g.bk.trim()] = [+g.R * Math.cos(Math.PI / 6), +g.R * Math.sin(Math.PI / 6)]; net.push([g.tam, g.bk.trim(), "lien"]); } dungThem(g.dung, P, net, khac, false); return xuatHinh(g, P, net, khac); } },
+		{ ten: "Elip", truong: [{ k: "tam", nhan: "Tên tâm", kieu: "chu", mac: "O" }, { k: "a", nhan: "Nửa trục lớn a", kieu: "so", mac: 3 }, { k: "b", nhan: "Nửa trục bé b", kieu: "so", mac: 2 }, { k: "truc", nhan: "Vẽ hệ trục Oxy", kieu: "hop", mac: true }, { k: "dinh", nhan: "Tên các đỉnh (A1, A2, B1, B2)", kieu: "chu", mac: "A_1, A_2, B_1, B_2" }, { k: "tile", nhan: "Tỉ lệ", kieu: "so", mac: 1 }], ve: g => {
+			const a = +g.a, b = +g.b; const r = [moDau(g)];
+			if (g.truc) { r.push("\t\\draw[->] (" + vhSo(-a - .8) + ",0)--(" + vhSo(a + .8) + ",0) node[below]{$x$};"); r.push("\t\\draw[->] (0," + vhSo(-b - .8) + ")--(0," + vhSo(b + .8) + ") node[left]{$y$};"); }
+			r.push("\t\\draw (0,0) ellipse (" + vhSo(a) + " and " + vhSo(b) + ");");
+			const d = String(g.dinh || "").split(/[,;]/).map(t => t.trim()); const pt = [[-a, 0, -135], [a, 0, -45], [0, -b, -45], [0, b, 45]];
+			const ds = pt.map((p, i) => d[i] ? "(" + vhSo(p[0]) + "," + vhSo(p[1]) + ")/" + p[2] + "/{" + d[i] + "}" : null).filter(Boolean);
+			if (ds.length) r.push("\t\\foreach \\p/\\g/\\t in {" + ds.join(",") + "}{\\fill \\p circle (1pt); \\path \\p+(\\g:3mm) node{$\\t$};}");
+			r.push("\t\\path (0,0) node[below left]{$" + g.tam + "$};"); r.push("\\end{tikzpicture}"); return r.join("\n");
+		} }
+	];
+
+	// ---------- hình không gian (phép chiếu xiên kiểu sách giáo khoa) ----------
+	const KG_CHUNG = [{ k: "goc", nhan: "Góc xiên (độ)", kieu: "so", mac: 40 }, { k: "co", nhan: "Hệ số co chiều sâu", kieu: "so", mac: 0.5 }, DUNG, { k: "tile", nhan: "Tỉ lệ (scale)", kieu: "so", mac: 1 }];
+	function khongGian(ten, mota, truong, dung) {
+		return { ten, mota, truong: truong.concat(KG_CHUNG), ve: g => {
+			const { P3, mat, them, an } = dung(g); // P3: tên → [x,y(chiều sâu),z]; mat: các mặt (mảng tên, thứ tự bất kì)
+			const al = (+g.goc || 40) * Math.PI / 180, k = +g.co || .5;
+			const chieu = p => [p[0] + k * p[1] * Math.cos(al), p[2] + k * p[1] * Math.sin(al)];
+			const P = {}; Object.keys(P3).forEach(t => P[t] = chieu(P3[t]));
+			// mặt thấy được: pháp tuyến hướng ra ngoài · hướng chiếu < 0
+			const tam = Object.values(P3).reduce((s, p, _, a) => [s[0] + p[0] / a.length, s[1] + p[1] / a.length, s[2] + p[2] / a.length], [0, 0, 0]);
+			const huong = [-k * Math.cos(al), 1, -k * Math.sin(al)];
+			const thay = mat.map(m => { const [a, b, c] = m.map(t => P3[t]); const u = [b[0] - a[0], b[1] - a[1], b[2] - a[2]], v = [c[0] - a[0], c[1] - a[1], c[2] - a[2]]; let n = [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]]; const tm = m.reduce((s, t) => [s[0] + P3[t][0] / m.length, s[1] + P3[t][1] / m.length, s[2] + P3[t][2] / m.length], [0, 0, 0]); if (n[0] * (tm[0] - tam[0]) + n[1] * (tm[1] - tam[1]) + n[2] * (tm[2] - tam[2]) < 0) n = n.map(x => -x); return n[0] * huong[0] + n[1] * huong[1] + n[2] * huong[2] < -1e-9; });
+			const canh = new Map();
+			mat.forEach((m, i) => m.forEach((t, j) => { const u = m[(j + 1) % m.length]; const key = [t, u].sort().join("|"); const c = canh.get(key) || { a: t, b: u, thay: false }; c.thay = c.thay || thay[i]; canh.set(key, c); }));
+			const net = [...canh.values()].map(c => [c.a, c.b, c.thay ? "lien" : "dut"]).concat(them || []);
+			const khac = [];
+			dungThem(g.dung, P, net, khac, true);
+			return xuatHinh(g, P, net, khac, an);
+		} };
+	}
+	const tenK = (g, n) => tenDs(g.ten, n);
+	const KHONG_GIAN = [
+		khongGian("Hình chóp tam giác S.ABC", "Đáy ABC (AC phía sau). Chân đường cao: tại A, trọng tâm đáy, hoặc trung điểm AB; “lệch” dời đỉnh S sang trái (âm) / phải (dương).", [{ k: "ten", nhan: "Tên đỉnh", kieu: "chu", mac: "S, A, B, C" }, { k: "a", nhan: "Độ dài AC", kieu: "so", mac: 4 }, { k: "b", nhan: "Chiều sâu đáy", kieu: "so", mac: 3 }, { k: "h", nhan: "Chiều cao", kieu: "so", mac: 3.5 }, { k: "chan", nhan: "Chân đường cao", kieu: "chon", lua: [["A", "Tại A (SA ⊥ đáy)"], ["tam", "Trọng tâm đáy"], ["ab", "Trung điểm AB"]] }, { k: "lech", nhan: "Lệch chân đường cao", kieu: "so", mac: 0 }, { k: "vecao", nhan: "Vẽ đường cao (khi chân không trùng A)", kieu: "hop", mac: true }, { k: "tenH", nhan: "Tên chân đường cao", kieu: "chu", mac: "H" }], g => {
+			const [S, A, B, C] = tenK(g, 4); const a = +g.a, b = +g.b, h = +g.h, l = +g.lech || 0;
+			const P3 = { [A]: [0, b, 0], [B]: [a * .5, 0, 0], [C]: [a, b, 0] };
+			const H = g.chan === "A" ? P3[A] : g.chan === "ab" ? [(P3[A][0] + P3[B][0]) / 2, (P3[A][1] + P3[B][1]) / 2, 0] : [(P3[A][0] + P3[B][0] + P3[C][0]) / 3, (P3[A][1] + P3[B][1] + P3[C][1]) / 3, 0];
+			P3[S] = [H[0] + l, H[1], h]; const them = [], an = [];
+			if (g.chan !== "A" && g.vecao) { P3[g.tenH || "H"] = [H[0] + l, H[1], 0]; them.push([S, g.tenH || "H", "dut"]); }
+			return { P3, mat: [[A, B, C], [S, A, B], [S, B, C], [S, A, C]], them, an };
+		}),
+		khongGian("Hình chóp tứ giác S.ABCD", "Đáy ABCD (A sau-trái, B trước-trái, C trước-phải, D sau-phải). Đáy hình bình hành khi “độ lệch đáy” khác 0.", [{ k: "ten", nhan: "Tên đỉnh", kieu: "chu", mac: "S, A, B, C, D" }, { k: "a", nhan: "Độ dài AD (ngang)", kieu: "so", mac: 4 }, { k: "b", nhan: "Độ dài AB (chiều sâu)", kieu: "so", mac: 3 }, { k: "ld", nhan: "Độ lệch đáy (hình bình hành)", kieu: "so", mac: 0 }, { k: "h", nhan: "Chiều cao", kieu: "so", mac: 3.5 }, { k: "chan", nhan: "Chân đường cao", kieu: "chon", lua: [["A", "Tại A (SA ⊥ đáy)"], ["tam", "Tâm đáy (giao hai đường chéo)"], ["ab", "Trung điểm AB"]] }, { k: "lech", nhan: "Lệch chân đường cao", kieu: "so", mac: 0 }, { k: "cheo", nhan: "Vẽ hai đường chéo đáy và tâm", kieu: "hop", mac: false }, { k: "tenO", nhan: "Tên tâm đáy", kieu: "chu", mac: "O" }], g => {
+			const [S, A, B, C, D] = tenK(g, 5); const a = +g.a, b = +g.b, h = +g.h, l = +g.lech || 0, ld = +g.ld || 0;
+			const P3 = { [A]: [ld, b, 0], [B]: [0, 0, 0], [C]: [a, 0, 0], [D]: [a + ld, b, 0] };
+			const O = [(P3[A][0] + P3[C][0]) / 2, (P3[A][1] + P3[C][1]) / 2, 0];
+			const H = g.chan === "A" ? P3[A] : g.chan === "ab" ? [(P3[A][0] + P3[B][0]) / 2, (P3[A][1] + P3[B][1]) / 2, 0] : O;
+			P3[S] = [H[0] + l, H[1], h]; const them = [];
+			if (g.cheo || (g.chan === "tam" && !l)) { P3[g.tenO || "O"] = O; them.push([A, C, "dut"], [B, D, "dut"]); if (g.chan === "tam") them.push([S, g.tenO || "O", "dut"]); }
+			return { P3, mat: [[A, B, C, D], [S, A, B], [S, B, C], [S, C, D], [S, D, A]], them };
+		}),
+		khongGian("Hình chóp tam giác đều", "Đáy tam giác đều, chân đường cao tại trọng tâm.", [{ k: "ten", nhan: "Tên đỉnh", kieu: "chu", mac: "S, A, B, C" }, { k: "a", nhan: "Cạnh đáy", kieu: "so", mac: 4 }, { k: "h", nhan: "Chiều cao", kieu: "so", mac: 3.5 }, { k: "vecao", nhan: "Vẽ đường cao", kieu: "hop", mac: true }, { k: "tenH", nhan: "Tên trọng tâm đáy", kieu: "chu", mac: "G" }], g => {
+			const [S, A, B, C] = tenK(g, 4); const a = +g.a, h = +g.h;
+			const dd = a * Math.sqrt(3) / 2; const P3 = { [A]: [0, dd, 0], [B]: [a / 2, 0, 0], [C]: [a, dd, 0] };
+			const G = [(P3[A][0] + P3[B][0] + P3[C][0]) / 3, (P3[A][1] + P3[B][1] + P3[C][1]) / 3, 0]; P3[S] = [G[0], G[1], h]; const them = [];
+			if (g.vecao) { P3[g.tenH || "G"] = G; them.push([S, g.tenH || "G", "dut"]); }
+			return { P3, mat: [[A, B, C], [S, A, B], [S, B, C], [S, A, C]], them };
+		}),
+		khongGian("Hình chóp tứ giác đều", "Đáy hình vuông, chân đường cao tại tâm đáy.", [{ k: "ten", nhan: "Tên đỉnh", kieu: "chu", mac: "S, A, B, C, D" }, { k: "a", nhan: "Cạnh đáy", kieu: "so", mac: 4 }, { k: "h", nhan: "Chiều cao", kieu: "so", mac: 3.5 }, { k: "vecao", nhan: "Vẽ đường cao và hai đường chéo", kieu: "hop", mac: true }, { k: "tenO", nhan: "Tên tâm đáy", kieu: "chu", mac: "O" }], g => {
+			const [S, A, B, C, D] = tenK(g, 5); const a = +g.a, h = +g.h;
+			const P3 = { [A]: [0, a, 0], [B]: [0, 0, 0], [C]: [a, 0, 0], [D]: [a, a, 0] }; const O = [a / 2, a / 2, 0]; P3[S] = [O[0], O[1], h]; const them = [];
+			if (g.vecao) { P3[g.tenO || "O"] = O; them.push([A, C, "dut"], [B, D, "dut"], [S, g.tenO || "O", "dut"]); }
+			return { P3, mat: [[A, B, C, D], [S, A, B], [S, B, C], [S, C, D], [S, D, A]], them };
+		}),
+		khongGian("Hình hộp / lập phương ABCD.A'B'C'D'", "A trước-trái, B trước-phải, C sau-phải, D sau-trái. “Lệch” khác 0 → hình hộp xiên.", [{ k: "ten", nhan: "Tên 8 đỉnh", kieu: "chu", mac: "A, B, C, D, A', B', C', D'" }, { k: "a", nhan: "Chiều dài AB", kieu: "so", mac: 4 }, { k: "b", nhan: "Chiều sâu AD", kieu: "so", mac: 3 }, { k: "h", nhan: "Chiều cao", kieu: "so", mac: 3 }, { k: "lech", nhan: "Lệch mặt trên", kieu: "so", mac: 0 }], g => {
+			const [A, B, C, D, A1, B1, C1, D1] = tenK(g, 8); const a = +g.a, b = +g.b, h = +g.h, l = +g.lech || 0;
+			const P3 = { [A]: [0, 0, 0], [B]: [a, 0, 0], [C]: [a, b, 0], [D]: [0, b, 0] }; [[A, A1], [B, B1], [C, C1], [D, D1]].forEach(([u, v]) => P3[v] = [P3[u][0] + l, P3[u][1], h]);
+			return { P3, mat: [[A, B, C, D], [A1, B1, C1, D1], [A, B, B1, A1], [B, C, C1, B1], [C, D, D1, C1], [D, A, A1, D1]] };
+		}),
+		khongGian("Hình lăng trụ tam giác ABC.A'B'C'", "Đáy ABC (AC phía sau). “Lệch” khác 0 → lăng trụ xiên.", [{ k: "ten", nhan: "Tên 6 đỉnh", kieu: "chu", mac: "A, B, C, A', B', C'" }, { k: "a", nhan: "Độ dài AC", kieu: "so", mac: 4 }, { k: "b", nhan: "Chiều sâu đáy", kieu: "so", mac: 3 }, { k: "h", nhan: "Chiều cao", kieu: "so", mac: 3.5 }, { k: "lech", nhan: "Lệch mặt trên", kieu: "so", mac: 0 }], g => {
+			const [A, B, C, A1, B1, C1] = tenK(g, 6); const a = +g.a, b = +g.b, h = +g.h, l = +g.lech || 0;
+			const P3 = { [A]: [0, b, 0], [B]: [a * .5, 0, 0], [C]: [a, b, 0] }; [[A, A1], [B, B1], [C, C1]].forEach(([u, v]) => P3[v] = [P3[u][0] + l, P3[u][1], h]);
+			return { P3, mat: [[A, B, C], [A1, B1, C1], [A, B, B1, A1], [B, C, C1, B1], [C, A, A1, C1]] };
+		})
+	];
+	// nón, trụ, cầu
+	const tronXoay = [
+		{ ten: "Hình nón", truong: [{ k: "S", nhan: "Tên đỉnh", kieu: "chu", mac: "S" }, { k: "O", nhan: "Tên tâm đáy", kieu: "chu", mac: "O" }, { k: "r", nhan: "Bán kính đáy", kieu: "so", mac: 2 }, { k: "h", nhan: "Chiều cao", kieu: "so", mac: 3.5 }, { k: "co", nhan: "Độ dẹt đáy", kieu: "so", mac: 0.35 }, { k: "bk", nhan: "Vẽ bán kính tới điểm", kieu: "chu", mac: "A" }, { k: "tile", nhan: "Tỉ lệ", kieu: "so", mac: 1 }], ve: g => {
+			const r = +g.r, h = +g.h, e = r * (+g.co || .35); const t = [moDau(g)];
+			t.push("\t\\foreach \\p/\\x/\\y in {" + g.S + "/0/" + vhSo(h) + "," + g.O + "/0/0" + (g.bk.trim() ? "," + g.bk.trim() + "/" + vhSo(r) + "/0" : "") + "}\n\t\t\\path (\\x,\\y) coordinate (\\p);");
+			t.push("\t\\draw[dashed] (" + vhSo(r) + ",0) arc (0:180:" + vhSo(r) + " and " + vhSo(e) + ");");
+			t.push("\t\\draw (" + vhSo(-r) + ",0) arc (180:360:" + vhSo(r) + " and " + vhSo(e) + ");");
+			t.push("\t\\draw (" + vhSo(-r) + ",0)--(" + g.S + ")--(" + vhSo(r) + ",0);");
+			t.push("\t\\draw[dashed] (" + g.S + ")--(" + g.O + ")" + (g.bk.trim() ? "--(" + g.bk.trim() + ")" : "") + ";");
+			t.push("\t\\foreach \\p/\\g in {" + g.S + "/90," + g.O + "/-90" + (g.bk.trim() ? "," + g.bk.trim() + "/0" : "") + "}{\\fill (\\p) circle (1pt); \\path (\\p)+(\\g:3mm) node{$\\p$};}");
+			t.push("\\end{tikzpicture}"); return t.join("\n");
+		} },
+		{ ten: "Hình trụ", truong: [{ k: "O", nhan: "Tên tâm đáy dưới", kieu: "chu", mac: "O" }, { k: "O1", nhan: "Tên tâm đáy trên", kieu: "chu", mac: "O'" }, { k: "r", nhan: "Bán kính đáy", kieu: "so", mac: 2 }, { k: "h", nhan: "Chiều cao", kieu: "so", mac: 3.5 }, { k: "co", nhan: "Độ dẹt đáy", kieu: "so", mac: 0.35 }, { k: "tile", nhan: "Tỉ lệ", kieu: "so", mac: 1 }], ve: g => {
+			const r = +g.r, h = +g.h, e = r * (+g.co || .35); const t = [moDau(g)];
+			t.push("\t\\foreach \\p/\\x/\\y in {" + g.O + "/0/0," + g.O1 + "/0/" + vhSo(h) + "}\n\t\t\\path (\\x,\\y) coordinate (\\p);");
+			t.push("\t\\draw[dashed] (" + vhSo(r) + ",0) arc (0:180:" + vhSo(r) + " and " + vhSo(e) + ");");
+			t.push("\t\\draw (" + vhSo(-r) + ",0) arc (180:360:" + vhSo(r) + " and " + vhSo(e) + ");");
+			t.push("\t\\draw (" + g.O1 + ") ellipse (" + vhSo(r) + " and " + vhSo(e) + ");");
+			t.push("\t\\draw (" + vhSo(-r) + ",0)--(" + vhSo(-r) + "," + vhSo(h) + ") (" + vhSo(r) + ",0)--(" + vhSo(r) + "," + vhSo(h) + ");");
+			t.push("\t\\draw[dashed] (" + g.O + ")--(" + g.O1 + ");");
+			t.push("\t\\foreach \\p/\\g in {" + g.O + "/-90," + g.O1 + "/90}{\\fill (\\p) circle (1pt); \\path (\\p)+(\\g:3mm) node{$\\p$};}");
+			t.push("\\end{tikzpicture}"); return t.join("\n");
+		} },
+		{ ten: "Mặt cầu", truong: [{ k: "O", nhan: "Tên tâm", kieu: "chu", mac: "I" }, { k: "R", nhan: "Bán kính", kieu: "so", mac: 2 }, { k: "co", nhan: "Độ dẹt xích đạo", kieu: "so", mac: 0.3 }, { k: "bk", nhan: "Vẽ bán kính tới điểm", kieu: "chu", mac: "A" }, { k: "tile", nhan: "Tỉ lệ", kieu: "so", mac: 1 }], ve: g => {
+			const R = +g.R, e = R * (+g.co || .3); const t = [moDau(g)];
+			t.push("\t\\path (0,0) coordinate (" + g.O + ")" + (g.bk.trim() ? " (" + vhSo(R) + ",0) coordinate (" + g.bk.trim() + ")" : "") + ";");
+			t.push("\t\\draw (" + g.O + ") circle (" + vhSo(R) + ");");
+			t.push("\t\\draw[dashed] (" + vhSo(R) + ",0) arc (0:180:" + vhSo(R) + " and " + vhSo(e) + ");");
+			t.push("\t\\draw (" + vhSo(-R) + ",0) arc (180:360:" + vhSo(R) + " and " + vhSo(e) + ");");
+			if (g.bk.trim()) t.push("\t\\draw (" + g.O + ")--(" + g.bk.trim() + ");");
+			t.push("\t\\foreach \\p/\\g in {" + g.O + "/90" + (g.bk.trim() ? "," + g.bk.trim() + "/0" : "") + "}{\\fill (\\p) circle (1pt); \\path (\\p)+(\\g:3mm) node{$\\p$};}");
+			t.push("\\end{tikzpicture}"); return t.join("\n");
+		} }
+	];
+
+	const VH_CAY = [
+		{ nhom: "Bảng biến thiên", ds: [bbtTay, bbtHam("bac2"), bbtHam("bac3"), bbtHam("trung"), bbtHam("pt11"), bbtHam("pt21")] },
+		{ nhom: "Bảng xét dấu", ds: [bxd] },
+		{ nhom: "Đồ thị hàm số", ds: [doThiHam("bac1"), doThiHam("bac2"), doThiHam("bac3"), doThiHam("trung"), doThiHam("pt11"), doThiHam("pt21"), doThiDiem] },
+		{ nhom: "Hình học phẳng", ds: PHANG },
+		{ nhom: "Đường tròn – Elip", ds: tronElip },
+		{ nhom: "Hình không gian", ds: KHONG_GIAN },
+		{ nhom: "Nón – Trụ – Cầu", ds: tronXoay }
+	];
+	const VH = { mau: null, daXem: false, maXem: "", co: 13, png: null };
+	function vhMenu() {
+		$("vhMenu").innerHTML = VH_CAY.map((n, i) => '<details' + (i < 3 ? " open" : "") + '><summary>' + esc(n.nhom) + "</summary>" + n.ds.map((m, j) => '<button type="button" class="vhMuc" data-i="' + i + '" data-j="' + j + '">' + esc(m.ten) + "</button>").join("") + "</details>").join("");
+	}
+	function vhChon(m) {
+		VH.mau = m; VH.daXem = false;
+		document.querySelectorAll(".vhMuc").forEach(b => b.classList.toggle("dangChon", VH_CAY[+b.dataset.i].ds[+b.dataset.j] === m));
+		$("vhTen").textContent = m.ten; $("vhMoTa").textContent = m.mota || "";
+		$("vhTruong").innerHTML = m.truong.map(t => {
+			const id = "vh_" + t.k;
+			if (t.kieu === "hop") return '<label class="bat"><input type="checkbox" id="' + id + '"' + (t.mac ? " checked" : "") + "> " + esc(t.nhan) + "</label>";
+			if (t.kieu === "chon") return '<label>' + esc(t.nhan) + ' <select id="' + id + '">' + t.lua.map(l => '<option value="' + esc(l[0]) + '">' + esc(l[1]) + "</option>").join("") + "</select></label>";
+			if (t.kieu === "vung") return '<label class="vhRong">' + esc(t.nhan) + '<textarea id="' + id + '" rows="4" spellcheck="false">' + esc(t.mac) + "</textarea></label>" + (t.goiY ? '<div class="vhGoiY">' + GOI_Y_DUNG.map(x => '<button type="button" class="nutChu" data-chen="' + esc(x[0]) + '" title="' + esc(x[1]) + '">' + esc(x[0]) + "</button>").join("") + "</div>" : "");
+			return '<label>' + esc(t.nhan) + ' <input type="' + (t.kieu === "so" ? "number\" step=\"any" : "text") + '" id="' + id + '" value="' + esc(t.mac) + '"></label>';
+		}).join("");
+		$("vhXem").disabled = false; vhDoi(); $("vhAnh").innerHTML = '<p class="trong">Bấm <b>Xem hình</b> để vẽ.</p>';
+	}
+	function vhDoi() { VH.daXem = false; $("vhChep").disabled = $("vhChepHinh").disabled = true; $("vhTT").className = "ttSua"; $("vhTT").textContent = VH.mau ? "Thông số đã đổi — bấm Xem hình trước khi lấy code." : ""; }
+	function vhLay() { const g = {}; VH.mau.truong.forEach(t => { const e = $("vh_" + t.k); if (!e) return; g[t.k] = t.kieu === "hop" ? e.checked : t.kieu === "so" ? (e.value === "" ? t.mac : +e.value) : e.value; }); return g; }
+	async function vhXem() {
+		if (!VH.mau) return;
+		const tt = $("vhTT"); tt.className = "ttSua"; tt.textContent = "Đang vẽ…";
+		let ma;
+		if (VH.suaTay) ma = $("vhMa").value;
+		else { try { ma = themTacGia(VH.mau.ve(vhLay())); } catch (e) { tt.className = "ttSua loi"; tt.textContent = "Chưa vẽ được: " + ((e && e.message) || e); return; } $("vhMa").value = ma; }
+		const B = bo(); if (!B || !B.veTikz) { tt.className = "ttSua loi"; tt.textContent = "Bộ vẽ chưa sẵn sàng — tải lại trang."; return; }
+		const v = await B.veTikz(ma, {});
+		if (v.loi) { tt.className = "ttSua loi"; tt.textContent = "Lỗi biên dịch: " + String(v.loi).slice(0, 200); return; }
+		const u = URL.createObjectURL(new Blob([v.png], { type: "image/png" }));
+		$("vhAnh").innerHTML = '<img alt="Hình TikZ" src="' + u + '">';
+		VH.png = v.png; VH.daXem = true; VH.maXem = ma; VH.suaTay = false;
+		$("vhChep").disabled = $("vhChepHinh").disabled = false; tt.textContent = "Đã vẽ xong — có thể Copy code.";
+	}
+	function khoiDongVH() { if (VH.da) return; VH.da = true; vhMenu(); }
+	$("vhMenu").addEventListener("click", e => { const b = e.target.closest(".vhMuc"); if (b) vhChon(VH_CAY[+b.dataset.i].ds[+b.dataset.j]); });
+	$("vhTruong").addEventListener("input", () => { VH.suaTay = false; vhDoi(); });
+	$("vhTruong").addEventListener("change", () => { VH.suaTay = false; vhDoi(); });
+	$("vhTruong").addEventListener("click", e => { const b = e.target.closest("[data-chen]"); if (!b) return; const ta = $("vh_dung"); if (!ta) return; ta.value = (ta.value.trim() ? ta.value.replace(/\s*$/, "\n") : "") + b.dataset.chen; ta.focus(); VH.suaTay = false; vhDoi(); });
+	$("vhMa").addEventListener("input", () => { VH.suaTay = true; vhDoi(); $("vhTT").textContent = "Code đã sửa tay — bấm Xem hình để kiểm tra trước khi Copy."; });
+	$("vhXem").addEventListener("click", vhXem);
+	$("vhChep").addEventListener("click", () => { if (!VH.daXem) return; const ma = themTacGia(VH.maXem); if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ma).then(() => toast("Đã copy code"), () => { $("vhMa").select(); toast("Bấm Ctrl+C để sao chép"); }); else { $("vhMa").select(); toast("Bấm Ctrl+C để sao chép"); } });
+	$("vhChepHinh").addEventListener("click", async () => { if (!VH.png) return; try { await navigator.clipboard.write([new ClipboardItem({ "image/png": new Blob([VH.png], { type: "image/png" }) })]); toast("Đã copy hình"); } catch (e) { toast("Trình duyệt không cho copy hình"); } });
+	$("vhTang").addEventListener("click", () => { VH.co = Math.min(22, VH.co + 1); $("vhMa").style.fontSize = VH.co + "px"; });
+	$("vhGiam").addEventListener("click", () => { VH.co = Math.max(10, VH.co - 1); $("vhMa").style.fontSize = VH.co + "px"; });
 	try { const t = docO("tab"); if (t && $(t)) chonTab(t, false); } catch (e) { }
 	capNhatChip(); capNhatDem();
 })();
