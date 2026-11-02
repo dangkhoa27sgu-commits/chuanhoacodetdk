@@ -916,7 +916,7 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 					<label>Màu <select id="vtMau"><option value="mau">Giữ màu</option><option value="xam">Đen trắng</option></select></label>
 					<label>Rộng (cm) <input type="number" id="vtRong" value="6" step="0.5" min="2" max="16"></label>
 					<label class="bat vtAI"><input type="checkbox" id="vtBoNen" checked> Bỏ nền chi tiết</label>
-					<label class="bat vtAI"><input type="checkbox" id="vtTinh" checked> AI tự so và chỉnh thêm 1 vòng</label>
+					<label class="vtAI">Mức xử lí <select id="vtMuc"><option value="tu">Tự động (nhanh, chưa giống thì chỉnh kĩ)</option><option value="nhanh">Nhanh</option><option value="ki">Kĩ</option></select></label>
 					<label class="vtDo" hidden>Số màu <select id="vtSoMau"><option>2</option><option>3</option><option>4</option><option selected>6</option><option>8</option></select></label>
 					<label class="vtDo" hidden>Độ chi tiết <select id="vtChiTiet"><option value="1">1 (gọn)</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5 (sát ảnh)</option></select></label>
 					<label class="vtDo" hidden>Làm nét ảnh mờ <select id="vtLamNet"><option value="tu">Tự động</option><option value="luon">Luôn làm</option><option value="khong">Không</option></select></label>
@@ -1326,7 +1326,7 @@ $("vao").addEventListener("keydown", e => {
 	function nho(ids) { ids.forEach(k => { if (!$(k)) return; const v = docO(k); if (v !== null) $(k).checked = v === "1"; $(k).addEventListener("change", () => ghiO(k, $(k).checked ? "1" : "0")); }); }
 	nho(["ptChuan", "wTieuDe", "wLoiGiai", "wGach", "wBangDA"]);
 	["wFont", "wCo", "wLe", "wNgat", "ptScan"].forEach(k => { if (!$(k)) return; const v = docO(k); if (v) { const cu = $(k).value; $(k).value = v; if ($(k).value !== v) $(k).value = cu; } $(k).addEventListener("change", () => ghiO(k, $(k).value)); });
-	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 10.5.";
+	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 10.6.";
 
 	/* ---------- tab ngang ---------- */
 	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"], ["nutTabVeHinh", "tabVeHinh"], ["nutTabVeThucTe", "tabVeThucTe"], ["nutTabKhoAnh", "tabKhoAnh"]];
@@ -1439,7 +1439,7 @@ $("vao").addEventListener("keydown", e => {
 		const khoa = $(o.khoa).value.trim();
 		const tt = $(o.tt);
 		if (!khoa) { tt.textContent = "Dán khoá vào ô trên trước."; tt.className = "ttKhoa loi"; return; }
-		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 10.5."; tt.className = "ttKhoa loi"; return; }
+		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 10.6."; tt.className = "ttKhoa loi"; return; }
 		$(o.nut).disabled = true; tt.textContent = "Đang kiểm tra…"; tt.className = "ttKhoa";
 		try {
 			const ds = await bo().aiDsMoHinh({ nguon, khoa });
@@ -2295,7 +2295,7 @@ $("vao").addEventListener("keydown", e => {
 	function taiKT(epTai) {
 		if (KT.hua && !epTai) return KT.hua;
 		KT.hua = (async () => {
-			if (!bo() || !bo()._w2t || !bo()._w2t.taoMuc) { $("ttKhoTikzWL").textContent = "Bộ luật chưa có kho TikZ — quản trị viên cần cập nhật bộ luật 10.5."; return; }
+			if (!bo() || !bo()._w2t || !bo()._w2t.taoMuc) { $("ttKhoTikzWL").textContent = "Bộ luật chưa có kho TikZ — quản trị viên cần cập nhật bộ luật 10.6."; return; }
 			const cn = cauNoiKT(); KT.cucBo = !!cn.cucBo;
 			try { KT.laQT = !!(cn.laQT && cn.laQT()); } catch (e) { KT.laQT = false; }
 			$("themKT").hidden = $("dauKhoKT").hidden = $("gopKT").hidden = !KT.laQT;
@@ -2740,7 +2740,7 @@ $("vao").addEventListener("keydown", e => {
 
 	$("nutChayWL").addEventListener("click", async () => {
 		if (WL.dang || !WL.file) return;
-		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 10.5.", "loi"); return; }
+		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 10.6.", "loi"); return; }
 		WL.dang = true; $("nutChayWL").disabled = true; $("nutDungWL").hidden = false;
 		WL.ac = new AbortController();
 		$("tongKetWL").hidden = true;
@@ -3625,29 +3625,46 @@ Giữ nguyên phong cách: toạ độ tối đa 2 chữ số thập phân, \\fo
 Code hiện tại:
 {MA}
 Trả về DUY NHẤT JSON: {"tikz":"…"} (nhân đôi mọi dấu \\ trong chuỗi JSON).`;
-	function vtAI() { if (!aiSanSang() || AI.nguon === "tesseract") throw new Error("cần cấu hình AI (Gemini hoặc Claude) — bấm Cấu hình AI ở tab Word → LaTeX"); return { ai: cauHinhQuet().ai }; }
-	async function vtGoi(nhac, anh) { const W2 = bo()._w2t; const t = await W2.goiHinh(vtAI().ai, nhac, anh, { loai: "vethucte" }); const j = W2.layJSON(t); if (!j || !j.tikz) throw new Error("AI chưa trả về code"); return String(j.tikz); }
+	function vtAI(suyNghi) { if (!aiSanSang() || AI.nguon === "tesseract") throw new Error("cần cấu hình AI (Gemini hoặc Claude) — bấm Cấu hình AI ở tab Word → LaTeX"); const ai = Object.assign({}, cauHinhQuet().ai); if (suyNghi != null) ai.suyNghi = suyNghi; return { ai }; }
+	const tenMH = () => { const q = bo()._quet; return q && q.goiAI && q.goiAI._dungLan ? " (" + q.goiAI._dungLan + ")" : ""; };
+	async function vtGoi(nhac, anh, suyNghi) { const W2 = bo()._w2t; const t = await W2.goiHinh(vtAI(suyNghi).ai, nhac, anh, { loai: "vethucte" }); const j = W2.layJSON(t); if (!j || !j.tikz) throw new Error("AI chưa trả về code"); return String(j.tikz); }
+	async function vtDoAnh(wCm, ghi) {
+		const r = await bo()._w2t.doAnhYHe(VHT.anh, { wCm, mau: $("vtMau").value, soMau: +$("vtSoMau").value, chiTiet: +$("vtChiTiet").value, lamNet: $("vtLamNet").value });
+		datMa(r.tikz); vtLog(true, (ghi || "") + "Đã dò ảnh: " + r.soMau + " màu" + (r.lamNet ? ", có làm nét ảnh mờ" : "") + ".");
+	}
 	async function vtTao() {
 		if (!VHT.anh) { toast("Hãy dán hoặc chọn ảnh trước"); return; }
-		const tt = $("vtTT"), W2 = bo()._w2t, wCm = +$("vtRong").value || 6;
+		const tt = $("vtTT"), W2 = bo()._w2t, wCm = +$("vtRong").value || 6, muc = $("vtMuc") ? $("vtMuc").value : "tu";
+		const luot = (VHT.luot = (VHT.luot || 0) + 1);
 		$("vtTao").disabled = true;
 		try {
-			if ($("vtCach").value === "do") {
-				tt.textContent = "Đang làm nét, gom màu, dò ảnh…";
-				const r = await W2.doAnhYHe(VHT.anh, { wCm, mau: $("vtMau").value, soMau: +$("vtSoMau").value, chiTiet: +$("vtChiTiet").value, lamNet: $("vtLamNet").value });
-				datMa(r.tikz); vtLog(true, "Đã dò ảnh: " + r.soMau + " màu" + (r.lamNet ? ", có làm nét ảnh mờ" : "") + ".");
-			} else {
-				const o = vtAI();
+			if ($("vtCach").value === "do") { tt.textContent = "Đang làm nét, gom màu, dò ảnh…"; await vtDoAnh(wCm); tt.textContent = ""; await vhtXem(); }
+			else {
+				vtAI(); const t0 = Date.now();
+				// lượt 1: một ảnh có lưới toạ độ, suy nghĩ ít (Nhanh / Tự động) để ra hình sớm
 				tt.textContent = "AI đang phân tích ảnh…";
-				const anh = [await W2.anhChoAI(VHT.anh), await W2.anhLuoi(VHT.anh, wCm)];
-				const nhac = LOI_NHAC_THUCTE.replace("{MAU}", $("vtMau").value === "xam" ? "chỉ dùng đen, trắng và các mức xám black!10…black!80" : "giữ đúng màu như ảnh").replace("{NEN}", $("vtBoNen").checked ? "Nền phía sau quá chi tiết (lưới phối cảnh, hoa văn, phong cảnh) thì bỏ, chỉ vẽ đối tượng chính." : "Vẽ cả nền phía sau ở mức đơn giản.").replace("{YEU}", $("vtYeu").value.trim() ? "Yêu cầu thêm của giáo viên: " + $("vtYeu").value.trim() : "");
-				let ma = await vtGoi(nhac, anh);
+				const anh = [await W2.anhLuoi(VHT.anh, wCm)];
+				const nhac = LOI_NHAC_THUCTE.replace("Ảnh 1 là một hình trong tài liệu Toán (có thể là ảnh chụp màn hình hoặc ảnh scan, có thể mờ). Ảnh 2 là CÙNG hình đó có phủ LƯỚI TOẠ ĐỘ xanh", "Ảnh đính kèm là một hình trong tài liệu Toán (ảnh chụp màn hình hoặc ảnh scan, có thể mờ), có phủ LƯỚI TOẠ ĐỘ xanh").replace("{MAU}", $("vtMau").value === "xam" ? "chỉ dùng đen, trắng và các mức xám black!10…black!80" : "giữ đúng màu như ảnh").replace("{NEN}", $("vtBoNen").checked ? "Nền phía sau quá chi tiết (lưới phối cảnh, hoa văn, phong cảnh) thì bỏ, chỉ vẽ đối tượng chính." : "Vẽ cả nền phía sau ở mức đơn giản.").replace("{YEU}", $("vtYeu").value.trim() ? "Yêu cầu thêm của giáo viên: " + $("vtYeu").value.trim() : "");
+				let ma;
+				try { ma = await vtGoi(nhac, anh, muc === "ki" ? null : 1024); }
+				catch (e) { if (e && e.dungHan && !e.hetLuot) throw e; tt.textContent = "AI đang bận — chuyển sang dò ảnh…"; await vtDoAnh(wCm, "AI đang quá tải (" + ((e && e.message) || e) + "). "); tt.textContent = ""; await vhtXem(); $("vtTao").disabled = false; return; }
 				let v = await bo().veTikz(ma, {});
-				for (let lan = 0; lan < 2 && v.loi; lan++) { tt.textContent = "Code lỗi, AI đang sửa…"; const m2 = await W2.suaBangAI(VHT.anh, null, ma, v.loi, o); if (!m2) break; ma = m2; v = await bo().veTikz(ma, {}); }
-				if (!v.loi && $("vtTinh").checked) { tt.textContent = "AI đang so với ảnh gốc và chỉnh thêm…"; try { const m3 = await vtGoi(LOI_NHAC_SUA.replace("{YEU}", "so sánh hai ảnh, sửa mọi chỗ khác biệt về vị trí, kích thước, màu, chữ để giống ảnh gốc hơn").replace("{MA}", ma), [await W2.anhChoAI(VHT.anh), await W2.anhJpeg(await W2.anhCanvas(v.png), 0.92)]); const v3 = await bo().veTikz(m3, {}); if (!v3.loi) ma = m3; } catch (e) { } }
-				datMa(ma); vtLog(true, "AI đã dựng lại hình bằng các hình cơ bản. Nhắn yêu cầu rồi bấm <b>Sửa theo yêu cầu</b> nếu cần chỉnh.");
+				if (v.loi) { tt.textContent = "Code lỗi, AI đang sửa…"; try { const m2 = await W2.suaBangAI(VHT.anh, null, ma, v.loi, vtAI(1024)); if (m2) { const v2 = await bo().veTikz(m2, {}); if (!v2.loi) { ma = m2; v = v2; } } } catch (e) { } }
+				datMa(ma); await vhtXem();
+				const diem = v.loi ? 0 : await W2.soKhop(VHT.anh, v.png);
+				vtLog(true, "AI đã dựng hình" + tenMH() + " sau " + Math.round((Date.now() - t0) / 1000) + " giây, giống ảnh khoảng " + Math.round(diem * 100) + "%.");
+				tt.textContent = "";
+				// lượt 2 (chạy nền): chưa đủ giống hoặc chọn Kĩ → AI suy nghĩ kĩ, so với ảnh gốc và chỉnh; chỉ thay khi giống hơn
+				if (!v.loi && (muc === "ki" || (muc === "tu" && diem < 0.8))) {
+					tt.textContent = "Đang chỉnh kĩ thêm (hình hiện tại vẫn dùng được)…";
+					try {
+						const m3 = await vtGoi(LOI_NHAC_SUA.replace("{YEU}", "so sánh hai ảnh, sửa mọi chỗ khác biệt về vị trí, kích thước, màu, chữ để giống ảnh gốc hơn").replace("{MA}", ma), [await W2.anhLuoi(VHT.anh, wCm), await W2.anhJpeg(await W2.anhCanvas(v.png), 0.9)], null);
+						const v3 = await bo().veTikz(m3, {});
+						if (luot === VHT.luot && !v3.loi) { const d3 = await W2.soKhop(VHT.anh, v3.png); if (d3 > diem + 0.01) { datMa(m3); await vhtXem(); vtLog(true, "Đã chỉnh kĩ" + tenMH() + ": giống ảnh khoảng " + Math.round(d3 * 100) + "%."); } }
+					} catch (e) { }
+					if (luot === VHT.luot) tt.textContent = "";
+				}
 			}
-			tt.textContent = ""; await vhtXem();
 		} catch (e) { tt.textContent = "Chưa tạo được: " + ((e && e.message) || e); }
 		$("vtTao").disabled = false;
 	}
@@ -3659,7 +3676,7 @@ Trả về DUY NHẤT JSON: {"tikz":"…"} (nhân đôi mọi dấu \\ trong chu
 		try {
 			tt.textContent = "AI đang sửa…";
 			const anh = []; if (VHT.anh) anh.push(await W2.anhChoAI(VHT.anh)); if (VHT.png) anh.push(await W2.anhJpeg(await W2.anhCanvas(VHT.png), 0.92));
-			let m = await vtGoi(LOI_NHAC_SUA.replace("{YEU}", yeu).replace("{MA}", ma.replace(/^%Tác giả web:[^\n]*\n/, "")), anh);
+			let m = await vtGoi(LOI_NHAC_SUA.replace("{YEU}", yeu).replace("{MA}", ma.replace(/^%Tác giả web:[^\n]*\n/, "")), anh, 1024);
 			let v = await bo().veTikz(m, {}); if (v.loi) { const m2 = await W2.suaBangAI(VHT.anh || VHT.png, null, m, v.loi, vtAI()); if (m2) m = m2; }
 			datMa(m); $("vtYeu").value = ""; vtLog(true, "Đã sửa theo yêu cầu."); tt.textContent = ""; await vhtXem();
 		} catch (e) { tt.textContent = "Chưa sửa được: " + ((e && e.message) || e); }
