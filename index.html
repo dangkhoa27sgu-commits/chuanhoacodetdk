@@ -1341,7 +1341,7 @@ $("vao").addEventListener("keydown", e => {
 	function nho(ids) { ids.forEach(k => { if (!$(k)) return; const v = docO(k); if (v !== null) $(k).checked = v === "1"; $(k).addEventListener("change", () => ghiO(k, $(k).checked ? "1" : "0")); }); }
 	nho(["ptChuan", "wTieuDe", "wLoiGiai", "wGach", "wBangDA"]);
 	["wFont", "wCo", "wLe", "wNgat", "ptScan"].forEach(k => { if (!$(k)) return; const v = docO(k); if (v) { const cu = $(k).value; $(k).value = v; if ($(k).value !== v) $(k).value = cu; } $(k).addEventListener("change", () => ghiO(k, $(k).value)); });
-	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 11.6.";
+	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 11.7.";
 
 	/* ---------- tab ngang ---------- */
 	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"], ["nutTabVeHinh", "tabVeHinh"], ["nutTabVeThucTe", "tabVeThucTe"], ["nutTabKhoAnh", "tabKhoAnh"]];
@@ -1454,7 +1454,7 @@ $("vao").addEventListener("keydown", e => {
 		const khoa = $(o.khoa).value.trim();
 		const tt = $(o.tt);
 		if (!khoa) { tt.textContent = "Dán khoá vào ô trên trước."; tt.className = "ttKhoa loi"; return; }
-		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 11.6."; tt.className = "ttKhoa loi"; return; }
+		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 11.7."; tt.className = "ttKhoa loi"; return; }
 		$(o.nut).disabled = true; tt.textContent = "Đang kiểm tra…"; tt.className = "ttKhoa";
 		try {
 			const ds = await bo().aiDsMoHinh({ nguon, khoa });
@@ -2310,7 +2310,7 @@ $("vao").addEventListener("keydown", e => {
 	function taiKT(epTai) {
 		if (KT.hua && !epTai) return KT.hua;
 		KT.hua = (async () => {
-			if (!bo() || !bo()._w2t || !bo()._w2t.taoMuc) { $("ttKhoTikzWL").textContent = "Bộ luật chưa có kho TikZ — quản trị viên cần cập nhật bộ luật 11.6."; return; }
+			if (!bo() || !bo()._w2t || !bo()._w2t.taoMuc) { $("ttKhoTikzWL").textContent = "Bộ luật chưa có kho TikZ — quản trị viên cần cập nhật bộ luật 11.7."; return; }
 			const cn = cauNoiKT(); KT.cucBo = !!cn.cucBo;
 			try { KT.laQT = !!(cn.laQT && cn.laQT()); } catch (e) { KT.laQT = false; }
 			$("themKT").hidden = $("dauKhoKT").hidden = $("gopKT").hidden = $("xuatKT").hidden = $("chiMucKT").hidden = !KT.laQT;
@@ -2487,7 +2487,12 @@ Trả về DUY NHẤT JSON: {"1":{"ten":"vệ tinh","tu":["vệ tinh nhân tạo
 		const cot = 4, oW = 240, oH = 200, hang = Math.ceil(lo.length / cot), c = document.createElement("canvas"); c.width = cot * oW; c.height = hang * oH;
 		const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); x.font = "bold 20px sans-serif"; x.textBaseline = "top";
 		for (let k = 0; k < lo.length; k++) { const cx = (k % cot) * oW, cy = Math.floor(k / cot) * oH; try { const bm = await createImageBitmap(new Blob([lo[k].png], { type: "image/png" })); const s = Math.min((oW - 40) / bm.width, (oH - 16) / bm.height, 2); x.drawImage(bm, cx + 34, cy + 8, bm.width * s, bm.height * s); } catch (e) { } x.fillStyle = "#d00"; x.fillText(String(k + 1), cx + 4, cy + 4); if (lo[k].goiY) { x.font = "12px sans-serif"; x.fillStyle = "#06c"; x.fillText(String(lo[k].goiY).slice(0, 22), cx + 34, cy + oH - 16); x.font = "bold 20px sans-serif"; } x.strokeStyle = "#bbb"; x.strokeRect(cx + 0.5, cy + 0.5, oW - 1, oH - 1); }
-		const W2 = bo()._w2t, t = await W2.goiHinh(Object.assign({}, cauHinhQuet().ai, { suyNghi: 0 }), LOI_NHAC_TP, [await W2.anhJpeg(c, 0.85)], { loai: "chimuc" });
+		const W2 = bo()._w2t, anh = await W2.anhJpeg(c, 0.85); let t = null;
+		// đặt tên là việc nhẹ → dùng mô hình chính (lite, nhiều lượt); quá tải theo phút thì chờ 1 phút rồi thử lại, tối đa 8 lần
+		for (let lan = 0; ; lan++) {
+			try { t = await bo()._quet.goiAI(Object.assign({}, cauHinhQuet().ai, { suyNghi: 0, choToiDa: 300000 }), LOI_NHAC_TP, [anh], { loai: "chimuc" }); break; }
+			catch (e) { if (e && (e.hetLuot || e.dungHan) || lan >= 7 || !/429|quá tải|bận/i.test((e && e.message) || "")) throw e; $("ttKT").textContent = "Google đang giới hạn lượt theo phút — chờ 1 phút rồi chạy tiếp (lần " + (lan + 1) + ")…"; await new Promise(r => setTimeout(r, 60000)); }
+		}
 		return W2.layJSON(t) || {};
 	}
 	$("chiMucKT").addEventListener("click", async () => {
@@ -2810,7 +2815,7 @@ Trả về DUY NHẤT JSON: {"1":{"ten":"vệ tinh","tu":["vệ tinh nhân tạo
 
 	$("nutChayWL").addEventListener("click", async () => {
 		if (WL.dang || !WL.file) return;
-		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 11.6.", "loi"); return; }
+		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 11.7.", "loi"); return; }
 		WL.dang = true; $("nutChayWL").disabled = true; $("nutDungWL").hidden = false;
 		WL.ac = new AbortController();
 		$("tongKetWL").hidden = true;
