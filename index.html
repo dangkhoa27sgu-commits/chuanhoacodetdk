@@ -863,7 +863,7 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 							<select id="locKT" aria-label="Lọc theo loại hình"><option value="">Mọi loại</option><option value="bbt">Bảng biến thiên</option><option value="dothi">Đồ thị</option><option value="hinhhoc">Hình học</option><option value="minhhoa">Hình thực tế</option><option value="loi">Web chưa vẽ được</option></select>
 							<button class="nut" type="button" id="taiLaiKT">Tải lại</button>
 							<button class="nut" type="button" id="gopKT" hidden title="Tìm các hình bị nạp trùng (cùng code hoặc vẽ ra giống hệt) và chỉ giữ 1 bản">Tìm hình trùng</button>
-							<button class="nut" type="button" id="xuatKT" hidden title="Tải về code mọi hình mục Hình thực tế (JSON)">Xuất Hình thực tế (JSON)</button><button class="nut" type="button" id="chiMucKT" hidden title="Tách từng hình thực tế thành các thành phần (vệ tinh, ngọn núi…) và để AI đặt tên — dùng cho tab Vẽ hình TikZ thực tế. Chạy tiếp được, mỗi hình chỉ làm một lần.">Lập chỉ mục thành phần</button><button class="nut" type="button" id="veLaiLoiKT" hidden>Thử vẽ lại hình lỗi</button><button class="nut" type="button" id="xoaLoiKT" hidden>Xoá hết hình chưa vẽ được</button>
+							<button class="nut" type="button" id="xuatKT" hidden title="Tải về code mọi hình mục Hình học và Hình thực tế (JSON)">Xuất Hình học + thực tế (JSON)</button><button class="nut" type="button" id="chiMucKT" hidden title="Tách từng hình học, hình thực tế thành các thành phần (vệ tinh, ngọn núi…) và để AI đặt tên — dùng cho tab Vẽ hình TikZ thực tế. Chạy tiếp được, mỗi hình chỉ làm một lần.">Lập chỉ mục thành phần</button><button class="nut" type="button" id="veLaiLoiKT" hidden>Thử vẽ lại hình lỗi</button><button class="nut" type="button" id="xoaLoiKT" hidden>Xoá hết hình chưa vẽ được</button>
 							<span class="ttKT" id="ttKT"></span>
 						</div>
 						<details class="themKT" id="themKT" hidden>
@@ -1341,7 +1341,7 @@ $("vao").addEventListener("keydown", e => {
 	function nho(ids) { ids.forEach(k => { if (!$(k)) return; const v = docO(k); if (v !== null) $(k).checked = v === "1"; $(k).addEventListener("change", () => ghiO(k, $(k).checked ? "1" : "0")); }); }
 	nho(["ptChuan", "wTieuDe", "wLoiGiai", "wGach", "wBangDA"]);
 	["wFont", "wCo", "wLe", "wNgat", "ptScan"].forEach(k => { if (!$(k)) return; const v = docO(k); if (v) { const cu = $(k).value; $(k).value = v; if ($(k).value !== v) $(k).value = cu; } $(k).addEventListener("change", () => ghiO(k, $(k).value)); });
-	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 11.4.";
+	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 11.5.";
 
 	/* ---------- tab ngang ---------- */
 	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"], ["nutTabVeHinh", "tabVeHinh"], ["nutTabVeThucTe", "tabVeThucTe"], ["nutTabKhoAnh", "tabKhoAnh"]];
@@ -1454,7 +1454,7 @@ $("vao").addEventListener("keydown", e => {
 		const khoa = $(o.khoa).value.trim();
 		const tt = $(o.tt);
 		if (!khoa) { tt.textContent = "Dán khoá vào ô trên trước."; tt.className = "ttKhoa loi"; return; }
-		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 11.4."; tt.className = "ttKhoa loi"; return; }
+		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 11.5."; tt.className = "ttKhoa loi"; return; }
 		$(o.nut).disabled = true; tt.textContent = "Đang kiểm tra…"; tt.className = "ttKhoa";
 		try {
 			const ds = await bo().aiDsMoHinh({ nguon, khoa });
@@ -2310,7 +2310,7 @@ $("vao").addEventListener("keydown", e => {
 	function taiKT(epTai) {
 		if (KT.hua && !epTai) return KT.hua;
 		KT.hua = (async () => {
-			if (!bo() || !bo()._w2t || !bo()._w2t.taoMuc) { $("ttKhoTikzWL").textContent = "Bộ luật chưa có kho TikZ — quản trị viên cần cập nhật bộ luật 11.4."; return; }
+			if (!bo() || !bo()._w2t || !bo()._w2t.taoMuc) { $("ttKhoTikzWL").textContent = "Bộ luật chưa có kho TikZ — quản trị viên cần cập nhật bộ luật 11.5."; return; }
 			const cn = cauNoiKT(); KT.cucBo = !!cn.cucBo;
 			try { KT.laQT = !!(cn.laQT && cn.laQT()); } catch (e) { KT.laQT = false; }
 			$("themKT").hidden = $("dauKhoKT").hidden = $("gopKT").hidden = $("xuatKT").hidden = $("chiMucKT").hidden = !KT.laQT;
@@ -2472,15 +2472,16 @@ $("vao").addEventListener("keydown", e => {
 	const TPV = 1; let dungTP = false;
 	const boDauKT = t => String(t || "").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").toLowerCase();
 	$("xuatKT").addEventListener("click", async () => {
-		await taiKT(); const ds = KT.ds.filter(m => m.loai === "minhhoa"); const nut = $("xuatKT"); nut.disabled = true; const ra = [];
+		await taiKT(); const ds = KT.ds.filter(m => m.loai === "minhhoa" || m.loai === "hinhhoc"); const nut = $("xuatKT"); nut.disabled = true; const ra = [];
 		try { for (let i = 0; i < ds.length; i++) { if (i % 20 === 0) $("ttKT").textContent = "Đang lấy code " + i + "/" + ds.length + "…"; const m = ds[i]; let ma = null; try { ma = await layMaKT(m); } catch (e) { } ra.push({ id: m.id, de: m.de || "", the: m.the || "", loi: !!m.loi, tp: m.tp || null, ma }); }
-			await taiVe(JSON.stringify({ xuat: new Date().toISOString(), so: ra.length, ds: ra }), "kho-hinh-thuc-te.json", "application/json"); $("ttKT").textContent = "Đã xuất " + ra.length + " hình thực tế."; }
+			await taiVe(JSON.stringify({ xuat: new Date().toISOString(), so: ra.length, ds: ra }), "kho-hinh-hoc-thuc-te.json", "application/json"); $("ttKT").textContent = "Đã xuất " + ra.length + " hình (hình học + hình thực tế)."; }
 		catch (e) { $("ttKT").textContent = "Lỗi xuất kho: " + ((e && e.message) || e); }
 		nut.disabled = false;
 	});
 	const LOI_NHAC_TP = `Mỗi ô đánh số đỏ là MỘT thành phần cắt ra từ hình minh hoạ trong đề Toán (vẽ bằng TikZ).
 Đặt tên ngắn tiếng Việt cho vật trong ô (vệ tinh, ngọn núi, cây, người, thuyền, ô tô, máy bay, toà nhà, cột cờ, mặt trời, đồng hồ, cái thang…) và 2–5 từ khoá liên quan (tên gọi khác, loại vật).
-Ô chỉ là hình toán (trục, đoạn thẳng, tam giác, chữ, số, kí hiệu góc) hoặc không nhận ra → "ten": "".
+Ô là hình học (hình chóp, lăng trụ, hình hộp, tứ diện, hình nón, hình trụ, mặt cầu, tam giác, đường tròn…) → đặt tên loại hình cụ thể, ví dụ "hình chóp tứ giác đều", từ khoá gồm tên đỉnh nếu thấy (S.ABCD).
+Ô chỉ là nét vụn, trục toạ độ, chữ, số lẻ hoặc không nhận ra → "ten": "".
 Trả về DUY NHẤT JSON: {"1":{"ten":"vệ tinh","tu":["vệ tinh nhân tạo","ăng-ten"]},"2":{"ten":"","tu":[]},…}`;
 	async function datTenLo(lo) {
 		const cot = 4, oW = 240, oH = 200, hang = Math.ceil(lo.length / cot), c = document.createElement("canvas"); c.width = cot * oW; c.height = hang * oH;
@@ -2494,8 +2495,8 @@ Trả về DUY NHẤT JSON: {"1":{"ten":"vệ tinh","tu":["vệ tinh nhân tạo
 		if (nut.dataset.chay) { dungTP = true; nut.textContent = "Đang dừng…"; return; }
 		if (!aiSanSang() || AI.nguon === "tesseract") { toast("Cần cấu hình AI (Gemini/Claude) ở tab Word → LaTeX"); return; }
 		await taiKT(); const W2 = bo()._w2t, cn = cauNoiKT();
-		const can = KT.ds.filter(m => m.loai === "minhhoa" && !m.loi && m.tpv !== TPV);
-		if (!can.length) { toast("Mọi hình thực tế đã lập chỉ mục"); return; }
+		const can = KT.ds.filter(m => (m.loai === "minhhoa" || m.loai === "hinhhoc") && !m.loi && m.tpv !== TPV);
+		if (!can.length) { toast("Mọi hình học, hình thực tế đã lập chỉ mục"); return; }
 		dungTP = false; nut.dataset.chay = "1"; nut.textContent = "Dừng lập chỉ mục";
 		let lo = [], cho = [], xong = 0, soTP = 0; const tg0 = Date.now();
 		const ghi = async () => { if (!cho.length) return; await cn.capNhat(cho.map(m => ({ id: m.id, tp: m.tp, tpv: TPV }))); cho = []; };
@@ -2505,7 +2506,9 @@ Trả về DUY NHẤT JSON: {"1":{"ten":"vệ tinh","tu":["vệ tinh nhân tạo
 				const m = can[i]; $("ttKT").textContent = "Lập chỉ mục " + (i + 1) + "/" + can.length + " · " + soTP + " thành phần · " + Math.round((Date.now() - tg0) / 1000) + " giây";
 				let ma = null; try { ma = await layMaKT(m); } catch (e) { }
 				m.tp = []; m._choLo = 0;
-				const nh = ma ? W2.tachThanhPhan(ma).filter(n => !n.nen).slice(0, 6) : [];
+				let nh = ma ? W2.tachThanhPhan(ma).filter(n => !n.nen).slice(0, 6) : [];
+				// hình học: cả hình là một thành phần (hình chóp, lăng trụ…), không tách nhỏ
+				if (m.loai === "hinhhoc" && nh.length > 1) { const tat = [...new Set([].concat(...nh.map(n => n.chi)))].sort((a, b) => a - b); const h = nh.reduce((q, n) => [Math.min(q[0], n.hop[0]), Math.min(q[1], n.hop[1]), Math.max(q[2], n.hop[2]), Math.max(q[3], n.hop[3])], [Infinity, Infinity, -Infinity, -Infinity]); nh = [{ chi: tat, hop: h }]; }
 				// một nhóm duy nhất mà đã có tên gợi ý → dùng luôn, không gọi AI
 				if (nh.length === 1 && (m.the || "").trim()) { m.tp.push({ t: m.the.split(/[,;]/).map(t => t.trim()).filter(Boolean).slice(0, 6).join("|"), c: nh[0].chi.join(","), h: nh[0].hop }); soTP++; m.tpv = TPV; cho.push(m); continue; }
 				for (const n of nh) { const p = W2.maThanhPhan(ma, n.chi); if (!p) continue; let v = null; try { v = await W2.veMa(W2.maVeThanhPhan(p)); } catch (e) { } if (!v || !v.png) continue; lo.push({ m, chi: n.chi, hop: n.hop, png: v.png }); m._choLo++; }
@@ -2809,7 +2812,7 @@ Trả về DUY NHẤT JSON: {"1":{"ten":"vệ tinh","tu":["vệ tinh nhân tạo
 
 	$("nutChayWL").addEventListener("click", async () => {
 		if (WL.dang || !WL.file) return;
-		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 11.4.", "loi"); return; }
+		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 11.5.", "loi"); return; }
 		WL.dang = true; $("nutChayWL").disabled = true; $("nutDungWL").hidden = false;
 		WL.ac = new AbortController();
 		$("tongKetWL").hidden = true;
