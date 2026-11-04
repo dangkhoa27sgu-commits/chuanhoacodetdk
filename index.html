@@ -4103,7 +4103,7 @@ Trả về DUY NHẤT JSON: {"mau":{…},"hinh":[…]} (nhân đôi mọi dấu 
 	async function vtKhoi(anh, wCm, hinhDo, tt) {
 		const W2 = bo()._w2t, c0 = await W2.anhCanvas(anh), hCm = wCm * c0.height / c0.width, nhac = nhacKhoi(wCm, hCm), khung = "\\path (0,0) rectangle (" + vhSo(wCm) + "," + vhSo(hCm) + ");", luoi = await W2.anhLuoi(anh, wCm);
 		if (tt) tt.textContent = "AI đang phân tích hình thành các khối hình cơ bản…";
-		const goi = async them => { const t = await goiVe(nhac + (them || ""), [luoi], "vethucte-khoi"); return { t, j: W2.layJSON(t) }; };
+		const goi = async them => { const t = await goiVe(nhac + (them || ""), [luoi], "vethucte-khoi"); return { t, j: docJSONKhoi(t) }; };
 		let { t, j } = await goi(); if (!j || !Array.isArray(j.hinh || j.doi_tuong)) ({ t, j } = await goi("\nLần trước trả lời sai định dạng. CHỈ trả về JSON {\"mau\":{…},\"hinh\":[…]}."));
 		if (!j || !Array.isArray(j.hinh || j.doi_tuong)) throw new Error("AI chưa mô tả được hình");
 		const mA = await mauAnhCua(anh, wCm); let kq = await dungKhoiSua(j, hinhDo, mA, anh, tt);
@@ -4112,7 +4112,7 @@ Trả về DUY NHẤT JSON: {"mau":{…},"hinh":[…]} (nhân đôi mọi dấu 
 		// soát bằng ẢNH CHỒNG: AI thấy nét vẽ lại (đỏ) đè lên ảnh gốc → trả JSON đầy đủ đã sửa; chỉ nhận khi khớp nét tốt hơn
 		for (let lan = 0; lan < 2 && dg.png && dg.f < 0.92; lan++) {
 			if (tt) tt.textContent = "Đang so hình vẽ với ảnh gốc (khớp " + Math.round(dg.f * 100) + "%) — AI sửa chỗ lệch…";
-			try { const ch = await W2.anhLuoi(await anhChongDo(anh, dg.png), wCm), t2 = await goiVe(nhac + NHAC_SOAT + JSON.stringify(j).slice(0, 14000), [luoi, ch], "vethucte-khoi"), j2 = W2.layJSON(t2);
+			try { const ch = await W2.anhLuoi(await anhChongDo(anh, dg.png), wCm), t2 = await goiVe(nhac + NHAC_SOAT + JSON.stringify(j).slice(0, 14000), [luoi, ch], "vethucte-khoi"), j2 = docJSONKhoi(t2);
 				if (!j2 || !Array.isArray(j2.hinh) || !j2.hinh.length) break; const j3 = { mau: Object.assign({}, j.mau || {}, j2.mau || {}), hinh: j2.hinh }, kq2 = await dungKhoiSua(j3, hinhDo, mA, anh, tt), dg2 = await cham(kq2.ma);
 				if (dg2.f > dg.f + 0.01) { j = j3; kq = kq2; dg = dg2; soLuot++; t += "\n--- soát lượt " + (lan + 1) + " ---\n" + t2; } else break; } catch (e) { break; } }
 		kq.soat = soLuot; kq.khop = dg.f; kq.tho = t; VHT.jKhoi = j; VHT.pngKhoi = dg.png || null; return kq;
@@ -4147,6 +4147,27 @@ Trả về DUY NHẤT JSON: {"mau":{…},"hinh":[…]} (nhân đôi mọi dấu 
 		if (luot !== VHT.luot) return; datMa(kh.ma); tt.textContent = ""; const v = await vhtXem(); const d = v && !v.loi ? await W2.giongMau(anh, v.png) : 0;
 		vtLog(true, (ghi && ghi.length ? esc(ghi.join(". ")) + ".<br>" : "") + "Dựng khối hình" + tenMH() + ": " + kh.so + " lệnh" + (kh.soat ? ", AI soát sửa " + kh.soat + " lượt" : "") + (kh.khop ? ", khớp nét " + Math.round(kh.khop * 100) + "%" : "") + (kh.boVat ? ", bỏ " + kh.boVat.length + " vật vẽ lỗi (" + esc(kh.boVat.join(", ")) + ")" : "") + ", " + Math.round((Date.now() - t0) / 1000) + " giây, giống ảnh khoảng " + Math.round(d * 100) + "%." + (kh.tho ? '<details><summary>Chi tiết AI trả về</summary><pre>' + esc(String(kh.tho).slice(0, 6000)) + "</pre></details>" : ""));
 	}
+	// đọc JSON khối hình từ câu trả lời AI bất kì (ChatGPT/Gemini/Claude): bỏ ```json, ngoặc kép cong, dấu phẩy thừa; "\sqrt", "\frac", "\text"… viết 1 dấu \ vẫn đọc đúng; lấy đúng khối có "hinh"
+	function docJSONKhoi(s0) {
+		const s = String(s0 || "").replace(/```[a-zA-Z]*\n?/g, "").replace(/[“”„″]/g, '"').replace(/[‘’]/g, "'").replace(/ /g, " ");
+		const sua = j => { let r = "", trong = false; for (let i = 0; i < j.length; i++) { const c = j[i];
+				if (!trong) { if (c === "/" && j[i + 1] === "/") { while (i < j.length && j[i] !== "\n") i++; continue; } if (c === '"') trong = true; r += c; continue; }
+				if (c === '"') { trong = false; r += c; continue; }
+				if (c === "\n") { r += "\\n"; continue; } if (c === "\t") { r += "\\t"; continue; }
+				if (c !== "\\") { r += c; continue; }
+				const n = j[i + 1] || "";
+				if (n === "\\") { r += "\\\\"; i++; continue; }
+				if (n === '"' || n === "/") { r += "\\" + n; i++; continue; }
+				if (n === "u" && /^[0-9a-fA-F]{4}$/.test(j.slice(i + 2, i + 6))) { r += j.slice(i, i + 6); i += 5; continue; }
+				if ("nt".includes(n) && !/[a-zA-Z]/.test(j[i + 2] || "")) { r += "\\" + n; i++; continue; }
+				r += "\\\\"; } // lệnh LaTeX (\sqrt, \frac, \text, \,…) → giữ nguyên dấu \
+			return r.replace(/,(\s*[}\]])/g, "$1"); };
+		const khoi = []; for (let a = s.indexOf("{"); a >= 0; a = s.indexOf("{", a + 1)) { if (!/^\{\s*"/.test(s.slice(a, a + 20))) continue; let d = 0, trong = false, thoat = false;
+			for (let i = a; i < s.length; i++) { const c = s[i]; if (trong) { if (thoat) thoat = false; else if (c === "\\") thoat = true; else if (c === '"') trong = false; continue; } if (c === '"') trong = true; else if (c === "{") d++; else if (c === "}") { d--; if (!d) { khoi.push(s.slice(a, i + 1)); break; } } } }
+		khoi.sort((x, y) => (/"hinh"\s*:/.test(y) ? 1 : 0) - (/"hinh"\s*:/.test(x) ? 1 : 0) || y.length - x.length);
+		for (const k of khoi) { for (const th of [sua(k), k]) { try { const j = JSON.parse(th); if (j && typeof j === "object" && (Array.isArray(j.hinh) || Array.isArray(j.doi_tuong) || j.tikz)) return j; } catch (e) { } } }
+		return null;
+	}
 	// ===== AI bên ngoài: copy prompt + ảnh lưới → dán câu trả lời → web nắn theo ảnh, viết TikZ =====
 	async function chepVaoBo(nhac, bao) { try { await navigator.clipboard.writeText(nhac); toast(bao); } catch (e) { $("vtDanKQ").value = nhac; $("vtDanKQ").select(); toast("Trình duyệt chặn copy — prompt đã đặt vào ô dưới, Ctrl+C để copy"); } }
 	const khungAnh = async () => { const wCm = +$("vtRong").value || 6, c0 = await bo()._w2t.anhCanvas(VHT.anh); return { wCm, hCm: wCm * c0.height / c0.width }; };
@@ -4156,12 +4177,12 @@ Trả về DUY NHẤT JSON: {"mau":{…},"hinh":[…]} (nhân đôi mọi dấu 
 	async function vtTaiLuoi() { if (!VHT.anh) { toast("Hãy dán hoặc chọn ảnh trước"); return; } const b = await bo()._w2t.anhLuoi(VHT.anh, +$("vtRong").value || 6); await taiVe(b, "anh_luoi.jpg", "image/jpeg"); }
 	async function vtDungKQ() {
 		const s = $("vtDanKQ").value.trim(); if (!s) { toast("Dán câu trả lời của AI vào ô trước"); return; }
-		const W2 = bo()._w2t, tt = $("vtTT"), wCm = +$("vtRong").value || 6, j = W2.layJSON(s);
+		const W2 = bo()._w2t, tt = $("vtTT"), wCm = +$("vtRong").value || 6, j = docJSONKhoi(s);
 		try {
 			if (j && Array.isArray(j.hinh || j.doi_tuong)) { let hd = null, mA = { tron: () => ({ n: 0 }), dagiac: () => ({ n: 0 }) };
 				if (VHT.anh) { tt.textContent = "Đang đo nét trên ảnh…"; try { hd = (await W2.doVectorHoa(VHT.anh, { wCm, soMau: 12, netDay: 0.06 })).hinh; } catch (e) { } mA = await mauAnhCua(VHT.anh, wCm); }
 				const kq = await dungKhoiSua(j, hd, mA, VHT.anh, tt); VHT.jKhoi = j; datMa(kq.ma); let khop = 0; if (VHT.anh) { try { const { wCm: w2, hCm } = await khungAnh(), vk = await bo().veTikz(kq.ma.replace(/(\\begin\{tikzpicture\}(\[[^\n]*\])?)/, "$1\n\\path (0,0) rectangle (" + vhSo(w2) + "," + vhSo(hCm) + ");"), {}); if (vk.png) { VHT.pngKhoi = vk.png; khop = (await doKhop(VHT.anh, vk.png)).f; } } catch (e) { } } tt.textContent = ""; const v = await vhtXem(); const d = v && !v.loi && VHT.anh ? await W2.giongMau(VHT.anh, v.png) : 0; vtLog(true, "Đã dùng kết quả AI bên ngoài: " + kq.so + " lệnh" + (VHT.anh ? ", nắn theo ảnh, khớp nét " + Math.round(khop * 100) + "%, giống màu " + Math.round(d * 100) + "%" : "") + "." + (khop && khop < 0.9 ? " Chưa khớp hẳn: bấm Copy prompt soát lại + Tải ảnh chồng." : "")); return; }
-			const ma = layTikz(s); if (!ma) throw new Error("không thấy JSON {\"hinh\":…} hay code TikZ trong câu trả lời");
+			const ma = layTikz(s); if (!ma) throw new Error("không đọc được câu trả lời — cần JSON có \"hinh\":[…] hoặc code \\begin{tikzpicture}…\\end{tikzpicture}. Hãy copy TOÀN BỘ câu trả lời (hoặc bấm nút Copy code trong khung code của ChatGPT)");
 			datMa(ma); const v = await vhtXem(); if (v && v.loi && VHT.anh) { tt.textContent = "Code lỗi — AI đang sửa…"; try { const m3 = await W2.suaBangAI(VHT.anh, null, ma, String(v.loi).slice(0, 300), vtAI(1024)); if (m3) { datMa(m3); await vhtXem(); } } catch (e) { } tt.textContent = ""; }
 			vtLog(true, "Đã dùng code TikZ AI bên ngoài.");
 		} catch (e) { tt.textContent = "Chưa dùng được: " + ((e && e.message) || e); }
