@@ -917,7 +917,7 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 				<div class="vtDan" id="vtDan" tabindex="0" aria-label="Ô dán ảnh"><span id="vtDanChu">Bấm vào đây rồi Ctrl+V để dán ảnh (hoặc dán/nạp file SVG từ Inkscape — đổi thẳng sang TikZ)</span></div>
 				<textarea id="vtYeu" rows="2" spellcheck="false" placeholder="Yêu cầu thêm (tuỳ chọn): bỏ nền lưới, kim phút dài hơn, đổi sang đen trắng…"></textarea>
 				<div class="vtTuy">
-					<label>Cách làm <select id="vtCach"><option value="tu">Tự động (khuyên dùng)</option><option value="potrace">Dò như Inkscape (Potrace, giữ màu, nét sắc)</option><option value="sach">Dò ảnh sạch nét (đoạn thẳng chuẩn, chữ LaTeX)</option><option value="ai">AI dựng lại bằng hình cơ bản (code gọn)</option><option value="lai">Tranh vẽ tay + điểm, nhãn (ảnh scan nét đen)</option><option value="do">Dò ảnh y hệt (code dài)</option></select></label>
+					<label>Cách làm <select id="vtCach"><option value="tu">Tự động (khuyên dùng)</option><option value="khoi">Dựng khối hình — nét sắc như sách (AI + đo ảnh)</option><option value="potrace">Dò như Inkscape (Potrace, giữ màu, nét sắc)</option><option value="sach">Dò ảnh sạch nét (đoạn thẳng chuẩn, chữ LaTeX)</option><option value="ai">AI dựng lại bằng hình cơ bản (code gọn)</option><option value="lai">Tranh vẽ tay + điểm, nhãn (ảnh scan nét đen)</option><option value="do">Dò ảnh y hệt (code dài)</option></select></label>
 					<label>Màu <select id="vtMau"><option value="mau">Giữ màu</option><option value="xam">Đen trắng</option></select></label>
 					<label>Màu nét <select id="vtMauNet"><option value="">Đen</option><option value="blue!80!black">Xanh dương</option><option value="red!80!black">Đỏ</option><option value="green!50!black">Xanh lá</option><option value="violet!80!black">Tím</option><option value="brown">Nâu</option><option value="tuy">Tuỳ chọn…</option></select><input type="color" id="vtMauTuy" value="#1f4e9a" hidden aria-label="Màu tuỳ chọn"></label>
 					<label class="bat"><input type="checkbox" id="vtLamSach" checked> Làm sạch ảnh scan/chụp</label>
@@ -3768,6 +3768,7 @@ Trả về DUY NHẤT JSON: {"tikz":"…"} (nhân đôi mọi dấu \\ trong chu
 			else if ($("vtCach").value === "lai") await vtLai(wCm);
 			else if ($("vtCach").value === "sach") await vtSachNet(VHT.anh, wCm, []);
 			else if ($("vtCach").value === "tu" || $("vtCach").value === "potrace") await vtTuDong(wCm, luot);
+			else if ($("vtCach").value === "khoi") { const t0 = Date.now(); let hd = null; tt.textContent = "Đang đo nét trên ảnh…"; try { hd = (await W2.doVectorHoa(VHT.anh, { wCm, soMau: 12, netDay: 0.06 })).hinh; } catch (e) { } const kh = await vtKhoi(VHT.anh, wCm, hd, tt); datMa(kh.ma); tt.textContent = ""; const v = await vhtXem(); const d = v && !v.loi ? await W2.giongMau(VHT.anh, v.png) : 0; vtLog(true, "Dựng khối hình" + tenMH() + ": " + kh.so + " lệnh, " + Math.round((Date.now() - t0) / 1000) + " giây, giống ảnh khoảng " + Math.round(d * 100) + "%."); }
 			else await vtAIDung(wCm, luot);
 		} catch (e) { tt.textContent = "Chưa tạo được: " + ((e && e.message) || e); }
 		$("vtTao").disabled = false;
@@ -3923,6 +3924,112 @@ Trả về DUY NHẤT JSON: {"1":"$A$","2":"$600$","3":null,…} (nhân đôi m�
 		if (r.vungTranh && r.vungTranh.length && $("vtTimTP").value.trim()) vtTimTP();
 		return d;
 	}
+	// ===== DỰNG KHỐI HÌNH (v12.5): AI liệt kê đối tượng bằng HÌNH CƠ BẢN (JSON) → web nắn vị trí theo nét đo trên ảnh → JS viết TikZ gọn, sắc như sách =====
+	const LOI_NHAC_KHOI = `Ảnh đính kèm là một hình trong tài liệu Toán, có phủ LƯỚI TOẠ ĐỘ xanh: gốc (0,0) ở góc dưới-trái, số ở mép là toạ độ (cm). Đọc toạ độ TRÊN LƯỚI, tối đa 2 chữ số thập phân.
+Nhiệm vụ: mô tả lại TOÀN BỘ hình bằng các HÌNH CƠ BẢN để vẽ lại bằng TikZ sắc nét như sách giáo khoa. KHÔNG bỏ sót đối tượng nào:
+- Phần TOÁN (trục, điểm, cạnh, nét đứt, đường tròn, cung, mũi tên, số đo, nhãn) phải ĐẦY ĐỦ và CHÍNH XÁC từng cái.
+- Vật thực tế (người, con vật, xe, nhà, cây, quả bóng…) vẽ GIẢN LƯỢC bằng 3–12 hình cơ bản (tròn, elip, đa giác, đường cong) đúng vị trí, kích thước, màu — giống nét vẽ tay của giáo viên, KHÔNG bỏ.
+- Liệt kê theo thứ tự vẽ: lớp dưới (nền, mảng tô lớn) trước, lớp trên (nét, nhãn) sau.
+Các loại ("l"):
+{"l":"truc","tu":[x,y],"den":[x,y],"nhan":"$x$","vt":"right","mau":"ten"} — trục toạ độ, mũi tên ở "den"
+{"l":"doan","tu":[x,y],"den":[x,y],"dut":false,"mui":"","mau":"ten","day":"thin|thick"} — mui: "" / "->" / "<-" / "<->"
+{"l":"diem","o":[x,y],"ten":"$A$","vt":"above left","cham":true} — cham: có chấm tròn đen tại điểm không
+{"l":"tron","o":[x,y],"r":1.2,"to":"ten","khoi":false,"vien":"ten","dut":false} — khoi: true nếu là quả cầu/vật tròn có bóng sáng 3D
+{"l":"elip","o":[x,y],"rx":1,"ry":0.4,"xoay":0,"to":"ten","vien":"ten","dut":false,"mo":1}
+{"l":"dagiac","d":[[x,y],…],"to":"ten","vien":"ten","dut":false,"mo":1} — đa giác khép kín
+{"l":"duong","d":[[x,y],…],"kin":false,"tron":true,"to":"","vien":"ten","dut":false,"mui":""} — đường đi qua các điểm; tron:true = cong mượt, false = gấp khúc
+{"l":"cung","o":[x,y],"r":1,"tu":0,"den":90,"vien":"ten","dut":false} — góc độ, ngược chiều kim đồng hồ
+{"l":"chu","o":[x,y],"nd":"$12\\\\,\\\\mathrm{m}$","mau":"ten"}
+{"l":"vat","ten":"con chim","ds":[…các hình cơ bản ở trên…]} — gom các hình của một vật thực tế
+Màu: khai báo trong "mau" {"ten":[r,g,b]} (tên chỉ chữ thường không dấu, tối đa 10 màu); "to":"" = không tô, "vien":"" = không viền, "vien":"black" được phép. Chữ: công thức trong $…$, vectơ \\\\overrightarrow{…}, tiếng Việt viết thường.
+Trả về DUY NHẤT JSON: {"mau":{…},"hinh":[…]} (nhân đôi mọi dấu \\ trong chuỗi JSON).`;
+	function dungKhoi(j, hinhDo, mauAnh) {
+		const TEN = new Map(), so = v => { const r = Math.round(+v * 100) / 100; return String(Object.is(r, -0) ? 0 : (isFinite(r) ? r : 0)); }, P = p => TEN.has(p) ? "(" + TEN.get(p) + ")" : "(" + so(p[0]) + "," + so(p[1]) + ")", kc = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+		const laDiem = p => Array.isArray(p) && p.length >= 2 && isFinite(+p[0]) && isFinite(+p[1]);
+		const mau = {}, dinh = [], tenMau = new Set(["black", "white", "gray", "red", "blue", "green", "orange", "yellow", "brown", "cyan", "magenta", "violet", "purple", "lightgray", "darkgray", "pink", "olive", "teal", "lime"]);
+		Object.entries(j.mau || {}).forEach(([k, v]) => { const t = String(k).toLowerCase().replace(/[^a-z]/g, "").slice(0, 12); if (!t || !Array.isArray(v) || v.length < 3) return; const t2 = tenMau.has(t) ? t + "x" : t; mau[k] = t2; dinh.push("\\definecolor{" + t2 + "}{RGB}{" + v.slice(0, 3).map(z => Math.max(0, Math.min(255, Math.round(+z || 0)))).join(",") + "}"); });
+		const M = k => !k ? "" : mau[k] || (tenMau.has(String(k)) ? String(k) : /^[a-z]+(!\d+(![a-z]+)?)?$/.test(String(k)) ? String(k) : "");
+		// ---- nắn theo hình đo trên ảnh ----
+		const D = hinhDo || { doan: [], dinh: [], tron: [] }, gocTo = [];
+		const huong = (a, b) => { const l = kc(a, b) || 1; return [(b[0] - a[0]) / l, (b[1] - a[1]) / l]; };
+		const nanDoan = (a, b) => { if (!laDiem(a) || !laDiem(b)) return [a, b]; const u = huong(a, b), L = kc(a, b); let tot = null, bd = 1e9;
+			D.doan.forEach(m => { const v = huong(m.a, m.b); if (Math.abs(u[0] * v[1] - u[1] * v[0]) > 0.17) return; const vg = q => Math.abs((q[0] - m.a[0]) * v[1] - (q[1] - m.a[1]) * v[0]), e = vg(a) + vg(b); if (vg(a) > 0.4 || vg(b) > 0.4) return; const Lm = kc(m.a, m.b), ta = (a[0] - m.a[0]) * v[0] + (a[1] - m.a[1]) * v[1], tb = (b[0] - m.a[0]) * v[0] + (b[1] - m.a[1]) * v[1], phu = Math.min(Math.max(ta, tb), Lm) - Math.max(Math.min(ta, tb), 0); if (phu < 0.3 * Math.min(L, Lm)) return; if (e < bd) { bd = e; tot = m; } });
+			if (!tot) return [a, b]; const v = huong(tot.a, tot.b), chieu = q => { const t = (q[0] - tot.a[0]) * v[0] + (q[1] - tot.a[1]) * v[1]; return [tot.a[0] + t * v[0], tot.a[1] + t * v[1]]; };
+			let a2 = chieu(a), b2 = chieu(b); [tot.a, tot.b].forEach(q => { if (kc(q, a2) < 0.35 && kc(q, a2) <= kc(q, b2)) a2 = q.slice(); else if (kc(q, b2) < 0.35) b2 = q.slice(); }); return [a2, b2]; };
+		const nanDiem = (p, r0) => { if (!laDiem(p)) return p; let tot = null, bd = r0 || 0.3; D.dinh.forEach(q => { const e = kc(p, q); if (e < bd) { bd = e; tot = q; } }); return tot ? tot.slice() : p; };
+		const nanTron = (o, r) => { let tot = null, bd = 1e9; D.tron.forEach(t => { const rr = (t.rx + t.ry) / 2, e = kc(o, t.c); if (e < 0.45 * r + 0.1 && Math.abs(rr - r) < 0.35 * r + 0.08 && e + Math.abs(rr - r) < bd) { bd = e + Math.abs(rr - r); tot = t; } }); return tot; };
+		// ---- màu tô lấy từ ảnh (trung vị điểm ảnh bên trong hình) ----
+		const mauTu = (ten, laMau) => { if (!laMau || laMau.n < 15) return M(ten); const goc = (j.mau || {})[ten]; if (Array.isArray(goc) && Math.hypot(goc[0] - laMau.m[0], goc[1] - laMau.m[1], goc[2] - laMau.m[2]) > 90) return M(ten); const m = laMau.m, k = "m" + m.join("_"); if (!mau[k]) { const t = "mau" + (Object.keys(mau).length + 1); mau[k] = t; dinh.push("\\definecolor{" + t + "}{RGB}{" + m.join(",") + "}"); } return mau[k]; };
+		// ---- đỉnh chung: gom các điểm AI trùng nhau → giải một lần (giao của các đường đo được) → mọi đối tượng dùng đúng toạ độ đó ----
+		const REF = [], DOAN = [];
+		const gomDiem = (ds, trongVat) => (ds || []).forEach(o => { if (!o || typeof o !== "object") return; const l = String(o.l || o.loai || "");
+			if (l === "vat") { gomDiem(o.ds, true); return; } if (trongVat) return;
+			if ((l === "truc" || l === "doan") && laDiem(o.tu) && laDiem(o.den)) { o.tu = o.tu.map(Number); o.den = o.den.map(Number); const sg = { o, a: o.tu, b: o.den }; DOAN.push(sg); REF.push({ p: o.tu, sg }, { p: o.den, sg }); }
+			else if (l === "diem" && laDiem(o.o)) { o.o = o.o.map(Number); REF.push({ p: o.o, ten: o.ten }); }
+			else if ((l === "dagiac" || l === "duong") && Array.isArray(o.d)) { o.d = o.d.filter(laDiem).map(p => p.map(Number)); o.d.forEach(p => REF.push({ p, mem: true })); } });
+		gomDiem(j.hinh || j.doi_tuong || []);
+		DOAN.forEach(sg => { const a = sg.a, b = sg.b, u = huong(a, b), L = kc(a, b); let tot = null, bd = 1e9;
+			D.doan.forEach(m => { const v = huong(m.a, m.b); if (Math.abs(u[0] * v[1] - u[1] * v[0]) > 0.17) return; const vg = q => Math.abs((q[0] - m.a[0]) * v[1] - (q[1] - m.a[1]) * v[0]); if (vg(a) > 0.4 || vg(b) > 0.4) return; const Lm = kc(m.a, m.b), ta = (a[0] - m.a[0]) * v[0] + (a[1] - m.a[1]) * v[1], tb = (b[0] - m.a[0]) * v[0] + (b[1] - m.a[1]) * v[1], phu = Math.min(Math.max(ta, tb), Lm) - Math.max(Math.min(ta, tb), 0); if (phu < 0.25 * Math.min(L, Lm)) return; const e = vg(a) + vg(b) - 0.05 * Lm; if (e < bd) { bd = e; tot = m; } });
+			sg.m = tot; if (tot) sg.u = huong(tot.a, tot.b); });
+		const NHOM = []; REF.forEach(r => { let g = NHOM.find(z => kc(z.ai, r.p) < 0.1); if (!g) { g = { ai: r.p.slice(), ds: [] }; NHOM.push(g); } g.ds.push(r); });
+		NHOM.forEach(g => { const dg = g.ds.filter(r => r.sg && r.sg.m), q0 = g.ai; let P0 = null;
+			const duong = []; dg.forEach(r => { if (!duong.some(z => z === r.sg)) duong.push(r.sg); });
+			if (duong.length >= 2) { let a11 = 0, a12 = 0, a22 = 0, b1 = 0, b2 = 0; duong.forEach(sg => { const n = [-sg.u[1], sg.u[0]], c0 = n[0] * sg.m.a[0] + n[1] * sg.m.a[1]; a11 += n[0] * n[0]; a12 += n[0] * n[1]; a22 += n[1] * n[1]; b1 += n[0] * c0; b2 += n[1] * c0; }); const det = a11 * a22 - a12 * a12; if (Math.abs(det) > 0.03) { const p = [(b1 * a22 - a12 * b2) / det, (a11 * b2 - a12 * b1) / det]; if (kc(p, q0) < 0.5) P0 = p; } }
+			if (!P0 && duong.length >= 1) { const sg = duong[0], v = sg.u, tq = (q0[0] - sg.m.a[0]) * v[0] + (q0[1] - sg.m.a[1]) * v[1]; P0 = [sg.m.a[0] + tq * v[0], sg.m.a[1] + tq * v[1]]; if (g.ds.length === 1 || duong.length === g.ds.filter(r => r.sg).length && g.ds.length === 1) { const dau = [sg.m.a, sg.m.b].filter(z => kc(z, P0) < 0.45).sort((p, q) => kc(p, P0) - kc(q, P0))[0]; if (dau) P0 = dau.slice(); } }
+			if (!P0) { let bd = g.ds.some(r => r.mem) ? 0.15 : 0.3; D.dinh.forEach(q => { const e = kc(q, q0); if (e < bd) { bd = e; P0 = q.slice(); } }); }
+			if (P0 && g.ds.length === 1 && g.ds[0].sg && duong.length === 1) { /* đầu mút tự do đã chiếu lên đường */ }
+			if (P0) g.ds.forEach(r => { r.p[0] = P0[0]; r.p[1] = P0[1]; }); else g.ds.forEach(r => { r.p[0] = q0[0]; r.p[1] = q0[1]; }); });
+		const COORD = [], daDat = new Set(); NHOM.forEach(g => { const r0 = g.ds.find(r => r.ten); if (!r0 || g.ds.length < 2) return; const m = String(r0.ten).match(/^\s*\$\s*([A-Za-z])\s*('*)\s*(?:_\{?(\d+)\}?)?\s*\$\s*$/); if (!m) return; const ten = m[1] + "p".repeat(m[2].length) + (m[3] || ""); if (daDat.has(ten)) return; daDat.add(ten); COORD.push("\\coordinate (" + ten + ") at (" + so(g.ds[0].p[0]) + "," + so(g.ds[0].p[1]) + ");"); g.ds.forEach(r => TEN.set(r.p, ten)); });
+		const ra = [], gom = [];
+		const kieu = (o, them) => { const op = [...(them || [])]; if (o.dut) op.push("dashed"); if (o.day === "thick") op.push("thick"); if (+o.mo > 0 && +o.mo < 1) op.push("opacity=" + so(o.mo)); return op; };
+		const draw = (op, than) => ra.push("\\draw" + (op.length ? "[" + op.join(",") + "]" : "") + " " + than + ";");
+		const path = (to, vien, op, than) => { const o2 = []; if (to) o2.push("fill=" + to); if (vien) o2.push("draw=" + vien); o2.push(...op); if (!to && !vien) return; ra.push("\\path[" + o2.join(",") + "] " + than + ";"); };
+		const ve = (o, sau) => { if (!o || typeof o !== "object") return; const l = String(o.l || o.loai || "");
+			if (l === "vat") { ra.push("% ===== " + String(o.ten || "vật").replace(/[%\\{}]/g, "") + " ====="); (o.ds || []).forEach(z => ve(z, sau)); return; }
+			if (l === "truc" && laDiem(o.tu) && laDiem(o.den)) { const a = o.tu, b = o.den; sau.push(() => draw(["->", "thick"].concat(M(o.mau) && M(o.mau) !== "black" ? [M(o.mau)] : []), P(a) + " -- " + P(b) + (o.nhan ? " node[" + (o.vt || "right") + "] {" + o.nhan + "}" : ""))); gocTo.push(a, b); return; }
+			if (l === "doan" && laDiem(o.tu) && laDiem(o.den)) { const a = o.tu, b = o.den; const op = kieu(o, /^(->|<-|<->)$/.test(o.mui || "") ? [o.mui] : []); if (M(o.mau) && M(o.mau) !== "black") op.unshift(M(o.mau)); sau.push(() => draw(op, P(a) + " -- " + P(b))); return; }
+			if (l === "diem" && laDiem(o.o)) { const p = o.o; sau.push(() => { if (o.cham !== false) ra.push("\\fill " + P(p) + " circle (1.5pt)" + (o.ten ? " node[" + (o.vt || "above right") + "] {" + o.ten + "}" : "") + ";"); else if (o.ten) ra.push("\\path " + P(p) + " node[" + (o.vt || "above right") + "] {" + o.ten + "};"); }); return; }
+			if (l === "chu" && laDiem(o.o) && o.nd) { sau.push(() => ra.push("\\path " + P(o.o.map(Number)) + " node" + (M(o.mau) && M(o.mau) !== "black" ? "[text=" + M(o.mau) + "]" : "") + " {" + o.nd + "};")); return; }
+			if (l === "tron" && laDiem(o.o) && +o.r > 0) { let c = o.o.map(Number), r = +o.r; const t0 = mauAnh.doTron && r > 0.15 ? mauAnh.doTron(c, r) : null, t = t0 ? null : nanTron(c, r); if (t0) { c = t0.c; r = t0.r; } else if (t) { c = t.c; r = (t.rx + t.ry) / 2; } const to = mauTu(o.to, o.to ? mauAnh.tron(c, r * 0.6) : null), vien = M(o.vien);
+				if (o.khoi && to) { ra.push("\\shade[ball color=" + to + "] " + P(c) + " circle (" + so(r) + ");"); if (vien) draw(kieu(o, [vien]), P(c) + " circle (" + so(r) + ")"); }
+				else path(to, vien, kieu(o), P(c) + " circle (" + so(r) + ")"); return; }
+			if (l === "elip" && laDiem(o.o) && +o.rx > 0 && +o.ry > 0) { let c = o.o.map(Number), rx = +o.rx, ry = +o.ry; const t = nanTron(c, (rx + ry) / 2); if (t && Math.abs(t.rx - rx) < 0.35 * rx + 0.08 && Math.abs(t.ry - ry) < 0.35 * ry + 0.08 && !+o.xoay) { c = t.c; rx = t.rx; ry = t.ry; } const to = mauTu(o.to, o.to ? mauAnh.tron(c, Math.min(rx, ry) * 0.6) : null), xo = +o.xoay ? ["rotate around={" + so(o.xoay) + ":" + P(c) + "}"] : []; path(to, M(o.vien), kieu(o, xo), P(c) + " ellipse (" + so(rx) + " and " + so(ry) + ")"); return; }
+			if (l === "dagiac" && Array.isArray(o.d) && o.d.filter(laDiem).length >= 3) { const d = o.d.filter(laDiem), to = mauTu(o.to, o.to ? mauAnh.dagiac(d) : null); path(to, M(o.vien), kieu(o), d.map(P).join(" -- ") + " -- cycle"); return; }
+			if (l === "duong" && Array.isArray(o.d) && o.d.filter(laDiem).length >= 2) { const d = o.d.filter(laDiem); const to = o.kin ? mauTu(o.to, o.to ? mauAnh.dagiac(d) : null) : "", vien = M(o.vien) || (to ? "" : "black"), op = kieu(o, /^(->|<-|<->)$/.test(o.mui || "") ? [o.mui] : []);
+				const than = o.tron !== false && d.length >= 3 ? "plot[smooth" + (o.kin ? " cycle" : "") + ",tension=0.7] coordinates {" + d.map(P).join(" ") + "}" : d.map(P).join(" -- ") + (o.kin ? " -- cycle" : ""); if (to || o.kin) path(to, vien, op, than); else (o.dut || o.day === "thick" || op.length ? sau.push(() => draw(vien && vien !== "black" ? [vien, ...op] : op, than)) : sau.push(() => draw(vien && vien !== "black" ? [vien] : [], than))); return; }
+			if (l === "cung" && laDiem(o.o) && +o.r > 0) { const c = o.o.map(Number), r = +o.r, a0 = +o.tu || 0, a1 = +o.den || 0, s0 = [c[0] + r * Math.cos(a0 * Math.PI / 180), c[1] + r * Math.sin(a0 * Math.PI / 180)], vien = M(o.vien); draw(kieu(o, vien && vien !== "black" ? [vien] : []), P(s0) + " arc[start angle=" + so(a0) + ",end angle=" + so(a1) + ",radius=" + so(r) + "]"); return; }
+		};
+		const sau = []; (j.hinh || j.doi_tuong || []).forEach(o => ve(o, sau)); const truoc = ra.splice(0); sau.forEach(f => f()); const nhan = ra.splice(0);
+		// đầu mút trùng nhau (đỉnh chung) → đúng một toạ độ
+		return { ma: "\\begin{tikzpicture}[line cap=round,line join=round,>=stealth]\n% ===== Màu =====\n" + dinh.join("\n") + (COORD.length ? "\n% ===== Điểm =====\n" + COORD.join("\n") : "") + "\n% ===== Hình =====\n" + truoc.join("\n") + "\n% ===== Nét toán, nhãn =====\n" + nhan.join("\n") + "\n\\end{tikzpicture}", so: truoc.length + nhan.length };
+	}
+	async function mauAnhCua(anh, wCm) {
+		const c = await bo()._w2t.anhCanvas(anh), W0 = c.width, H0 = c.height, x = c.getContext ? c.getContext("2d") : null; let dl = null; try { dl = x ? x.getImageData(0, 0, W0, H0).data : null; } catch (e) { }
+		if (!dl) { const o = document.createElement("canvas"); o.width = W0; o.height = H0; const x2 = o.getContext("2d"); x2.drawImage(c, 0, 0); dl = x2.getImageData(0, 0, W0, H0).data; }
+		const k = W0 / wCm, px = p => [p[0] * k, H0 - p[1] * k];
+		const trungVi = ds => { if (ds.length < 15) return { n: ds.length }; const m = [0, 1, 2].map(ch => { const v = ds.map(i => dl[i + ch]).sort((a, b) => a - b); return v[v.length >> 1]; }); return { n: ds.length, m }; };
+		const mauPx = (x2, y) => { const X = Math.max(0, Math.min(W0 - 1, Math.round(x2))), Y = Math.max(0, Math.min(H0 - 1, Math.round(y))), i = 4 * (Y * W0 + X); return [dl[i], dl[i + 1], dl[i + 2]]; };
+		// nắn đường tròn theo BIÊN MÀU thật: dò 48 tia từ tâm, lấy chỗ đổi màu mạnh nhất quanh bán kính AI đưa → khớp đường tròn (bỏ điểm lệch)
+		const doTron = (o, r) => { const [cx, cy] = px(o), R = r * k; if (R < 4) return null; const bien = [];
+			for (let a = 0; a < 48; a++) { const ux = Math.cos(a * Math.PI / 24), uy = Math.sin(a * Math.PI / 24); let tot = -1, bt = 0; for (let tq = 0.65 * R; tq <= 1.4 * R; tq += 0.5) { const c1 = mauPx(cx + ux * (tq - 1.5), cy + uy * (tq - 1.5)), c2 = mauPx(cx + ux * (tq + 1.5), cy + uy * (tq + 1.5)), g = Math.abs(c1[0] - c2[0]) + Math.abs(c1[1] - c2[1]) + Math.abs(c1[2] - c2[2]); if (g > bt) { bt = g; tot = tq; } } if (bt > 40) bien.push([cx + ux * tot, cy + uy * tot]); }
+			if (bien.length < 16) return null; let ds = bien, kq = null;
+			for (let lan = 0; lan < 3; lan++) { let Sx = 0, Sy = 0, Sxx = 0, Syy = 0, Sxy = 0, Sxz = 0, Syz = 0, Sz = 0; const n = ds.length; ds.forEach(([x2, y]) => { const z = x2 * x2 + y * y; Sx += x2; Sy += y; Sxx += x2 * x2; Syy += y * y; Sxy += x2 * y; Sxz += x2 * z; Syz += y * z; Sz += z; });
+				const A = [[Sxx, Sxy, Sx], [Sxy, Syy, Sy], [Sx, Sy, n]], B = [-Sxz, -Syz, -Sz], det3 = m => m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) - m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]) + m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]), dd = det3(A); if (Math.abs(dd) < 1e-9) return null;
+				const g = [0, 1, 2].map(c => det3(A.map((row, i) => row.map((v, j) => j === c ? B[i] : v)))).map(v => v / dd), X0 = -g[0] / 2, Y0 = -g[1] / 2, R0 = Math.sqrt(Math.max(0, X0 * X0 + Y0 * Y0 - g[2]));
+				const sai = ds.map(p => Math.abs(Math.hypot(p[0] - X0, p[1] - Y0) - R0)), tv = sai.slice().sort((p, q) => p - q)[sai.length >> 1]; kq = { X0, Y0, R0, tv }; const ds2 = ds.filter((p, i) => sai[i] <= Math.max(1.5, 2.5 * tv)); if (ds2.length === ds.length || ds2.length < 12) break; ds = ds2; }
+			if (!kq || Math.hypot(kq.X0 - cx, kq.Y0 - cy) > 0.35 * R || Math.abs(kq.R0 - R) > 0.3 * R || kq.tv > 0.04 * R + 1.2 || ds.length < 0.5 * bien.length) return null; return { c: [kq.X0 / k, (H0 - kq.Y0) / k], r: kq.R0 / k }; };
+		return { doTron, tron: (o, r) => { const [cx, cy] = px(o), R = r * k, ds = []; const st = Math.max(1, R / 12); for (let y = cy - R; y <= cy + R; y += st) for (let x2 = cx - R; x2 <= cx + R; x2 += st) { if ((x2 - cx) ** 2 + (y - cy) ** 2 > R * R) continue; const X = Math.round(x2), Y = Math.round(y); if (X >= 0 && Y >= 0 && X < W0 && Y < H0) ds.push(4 * (Y * W0 + X)); } return trungVi(ds); },
+			dagiac: d => { const q = d.map(px); let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity; q.forEach(p => { x0 = Math.min(x0, p[0]); y0 = Math.min(y0, p[1]); x1 = Math.max(x1, p[0]); y1 = Math.max(y1, p[1]); }); const st = Math.max(1, Math.max(x1 - x0, y1 - y0) / 30), ds = [];
+				const trong = (x2, y) => { let c2 = false; for (let i = 0, j2 = q.length - 1; i < q.length; j2 = i++) if ((q[i][1] > y) !== (q[j2][1] > y) && x2 < (q[j2][0] - q[i][0]) * (y - q[i][1]) / (q[j2][1] - q[i][1]) + q[i][0]) c2 = !c2; return c2; };
+				for (let y = y0; y <= y1; y += st) for (let x2 = x0; x2 <= x1; x2 += st) { if (!trong(x2, y)) continue; const X = Math.round(x2), Y = Math.round(y); if (X >= 0 && Y >= 0 && X < W0 && Y < H0) ds.push(4 * (Y * W0 + X)); } return trungVi(ds); } };
+	}
+	async function vtKhoi(anh, wCm, hinhDo, tt) {
+		const W2 = bo()._w2t; if (tt) tt.textContent = "AI đang phân tích hình thành các khối hình cơ bản…";
+		const goi = async them => { const t = await W2.goiHinh(vtAI(null).ai, LOI_NHAC_KHOI + (them || ""), [await W2.anhLuoi(anh, wCm)], { loai: "vethucte-khoi" }); return { t, j: W2.layJSON(t) }; };
+		let { t, j } = await goi(); if (!j || !Array.isArray(j.hinh || j.doi_tuong)) ({ t, j } = await goi("\nLần trước trả lời sai định dạng. CHỈ trả về JSON {\"mau\":{…},\"hinh\":[…]}."));
+		if (!j || !Array.isArray(j.hinh || j.doi_tuong)) throw new Error("AI chưa mô tả được hình");
+		const kq = dungKhoi(j, hinhDo, await mauAnhCua(anh, wCm)); kq.tho = t; return kq;
+	}
 	// ===== Tự động: chạy nhiều cách trên CÙNG ảnh, vẽ thử, đo độ giống màu → chọn tốt nhất (hiện 2 phương án) =====
 	const docChuAI = (W2, tt) => async (canvas, n) => { tt.textContent = "AI đang đọc " + n + " cụm chữ…"; const t = await W2.goiHinh(vtAI(null).ai, LOI_NHAC_DOC, [await W2.anhJpeg(canvas, 0.95)], { loai: "vethucte-chu" }); VHT.tho = t; const j = W2.layJSON(t) || {}; j._tho = t; return j; };
 	const ghepPT = (r2, them) => "\\begin{tikzpicture}[line cap=round,line join=round]\n\t% lớp tranh: dò Potrace\n" + r2.lenh.join("\n") + (them && them.length ? "\n" + them.join("\n") : "") + "\n\\end{tikzpicture}";
@@ -3950,6 +4057,7 @@ Trả về DUY NHẤT JSON: {"1":"$A$","2":"$600$","3":null,…} (nhân đôi m�
 		const phac = r1.tiLeThang < 0.35 && xam; // tranh vẽ tay: ít đoạn thẳng → không dùng lớp đoạn thẳng/chấm
 		if (cach !== "potrace" && !phac) await thu("dò sạch nét", r1.tikz, 0.02);
 		if (r4 && r4.lenh.length) await thu("Vector hoá sạch + chữ LaTeX", ghepPT(r4, chu.map(c => c.lenh)).replace("dò Potrace", "vector hoá (mảng + nét)"), phac ? 0 : 0.1);
+		if (coAI) { try { tt.textContent = "Đang đo nét trên ảnh…"; let hd = null; try { hd = (await W2.doVectorHoa(anh, { wCm, soMau: 12, netDay: 0.06 })).hinh; } catch (e) { hd = r4 && r4.hinh; } const kh = await vtKhoi(anh, wCm, hd, tt); if (kh && kh.so) { tt.textContent = "Đang vẽ thử, so với ảnh gốc…"; await thu("Dựng khối hình (nét sắc như sách)", kh.ma, 0.3); } } catch (e) { ghi.push("Dựng khối hình chưa được: " + ((e && e.message) || e)); } }
 		await thu("Potrace + chữ LaTeX", ghepPT(r2, chu.map(c => c.lenh)), 0);
 		const toan = phac ? [] : lopToanCua(r1.tikz); if (toan.length) await thu("Potrace + nét toán chuẩn", ghepPT(r2, toan), 0.03);
 		// ảnh nhiều hạt nhiễu: code Potrace quá nặng không vẽ được → dò lại thô hơn
