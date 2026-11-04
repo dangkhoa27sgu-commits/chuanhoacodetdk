@@ -1341,7 +1341,7 @@ $("vao").addEventListener("keydown", e => {
 	function nho(ids) { ids.forEach(k => { if (!$(k)) return; const v = docO(k); if (v !== null) $(k).checked = v === "1"; $(k).addEventListener("change", () => ghiO(k, $(k).checked ? "1" : "0")); }); }
 	nho(["ptChuan", "wTieuDe", "wLoiGiai", "wGach", "wBangDA"]);
 	["wFont", "wCo", "wLe", "wNgat", "ptScan"].forEach(k => { if (!$(k)) return; const v = docO(k); if (v) { const cu = $(k).value; $(k).value = v; if ($(k).value !== v) $(k).value = cu; } $(k).addEventListener("change", () => ghiO(k, $(k).value)); });
-	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 12.1.";
+	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 12.2.";
 
 	/* ---------- tab ngang ---------- */
 	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"], ["nutTabVeHinh", "tabVeHinh"], ["nutTabVeThucTe", "tabVeThucTe"], ["nutTabKhoAnh", "tabKhoAnh"]];
@@ -1454,7 +1454,7 @@ $("vao").addEventListener("keydown", e => {
 		const khoa = $(o.khoa).value.trim();
 		const tt = $(o.tt);
 		if (!khoa) { tt.textContent = "Dán khoá vào ô trên trước."; tt.className = "ttKhoa loi"; return; }
-		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 12.1."; tt.className = "ttKhoa loi"; return; }
+		if (!coBo("aiDsMoHinh")) { tt.textContent = "Bộ luật trên hệ thống chưa có chức năng AI — quản trị viên cần cập nhật bộ luật 12.2."; tt.className = "ttKhoa loi"; return; }
 		$(o.nut).disabled = true; tt.textContent = "Đang kiểm tra…"; tt.className = "ttKhoa";
 		try {
 			const ds = await bo().aiDsMoHinh({ nguon, khoa });
@@ -2310,7 +2310,7 @@ $("vao").addEventListener("keydown", e => {
 	function taiKT(epTai) {
 		if (KT.hua && !epTai) return KT.hua;
 		KT.hua = (async () => {
-			if (!bo() || !bo()._w2t || !bo()._w2t.taoMuc) { $("ttKhoTikzWL").textContent = "Bộ luật chưa có kho TikZ — quản trị viên cần cập nhật bộ luật 12.1."; return; }
+			if (!bo() || !bo()._w2t || !bo()._w2t.taoMuc) { $("ttKhoTikzWL").textContent = "Bộ luật chưa có kho TikZ — quản trị viên cần cập nhật bộ luật 12.2."; return; }
 			const cn = cauNoiKT(); KT.cucBo = !!cn.cucBo;
 			try { KT.laQT = !!(cn.laQT && cn.laQT()); } catch (e) { KT.laQT = false; }
 			$("themKT").hidden = $("dauKhoKT").hidden = $("gopKT").hidden = $("xuatKT").hidden = $("chiMucKT").hidden = !KT.laQT;
@@ -2815,7 +2815,7 @@ Trả về DUY NHẤT JSON: {"1":{"ten":"vệ tinh","tu":["vệ tinh nhân tạo
 
 	$("nutChayWL").addEventListener("click", async () => {
 		if (WL.dang || !WL.file) return;
-		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 12.1.", "loi"); return; }
+		if (!coBo("wordSangLatex")) { baoWL("Bộ luật trên hệ thống chưa có chức năng Word → LaTeX — quản trị viên cần cập nhật bộ luật 12.2.", "loi"); return; }
 		WL.dang = true; $("nutChayWL").disabled = true; $("nutDungWL").hidden = false;
 		WL.ac = new AbortController();
 		$("tongKetWL").hidden = true;
@@ -3670,7 +3670,7 @@ Trả về DUY NHẤT JSON: {"1":{"ten":"vệ tinh","tu":["vệ tinh nhân tạo
 	function datMa(ma) { $("vhtMa").value = themTacGia(chuanMaVHT(String(ma || "").replace(/^\s*%Tác giả web:[^\n]*\n?/, ""))); vhtDoi(); if (typeof vtCapNhatDich === "function") vtCapNhatDich(); }
 	async function vhtXem() {
 		const ma = $("vhtMa").value; const B = bo(); if (!B || !B.veTikz) { $("vhtTT2").textContent = "Bộ vẽ chưa sẵn sàng — tải lại trang."; return null; }
-		$("vhtTT2").textContent = "Đang vẽ…"; const v = await B.veTikz(ma, {});
+		$("vhtTT2").textContent = "Đang vẽ…"; const W2v = B._w2t; const v = W2v && W2v.veMa ? await W2v.veMa(ma) : await B.veTikz(ma, {}); // kèm lệnh dùng chung của kho (macro riêng của bạn)
 		if (v.loi) { $("vhtTT2").textContent = "Lỗi biên dịch: " + String(v.loi).slice(0, 200); return v; }
 		$("vhtHinh").innerHTML = '<img alt="Hình TikZ" src="' + URL.createObjectURL(new Blob([v.png], { type: "image/png" })) + '">';
 		VHT.png = v.png; VHT.maXem = ma; VHT.daXem = true; $("vhtChep").disabled = $("vhtChepHinh").disabled = $("vhtLuu").disabled = $("vhtTaiPng").disabled = false; $("vhtTT2").textContent = "Đã vẽ xong — có thể Copy code (" + Math.max(1, Math.round(ma.length / 1024)) + " KB).";
@@ -4012,7 +4012,7 @@ Trả về DUY NHẤT JSON: {"1":"$A$","2":"$600$","3":null,…} (nhân đôi m�
 		if (!top.length) { hop.innerHTML = '<p class="ghiChu">Chưa có thành phần “' + esc($("vtTimTP").value) + '” trong kho.</p>'; return; }
 		hop.innerHTML = '<p class="ghiChu">' + ds.length + " thành phần khớp — bấm <b>Ghép</b> để đặt vào hình:</p><div class=\"dsUV\">" + top.map((x, i) => '<figure class="uv"><div class="anhKho" data-tp="' + i + '">…</div><figcaption>' + esc(x.tp.t.split("|")[0]) + '</figcaption><button class="nut" type="button" data-ghep="' + i + '">Ghép</button></figure>').join("") + "</div>";
 		const W2 = bo()._w2t; VHT.tpAnh = VHT.tpAnh || new Map();
-		for (let i = 0; i < top.length; i++) { const x = top[i], k = x.m.id + "#" + x.tp.c; let png = VHT.tpAnh.get(k); if (!png) { try { const ma = await cauNoiKT().layMa(x.m.id); const p = W2.maThanhPhan(ma, x.tp.c); x.p = p; const v = p ? await W2.veMa(W2.maVeThanhPhan(p)) : null; png = v && v.png; if (png) VHT.tpAnh.set(k, png); } catch (e) { } } const o = hop.querySelector('.anhKho[data-tp="' + i + '"]'); if (o) o.innerHTML = png ? '<img alt="Thành phần" src="' + URL.createObjectURL(new Blob([png], { type: "image/png" })) + '">' : "lỗi"; }
+		for (let i = 0; i < top.length; i++) { const x = top[i], k = x.m.id + "#" + x.tp.c; let png = VHT.tpAnh.get(k); if (!png) { try { const ma = await cauNoiKT().layMa(x.m.id); const p = W2.maThanhPhan(ma, x.tp.c); x.p = p; const v = p ? await W2.veMa(W2.maVeThanhPhan(p)) : null; png = v && v.png; if (png) VHT.tpAnh.set(k, png); } catch (e) { } } const nut = hop.querySelector('[data-ghep="' + i + '"]'); if (nut && !png) { nut.disabled = true; nut.title = "Thành phần này không vẽ được"; } const o = hop.querySelector('.anhKho[data-tp="' + i + '"]'); if (o) o.innerHTML = png ? '<img alt="Thành phần" src="' + URL.createObjectURL(new Blob([png], { type: "image/png" })) + '">' : "lỗi"; }
 	}
 	async function vtGhepTP(i) {
 		const x = VHT.tpDs && VHT.tpDs[i]; if (!x) return; const W2 = bo()._w2t;
@@ -4030,6 +4030,9 @@ Trả về DUY NHẤT JSON: {"1":"$A$","2":"$600$","3":null,…} (nhân đôi m�
 		const n = (ma.match(/% thành phần:/g) || []).length + 1;
 		const doan = W2.datThanhPhanNut(x.p, dich, { lat: $("vtLatTP").checked, ten: x.tp.t.split("|")[0], tiLe: x.tp.r });
 		ma = /\t% lớp toán/.test(ma) ? ma.replace(/\t% lớp toán/, doan + "\n\t% lớp toán") : ma.replace(/\\end\{tikzpicture\}\s*$/, doan + "\n\\end{tikzpicture}");
+		// ghép thử trước: code gốc của thành phần lỗi khi đặt vào hình (macro trùng tên, thiếu định nghĩa…) → giữ nguyên hình cũ
+		const cu = $("vhtMa").value, thuMa = chuanMaVHT(ma); let v0 = null; try { v0 = await W2.veMa(thuMa); } catch (e) { v0 = { loi: (e && e.message) || String(e) }; }
+		if (!v0 || v0.loi) { toast("Thành phần này không ghép được (code gốc lỗi khi đặt vào hình) — chọn thành phần khác"); vtLog(true, "Bỏ qua thành phần “" + esc(x.tp.t.split("|")[0]) + "”: " + esc(String((v0 && v0.loi) || "lỗi").slice(0, 120))); $("vhtMa").value = cu; return; }
 		datMa(ma); vtLog(true, "Đã ghép thành phần “" + esc(x.tp.t.split("|")[0]) + "” từ kho" + (k ? " vào vùng tranh " + k : "") + "."); await vhtXem(); vtCapNhatDich();
 	}
 	$("vtTimTPNut").addEventListener("click", vtTimTP);
