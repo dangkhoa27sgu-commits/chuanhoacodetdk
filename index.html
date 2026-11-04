@@ -920,7 +920,7 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 					<label>Cách làm <select id="vtCach"><option value="tu">Tự động (khuyên dùng)</option><option value="khoi">Dựng khối hình — nét sắc như sách (AI + đo ảnh)</option><option value="potrace">Dò như Inkscape (Potrace, giữ màu, nét sắc)</option><option value="sach">Dò ảnh sạch nét (đoạn thẳng chuẩn, chữ LaTeX)</option><option value="ai">AI dựng lại bằng hình cơ bản (code gọn)</option><option value="lai">Tranh vẽ tay + điểm, nhãn (ảnh scan nét đen)</option><option value="do">Dò ảnh y hệt (code dài)</option></select></label>
 					<label>Màu <select id="vtMau"><option value="mau">Giữ màu</option><option value="xam">Đen trắng</option></select></label>
 					<label>Màu nét <select id="vtMauNet"><option value="">Đen</option><option value="blue!80!black">Xanh dương</option><option value="red!80!black">Đỏ</option><option value="green!50!black">Xanh lá</option><option value="violet!80!black">Tím</option><option value="brown">Nâu</option><option value="tuy">Tuỳ chọn…</option></select><input type="color" id="vtMauTuy" value="#1f4e9a" hidden aria-label="Màu tuỳ chọn"></label>
-					<label class="bat"><input type="checkbox" id="vtLamSach" checked> Làm sạch ảnh scan/chụp</label>
+					<label>AI vẽ <select id="vtMoHinh"><option value="">Mặc định (nhanh)</option><option value="pro" selected>Mạnh nhất (Pro, suy nghĩ kĩ)</option></select></label><label class="bat"><input type="checkbox" id="vtLamSach" checked> Làm sạch ảnh scan/chụp</label>
 					<label>Rộng (cm) <input type="number" id="vtRong" value="6" step="0.5" min="2" max="16"></label>
 					<label class="bat vtAI"><input type="checkbox" id="vtBoNen" checked> Bỏ nền chi tiết</label>
 					<label class="vtAI">Mức xử lí <select id="vtMuc"><option value="tu">Tự động (nhanh, chưa giống thì chỉnh kĩ)</option><option value="nhanh">Nhanh</option><option value="ki">Kĩ</option></select></label>
@@ -934,6 +934,12 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 				<details class="vtTP" id="vtTPKhung" open><summary>Ghép thành phần từ kho <small>(vệ tinh, ngọn núi, cây… lấy đúng phần code của vật đó)</small></summary>
 					<div class="hangNut"><input type="search" id="vtTimTP" placeholder="Tên vật: vệ tinh, ngọn núi, cây, thuyền…" aria-label="Tìm thành phần"><button class="nut" type="button" id="vtTimTPNut">Tìm thành phần</button><label>Đặt vào <select id="vtDichTP"><option value="">giữa hình</option></select></label><label class="bat"><input type="checkbox" id="vtLatTP"> Lật ngang</label></div>
 					<div class="vtKho" id="vtDsTP" hidden></div>
+				</details>
+				<details class="vtNgoai"><summary>Dùng AI bên ngoài (Gemini / ChatGPT / Claude bản web — model mạnh, không tốn hạn mức)</summary>
+					<ol class="nho"><li>Dán ảnh vào ô phía trên.</li><li>Bấm <b>Copy prompt</b> và <b>Tải ảnh lưới</b>, mở Gemini/ChatGPT, dán prompt và đính kèm ảnh lưới.</li><li>Copy toàn bộ câu trả lời, dán vào ô dưới rồi bấm <b>Dùng kết quả</b> — web tự nắn theo ảnh, gom đỉnh, viết TikZ.</li></ol>
+					<div class="hangNut"><button class="nut" type="button" id="vtChepNhac">Copy prompt</button><button class="nut" type="button" id="vtTaiLuoi">Tải ảnh lưới</button></div>
+					<textarea id="vtDanKQ" rows="4" spellcheck="false" style="width:100%;box-sizing:border-box" placeholder="Dán câu trả lời của AI (JSON {&quot;mau&quot;…,&quot;hinh&quot;…} hoặc code TikZ)"></textarea>
+					<div class="hangNut"><button class="nut chinh" type="button" id="vtDungKQ">Dùng kết quả</button></div>
 				</details>
 				<details><summary>Dán code TikZ xuất từ GeoGebra để làm gọn</summary>
 					<textarea id="vhtGoc" spellcheck="false" placeholder="GeoGebra: Tệp → Xuất → Graphics View as PGF/TikZ"></textarea>
@@ -3928,7 +3934,7 @@ Trả về DUY NHẤT JSON: {"1":"$A$","2":"$600$","3":null,…} (nhân đôi m�
 	const LOI_NHAC_KHOI = `Ảnh đính kèm là một hình trong tài liệu Toán, có phủ LƯỚI TOẠ ĐỘ xanh: gốc (0,0) ở góc dưới-trái, số ở mép là toạ độ (cm). Đọc toạ độ TRÊN LƯỚI, tối đa 2 chữ số thập phân.
 Nhiệm vụ: mô tả lại TOÀN BỘ hình bằng các HÌNH CƠ BẢN để vẽ lại bằng TikZ sắc nét như sách giáo khoa. KHÔNG bỏ sót đối tượng nào:
 - Phần TOÁN (trục, điểm, cạnh, nét đứt, đường tròn, cung, mũi tên, số đo, nhãn) phải ĐẦY ĐỦ và CHÍNH XÁC từng cái.
-- Vật thực tế (người, con vật, xe, nhà, cây, quả bóng…) vẽ GIẢN LƯỢC bằng 3–12 hình cơ bản (tròn, elip, đa giác, đường cong) đúng vị trí, kích thước, màu — giống nét vẽ tay của giáo viên, KHÔNG bỏ.
+- Vật thực tế KHÔNG được bỏ: vật đơn giản (quả bóng, hộp, lá cờ…) dùng "vat" gồm 3–12 hình cơ bản; vật phức tạp (xe, người, con vật, toà nhà, cây…) dùng "tranh" (tự viết TikZ có cấu trúc). Đúng vị trí, kích thước, màu.
 - Liệt kê theo thứ tự vẽ: lớp dưới (nền, mảng tô lớn) trước, lớp trên (nét, nhãn) sau.
 - Tên điểm, tên trục, số đo, chữ: CHỈ ghi bằng "diem"/"chu"/"nhan" (web viết bằng node chữ LaTeX), TUYỆT ĐỐI không vẽ chữ bằng đường.
 - Vùng tô có biên cong (cánh hoa, cánh chong chóng, lá, hình viên phân…): dùng "duong" kin:true tron:true, liệt kê 6–14 điểm DỌC THEO BIÊN theo thứ tự; điểm chung với cạnh/đỉnh khác (tâm O, đỉnh A…) ghi ĐÚNG CÙNG toạ độ với đỉnh đó.
@@ -3944,8 +3950,11 @@ Các loại ("l"):
 {"l":"cung","o":[x,y],"r":1,"tu":0,"den":90,"vien":"ten","dut":false} — góc độ, ngược chiều kim đồng hồ
 {"l":"chu","o":[x,y],"nd":"$12\\\\,\\\\mathrm{m}$","mau":"ten"}
 {"l":"vat","ten":"con chim","ds":[…các hình cơ bản ở trên…]} — gom các hình của một vật thực tế
+{"l":"tranh","ten":"xe đạp","hop":[x0,y0,x1,y1],"tikz":"…"} — vật thực tế PHỨC TẠP (xe, người, con vật, toà nhà nhiều cửa sổ, cây, máy móc…): tự viết code TikZ vẽ vật đó ĐẸP như sách, đúng vị trí trên lưới (toạ độ tuyệt đối theo lưới, nằm trong khung "hop"). Quy tắc code: khai báo các điểm khung trước bằng \\coordinate (tên có tiền tố riêng của vật, vd (xe-banhsau)); vẽ theo lớp: bóng/nền → khối chính → chi tiết; phần lặp (nan hoa, cửa sổ, bậc thang, lá…) BẮT BUỘC dùng \\foreach; có chú thích % ngắn bằng tiếng Việt; chỉ lệnh TikZ (không \\begin{tikzpicture}, không \\documentclass, không \\usetikzlibrary); tối đa 60 dòng.
 Màu: khai báo trong "mau" {"ten":[r,g,b]} (tên chỉ chữ thường không dấu, tối đa 10 màu); "to":"" = không tô, "vien":"" = không viền, "vien":"black" được phép. Chữ: công thức trong $…$, vectơ \\\\overrightarrow{…}, tiếng Việt viết thường.
 Trả về DUY NHẤT JSON: {"mau":{…},"hinh":[…]} (nhân đôi mọi dấu \\ trong chuỗi JSON).`;
+	// code TikZ AI viết cho một vật: bỏ phần bao (tikzpicture, documentclass, thư viện), \vec → \overrightarrow
+	const lamSachTranh = s => String(s || "").replace(/\\documentclass[^\n]*|\\usepackage[^\n]*|\\usetikzlibrary\{[^}]*\}|\\begin\{document\}|\\end\{document\}/g, "").replace(/\\begin\{tikzpicture\}(\[[^\]]*\])?|\\end\{tikzpicture\}/g, "").replace(/\\vec(?![a-zA-Z])/g, "\\overrightarrow").split("\n").map(l => l.replace(/\s+$/, "")).filter(l => l.trim()).map(l => "\t" + l.replace(/^\s+/, m => m.replace(/ {2}/g, "\t"))).join("\n");
 	function dungKhoi(j, hinhDo, mauAnh) {
 		const TEN = new Map(), so = v => { const r = Math.round(+v * 100) / 100; return String(Object.is(r, -0) ? 0 : (isFinite(r) ? r : 0)); }, P = p => TEN.has(p) ? "(" + TEN.get(p) + ")" : "(" + so(p[0]) + "," + so(p[1]) + ")", kc = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
 		const laDiem = p => Array.isArray(p) && p.length >= 2 && isFinite(+p[0]) && isFinite(+p[1]);
@@ -3985,12 +3994,13 @@ Trả về DUY NHẤT JSON: {"mau":{…},"hinh":[…]} (nhân đôi mọi dấu 
 			if (P0 && g.ds.length === 1 && g.ds[0].sg && duong.length === 1) { /* đầu mút tự do đã chiếu lên đường */ }
 			if (P0) g.ds.forEach(r => { r.p[0] = P0[0]; r.p[1] = P0[1]; }); else g.ds.forEach(r => { r.p[0] = q0[0]; r.p[1] = q0[1]; }); if (g.ds.length >= 2 || P0) g.ds.forEach(r => { r.p.coDinh = true; }); });
 		const COORD = [], daDat = new Set(); NHOM.forEach(g => { const r0 = g.ds.find(r => r.ten); if (!r0 || g.ds.length < 2) return; const m = String(r0.ten).match(/^\s*\$\s*([A-Za-z])\s*('*)\s*(?:_\{?(\d+)\}?)?\s*\$\s*$/); if (!m) return; const ten = m[1] + "p".repeat(m[2].length) + (m[3] || ""); if (daDat.has(ten)) return; daDat.add(ten); COORD.push("\\coordinate (" + ten + ") at (" + so(g.ds[0].p[0]) + "," + so(g.ds[0].p[1]) + ");"); g.ds.forEach(r => TEN.set(r.p, ten)); });
-		const ra = [], gom = [];
+		const ra = [], gom = [], DS_TRANH = [];
 		const kieu = (o, them) => { const op = [...(them || [])]; if (o.dut) op.push("dashed"); if (o.day === "thick") op.push("thick"); if (+o.mo > 0 && +o.mo < 1) op.push("opacity=" + so(o.mo)); return op; };
 		const draw = (op, than) => ra.push("\\draw" + (op.length ? "[" + op.join(",") + "]" : "") + " " + than + ";");
 		const path = (to, vien, op, than) => { const o2 = []; if (to) o2.push("fill=" + to); if (vien) o2.push("draw=" + vien); o2.push(...op); if (!to && !vien) return; ra.push("\\path[" + o2.join(",") + "] " + than + ";"); };
 		const ve = (o, sau) => { if (!o || typeof o !== "object") return; const l = String(o.l || o.loai || "");
 			if (l === "vat") { ra.push("% ===== " + String(o.ten || "vật").replace(/[%\\{}]/g, "") + " ====="); (o.ds || []).forEach(z => ve(z, sau)); return; }
+			if (l === "tranh" && o.tikz) { const ma0 = lamSachTranh(String(o.tikz)); if (!ma0.trim()) return; o._chiSo = DS_TRANH.length; DS_TRANH.push(o); ra.push("% ===== " + String(o.ten || "vật").replace(/[%\\{}]/g, "") + " =====", "\\begin{scope}", ma0, "\\end{scope}"); return; }
 			if (l === "truc" && laDiem(o.tu) && laDiem(o.den)) { const a = o.tu, b = o.den; sau.push(() => draw(["->", "thick"].concat(M(o.mau) && M(o.mau) !== "black" ? [M(o.mau)] : []), P(a) + " -- " + P(b) + (o.nhan ? " node[" + (o.vt || "right") + "] {" + o.nhan + "}" : ""))); gocTo.push(a, b); return; }
 			if (l === "doan" && laDiem(o.tu) && laDiem(o.den)) { const a = o.tu, b = o.den; const op = kieu(o, /^(->|<-|<->)$/.test(o.mui || "") ? [o.mui] : []); if (M(o.mau) && M(o.mau) !== "black") op.unshift(M(o.mau)); sau.push(() => draw(op, P(a) + " -- " + P(b))); return; }
 			if (l === "diem" && laDiem(o.o)) { const p = o.o; sau.push(() => { if (o.cham !== false) ra.push("\\fill " + P(p) + " circle (1.5pt)" + (o.ten ? " node[" + (o.vt || "above right") + "] {" + o.ten + "}" : "") + ";"); else if (o.ten) ra.push("\\path " + P(p) + " node[" + (o.vt || "above right") + "] {" + o.ten + "};"); }); return; }
@@ -4007,7 +4017,7 @@ Trả về DUY NHẤT JSON: {"mau":{…},"hinh":[…]} (nhân đôi mọi dấu 
 		const sau = []; (j.hinh || j.doi_tuong || []).forEach(o => ve(o, sau)); const truoc = ra.splice(0); sau.forEach(f => f()); const nhan = ra.splice(0);
 		// đầu mút trùng nhau (đỉnh chung) → đúng một toạ độ
 		const lwT = D.lw && D.lw >= 0.6 ? Math.min(2, D.lw) : 0;
-		return { ma: "\\begin{tikzpicture}[line cap=round,line join=round,>=stealth" + (lwT ? ",line width=" + lwT + "pt" : "") + "]\n% ===== Màu =====\n" + dinh.join("\n") + (COORD.length ? "\n% ===== Điểm =====\n" + COORD.join("\n") : "") + "\n% ===== Hình =====\n" + truoc.join("\n") + "\n% ===== Nét toán, nhãn =====\n" + nhan.join("\n") + "\n\\end{tikzpicture}", so: truoc.length + nhan.length };
+		return { ma: "\\begin{tikzpicture}[line cap=round,line join=round,>=stealth" + (lwT ? ",line width=" + lwT + "pt" : "") + "]\n% ===== Màu =====\n" + dinh.join("\n") + (COORD.length ? "\n% ===== Điểm =====\n" + COORD.join("\n") : "") + "\n% ===== Hình =====\n" + truoc.join("\n") + "\n% ===== Nét toán, nhãn =====\n" + nhan.join("\n") + "\n\\end{tikzpicture}", so: truoc.length + nhan.length, tranh: DS_TRANH };
 	}
 	async function mauAnhCua(anh, wCm) {
 		const c = await bo()._w2t.anhCanvas(anh), W0 = c.width, H0 = c.height, x = c.getContext ? c.getContext("2d") : null; let dl = null; try { dl = x ? x.getImageData(0, 0, W0, H0).data : null; } catch (e) { }
@@ -4043,20 +4053,33 @@ Trả về DUY NHẤT JSON: {"mau":{…},"hinh":[…]} (nhân đôi mọi dấu 
 				const trong = (x2, y) => { let c2 = false; for (let i = 0, j2 = q.length - 1; i < q.length; j2 = i++) if ((q[i][1] > y) !== (q[j2][1] > y) && x2 < (q[j2][0] - q[i][0]) * (y - q[i][1]) / (q[j2][1] - q[i][1]) + q[i][0]) c2 = !c2; return c2; };
 				for (let y = y0; y <= y1; y += st) for (let x2 = x0; x2 <= x1; x2 += st) { if (!trong(x2, y)) continue; const X = Math.round(x2), Y = Math.round(y); if (X >= 0 && Y >= 0 && X < W0 && Y < H0) ds.push(4 * (Y * W0 + X)); } return trungVi(ds); } };
 	}
+	function vtAIVe() { const ai = vtAI(null).ai; if ($("vtMoHinh") && $("vtMoHinh").value === "pro") { if (AI.nguon === "gemini") ai.moHinhHinh = "gemini-pro-latest"; ai.suyNghi = 4096; } return ai; }
+	async function goiVe(nhac, anh, loai) { const W2 = bo()._w2t; try { return await W2.goiHinh(vtAIVe(), nhac, anh, { loai }); } catch (e) { if ($("vtMoHinh") && $("vtMoHinh").value === "pro") return await W2.goiHinh(vtAI(null).ai, nhac, anh, { loai }); throw e; } }
 	async function vtKhoi(anh, wCm, hinhDo, tt) {
 		const W2 = bo()._w2t; if (tt) tt.textContent = "AI đang phân tích hình thành các khối hình cơ bản…";
-		const goi = async them => { const t = await W2.goiHinh(vtAI(null).ai, LOI_NHAC_KHOI + (them || ""), [await W2.anhLuoi(anh, wCm)], { loai: "vethucte-khoi" }); return { t, j: W2.layJSON(t) }; };
+		const goi = async them => { const t = await goiVe(LOI_NHAC_KHOI + (them || ""), [await W2.anhLuoi(anh, wCm)], "vethucte-khoi"); return { t, j: W2.layJSON(t) }; };
 		let { t, j } = await goi(); if (!j || !Array.isArray(j.hinh || j.doi_tuong)) ({ t, j } = await goi("\nLần trước trả lời sai định dạng. CHỈ trả về JSON {\"mau\":{…},\"hinh\":[…]}."));
 		if (!j || !Array.isArray(j.hinh || j.doi_tuong)) throw new Error("AI chưa mô tả được hình");
-		const mA = await mauAnhCua(anh, wCm); let kq = dungKhoi(JSON.parse(JSON.stringify(j)), hinhDo, mA);
+		const mA = await mauAnhCua(anh, wCm); let kq = await dungKhoiSua(j, hinhDo, mA, anh, tt);
 		// tự soát: vẽ thử, tìm vùng trên ảnh mà hình vẽ chưa có → AI bổ sung đúng phần thiếu (một lượt)
 		try { const c0 = await W2.anhCanvas(anh), hCm = wCm * c0.height / c0.width, khung = "\\path (0,0) rectangle (" + vhSo(wCm) + "," + vhSo(hCm) + ");";
 			const v = await bo().veTikz(kq.ma.replace(/(\\begin\{tikzpicture\}(\[[^\n]*\])?)/, "$1\n" + khung), {});
 			if (!v.loi && v.png) { const th = await vungThieu(anh, v.png); kq.thieu = th.tl;
 				if (th.tl > 0.1) { if (tt) tt.textContent = "Hình còn thiếu khoảng " + Math.round(th.tl * 100) + "% nét — AI đang bổ sung…";
-					const t2 = await W2.goiHinh(vtAI(null).ai, LOI_NHAC_KHOI + "\nẢnh 2 là hình đã vẽ lại từ JSON dưới đây; các vùng VIỀN ĐỎ trong ảnh 3 là chỗ CÒN THIẾU. Chỉ trả về các đối tượng CÒN THIẾU (cùng định dạng, toạ độ theo lưới ảnh 1): {\"mau\":{…},\"hinh\":[…]}.\nJSON hiện có:\n" + JSON.stringify(j).slice(0, 12000), [await W2.anhLuoi(anh, wCm), await W2.anhJpeg(await W2.anhCanvas(v.png), 0.9), await W2.anhJpeg(th.canvas, 0.9)], { loai: "vethucte-khoi" });
-					const j2 = W2.layJSON(t2); if (j2 && Array.isArray(j2.hinh) && j2.hinh.length) { const j3 = { mau: Object.assign({}, j.mau || {}, j2.mau || {}), hinh: (j.hinh || j.doi_tuong).concat(j2.hinh) }; const kq2 = dungKhoi(JSON.parse(JSON.stringify(j3)), hinhDo, mA); const v2 = await bo().veTikz(kq2.ma, {}); if (!v2.loi) { kq2.boSung = j2.hinh.length; kq = kq2; t += "\n--- bổ sung ---\n" + t2; } } } } } catch (e) { }
+					const t2 = await goiVe(LOI_NHAC_KHOI + "\nẢnh 2 là hình đã vẽ lại từ JSON dưới đây; các vùng VIỀN ĐỎ trong ảnh 3 là chỗ CÒN THIẾU. Chỉ trả về các đối tượng CÒN THIẾU (cùng định dạng, toạ độ theo lưới ảnh 1): {\"mau\":{…},\"hinh\":[…]}.\nJSON hiện có:\n" + JSON.stringify(j).slice(0, 12000), [await W2.anhLuoi(anh, wCm), await W2.anhJpeg(await W2.anhCanvas(v.png), 0.9), await W2.anhJpeg(th.canvas, 0.9)], "vethucte-khoi");
+					const j2 = W2.layJSON(t2); if (j2 && Array.isArray(j2.hinh) && j2.hinh.length) { const j3 = { mau: Object.assign({}, j.mau || {}, j2.mau || {}), hinh: (j.hinh || j.doi_tuong).concat(j2.hinh) }; const kq2 = await dungKhoiSua(j3, hinhDo, mA, anh, tt); const v2 = await bo().veTikz(kq2.ma, {}); if (!v2.loi) { kq2.boSung = j2.hinh.length; kq = kq2; t += "\n--- bổ sung ---\n" + t2; } } } } } catch (e) { }
 		kq.tho = t; return kq;
+	}
+	// dựng code rồi BIÊN DỊCH THỬ; lỗi → thử từng vật "tranh" riêng: AI sửa vật lỗi, sửa không được thì bỏ vật đó; lỗi chung → AI sửa cả code
+	async function dungKhoiSua(j0, hinhDo, mA, anh, tt) {
+		const W2 = bo()._w2t, j = JSON.parse(JSON.stringify(j0)); let kq = dungKhoi(JSON.parse(JSON.stringify(j)), hinhDo, mA), v = await W2.veMa(kq.ma); if (!v.loi) return kq;
+		const dsT = []; const tim = ds => (ds || []).forEach(o => { if (!o || typeof o !== "object") return; if (o.l === "vat") tim(o.ds); if (o.l === "tranh") dsT.push(o); }); tim(j.hinh || j.doi_tuong);
+		const ghi = []; for (const o of dsT) { const ma1 = "\\begin{tikzpicture}\n" + lamSachTranh(o.tikz) + "\n\\end{tikzpicture}", v1 = await W2.veMa(ma1); if (!v1.loi) continue;
+			if (tt) tt.textContent = "Code vật “" + (o.ten || "") + "” lỗi — AI đang sửa…"; let ok = false; try { const m2 = await W2.suaBangAI(anh, null, ma1, String(v1.loi).slice(0, 300), vtAI(1024)); if (m2) { const v2 = await W2.veMa(m2); if (!v2.loi) { o.tikz = lamSachTranh(m2); ok = true; } } } catch (e) { }
+			if (!ok) { o.l = "_bo"; ghi.push(o.ten || "vật"); } }
+		kq = dungKhoi(JSON.parse(JSON.stringify(j)), hinhDo, mA); v = await W2.veMa(kq.ma);
+		if (v.loi) { if (tt) tt.textContent = "Code lỗi — AI đang sửa…"; try { const m3 = await W2.suaBangAI(anh, null, kq.ma, String(v.loi).slice(0, 300), vtAI(1024)); if (m3 && !(await W2.veMa(m3)).loi) kq = Object.assign({}, kq, { ma: m3 }); } catch (e) { } }
+		if (ghi.length) kq.boVat = ghi; return kq;
 	}
 	// vùng nét/mảng trên ảnh gốc mà hình vẽ lại chưa phủ (so trên ảnh thu nhỏ, nới 2 điểm ảnh) → tỉ lệ thiếu + ảnh đánh dấu viền đỏ
 	async function vungThieu(anh, png) {
@@ -4075,8 +4098,24 @@ Trả về DUY NHẤT JSON: {"mau":{…},"hinh":[…]} (nhân đôi mọi dấu 
 		const tt = $("vtTT"), W2 = bo()._w2t; tt.textContent = "Đang đo nét trên ảnh…"; let hd = null; try { hd = (await W2.doVectorHoa(anh, { wCm, soMau: 12, netDay: 0.06 })).hinh; } catch (e) { }
 		let kh; try { kh = await vtKhoi(anh, wCm, hd, tt); } catch (e) { throw new Error("dựng khối hình chưa được (" + ((e && e.message) || e) + ") — bấm Tạo code lại; muốn dò ảnh thì chọn Cách làm khác"); }
 		if (luot !== VHT.luot) return; datMa(kh.ma); tt.textContent = ""; const v = await vhtXem(); const d = v && !v.loi ? await W2.giongMau(anh, v.png) : 0;
-		vtLog(true, (ghi && ghi.length ? esc(ghi.join(". ")) + ".<br>" : "") + "Dựng khối hình" + tenMH() + ": " + kh.so + " lệnh" + (kh.boSung ? ", AI bổ sung " + kh.boSung + " đối tượng còn thiếu" : "") + ", " + Math.round((Date.now() - t0) / 1000) + " giây, giống ảnh khoảng " + Math.round(d * 100) + "%." + (kh.tho ? '<details><summary>Chi tiết AI trả về</summary><pre>' + esc(String(kh.tho).slice(0, 6000)) + "</pre></details>" : ""));
+		vtLog(true, (ghi && ghi.length ? esc(ghi.join(". ")) + ".<br>" : "") + "Dựng khối hình" + tenMH() + ": " + kh.so + " lệnh" + (kh.boSung ? ", AI bổ sung " + kh.boSung + " đối tượng còn thiếu" : "") + (kh.boVat ? ", bỏ " + kh.boVat.length + " vật vẽ lỗi (" + esc(kh.boVat.join(", ")) + ")" : "") + ", " + Math.round((Date.now() - t0) / 1000) + " giây, giống ảnh khoảng " + Math.round(d * 100) + "%." + (kh.tho ? '<details><summary>Chi tiết AI trả về</summary><pre>' + esc(String(kh.tho).slice(0, 6000)) + "</pre></details>" : ""));
 	}
+	// ===== AI bên ngoài: copy prompt + ảnh lưới → dán câu trả lời → web nắn theo ảnh, viết TikZ =====
+	async function vtChepNhac() { const nhac = LOI_NHAC_KHOI + "\n(Ảnh lưới đính kèm. Rộng hình " + ($("vtRong").value || 6) + " cm.)"; try { await navigator.clipboard.writeText(nhac); toast("Đã copy prompt — dán vào Gemini/ChatGPT kèm ảnh lưới"); } catch (e) { $("vtDanKQ").value = nhac; $("vtDanKQ").select(); toast("Trình duyệt chặn copy — prompt đã đặt vào ô dưới, Ctrl+C để copy"); } }
+	async function vtTaiLuoi() { if (!VHT.anh) { toast("Hãy dán hoặc chọn ảnh trước"); return; } const b = await bo()._w2t.anhLuoi(VHT.anh, +$("vtRong").value || 6); await taiVe(b, "anh_luoi.jpg", "image/jpeg"); }
+	async function vtDungKQ() {
+		const s = $("vtDanKQ").value.trim(); if (!s) { toast("Dán câu trả lời của AI vào ô trước"); return; }
+		const W2 = bo()._w2t, tt = $("vtTT"), wCm = +$("vtRong").value || 6, j = W2.layJSON(s);
+		try {
+			if (j && Array.isArray(j.hinh || j.doi_tuong)) { let hd = null, mA = { tron: () => ({ n: 0 }), dagiac: () => ({ n: 0 }) };
+				if (VHT.anh) { tt.textContent = "Đang đo nét trên ảnh…"; try { hd = (await W2.doVectorHoa(VHT.anh, { wCm, soMau: 12, netDay: 0.06 })).hinh; } catch (e) { } mA = await mauAnhCua(VHT.anh, wCm); }
+				const kq = await dungKhoiSua(j, hd, mA, VHT.anh, tt); datMa(kq.ma); tt.textContent = ""; const v = await vhtXem(); const d = v && !v.loi && VHT.anh ? await W2.giongMau(VHT.anh, v.png) : 0; vtLog(true, "Đã dùng kết quả AI bên ngoài: " + kq.so + " lệnh" + (VHT.anh ? ", nắn theo ảnh, giống khoảng " + Math.round(d * 100) + "%" : "") + "."); return; }
+			const ma = layTikz(s); if (!ma) throw new Error("không thấy JSON {\"hinh\":…} hay code TikZ trong câu trả lời");
+			datMa(ma); const v = await vhtXem(); if (v && v.loi && VHT.anh) { tt.textContent = "Code lỗi — AI đang sửa…"; try { const m3 = await W2.suaBangAI(VHT.anh, null, ma, String(v.loi).slice(0, 300), vtAI(1024)); if (m3) { datMa(m3); await vhtXem(); } } catch (e) { } tt.textContent = ""; }
+			vtLog(true, "Đã dùng code TikZ AI bên ngoài.");
+		} catch (e) { tt.textContent = "Chưa dùng được: " + ((e && e.message) || e); }
+	}
+	$("vtChepNhac").addEventListener("click", vtChepNhac); $("vtTaiLuoi").addEventListener("click", () => vtTaiLuoi().catch(e => toast(String(e.message || e)))); $("vtDungKQ").addEventListener("click", vtDungKQ);
 	// ===== Tự động: chạy nhiều cách trên CÙNG ảnh, vẽ thử, đo độ giống màu → chọn tốt nhất (hiện 2 phương án) =====
 	const docChuAI = (W2, tt) => async (canvas, n) => { tt.textContent = "AI đang đọc " + n + " cụm chữ…"; const t = await W2.goiHinh(vtAI(null).ai, LOI_NHAC_DOC, [await W2.anhJpeg(canvas, 0.95)], { loai: "vethucte-chu" }); VHT.tho = t; const j = W2.layJSON(t) || {}; j._tho = t; return j; };
 	const ghepPT = (r2, them) => "\\begin{tikzpicture}[line cap=round,line join=round]\n\t% lớp tranh: dò Potrace\n" + r2.lenh.join("\n") + (them && them.length ? "\n" + them.join("\n") : "") + "\n\\end{tikzpicture}";
