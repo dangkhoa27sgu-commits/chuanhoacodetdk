@@ -677,6 +677,56 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 .tuyBienDoi .tuyO input[type=number] { max-width: 80px; }
 .tuyNutLuoi { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
 .tuyNutLuoi button { border: 1px solid var(--vt-vien); background: var(--vt-nen2); border-radius: 8px; padding: 6px 8px; font: inherit; font-size: 12px; color: var(--vt-chu); cursor: pointer; text-align: left; } .tuyNutLuoi button:hover { border-color: var(--vt-ac); background: var(--vt-acNhat); }
+/* ===== v14.3: thanh nhóm tab, tab Vẽ hình theo mẫu mới ===== */
+.tabChinh .nutNhom i { width: 7px; height: 7px; border-right: 1.8px solid currentColor; border-bottom: 1.8px solid currentColor; transform: rotate(45deg) translateY(-2px); opacity: .6; margin-left: 2px; }
+.tabChinh .nutNhom[aria-selected="true"] i { transform: rotate(225deg) translateY(-1px); }
+.tabCon { display: flex; gap: 6px; padding: 10px 0 2px; overflow-x: auto; scrollbar-width: none; } .tabCon[hidden] { display: none; } .tabCon::-webkit-scrollbar { display: none; }
+.tabCon button { font: inherit; font-size: 13px; font-weight: 600; white-space: nowrap; border: 1px solid var(--vien); background: var(--mat, #fff); color: var(--phu); border-radius: 999px; padding: 7px 16px; cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
+.tabCon button:hover { color: var(--chu); border-color: var(--vang); }
+.tabCon button[aria-selected="true"] { background: var(--vang, #c9a24a); border-color: var(--vang, #c9a24a); color: #1b1408; box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+.tabCon button small { display: none; }
+.vm { --vt-ac: var(--vang, #c9a24a); --vt-acNhat: var(--vangnhat, rgba(201,162,74,.14)); --vt-mat: var(--mat, #fff); --vt-vien: var(--vien, #d9dee7); --vt-chu: var(--chu, #16202e); --vt-phu: var(--phu, #667085); --vt-nen2: var(--code, #f6f7f9); display: grid; gap: 14px; margin-top: 8px; }
+.vmDau { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.vmTen h2 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -.01em; color: var(--vt-chu); } .vmTen p { margin: 4px 0 0; color: var(--vt-phu); font-size: 13.5px; }
+.vmTim { display: flex; align-items: center; gap: 8px; width: min(380px, 100%); height: 40px; padding: 0 12px; border: 1px solid var(--vt-vien); border-radius: 12px; background: var(--vt-mat); color: var(--vt-phu); }
+.vmTim:focus-within { border-color: var(--vt-ac); box-shadow: 0 0 0 3px var(--vt-acNhat); } .vmTim svg { width: 18px; height: 18px; flex: none; }
+.vmTim input { flex: 1; min-width: 0; border: 0 !important; outline: 0; background: none; font: inherit; font-size: 14px; color: var(--vt-chu); height: 36px !important; padding: 0 !important; box-shadow: none !important; }
+.vmNhom { display: flex; gap: 6px; flex-wrap: wrap; }
+.vmNhom button { font: inherit; font-size: 13px; font-weight: 600; border: 1px solid var(--vt-vien); background: var(--vt-mat); color: var(--vt-chu); border-radius: 999px; padding: 6px 12px 6px 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: border-color .15s, background .15s; }
+.vmNhom button b { font-size: 11px; font-weight: 600; min-width: 20px; height: 20px; border-radius: 999px; display: grid; place-items: center; background: var(--vt-nen2); color: var(--vt-phu); padding: 0 5px; }
+.vmNhom button:hover { border-color: var(--vt-ac); }
+.vmNhom button[aria-pressed="true"] { background: var(--vt-chu); border-color: var(--vt-chu); color: var(--vt-mat); } .vmNhom button[aria-pressed="true"] b { background: rgba(255,255,255,.18); color: inherit; }
+.vmThan { display: grid; grid-template-columns: 250px minmax(280px, 380px) minmax(0, 1fr); gap: 14px; align-items: start; }
+@media (max-width: 1180px) { .vmThan { grid-template-columns: 230px minmax(0, 1fr); } .vmXem { grid-column: 1 / -1; } }
+@media (max-width: 720px) { .vmThan { grid-template-columns: 1fr; } }
+.vmDs { display: grid; gap: 6px; max-height: 640px; overflow: auto; padding: 2px; align-content: start; }
+.vmDs .vhMuc { display: grid; gap: 3px; text-align: left; width: 100%; border: 1px solid var(--vt-vien); background: var(--vt-mat); border-radius: 12px; padding: 10px 12px; cursor: pointer; font: inherit; color: var(--vt-chu); transition: border-color .15s, box-shadow .15s; }
+.vmDs .vhMuc b { font-size: 13.5px; font-weight: 600; } .vmDs .vhMuc small { font-size: 11.5px; color: var(--vt-phu); line-height: 1.4; }
+.vmDs .vhMuc:hover { border-color: var(--vt-ac); }
+.vmDs .vhMuc.dangChon { border-color: var(--vt-ac); box-shadow: 0 0 0 3px var(--vt-acNhat); background: var(--vt-mat); }
+.vmDs .trong { color: var(--vt-phu); font-size: 13px; padding: 8px; }
+.vmForm, .vmXem { background: var(--vt-mat); border: 1px solid var(--vt-vien); border-radius: 16px; padding: 16px; display: grid; gap: 12px; box-shadow: 0 1px 2px rgba(16,24,40,.04); min-width: 0; }
+.vmFormDau h3 { margin: 2px 0 0; font-size: 16px; color: var(--vt-chu); } .vmFormDau .vhMoTa { margin: 4px 0 0; font-size: 12.5px; color: var(--vt-phu); line-height: 1.5; }
+.vmNhan { font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--vt-ac); }
+.vmForm .vhTruong { gap: 10px; }
+.vmForm .vhTruong label { font-size: 12.5px; color: var(--vt-phu); font-weight: 500; }
+.vmForm .vhTruong input[type=text], .vmForm .vhTruong input[type=number], .vmForm .vhTruong select { height: 36px !important; border: 1px solid var(--vt-vien); border-radius: 9px; padding: 0 10px !important; font: inherit; font-size: 13.5px; color: var(--vt-chu); background: var(--vt-mat); width: 100%; box-sizing: border-box; }
+.vmForm .vhTruong textarea { border: 1px solid var(--vt-vien); border-radius: 9px; padding: 8px 10px; font: 12.5px/1.45 var(--f-code, monospace); background: var(--vt-nen2); width: 100%; box-sizing: border-box; }
+.vmForm .vhTruong input:focus, .vmForm .vhTruong select:focus, .vmForm .vhTruong textarea:focus { outline: 0; border-color: var(--vt-ac); box-shadow: 0 0 0 3px var(--vt-acNhat); }
+.vmForm .vhTruong label.bat { display: flex; align-items: center; gap: 8px; color: var(--vt-chu); }
+.vmFormChan { display: flex; align-items: center; gap: 12px; justify-content: space-between; border-top: 1px solid var(--vt-vien); padding-top: 12px; }
+.vmFormChan .vt3Cong { margin-left: 0; }
+.vmForm .ttSua { margin: 0; font-size: 12.5px; min-height: 1em; }
+.vmXemDau { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.vmCo { display: inline-flex; gap: 2px; } .vmCo[hidden] { display: none; } .vmCo .tuyIco { font-size: 12px; font-weight: 700; width: auto; padding: 0 8px; color: var(--vt-phu); }
+.vmXem .vhAnh { min-height: 360px; border-radius: 12px; background: #fff; border: 1px solid var(--vt-vien); display: grid; place-items: center; padding: 16px; background-image: radial-gradient(circle, rgba(16,24,40,.07) 1px, transparent 1.2px); background-size: 16px 16px; }
+.vmXem .vhAnh[hidden], .vmXem .vhMa[hidden] { display: none; }
+.vmXem .vhAnh img { max-width: 100%; max-height: 560px; }
+.vmXem .vhAnh .trong { color: var(--vt-phu); font-size: 13px; }
+.vmXem .vhMa { min-height: 360px; border-radius: 12px; }
+.vmXuat { display: flex; gap: 8px; flex-wrap: wrap; } .vmLuu { display: flex; gap: 8px; } .vmLuu input { flex: 1; min-width: 0; height: 38px !important; border: 1px solid var(--vt-vien); border-radius: 10px; padding: 0 10px !important; font: inherit; font-size: 13px; }
+.tuyMenuCu button kbd { font: 600 10px var(--f-code, monospace); color: var(--vt-phu); border: 1px solid var(--vt-vien); border-radius: 4px; padding: 0 4px; margin-left: 4px; }
+.tuyMenu h5 + .tuyMenuLuoi { margin-bottom: 10px; }
 
 </style>
 </head>
@@ -723,14 +773,20 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 	<section id="manCongCu" hidden>
 	<nav class="tabChinh" role="tablist" aria-label="Chức năng">
 		<button type="button" role="tab" id="nutTabChuan" aria-selected="true" aria-controls="tabChuan">Chuẩn hoá code <small>LaTeX</small></button>
+		<button type="button" role="tab" class="nutNhom" id="nhomCongCu" data-nhom="CongCu" aria-selected="false" tabindex="-1">Công cụ <small>PDF · Word · TeX</small><i aria-hidden="true"></i></button>
+		<button type="button" role="tab" class="nutNhom" id="nhomVeHinh" data-nhom="VeHinh" aria-selected="false" tabindex="-1">Vẽ hình TikZ <small>mẫu · thực tế · tùy ý · kho</small><i aria-hidden="true"></i></button>
+	</nav>
+	<nav class="tabCon" id="conCongCu" role="tablist" aria-label="Công cụ chuyển đổi" hidden>
 		<button type="button" role="tab" id="nutTabPdfTex" aria-selected="false" aria-controls="tabPdfTex" tabindex="-1">PDF → LaTeX</button>
 		<button type="button" role="tab" id="nutTabPdfWord" aria-selected="false" aria-controls="tabPdfWord" tabindex="-1">PDF → Word</button>
 		<button type="button" role="tab" id="nutTabTexWord" aria-selected="false" aria-controls="tabTexWord" tabindex="-1">LaTeX → Word</button>
 		<button type="button" role="tab" id="nutTabWordTex" aria-selected="false" aria-controls="tabWordTex" tabindex="-1">Word → LaTeX</button>
+	</nav>
+	<nav class="tabCon" id="conVeHinh" role="tablist" aria-label="Vẽ hình TikZ" hidden>
 		<button type="button" role="tab" id="nutTabVeHinh" aria-selected="false" aria-controls="tabVeHinh" tabindex="-1">Vẽ hình TikZ theo mẫu</button>
 		<button type="button" role="tab" id="nutTabVeThucTe" aria-selected="false" aria-controls="tabVeThucTe" tabindex="-1">Vẽ hình TikZ thực tế</button>
 		<button type="button" role="tab" id="nutTabVeTuY" aria-selected="false" aria-controls="tabVeTuY" tabindex="-1">Vẽ hình TikZ tùy ý</button>
-		<button type="button" role="tab" id="nutTabKhoAnh" aria-selected="false" aria-controls="tabKhoAnh" tabindex="-1">Kho ảnh TikZ</button>
+		<button type="button" role="tab" id="nutTabKhoAnh" aria-selected="false" aria-controls="tabKhoAnh" tabindex="-1">Kho hình TikZ</button>
 	</nav>
 		<div class="manTab" id="tabChuan" role="tabpanel" aria-labelledby="nutTabChuan">
 		<section class="thongtin" aria-label="Thông tin dự án">
@@ -1112,21 +1168,37 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 	</div>
 </section>
 <section class="manTab" id="tabVeHinh" role="tabpanel" aria-labelledby="nutTabVeHinh" hidden>
-	<div class="xuong">
-		<div class="xuongDau"><h2>Vẽ hình TikZ theo mẫu <small>Chọn dạng hình · điền thông số · Xem hình · Copy code</small></h2></div>
-		<div class="vhKhung" id="vhTheoMau">
-			<nav class="vhMenu" id="vhMenu" aria-label="Dạng hình"></nav>
-			<div class="vhForm khoi">
-				<h3 id="vhTen">Chọn một dạng hình bên trái</h3>
-				<p class="vhMoTa" id="vhMoTa"></p>
+	<div class="vm">
+		<header class="vmDau">
+			<div class="vmTen"><h2>Vẽ hình TikZ theo mẫu</h2><p>Chọn dạng hình · điền thông số · hình tự vẽ lại · copy code</p></div>
+			<label class="vmTim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg><input type="search" id="vhTim" placeholder="Tìm dạng: biến thiên, sin, lượng giác, chóp…" aria-label="Tìm dạng hình"></label>
+		</header>
+		<nav class="vmNhom" id="vhNhom" aria-label="Nhóm dạng hình"></nav>
+		<div class="vmThan">
+			<nav class="vmDs" id="vhMenu" aria-label="Dạng hình"></nav>
+			<section class="vmForm" aria-label="Thông số">
+				<div class="vmFormDau"><span class="vmNhan" id="vhNhanNhom"></span><h3 id="vhTen">Chọn một dạng hình</h3><p class="vhMoTa" id="vhMoTa"></p></div>
 				<div class="vhTruong" id="vhTruong"></div>
-				<div class="hangNut"><button class="nut chinh" type="button" id="vhXem" disabled>Xem hình</button><span class="ttSua" id="vhTT"></span></div>
-			</div>
-			<div class="vhKetQua khoi">
-				<div class="vhAnh" id="vhAnh"><p class="trong">Điền thông số rồi bấm <b>Xem hình</b>.</p></div>
-				<div class="hangNut"><button class="nut chinh" type="button" id="vhChep" disabled>Copy code</button><button class="nut" type="button" id="vhChepHinh" disabled>Copy hình</button><input type="text" id="vhTenKho" placeholder="Tên gợi ý" aria-label="Tên gợi ý"><button class="nut" type="button" id="vhLuuKho" disabled>Lưu vào kho</button><button class="nut" type="button" id="vhTang">Tăng font</button><button class="nut" type="button" id="vhGiam">Giảm font</button></div>
-				<textarea class="maTex vhMa" id="vhMa" spellcheck="false" aria-label="Code TikZ"></textarea>
-			</div>
+				<div class="vmFormChan">
+					<label class="vt3Cong" title="Tự vẽ lại hình mỗi khi đổi thông số"><input type="checkbox" id="vhTuVe" checked><i aria-hidden="true"></i>Tự vẽ lại</label>
+					<button class="vt3NutChinh nho" type="button" id="vhXem" disabled>Vẽ hình</button>
+				</div>
+				<p class="ttSua" id="vhTT" aria-live="polite"></p>
+			</section>
+			<section class="vmXem" aria-label="Kết quả">
+				<div class="vmXemDau">
+					<div class="vt3Che" role="tablist" aria-label="Xem"><button type="button" role="tab" id="vhTheHinh" aria-selected="true">Hình</button><button type="button" role="tab" id="vhTheMa" aria-selected="false">Code TikZ</button></div>
+					<span class="vmCo" id="vhCo" hidden><button class="tuyIco" type="button" id="vhGiam" title="Chữ nhỏ hơn">A−</button><button class="tuyIco" type="button" id="vhTang" title="Chữ lớn hơn">A+</button></span>
+				</div>
+				<div class="vhAnh" id="vhAnh"><p class="trong">Chọn dạng hình, hình sẽ hiện ở đây.</p></div>
+				<textarea class="maTex vhMa" id="vhMa" spellcheck="false" aria-label="Code TikZ" hidden></textarea>
+				<div class="vmXuat">
+					<button class="vt3NutChinh nho" type="button" id="vhChep" disabled>Copy code</button>
+					<button class="vt3Nut" type="button" id="vhChepHinh" disabled>Copy hình</button>
+					<button class="vt3Nut" type="button" id="vhTaiPng" disabled>Tải PNG</button>
+				</div>
+				<div class="vmLuu"><input type="text" id="vhTenKho" placeholder="Tên gợi ý khi lưu kho" aria-label="Tên gợi ý"><button class="vt3Nut" type="button" id="vhLuuKho" disabled>Lưu kho</button></div>
+			</section>
 		</div>
 	</div>
 </section>
@@ -1576,7 +1648,11 @@ $("vao").addEventListener("keydown", e => {
 
 	/* ---------- tab ngang ---------- */
 	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"], ["nutTabVeHinh", "tabVeHinh"], ["nutTabVeThucTe", "tabVeThucTe"], ["nutTabVeTuY", "tabVeTuY"], ["nutTabKhoAnh", "tabKhoAnh"]];
+	const NHOM_TAB = { CongCu: ["nutTabPdfTex", "nutTabPdfWord", "nutTabTexWord", "nutTabWordTex"], VeHinh: ["nutTabVeHinh", "nutTabVeThucTe", "nutTabVeTuY", "nutTabKhoAnh"] };
+	function capNhatNhom(nut) { Object.entries(NHOM_TAB).forEach(([k, ds]) => { const on = ds.includes(nut), b = $("nhom" + k); if (on) ghiO("nhom" + k, nut); b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1; $("con" + k).hidden = !on; }); }
+	Object.entries(NHOM_TAB).forEach(([k, ds]) => $("nhom" + k).addEventListener("click", () => { let t = null; try { t = docO("nhom" + k); } catch (e) { } chonTab(ds.includes(t) ? t : ds[0], true); }));
 	function chonTab(nut, luu) {
+		capNhatNhom(nut);
 		TAB.forEach(([n, m]) => { const on = n === nut; $(n).setAttribute("aria-selected", on); $(n).tabIndex = on ? 0 : -1; $(m).hidden = !on; });
 		if (luu) ghiO("tab", nut);
 		if (nut === "nutTabPdfWord") khoiDongXuong();
@@ -3774,10 +3850,100 @@ Trả về DUY NHẤT JSON: {"1":{"ten":"vệ tinh","tu":["vệ tinh nhân tạo
 		});
 		r.push("\\end{tikzpicture}"); return r.join("\n");
 	} };
+	// ---------- lượng giác (lớp 11) ----------
+	// đọc biểu thức số / góc: 13π/6, -7pi/4, \pi/3, 2π, 1/2, 390, 30+360… (có thể chứa k)
+	function docBieu(s, coK) {
+		let t = String(s == null ? "" : s).trim().replace(/{,}/g, ".").replace(/,/g, ".").replace(/\\dfrac\{([^}]*)\}\{([^}]*)\}|\\frac\{([^}]*)\}\{([^}]*)\}/g, (m, a, b, c, d) => "(" + (a || c) + ")/(" + (b || d) + ")").replace(/\\pi|pi|π/gi, "p").replace(/[\s°]|\^\\circ|\\circ/g, "").replace(/−/g, "-");
+		if (!t) return coK ? () => 0 : 0;
+		if (!(coK ? /^[0-9.+\-*/()pk]+$/ : /^[0-9.+\-*/()p]+$/).test(t)) throw new Error("không đọc được “" + s + "”");
+		t = t.replace(/(\d|\))(?=[pk(])/g, "$1*").replace(/([pk])(?=[\dpk(])/g, "$1*").replace(/p/g, "(Math.PI)");
+		const f = new Function("k", "return (" + t + ");");
+		if (coK) return f; const v = f(0); if (!isFinite(v)) throw new Error("không đọc được “" + s + "”"); return v;
+	}
+	// v (radian) → LaTeX theo π: \dfrac{13\pi}{6}
+	function latexPi(v, nho) {
+		const q = v / Math.PI, fr = nho ? "\\frac" : "\\dfrac";
+		for (let m = 1; m <= 12; m++) { const p = Math.round(q * m); if (Math.abs(q - p / m) < 1e-7) { if (!p) return "0"; const tu = (Math.abs(p) === 1 ? "" : Math.abs(p)) + "\\pi", dau = p < 0 ? "-" : ""; return m === 1 ? dau + tu : dau + fr + "{" + tu + "}{" + m + "}"; } }
+		return vhLatex(Math.round(v * 100) / 100);
+	}
+	const s4 = v => { const r = Math.round(v * 1e4) / 1e4; return String(Object.is(r, -0) ? 0 : r); };
+	const TEN_LG = ["M", "N", "P", "Q", "E", "F", "G", "H"], MAU_LG = ["red!75!black", "blue!70!black", "green!45!black", "orange!90!black", "violet!80!black"];
+	const duongTronLG = { ten: "Biểu diễn điểm trên đường tròn lượng giác", mota: "Nhập số đo theo độ hoặc radian (π/6, -7π/4, 13pi/6, 390…), nhiều góc cách nhau dấu ; — web vẽ cung xoắn ốc từ A(1; 0) quay đúng chiều, đúng số vòng tới điểm biểu diễn. Họ góc có k (vd π/4 + kπ/2) sẽ biểu diễn đủ các điểm.", truong: [
+		{ k: "dv", nhan: "Đơn vị góc", kieu: "chon", lua: [["rad", "Radian (π)"], ["do", "Độ (°)"]] },
+		{ k: "goc", nhan: "Số đo góc (nhiều góc cách nhau ;)", kieu: "chu", mac: "13π/6" },
+		{ k: "chieu", nhan: "Chiều quay", kieu: "chon", lua: [["dau", "Theo dấu của số đo"], ["duong", "Chiều dương (ngược kim đồng hồ)"], ["am", "Chiều âm (cùng chiều kim đồng hồ)"]] },
+		{ k: "ten", nhan: "Tên điểm biểu diễn (cách nhau ;)", kieu: "chu", mac: "M" },
+		{ k: "xoan", nhan: "Vẽ cung xoắn ốc từ A tới điểm", kieu: "hop", mac: true },
+		{ k: "ghiGoc", nhan: "Ghi số đo góc cạnh cung xoắn", kieu: "hop", mac: true },
+		{ k: "chieuCS", nhan: "Đường gióng xuống Ox, Oy", kieu: "hop", mac: false },
+		{ k: "noi", nhan: "Nối các điểm của họ góc thành đa giác", kieu: "hop", mac: true },
+		{ k: "dinh", nhan: "Ghi A, A', B, B'", kieu: "hop", mac: true },
+		{ k: "tenTruc", nhan: "Tên trục", kieu: "chon", lua: [["xy", "x, y"], ["cs", "cos, sin"]] },
+		{ k: "R", nhan: "Bán kính (cm)", kieu: "so", mac: 2 }, { k: "tile", nhan: "Tỉ lệ (scale)", kieu: "so", mac: 1 }], ve: g => {
+		const R = (+g.R || 2) * (+g.tile || 1), deg = g.dv === "do", ds = String(g.goc || "").split(";").map(x => x.trim()).filter(Boolean), ten = String(g.ten || "").split(";").map(x => x.trim()).filter(Boolean);
+		if (!ds.length) throw new Error("nhập số đo góc");
+		const P = (r, a) => "(" + s4(R * r * Math.cos(a * Math.PI / 180)) + "," + s4(R * r * Math.sin(a * Math.PI / 180)) + ")";
+		const r = ["\\begin{tikzpicture}[font=\\footnotesize,line join=round,line cap=round,>=stealth]"], tx = g.tenTruc === "cs" ? ["\\cos", "\\sin"] : ["x", "y"];
+		r.push("\t\\draw[->] (" + s4(-R - .5) + ",0)--(" + s4(R + .6) + ",0) node[below]{$" + tx[0] + "$};", "\t\\draw[->] (0," + s4(-R - .5) + ")--(0," + s4(R + .6) + ") node[left]{$" + tx[1] + "$};", "\t\\draw (0,0) circle (" + s4(R) + ");", "\t\\path (0,0) node[below left]{$O$};");
+		if (g.dinh) r.push("\t\\foreach \\p/\\g/\\t in {(" + s4(R) + ",0)/-45/A,(" + s4(-R) + ",0)/-135/A',(0," + s4(R) + ")/45/B,(0," + s4(-R) + ")/-45/B'}\n\t\t\\path \\p+(\\g:2.6mm) node{$\\t$};");
+		let so = 0; const nhan = [], phu = [], daGhi = [];
+		ds.forEach((chuoi, i) => {
+			const mau = MAU_LG[i % MAU_LG.length];
+			if (/k/i.test(chuoi)) { // họ góc: biểu diễn đủ các điểm phân biệt trên đường tròn
+				const f = docBieu(chuoi.replace(/K/g, "k"), true), goc = [];
+				for (let k = 0; k < 48 && goc.length < 24; k++) { let a = f(k) * (deg ? 1 : 180 / Math.PI); a = ((a % 360) + 360) % 360; if (!goc.some(b => Math.abs(b - a) < 1e-6 || Math.abs(Math.abs(b - a) - 360) < 1e-6)) goc.push(a); }
+				goc.sort((a, b) => a - b); if (g.noi && goc.length >= 3) phu.push("\t\\draw[" + mau + "] " + goc.map(a => P(1, a)).join("--") + "--cycle;"); else if (g.noi && goc.length === 2) phu.push("\t\\draw[" + mau + "] " + P(1, goc[0]) + "--" + P(1, goc[1]) + ";");
+				goc.forEach((a, j) => { const t = ten.length === ds.length ? ten[i] + "_" + (j + 1) : ten[so] || "M_{" + (so + 1) + "}"; so++; nhan.push([a, t, mau]); });
+				return;
+			}
+			const v = docBieu(chuoi), vd = deg ? v : v * 180 / Math.PI, th = g.chieu === "duong" ? Math.abs(vd) : g.chieu === "am" ? -Math.abs(vd) : vd;
+			const t = ten[so] || TEN_LG[so % TEN_LG.length]; so++; nhan.push([th, t, mau]);
+			if (g.xoan && Math.abs(th) > 1e-6) { const vong = Math.abs(th) / 360, r0 = 0.24 + 0.1 * i, kq = Math.min(0.09, 0.42 / Math.max(1, vong)), N = Math.max(30, Math.min(400, Math.round(Math.abs(th) / 5)));
+				phu.push("\t\\draw[->," + mau + ",semithick] plot[domain=0:" + s4(th) + ",samples=" + N + ",smooth,variable=\\t] ({" + s4(R) + "*(" + s4(r0) + "+" + s4(kq) + "*abs(\\t)/360)*cos(\\t)},{" + s4(R) + "*(" + s4(r0) + "+" + s4(kq) + "*abs(\\t)/360)*sin(\\t)});");
+				if (g.ghiGoc) { const sg = th > 0 ? 1 : -1, ph0 = th - sg * Math.min(Math.abs(th), 120) / 2, cach = x => Math.min(...daGhi.map(u => Math.abs((((x - u) % 360) + 540) % 360 - 180)), 999), ph = [0, -45, 45, -90, 90, -135, 135].map(d => ph0 + d * (Math.abs(th) > Math.abs(d) + 20 ? 1 : 0)).find(x => cach(x) >= 45) ?? ph0; daGhi.push(ph); const rr = r0 + kq * Math.abs(ph) / 360 + 0.2, gt = deg ? vhLatex(Math.round((g.chieu === "dau" ? v : th) * 100) / 100) + "^\\circ" : latexPi((g.chieu === "dau" ? v : th * Math.PI / 180)); phu.push("\t\\path " + P(rr, ph) + " node[" + mau + ",font=\\scriptsize]{$" + gt + "$};"); } }
+		});
+		r.push(...phu);
+		nhan.forEach(([a, t, mau]) => { const c = Math.cos(a * Math.PI / 180), sn = Math.sin(a * Math.PI / 180);
+			if (g.chieuCS) r.push("\t\\draw[dashed,thin] (" + s4(R * c) + ",0)--" + P(1, a) + "--(0," + s4(R * sn) + ");");
+			r.push("\t\\draw[" + mau + "] (0,0)--" + P(1, a) + ";", "\t\\fill[" + mau + "] " + P(1, a) + " circle (1.4pt);", "\t\\path " + P(1, a) + "+(" + s4(a) + ":3mm) node{$" + t + "$};"); });
+		r.push("\\end{tikzpicture}"); return r.join("\n");
+	} };
+	const doThiLG = { ten: "Đồ thị hàm số lượng giác y = m·f(ax + b) + n", mota: "f là sin, cos, tan hoặc cot; góc dạng ax + b (b nhập được π/3, -π/4…). Trục Ox chia theo π, tự vẽ tiệm cận đứng của tan, cot.", truong: [
+		{ k: "ham", nhan: "Hàm f", kieu: "chon", lua: [["sin", "y = sin(ax + b)"], ["cos", "y = cos(ax + b)"], ["tan", "y = tan(ax + b)"], ["cot", "y = cot(ax + b)"]] },
+		{ k: "a", nhan: "a (vd 1, 2, 1/2)", kieu: "chu", mac: "1" }, { k: "b", nhan: "b (vd 0, π/3, -π/4)", kieu: "chu", mac: "0" },
+		{ k: "m", nhan: "m (hệ số trước f)", kieu: "chu", mac: "1" }, { k: "n", nhan: "n (cộng thêm)", kieu: "chu", mac: "0" },
+		{ k: "x0", nhan: "x từ (bội của π, vd -2, -1/2)", kieu: "chu", mac: "-2" }, { k: "x1", nhan: "x đến (bội của π)", kieu: "chu", mac: "2" },
+		{ k: "buoc", nhan: "Vạch chia trên Ox", kieu: "chon", lua: [["2", "π/2"], ["1", "π"], ["3", "π/3"], ["4", "π/4"], ["6", "π/6"]] },
+		{ k: "dv", nhan: "Độ dài π trên Ox (cm)", kieu: "so", mac: 2 },
+		{ k: "ymin", nhan: "Oy từ (để trống: tự lấy)", kieu: "chu", mac: "" }, { k: "ymax", nhan: "Oy đến (để trống: tự lấy)", kieu: "chu", mac: "" },
+		{ k: "gion", nhan: "Gióng điểm cao nhất, thấp nhất (sin, cos)", kieu: "hop", mac: true },
+		{ k: "tenDT", nhan: "Tên đồ thị", kieu: "chu", mac: "" }, { k: "tile", nhan: "Tỉ lệ (scale)", kieu: "so", mac: 1 }], ve: g => {
+		const a = docBieu(g.a || "1"), b = docBieu(g.b || "0"), m = docBieu(g.m || "1"), n = docBieu(g.n || "0"), ham = g.ham || "sin"; if (!a) throw new Error("a phải khác 0"); if (!m) throw new Error("m phải khác 0");
+		const F = { sin: Math.sin, cos: Math.cos, tan: Math.tan, cot: t => 1 / Math.tan(t) }[ham], f = x => m * F(a * x + b) + n, tron = ham === "sin" || ham === "cos";
+		const x0 = docBieu(g.x0 || "-2") * Math.PI, x1 = docBieu(g.x1 || "2") * Math.PI; if (!(x1 > x0)) throw new Error("x đến phải lớn hơn x từ");
+		const dv = +g.dv || 2, K = dv / Math.PI, X = x => x * K;
+		const ymin = String(g.ymin).trim() ? docBieu(g.ymin) : tron ? Math.floor(n - Math.abs(m)) - 0.5 : n - 3, ymax = String(g.ymax).trim() ? docBieu(g.ymax) : tron ? Math.ceil(n + Math.abs(m)) + 0.5 : n + 3;
+		const cat = []; if (!tron) { const goc0 = ham === "tan" ? Math.PI / 2 : 0; for (let k = -200; k <= 200; k++) { const x = (goc0 + k * Math.PI - b) / a; if (x > x0 - 1e-9 && x < x1 + 1e-9) cat.push(x); } }
+		const r = [moDau(g)];
+		r.push("\t\\draw[->] (" + s4(Math.min(X(x0), 0) - .3) + ",0)--(" + s4(Math.max(X(x1), 0) + .5) + ",0) node[below]{$x$};", "\t\\draw[->] (0," + s4(Math.min(ymin, 0) - .2) + ")--(0," + s4(Math.max(ymax, 0) + .4) + ") node[left]{$y$};", "\t\\path (0,0) node[below left]{$O$};");
+		const st = +g.buoc || 2, tx = []; for (let j = Math.ceil(x0 / Math.PI * st - 1e-9); j <= Math.floor(x1 / Math.PI * st + 1e-9); j++) if (j) tx.push(s4(X(j * Math.PI / st)) + "/{" + latexPi(j * Math.PI / st, true) + "}");
+		if (tx.length) r.push("\t\\foreach \\x/\\t in {" + tx.join(",") + "} \\draw (\\x,2pt)--(\\x,-2pt) node[below,font=\\scriptsize,fill=white,inner sep=1.5pt]{$\\t$};");
+		const ty = [...new Set([n + Math.abs(m), n - Math.abs(m), n].map(v => Math.round(v * 1e6) / 1e6))].filter(v => Math.abs(v) > 1e-9 && v >= ymin && v <= ymax);
+		if (ty.length) r.push("\t\\foreach \\y/\\t in {" + ty.map(v => s4(v) + "/{" + vhLatex(v) + "}").join(",") + "} \\draw (2pt,\\y)--(-2pt,\\y) node[left,font=\\scriptsize,fill=white,inner sep=1.5pt]{$\\t$};");
+		cat.forEach(x => r.push("\t\\draw[dashed,gray] (" + s4(X(x)) + "," + s4(ymin) + ")--(" + s4(X(x)) + "," + s4(ymax) + ");"));
+		if (tron && g.gion) { const dinh = []; for (let k = -400; k <= 400; k++) { const t = (ham === "sin" ? Math.PI / 2 : 0) + k * Math.PI, x = (t - b) / a; if (x >= x0 - 1e-9 && x <= x1 + 1e-9) dinh.push([x, f(x)]); }
+			[n + Math.abs(m), n - Math.abs(m)].forEach(y => { if (y >= ymin && y <= ymax) r.push("\t\\draw[dashed,thin] (" + s4(X(x0)) + "," + s4(y) + ")--(" + s4(X(x1)) + "," + s4(y) + ");"); });
+			if (dinh.length <= 12) dinh.forEach(([x, y]) => { if (Math.abs(x) > 1e-9) r.push("\t\\draw[dashed,thin] (" + s4(X(x)) + ",0)--(" + s4(X(x)) + "," + s4(y) + ");"); }); }
+		const bt = "{" + (m === 1 ? "" : m === -1 ? "-" : s4(m) + "*") + ham + "(deg(" + s4(a) + "*\\x/" + s4(K) + (b ? (b > 0 ? "+" : "") + s4(b) : "") + "))" + (n ? (n > 0 ? "+" : "") + s4(n) : "") + "}";
+		const mien = mienVe(f, x0, x1, ymin, ymax, cat);
+		mien.forEach((md, i) => r.push("\t\\draw[semithick,smooth,samples=" + (tron ? 150 : 80) + ",domain=" + s4(X(md[0])) + ":" + s4(X(md[1])) + "] plot (\\x," + bt + ")" + (g.tenDT && i === mien.length - 1 ? " node[right]{$" + g.tenDT + "$}" : "") + ";"));
+		r.push("\\end{tikzpicture}"); return r.join("\n");
+	} };
 	const VH_CAY = [
 		{ nhom: "Bảng biến thiên", ds: [bbtTay, bbtHam("bac2"), bbtHam("bac3"), bbtHam("trung"), bbtHam("pt11"), bbtHam("pt21")] },
 		{ nhom: "Bảng xét dấu – Trục số", ds: [bxd, trucSo] },
 		{ nhom: "Đồ thị hàm số", ds: [doThiHam("bac1"), doThiHam("bac2"), doThiHam("bac3"), doThiHam("trung"), doThiHam("pt11"), doThiHam("pt21")] },
+		{ nhom: "Lượng giác (lớp 11)", ds: [duongTronLG, doThiLG] },
 		{ nhom: "Đồ thị qua các điểm (chưa biết hàm)", ds: [doThiDiem, phanThucQuaDiem("11"), phanThucQuaDiem("21")] },
 		{ nhom: "Miền giới hạn – Miền nghiệm", ds: [mienGioiHan, mienNghiem] },
 		{ nhom: "Xác suất – Thống kê", ds: [cayXS, bieuDoCot, bieuDoTron] },
@@ -3786,14 +3952,20 @@ Trả về DUY NHẤT JSON: {"1":{"ten":"vệ tinh","tu":["vệ tinh nhân tạo
 		{ nhom: "Hình không gian", ds: KHONG_GIAN },
 		{ nhom: "Nón – Trụ – Cầu", ds: tronXoay }
 	];
-	const VH = { mau: null, daXem: false, maXem: "", co: 13, png: null };
+	const VH = { mau: null, daXem: false, maXem: "", co: 13, png: null, nhom: 0, hen: 0 };
+	const boDauVH = t => String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d");
+	function vhNhomVe() { $("vhNhom").innerHTML = VH_CAY.map((n, i) => '<button type="button" data-n="' + i + '" aria-pressed="' + (!$("vhTim").value.trim() && VH.nhom === i) + '">' + esc(n.nhom) + " <b>" + n.ds.length + "</b></button>").join(""); }
 	function vhMenu() {
-		$("vhMenu").innerHTML = VH_CAY.map((n, i) => '<details' + (i < 3 ? " open" : "") + '><summary>' + esc(n.nhom) + "</summary>" + n.ds.map((m, j) => '<button type="button" class="vhMuc" data-i="' + i + '" data-j="' + j + '">' + esc(m.ten) + "</button>").join("") + "</details>").join("");
+		const q = boDauVH($("vhTim").value.trim()), ds = [];
+		if (q) VH_CAY.forEach((n, i) => n.ds.forEach((m, j) => { if (q.split(/\s+/).every(w => boDauVH(m.ten + " " + n.nhom + " " + (m.mota || "")).includes(w))) ds.push([i, j]); }));
+		else VH_CAY[VH.nhom].ds.forEach((m, j) => ds.push([VH.nhom, j]));
+		$("vhMenu").innerHTML = ds.length ? ds.map(([i, j]) => { const m = VH_CAY[i].ds[j], mt = q ? VH_CAY[i].nhom : (m.mota || ""); return '<button type="button" class="vhMuc' + (m === VH.mau ? " dangChon" : "") + '" data-i="' + i + '" data-j="' + j + '"><b>' + esc(m.ten) + "</b>" + (mt ? "<small>" + esc(mt.length > 74 ? mt.slice(0, 72) + "…" : mt) + "</small>" : "") + "</button>"; }).join("") : '<p class="trong">Không có dạng nào khớp “' + esc($("vhTim").value) + "”.</p>";
+		vhNhomVe();
 	}
 	function vhChon(m) {
 		VH.mau = m; VH.daXem = false;
 		document.querySelectorAll(".vhMuc").forEach(b => b.classList.toggle("dangChon", VH_CAY[+b.dataset.i].ds[+b.dataset.j] === m));
-		$("vhTen").textContent = m.ten; $("vhMoTa").textContent = m.mota || "";
+		$("vhTen").textContent = m.ten; $("vhMoTa").textContent = m.mota || ""; $("vhNhanNhom").textContent = (VH_CAY.find(n => n.ds.includes(m)) || {}).nhom || ""; VH.suaTay = false; $("vhTenKho").value = m.ten;
 		$("vhTruong").innerHTML = m.truong.map(t => {
 			const id = "vh_" + t.k;
 			if (t.kieu === "hop") return '<label class="bat"><input type="checkbox" id="' + id + '"' + (t.mac ? " checked" : "") + "> " + esc(t.nhan) + "</label>";
@@ -3805,26 +3977,33 @@ Trả về DUY NHẤT JSON: {"1":{"ten":"vệ tinh","tu":["vệ tinh nhân tạo
 		}).join("");
 		if ($("vhDL")) { veODung(); veDsDung(); }
 		if (m.sauVe) m.sauVe();
-		$("vhXem").disabled = false; vhDoi(); $("vhAnh").innerHTML = '<p class="trong">Bấm <b>Xem hình</b> để vẽ.</p>';
+		$("vhXem").disabled = false; $("vhAnh").innerHTML = '<p class="trong">Đang vẽ…</p>'; vhDoi();
 	}
-	function vhDoi() { VH.daXem = false; $("vhChep").disabled = $("vhChepHinh").disabled = $("vhLuuKho").disabled = true; $("vhTT").className = "ttSua"; $("vhTT").textContent = VH.mau ? "Thông số đã đổi — bấm Xem hình trước khi lấy code." : ""; }
+	function vhDoi() { VH.daXem = false; $("vhChep").disabled = $("vhChepHinh").disabled = $("vhLuuKho").disabled = $("vhTaiPng").disabled = true; $("vhTT").className = "ttSua"; const tu = $("vhTuVe").checked; $("vhTT").textContent = VH.mau ? (tu ? "Đang vẽ lại…" : "Thông số đã đổi — bấm Vẽ hình trước khi lấy code.") : ""; clearTimeout(VH.hen); if (tu && VH.mau) VH.hen = setTimeout(vhXem, 650); }
+	const vhThe = ma => { $("vhTheHinh").setAttribute("aria-selected", String(!ma)); $("vhTheMa").setAttribute("aria-selected", String(ma)); $("vhAnh").hidden = ma; $("vhMa").hidden = !ma; $("vhCo").hidden = !ma; };
 	function vhLay() { const g = {}; VH.mau.truong.forEach(t => { if (t.kieu === "cay") return; const e = $("vh_" + t.k); if (!e) return; g[t.k] = t.kieu === "hop" ? e.checked : t.kieu === "so" ? (e.value === "" ? t.mac : +e.value) : e.value; }); return g; }
 	async function vhXem() {
-		if (!VH.mau) return;
+		if (!VH.mau) return; clearTimeout(VH.hen); const lan = VH.lan = (VH.lan || 0) + 1;
 		const tt = $("vhTT"); tt.className = "ttSua"; tt.textContent = "Đang vẽ…";
 		let ma;
 		if (VH.suaTay) ma = $("vhMa").value;
 		else { try { ma = themTacGia(await VH.mau.ve(vhLay())); } catch (e) { tt.className = "ttSua loi"; tt.textContent = "Chưa vẽ được: " + ((e && e.message) || e); return; } $("vhMa").value = ma; }
 		const B = bo(); if (!B || !B.veTikz) { tt.className = "ttSua loi"; tt.textContent = "Bộ vẽ chưa sẵn sàng — tải lại trang."; return; }
-		const v = await B.veTikz(ma, {});
+		const v = await B.veTikz(ma, {}); if (lan !== VH.lan) return;
 		if (v.loi) { tt.className = "ttSua loi"; tt.textContent = "Lỗi biên dịch: " + String(v.loi).slice(0, 200); return; }
 		const u = URL.createObjectURL(new Blob([v.png], { type: "image/png" }));
 		$("vhAnh").innerHTML = '<img alt="Hình TikZ" src="' + u + '">';
 		VH.png = v.png; VH.daXem = true; VH.maXem = ma; VH.suaTay = false;
-		$("vhChep").disabled = $("vhChepHinh").disabled = $("vhLuuKho").disabled = false; tt.textContent = "Đã vẽ xong — có thể Copy code."; if (!$("vhTenKho").value.trim()) $("vhTenKho").value = VH.mau.ten;
+		$("vhChep").disabled = $("vhChepHinh").disabled = $("vhLuuKho").disabled = $("vhTaiPng").disabled = false; tt.textContent = "Đã vẽ xong — có thể Copy code."; if (!$("vhTenKho").value.trim()) $("vhTenKho").value = VH.mau.ten;
 	}
-	function khoiDongVH() { if (VH.da) return; VH.da = true; vhMenu(); }
+	function khoiDongVH() { if (VH.da) return; VH.da = true; vhMenu(); vhChon(VH_CAY[0].ds[0]); }
 	$("vhMenu").addEventListener("click", e => { const b = e.target.closest(".vhMuc"); if (b) vhChon(VH_CAY[+b.dataset.i].ds[+b.dataset.j]); });
+	$("vhNhom").addEventListener("click", e => { const b = e.target.closest("button[data-n]"); if (!b) return; VH.nhom = +b.dataset.n; $("vhTim").value = ""; vhMenu(); vhChon(VH_CAY[VH.nhom].ds[0]); });
+	$("vhTim").addEventListener("input", vhMenu);
+	$("vhTim").addEventListener("keydown", e => { if (e.key === "Enter") { const b = $("vhMenu").querySelector(".vhMuc"); if (b) b.click(); } });
+	$("vhTheHinh").addEventListener("click", () => vhThe(false)); $("vhTheMa").addEventListener("click", () => vhThe(true));
+	$("vhTuVe").addEventListener("change", () => { if ($("vhTuVe").checked && VH.mau && !VH.daXem) vhXem(); });
+	$("vhTaiPng").addEventListener("click", () => { if (VH.png) taiVe(VH.png, "hinh-tikz.png", "image/png"); });
 	$("vhTruong").addEventListener("input", () => { VH.suaTay = false; vhDoi(); });
 	$("vhTruong").addEventListener("change", () => { VH.suaTay = false; vhDoi(); });
 	$("vhTruong").addEventListener("click", e => {
@@ -3838,7 +4017,7 @@ Trả về DUY NHẤT JSON: {"1":{"ten":"vệ tinh","tu":["vệ tinh nhân tạo
 		if (x && ta) { const ds = ta.value.split("\n").map(l => l.trim()).filter(Boolean); ds.splice(+x.dataset.xoa, 1); ta.value = ds.join("\n"); veDsDung(); VH.suaTay = false; vhDoi(); }
 	});
 	$("vhTruong").addEventListener("change", e => { if (e.target.id === "vhDL") veODung(); if (e.target.id === "vh_dung") veDsDung(); if (VH.mau && VH.mau.doiTruong) VH.mau.doiTruong(e); });
-	$("vhMa").addEventListener("input", () => { VH.suaTay = true; vhDoi(); $("vhTT").textContent = "Code đã sửa tay — bấm Xem hình để kiểm tra trước khi Copy."; });
+	$("vhMa").addEventListener("input", () => { VH.suaTay = true; vhDoi(); });
 	$("vhXem").addEventListener("click", vhXem);
 	$("vhChep").addEventListener("click", () => { if (!VH.daXem) return; const ma = themTacGia(VH.maXem); if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ma).then(() => toast("Đã copy code"), () => { $("vhMa").select(); toast("Bấm Ctrl+C để sao chép"); }); else { $("vhMa").select(); toast("Bấm Ctrl+C để sao chép"); } });
 	$("vhChepHinh").addEventListener("click", async () => { if (!VH.png) return; try { await navigator.clipboard.write([new ClipboardItem({ "image/png": new Blob([VH.png], { type: "image/png" }) })]); toast("Đã copy hình"); } catch (e) { toast("Trình duyệt không cho copy hình"); } });
@@ -4288,15 +4467,15 @@ Trả về DUY NHẤT JSON: {"mau":{…},"hinh":[…]} (nhân đôi mọi dấu 
 		],
 		khong: [
 			["chop3", "Hình chóp S.ABC", { d: [["S", 1.7, 4], ["A", 0, 0.8], ["B", 1.7, 0], ["C", 4.2, 0.8]], c: [[1, 2], [2, 3], [1, 3, 1], [0, 1], [0, 2], [0, 3]] }],
-			["chop4", "Hình chóp S.ABCD", { d: [["S", 2.1, 4.2], ["A", 0, 0], ["B", 3.2, 0], ["C", 4.4, 1.4], ["D", 1.2, 1.4]], c: [[1, 2], [2, 3], [3, 4, 1], [4, 1, 1], [0, 1], [0, 2], [0, 3], [0, 4, 1]] }],
-			["chopSA", "Chóp S.ABCD, SA ⊥ đáy", { d: [["S", 0, 4], ["A", 0, 0], ["B", 3.2, 0], ["C", 4.4, 1.4], ["D", 1.2, 1.4]], c: [[1, 2], [2, 3], [3, 4, 1], [4, 1, 1], [0, 1], [0, 2], [0, 3], [0, 4, 1]], vg: [[1, 0, 2]] }],
-			["chopdeu", "Chóp tứ giác đều", { d: [["S", 2.2, 4.3], ["A", 0, 0], ["B", 3.2, 0], ["C", 4.4, 1.4], ["D", 1.2, 1.4], ["O", 2.2, 0.7]], c: [[1, 2], [2, 3], [3, 4, 1], [4, 1, 1], [0, 1], [0, 2], [0, 3], [0, 4, 1], [1, 3, 1], [2, 4, 1], [0, 5, 1]] }],
+			["chop4", "Hình chóp S.ABCD", { d: [["S", 2.1, 4.2], ["A", 1.2, 1.4], ["B", 0, 0], ["C", 3.2, 0], ["D", 4.4, 1.4]], c: [[1, 2, 1], [2, 3], [3, 4], [4, 1, 1], [0, 1, 1], [0, 2], [0, 3], [0, 4]] }],
+			["chopSA", "Chóp S.ABCD, SA ⊥ đáy", { d: [["S", 1.2, 4.6], ["A", 1.2, 1.4], ["B", 0, 0], ["C", 3.2, 0], ["D", 4.4, 1.4]], c: [[1, 2, 1], [2, 3], [3, 4], [4, 1, 1], [0, 1, 1], [0, 2], [0, 3], [0, 4]], vg: [[1, 0, 2]] }],
+			["chopdeu", "Chóp tứ giác đều", { d: [["S", 2.2, 4.3], ["A", 1.2, 1.4], ["B", 0, 0], ["C", 3.2, 0], ["D", 4.4, 1.4], ["O", 2.2, 0.7]], c: [[1, 2, 1], [2, 3], [3, 4], [4, 1, 1], [0, 1, 1], [0, 2], [0, 3], [0, 4], [1, 3, 1], [2, 4, 1], [0, 5, 1]] }],
 			["tudien", "Tứ diện ABCD", { d: [["A", 1.8, 3.9], ["B", 0, 0.7], ["C", 1.9, 0], ["D", 4.2, 0.9]], c: [[1, 2], [2, 3], [1, 3, 1], [0, 1], [0, 2], [0, 3]] }],
 			["langtru3", "Lăng trụ ABC.A'B'C'", { d: [["A", 0, 0.8], ["B", 1.7, 0], ["C", 4.2, 0.8], ["A'", 0, 4], ["B'", 1.7, 3.2], ["C'", 4.2, 4]], c: [[0, 1], [1, 2], [0, 2, 1], [3, 4], [4, 5], [3, 5], [0, 3], [1, 4], [2, 5]] }],
 			["hop", "Hình hộp ABCD.A'B'C'D'", { d: [["A", 0, 0], ["B", 3.3, 0], ["C", 4.5, 1.3], ["D", 1.2, 1.3], ["A'", 0.4, 3], ["B'", 3.7, 3], ["C'", 4.9, 4.3], ["D'", 1.6, 4.3]], c: [[0, 1], [1, 2], [2, 3, 1], [3, 0, 1], [4, 5], [5, 6], [6, 7], [7, 4], [0, 4], [1, 5], [2, 6], [3, 7, 1]] }],
 			["lapphuong", "Hình lập phương", { d: [["A", 0, 0], ["B", 3, 0], ["C", 4.3, 1.3], ["D", 1.3, 1.3], ["A'", 0, 3], ["B'", 3, 3], ["C'", 4.3, 4.3], ["D'", 1.3, 4.3]], c: [[0, 1], [1, 2], [2, 3, 1], [3, 0, 1], [4, 5], [5, 6], [6, 7], [7, 4], [0, 4], [1, 5], [2, 6], [3, 7, 1]] }],
 			["hcn", "Hình hộp chữ nhật", { d: [["A", 0, 0], ["B", 4.2, 0], ["C", 5.4, 1.2], ["D", 1.2, 1.2], ["A'", 0, 2.6], ["B'", 4.2, 2.6], ["C'", 5.4, 3.8], ["D'", 1.2, 3.8]], c: [[0, 1], [1, 2], [2, 3, 1], [3, 0, 1], [4, 5], [5, 6], [6, 7], [7, 4], [0, 4], [1, 5], [2, 6], [3, 7, 1]] }],
-			["chopcut", "Hình chóp cụt", { d: [["A", 0, 0], ["B", 4.2, 0], ["C", 5.4, 1.4], ["D", 1.2, 1.4], ["A'", 1.1, 2.7], ["B'", 3.2, 2.7], ["C'", 3.8, 3.4], ["D'", 1.7, 3.4]], c: [[0, 1], [1, 2], [2, 3, 1], [3, 0, 1], [4, 5], [5, 6], [6, 7], [7, 4], [0, 4], [1, 5], [2, 6], [3, 7, 1]] }],
+			["chopcut", "Hình chóp cụt", { d: [["A", 1.2, 1.4], ["B", 0, 0], ["C", 4.2, 0], ["D", 5.4, 1.4], ["A'", 1.7, 3.4], ["B'", 1.1, 2.7], ["C'", 3.2, 2.7], ["D'", 3.8, 3.4]], c: [[0, 1, 1], [1, 2], [2, 3], [3, 0, 1], [4, 5], [5, 6], [6, 7], [7, 4], [0, 4, 1], [1, 5], [2, 6], [3, 7]] }],
 			["tru", "Hình trụ", { d: [["O", 2, 0], ["O'", 2, 3.6], ["", 0, 0], ["", 4, 0], ["", 0, 3.6], ["", 4, 3.6]], c: [[2, 4], [3, 5], [0, 1, 1]], el: [{ o: 0, rx: 2, ry: 0.5, sau: "dut" }, { o: 1, rx: 2, ry: 0.5 }] }],
 			["non", "Hình nón", { d: [["S", 2, 4], ["O", 2, 0], ["", 0, 0], ["", 4, 0]], c: [[0, 2], [0, 3], [0, 1, 1], [1, 3, 1]], el: [{ o: 1, rx: 2, ry: 0.5, sau: "dut" }] }],
 			["noncut", "Hình nón cụt", { d: [["O", 2.2, 0], ["O'", 2.2, 3], ["", 0, 0], ["", 4.4, 0], ["", 1, 3], ["", 3.4, 3]], c: [[2, 4], [3, 5], [0, 1, 1]], el: [{ o: 0, rx: 2.2, ry: 0.55, sau: "dut" }, { o: 1, rx: 1.2, ry: 0.3 }] }],
@@ -4306,7 +4485,8 @@ Trả về DUY NHẤT JSON: {"mau":{…},"hinh":[…]} (nhân đôi mọi dấu 
 	let BV_DANG = null, BO_NHO = null, DAN_ANH = 0; const DS_BV = [];
 	function taoBangVe(goc, opt) {
 		opt = opt || {}; const ico = d => '<svg viewBox="0 0 24 24">' + d + "</svg>", SO_BV = DS_BV.length;
-		const CONG = [["chon", "Chọn, kéo điểm, kéo nhãn (V)", "Chọn", '<path d="m5 3 14 8-6 1.5L10 19z"/>'], ["diem", "Điểm (P)", "Điểm", '<circle cx="12" cy="12" r="3.2" fill="currentColor"/>'], ["doan", "Đoạn thẳng (S)", "Đoạn", '<path d="M5 19 19 5"/>'], ["muiten", "Mũi tên, trục (A)", "Mũi tên", '<path d="M5 19 19 5M11 5h8v8"/>'], ["dagiac", "Đa giác (G) — bấm điểm đầu hoặc Enter để khép", "Đa giác", '<path d="m4 18 4-12 12 3-3 10z"/>'], ["tron", "Đường tròn: tâm rồi một điểm (C)", "Tròn", '<circle cx="12" cy="12" r="8"/>'], ["elip", "Elip: tâm rồi góc khung (E)", "Elip", '<ellipse cx="12" cy="12" rx="9" ry="5"/>'], ["cung", "Cung: tâm, điểm đầu, điểm cuối (R)", "Cung", '<path d="M5 17a9 9 0 0 1 14-9"/>'], ["cong", "Đường cong (B) — Enter để xong; nháy đúp vào điểm để bật/tắt góc nhọn", "Đ. cong", '<path d="M3 17c4-12 8 8 12-4s4-4 6-6"/>'], ["vuong", "Góc vuông: đỉnh rồi 2 điểm trên 2 cạnh (Q)", "Góc vuông", '<path d="M5 4v15h15M5 13h6v6"/>'], ["chu", "Chữ, nhãn LaTeX (T)", "Chữ", '<path d="M5 6V4h14v2M12 4v16M9 20h6"/>']];
+		const CONG_PHANG = [["dagiac", "Đa giác", "G"], ["tron", "Đường tròn", "C"], ["elip", "Elip", "E"]];
+		const CONG = [["chon", "Chọn, kéo điểm, kéo nhãn (V)", "Chọn", '<path d="m5 3 14 8-6 1.5L10 19z"/>'], ["diem", "Điểm (P)", "Điểm", '<circle cx="12" cy="12" r="3.2" fill="currentColor"/>'], ["doan", "Đoạn thẳng (S)", "Đoạn", '<path d="M5 19 19 5"/>'], ["muiten", "Mũi tên, trục (A)", "Mũi tên", '<path d="M5 19 19 5M11 5h8v8"/>'], ["cung", "Cung: tâm, điểm đầu, điểm cuối (R)", "Cung", '<path d="M5 17a9 9 0 0 1 14-9"/>'], ["cong", "Đường cong (B) — Enter để xong; nháy đúp vào điểm để bật/tắt góc nhọn", "Đ. cong", '<path d="M3 17c4-12 8 8 12-4s4-4 6-6"/>'], ["vuong", "Góc vuông: đỉnh rồi 2 điểm trên 2 cạnh (Q)", "Góc vuông", '<path d="M5 4v15h15M5 13h6v6"/>'], ["chu", "Chữ, nhãn LaTeX (T)", "Chữ", '<path d="M5 6V4h14v2M12 4v16M9 20h6"/>']];
 		const DONG = ico('<path d="M6 6l12 12M18 6 6 18"/>');
 		goc.innerHTML = '<div class="tuy">' +
 			(opt.coVao ? '<div class="tuyChucNang" role="tablist" aria-label="Chức năng"><button type="button" role="tab" data-vao="trong" aria-selected="true"><b>1</b><span><strong>Bảng trống</strong><small>Vẽ từ đầu trên lưới Oxy</small></span></button><button type="button" role="tab" data-vao="anh" aria-selected="false"><b>2</b><span><strong>Từ ảnh</strong><small>Ảnh gốc mờ làm nền để đồ theo</small></span></button><button type="button" role="tab" data-vao="de" aria-selected="false"><b>3</b><span><strong>Theo đề bài</strong><small>AI dựng hình, kéo chỉnh lại</small></span></button></div>' +
@@ -4515,7 +4695,7 @@ Trả về DUY NHẤT JSON: {"mau":{…},"hinh":[…]} (nhân đôi mọi dấu 
 		q("thuoc").addEventListener("pointerup", () => { keoTruot = false; });
 		// ----- công cụ -----
 		const NHAC = { chon: "Chọn: bấm để chọn (Shift: chọn thêm) · kéo vùng trống để quét chọn · kéo điểm/nhãn để di chuyển · Space + kéo để cuộn · lăn chuột để phóng to", diem: "Điểm: bấm để đặt điểm (tự đặt tên A, B, C…)", doan: "Đoạn: bấm điểm đầu rồi điểm cuối · nối tiếp được, Esc để dừng", muiten: "Mũi tên: bấm điểm đầu rồi điểm có mũi tên", dagiac: "Đa giác: bấm các đỉnh · bấm lại đỉnh đầu để khép và kết thúc", tron: "Đường tròn: bấm tâm rồi một điểm trên đường tròn", elip: "Elip: bấm tâm rồi góc khung (rộng, cao)", cung: "Cung: bấm tâm, điểm đầu, điểm cuối (ngược chiều kim đồng hồ)", cong: "Đường cong: bấm các điểm · bấm lại điểm đầu → khép kín và tự kết thúc · bấm lại điểm cuối / nháy đúp / Enter / nút Kết thúc nét → nét mở", vuong: "Góc vuông: bấm đỉnh góc, rồi một điểm trên mỗi cạnh", chu: "Chữ: bấm vị trí rồi gõ, vd $A$, $\\sqrt{x}$, 12 cm", mau: "bấm vào bảng để đặt (tâm hình tại chỗ bấm) · Esc để huỷ" };
-		function chonCu(cu, mau) { if (cu !== "chon") { boChon(); } TY.cu = cu; TY.mauCho = mau || null; TY.nhap = null; q("cong").querySelectorAll("button[data-cu]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.cu === cu))); q("cong").querySelectorAll("button[data-menu]").forEach(b => b.setAttribute("aria-pressed", String(cu === "mau" && !!mau && mau[0] === b.dataset.menu))); q("nhacCu").textContent = cu === "mau" && mau ? "Đặt “" + mau[2] + "”: " + NHAC.mau : NHAC[cu] || ""; q("svg").dataset.cu = cu; q("menu").hidden = true; veLai(); }
+		function chonCu(cu, mau) { if (cu !== "chon") { boChon(); } TY.cu = cu; TY.mauCho = mau || null; TY.nhap = null; q("cong").querySelectorAll("button[data-cu]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.cu === cu))); q("cong").querySelectorAll("button[data-menu]").forEach(b => b.setAttribute("aria-pressed", String((cu === "mau" && !!mau && mau[0] === b.dataset.menu) || (b.dataset.menu === "phang" && ["dagiac", "tron", "elip"].includes(cu))))); q("nhacCu").textContent = cu === "mau" && mau ? "Đặt “" + mau[2] + "”: " + NHAC.mau : NHAC[cu] || ""; q("svg").dataset.cu = cu; q("menu").hidden = true; veLai(); }
 		const kieuMoi = coTo => ({ dut: TY.mac.dut, mau: TY.mac.mau, day: TY.mac.day, to: coTo ? TY.mac.to : "", mo: 1 });
 		function ketThucNhap() { const n = TY.nhap; if (!n) return; const ds = n.diemTam.filter((id, i, a) => !i || id !== a[i - 1]); if (ds.length > 2 && ds[0] === ds[ds.length - 1]) { ds.pop(); n.kin = true; } if ((TY.cu === "dagiac" && ds.length >= 3) || (TY.cu === "cong" && ds.length >= 2)) { luuLS(); TY.hinh.push(Object.assign({ id: moiId(), l: TY.cu === "dagiac" ? "dagiac" : "cong", ds: ds.slice(), kin: TY.cu === "dagiac" || !!n.kin, nhon: [] }, kieuMoi(TY.cu === "dagiac" || n.kin))); } TY.nhap = null; donDiem(); veLai(); }
 		// đặt hình mẫu: điểm (tên riêng, góc nhãn hướng ra ngoài), cạnh, đa giác, góc vuông, elip, tròn, trục
@@ -4682,8 +4862,8 @@ Trả về DUY NHẤT JSON: {"mau":{…},"hinh":[…]} (nhân đôi mọi dấu 
 			svg.addEventListener("contextmenu", e => { e.preventDefault(); if (TY.nhap) ketThucNhap(); });
 		}
 		q("cong").addEventListener("click", e => { const b = e.target.closest("button[data-cu]"); if (b) { chonCu(b.dataset.cu); return; } const m = e.target.closest("button[data-menu]"); if (m) moMenu(m.dataset.menu); });
-		function moMenu(loai) { const mn = q("menu"); if (!mn.hidden && mn.dataset.loai === loai) { mn.hidden = true; return; } mn.dataset.loai = loai; mn.innerHTML = "<h5>" + (loai === "phang" ? "Hình phẳng" : "Hình không gian · khối tròn xoay") + '</h5><div class="tuyMenuLuoi">' + HINH_MAU[loai].map((m, i) => '<button type="button" data-i="' + i + '">' + esc(m[1]) + "</button>").join("") + "</div>"; mn.hidden = false; }
-		q("menu").addEventListener("click", e => { const b = e.target.closest("button[data-i]"); if (!b) return; const loai = q("menu").dataset.loai, m = HINH_MAU[loai][+b.dataset.i]; chonCu("mau", [loai, m[0], m[1], m[2]]); });
+		function moMenu(loai) { const mn = q("menu"); if (!mn.hidden && mn.dataset.loai === loai) { mn.hidden = true; return; } mn.dataset.loai = loai; mn.innerHTML = (loai === "phang" ? '<h5>Công cụ vẽ</h5><div class="tuyMenuLuoi tuyMenuCu">' + CONG_PHANG.map(c => '<button type="button" data-cu="' + c[0] + '">' + c[1] + " <kbd>" + c[2] + "</kbd></button>").join("") + "</div>" : "") + "<h5>" + (loai === "phang" ? "Hình mẫu phẳng" : "Hình không gian · khối tròn xoay") + '</h5><div class="tuyMenuLuoi">' + HINH_MAU[loai].map((m, i) => '<button type="button" data-i="' + i + '">' + esc(m[1]) + "</button>").join("") + "</div>"; mn.hidden = false; }
+		q("menu").addEventListener("click", e => { const cu = e.target.closest("button[data-cu]"); if (cu) { chonCu(cu.dataset.cu); return; } const b = e.target.closest("button[data-i]"); if (!b) return; const loai = q("menu").dataset.loai, m = HINH_MAU[loai][+b.dataset.i]; chonCu("mau", [loai, m[0], m[1], m[2]]); });
 		BV.phim = e => {
 			const tg = e.target; if (tg && (tg.tagName === "INPUT" || tg.tagName === "TEXTAREA" || tg.tagName === "SELECT" || tg.isContentEditable)) return; if (goc.querySelector("dialog[open]")) return; const k = e.key.toLowerCase();
 			if ((e.ctrlKey || e.metaKey) && k === "z") { e.preventDefault(); e.shiftKey ? lamLai() : hoanTac(); return; } if ((e.ctrlKey || e.metaKey) && k === "y") { e.preventDefault(); lamLai(); return; }
