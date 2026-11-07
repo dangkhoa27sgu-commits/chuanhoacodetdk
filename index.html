@@ -1424,7 +1424,7 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 						<label class="bat"><input type="checkbox" id="vdPhuDe" checked><span>Phụ đề</span></label>
 						<label class="bat"><input type="checkbox" id="vdDam" checked><span>Công thức in đậm</span></label>
 						<label class="bat"><input type="checkbox" id="vdMoDau" checked><span>Mở đầu & kết thúc có logo</span></label>
-						<label><span>Nhạc nền (tuỳ chọn)</span><input type="file" id="vdNhac" accept="audio/*"></label>
+						<label><span>Nhạc nền: tệp nhạc hoặc video (lấy tiếng)</span><input type="file" id="vdNhac" accept="audio/*,video/*,.mp3,.m4a,.wav,.ogg,.aac,.flac,.mp4,.mov,.m4v,.webm,.mkv"></label>
 						<label><span>Âm lượng nhạc</span><input type="range" id="vdAmNhac" min="0" max="100" value="12"></label>
 							<button class="vt3Nut vdNghe" type="button" id="vdNgheNhac" title="Nghe thử 8 giây nhạc nền">▶ Nghe thử nhạc</button>
 					</div>
@@ -5785,7 +5785,8 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		$v("vdNgheNhac").addEventListener("click", async () => { if (!S.nhac) { toast("Chọn tệp nhạc nền trước"); return; } const vol = (+$v("vdAmNhac").value || 0) / 100, n = Math.min(S.nhac.length, SR * 8), p = new Float32Array(n); for (let i = 0; i < n; i++) p[i] = S.nhac[i] * vol * Math.min(1, (n - i) / SR); await phatNhanh(p, SR); tt("Đang phát thử 8 giây nhạc nền ở âm lượng đã chọn."); });
 		$v("vdKB").addEventListener("input", () => { clearTimeout(S.hen); try { localStorage.setItem("tdk_video_kb", $v("vdKB").value); } catch (e) { } S.hen = setTimeout(() => dungLai(false), 900); });
 		["vdKho", "vdDam", "vdPhuDe", "vdMoDau", "vdMauLogo", "vdKenh", "vdGiong", "vdAmNhac"].forEach(id => $v(id).addEventListener("change", () => dungLai(false)));
-		$v("vdNhac").addEventListener("change", async () => { const f = $v("vdNhac").files[0]; if (!f) { S.nhac = null; dungLai(false); return; } try { const ac = new OfflineAudioContext(1, SR, SR), b = await ac.decodeAudioData(await f.arrayBuffer()); const o = new OfflineAudioContext(1, Math.ceil(b.duration * SR), SR), s2 = o.createBufferSource(); s2.buffer = b; s2.connect(o.destination); s2.start(); S.nhac = (await o.startRendering()).getChannelData(0); tt("Đã nạp nhạc nền " + gio(b.duration) + "."); dungLai(false); } catch (e) { tt("Không đọc được tệp nhạc.", true); } });
+		$v("vdNhac").addEventListener("change", async () => { const f = $v("vdNhac").files[0]; if (!f) { S.nhac = null; dungLai(false); return; } const laVideo = /^video\//.test(f.type) || /\.(mp4|mov|m4v|webm|mkv|avi)$/i.test(f.name); if (f.size > 600 * 1048576) { tt("Tệp quá lớn (" + Math.round(f.size / 1048576) + " MB). Hãy chọn tệp dưới 600 MB hoặc cắt ngắn video trước.", true); return; } tt(laVideo ? "Đang tách âm thanh từ video…" : "Đang nạp nhạc nền…");
+			try { const ac = new OfflineAudioContext(1, SR, SR), b = await ac.decodeAudioData(await f.arrayBuffer()); const o = new OfflineAudioContext(1, Math.ceil(b.duration * SR), SR), s2 = o.createBufferSource(); s2.buffer = b; s2.connect(o.destination); s2.start(); S.nhac = (await o.startRendering()).getChannelData(0); toast((laVideo ? "Đã lấy âm thanh từ video làm nhạc nền " : "Đã nạp nhạc nền ") + gio(b.duration) + " — bấm Nghe thử nhạc để kiểm tra"); dungLai(false); } catch (e) { S.nhac = null; tt(laVideo ? "Không tách được âm thanh từ video này (video không có tiếng hoặc định dạng trình duyệt chưa hỗ trợ). Hãy thử tệp MP4 hoặc WebM khác." : "Không đọc được tệp nhạc.", true); } });
 
 		// ---------- MP4 (H.264 + AAC/Opus) ----------
 		function taoMp4(o) {
