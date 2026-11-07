@@ -798,56 +798,154 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 .vhNetChung > span { font-size: 12px; font-weight: 600; color: var(--vt-phu); }
 .vmForm .tuyDoan button { color: var(--vt-phu); } .vmForm .tuyDoan button.dang { color: var(--vt-chu); }
 .vmForm .tuyMau button, .vhDungKieu .tuyMau button { width: 20px; height: 20px; cursor: pointer; }
-/* ===== v15: Tạo video ===== */
-.vd { --vt-ac: var(--vang, #c9a24a); --vt-acNhat: var(--vangnhat, rgba(201,162,74,.14)); --vt-mat: var(--mat, #fff); --vt-vien: var(--vien, #d9dee7); --vt-chu: var(--chu, #16202e); --vt-phu: var(--phu, #667085); --vt-nen2: var(--code, #f6f7f9); display: grid; gap: 14px; margin-top: 8px; }
+/* ===== v16: Tạo video — bố cục thẻ bước + xem trước dính ===== */
+.vd { --vt-ac: var(--vang, #c9a24a); --vt-acNhat: var(--vangnhat, rgba(201,162,74,.14)); --vt-mat: var(--mat, #fff); --vt-vien: var(--vien, #d9dee7); --vt-chu: var(--chu, #16202e); --vt-phu: var(--phu, #667085); --vt-nen2: var(--code, #f6f7f9); display: grid; gap: 16px; margin-top: 8px; }
 .vdDau { display: flex; align-items: center; justify-content: space-between; gap: 12px; position: relative; }
-.vdDau h2 { margin: 0; font-size: 22px; font-weight: 700; color: var(--vt-chu); }
-.vdDau .hdsd { top: 46px; right: 0; width: min(520px, 100%); }
-.vdThan { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 460px); gap: 16px; align-items: start; }
-.vdThan:has(.vdManHinh.ngang) { grid-template-columns: minmax(0, 1fr) minmax(360px, 640px); }
+.vdDauTen { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.vdDauIco { width: 44px; height: 44px; border-radius: 14px; flex: none; display: grid; place-items: center; background: linear-gradient(135deg, #f2d27a, #c9a24a 55%, #a7802f); box-shadow: 0 6px 16px -6px rgba(201,162,74,.7); }
+.vdDauIco svg { width: 24px; height: 24px; fill: none; stroke: #1b1408; stroke-width: 2; stroke-linejoin: round; }
+.vdDau h2 { margin: 0; font-size: 22px; font-weight: 800; color: var(--vt-chu); letter-spacing: -.01em; }
+.vdDau p { margin: 2px 0 0; font-size: 13px; color: var(--vt-phu); }
+.vdDau .hdsd { top: 54px; right: 0; width: min(560px, 100%); }
+.vdThan { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 430px); gap: 18px; align-items: start; }
+.vdThan:has(.vdManHinh.ngang) { grid-template-columns: minmax(0, 1fr) minmax(360px, 620px); }
 @media (max-width: 1000px) { .vdThan, .vdThan:has(.vdManHinh.ngang) { grid-template-columns: 1fr; } }
-.vdBen { display: grid; gap: 14px; min-width: 0; }
-.vdThe { background: var(--vt-mat); border: 1px solid var(--vt-vien); border-radius: 16px; padding: 14px 16px; display: grid; gap: 10px; position: relative; box-shadow: 0 1px 2px rgba(16,24,40,.04); }
-.vdTheDau { display: flex; align-items: center; justify-content: space-between; gap: 10px; } .vdTheDau b { font-size: 14px; color: var(--vt-chu); }
-.vdCongCu { display: flex; gap: 8px; } .vdCongCu select { height: 34px; border: 1px solid var(--vt-vien); border-radius: 9px; padding: 0 8px; font: inherit; font-size: 13px; background: var(--vt-mat); color: var(--vt-chu); max-width: 230px; }
-.vdChenMenu { position: absolute; z-index: 30; right: 16px; top: 54px; width: 260px; max-height: 380px; overflow: auto; background: var(--vt-mat); border: 1px solid var(--vt-vien); border-radius: 12px; box-shadow: 0 18px 40px -12px rgba(16,24,40,.3); padding: 6px; display: grid; gap: 2px; }
-.vdChenMenu[hidden] { display: none; }
+.vdBen { min-width: 0; background: var(--vt-mat); border: 1px solid var(--vt-vien); border-radius: 20px; box-shadow: 0 1px 2px rgba(16,24,40,.04); overflow: visible; }
+/* thẻ bước */
+.vdThe4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 6px; margin: 10px 10px 0; background: var(--vt-nen2); border-radius: 14px; }
+.vdThe4 button { display: flex; align-items: center; justify-content: center; gap: 7px; height: 40px; padding: 0 8px; border: 0; border-radius: 10px; background: none; color: var(--vt-phu); font: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer; min-width: 0; position: relative; transition: background .15s, color .15s; }
+.vdThe4 button span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vdThe4 svg { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.vdThe4 button:hover { color: var(--vt-chu); }
+.vdThe4 button[aria-selected="true"] { background: var(--vt-mat); color: var(--vt-chu); box-shadow: 0 1px 3px rgba(16,24,40,.12); }
+.vdThe4 button[aria-selected="true"] svg { stroke: var(--vt-ac); }
+.vdThe4 i { font-style: normal; font-size: 10.5px; font-weight: 700; padding: 1px 6px; border-radius: 99px; background: var(--vt-acNhat); color: var(--vt-ac); max-width: 70px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .vdThe4 i:empty { display: none; }
+@media (max-width: 640px) { .vdThe4 button span { display: none; } }
+.vdPanel { padding: 14px 16px 16px; display: grid; gap: 14px; position: relative; } .vdPanel[hidden] { display: none; }
+.vdMuc { display: grid; gap: 10px; } .vdMuc + .vdMuc { padding-top: 14px; border-top: 1px dashed var(--vt-vien); }
+.vdMuc > b, .vdMucDau > b { font-size: 13.5px; color: var(--vt-chu); } .vdMuc > b small { font-weight: 500; color: var(--vt-phu); font-size: 12px; }
+.vdMucDau { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.vdGhi { margin: 0; font-size: 12.5px; color: var(--vt-phu); line-height: 1.55; }
+.vd code { font-family: var(--f-code, monospace); font-size: .92em; background: var(--vt-nen2); padding: 1px 5px; border-radius: 5px; }
+.vdO { height: 38px; border: 1px solid var(--vt-vien); border-radius: 10px; padding: 0 12px; font: inherit; font-size: 13.5px; background: var(--vt-mat); color: var(--vt-chu); width: 100%; box-sizing: border-box; }
+.vdO:focus { outline: 0; border-color: var(--vt-ac); box-shadow: 0 0 0 3px var(--vt-acNhat); }
+/* nút nhỏ, nhóm chọn */
+.vdNutNho { height: 34px; padding: 0 12px; border: 1px solid var(--vt-vien); border-radius: 9px; background: var(--vt-mat); color: var(--vt-chu); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: border-color .15s, background .15s; justify-self: start; }
+.vdNutNho:hover, .vdNutNho[aria-expanded="true"] { border-color: var(--vt-ac); background: var(--vt-acNhat); }
+.vdSeg { display: inline-flex; padding: 3px; gap: 2px; background: var(--vt-nen2); border-radius: 10px; flex-wrap: wrap; }
+.vdSeg button { height: 30px; padding: 0 12px; border: 0; border-radius: 8px; background: none; color: var(--vt-phu); font: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.vdSeg button[aria-pressed="true"] { background: var(--vt-mat); color: var(--vt-chu); box-shadow: 0 1px 3px rgba(16,24,40,.14); }
+.vdChip { display: flex; flex-wrap: wrap; gap: 6px; }
+.vdChip button { height: 30px; padding: 0 12px; border: 1px solid var(--vt-vien); border-radius: 99px; background: var(--vt-mat); color: var(--vt-chu); font: inherit; font-size: 12.5px; cursor: pointer; } .vdChip button:hover { border-color: var(--vt-ac); background: var(--vt-acNhat); }
+.vdCong { display: inline-flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--vt-chu); cursor: pointer; user-select: none; position: relative; }
+.vdCong input { position: absolute; opacity: 0; pointer-events: none; }
+.vdCong i { width: 38px; height: 22px; border-radius: 999px; background: var(--vt-vien); position: relative; transition: background .15s; flex: none; }
+.vdCong i::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25); transition: transform .15s; }
+.vdCong input:checked + i { background: var(--vt-ac); } .vdCong input:checked + i::after { transform: translateX(16px); }
+.vdCong input:focus-visible + i { outline: 2px solid var(--vt-ac); outline-offset: 2px; }
+.vdBat { display: flex !important; flex-wrap: wrap; gap: 12px 24px; }
+.vdLuoi2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 16px; align-items: start; }
+.vdLuoi2 label { display: grid; gap: 6px; font-size: 12.5px; font-weight: 600; color: var(--vt-phu); min-width: 0; }
+.vdLuoi2 label > span { display: flex; justify-content: space-between; } .vdLuoi2 output { color: var(--vt-chu); font-weight: 700; }
+.vdLuoi2 input[type=range], .vdDieuKhien input[type=range] { accent-color: var(--vt-ac); width: 100%; }
+.vdNhanO { display: block; font-size: 12.5px; font-weight: 600; color: var(--vt-phu); margin-bottom: 6px; }
+@media (max-width: 560px) { .vdLuoi2 { grid-template-columns: 1fr; } }
+/* kịch bản */
+.vdCC { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.vdCCPhai { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.vdVach { width: 1px; height: 22px; background: var(--vt-vien); margin: 0 2px; }
+.vdNutAI { height: 36px; padding: 0 14px 0 12px; border: 0; border-radius: 10px; display: inline-flex; align-items: center; gap: 7px; font: inherit; font-size: 13.5px; font-weight: 700; color: #fff; cursor: pointer; background: linear-gradient(120deg, #6d5dfc, #b05cf6 55%, #f0679a); box-shadow: 0 6px 16px -8px rgba(124,92,250,.8); }
+.vdNutAI svg { width: 17px; height: 17px; fill: #fff; } .vdNutAI:hover { filter: brightness(1.07); } .vdNutAI[aria-expanded="true"] { outline: 2px solid rgba(124,92,250,.35); outline-offset: 2px; }
+.vdAIHop { display: grid; gap: 10px; padding: 12px; border-radius: 14px; border: 1px solid rgba(124,92,250,.35); background: linear-gradient(180deg, rgba(124,92,250,.07), transparent); } .vdAIHop[hidden] { display: none; }
+.vdAIHop textarea { width: 100%; box-sizing: border-box; border: 1px solid var(--vt-vien); border-radius: 10px; padding: 10px 12px; font: inherit; font-size: 13px; background: var(--vt-mat); color: var(--vt-chu); resize: vertical; }
+.vdAIChon { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; } .vdAIChon label { display: grid; gap: 4px; font-size: 12px; font-weight: 600; color: var(--vt-phu); min-width: 0; }
+.vdAIChon select { height: 34px; border: 1px solid var(--vt-vien); border-radius: 9px; padding: 0 8px; font: inherit; font-size: 13px; background: var(--vt-mat); color: var(--vt-chu); }
+.vdAINut { display: flex; gap: 8px; flex-wrap: wrap; }
+@media (max-width: 640px) { .vdAIChon { grid-template-columns: 1fr; } }
+.vdChenMenu { position: absolute; z-index: 30; right: 16px; top: 58px; width: 270px; max-height: 400px; overflow: auto; background: var(--vt-mat); border: 1px solid var(--vt-vien); border-radius: 12px; box-shadow: 0 18px 40px -12px rgba(16,24,40,.3); padding: 6px; display: grid; gap: 2px; } .vdChenMenu[hidden] { display: none; }
 .vdChenMenu button { text-align: left; border: 0; background: none; font: inherit; font-size: 13px; color: var(--vt-chu); padding: 8px 10px; border-radius: 8px; cursor: pointer; } .vdChenMenu button:hover { background: var(--vt-acNhat); }
-#vdKB { width: 100%; box-sizing: border-box; min-height: 420px !important; height: 52vh; resize: vertical; border: 1px solid var(--vt-vien); border-radius: 12px; padding: 12px 14px; font: 13px/1.6 var(--f-code, "JetBrains Mono", monospace); background: var(--vt-nen2); color: var(--vt-chu); tab-size: 2; }
-#vdKB:focus { outline: 0; border-color: var(--vt-ac); box-shadow: 0 0 0 3px var(--vt-acNhat); }
-.vdAI { display: flex; gap: 8px; flex-wrap: wrap; } .vdAI input { flex: 1 1 220px; min-width: 0; height: 36px !important; border: 1px solid var(--vt-vien); border-radius: 10px; padding: 0 12px !important; font: inherit; font-size: 13px; background: var(--vt-mat); color: var(--vt-chu); }
-.vdLuoi { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 12px; }
-.vdLuoi label { display: grid; gap: 4px; font-size: 12px; font-weight: 600; color: var(--vt-phu); min-width: 0; } .vdLuoi .o2 { grid-column: 1 / -1; }
-.vdLuoi select, .vdLuoi input[type=text] { height: 34px !important; border: 1px solid var(--vt-vien); border-radius: 9px; padding: 0 10px !important; font: inherit; font-size: 13px; background: var(--vt-mat); color: var(--vt-chu); width: 100%; box-sizing: border-box; }
-.vdLuoi input[type=file] { font-size: 12px; color: var(--vt-phu); } .vdLuoi input[type=range] { accent-color: var(--vt-ac); }
-.vdLuoi label.bat { display: flex; align-items: center; gap: 8px; color: var(--vt-chu); font-weight: 500; font-size: 13px; } .vdLuoi label.bat input { width: 16px; height: 16px; accent-color: var(--vt-ac); }
-.vdXem { position: sticky; top: 12px; display: grid; gap: 10px; background: var(--vt-mat); border: 1px solid var(--vt-vien); border-radius: 18px; padding: 14px; }
-.vdManHinh { border-radius: 14px; overflow: hidden; background: #05070b; display: grid; place-items: center; box-shadow: inset 0 0 0 1px rgba(255,255,255,.04); }
-.vdManHinh canvas { width: 100%; height: auto; max-height: 72vh; aspect-ratio: 9 / 16; object-fit: contain; display: block; }
-.vdManHinh.ngang canvas { aspect-ratio: 16 / 9; }
+.vdStkMenu { position: absolute; z-index: 30; right: 16px; top: 58px; width: min(420px, calc(100% - 32px)); box-sizing: border-box; display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 8px; border: 1px solid var(--vt-vien); border-radius: 14px; background: var(--vt-mat); box-shadow: 0 18px 40px -12px rgba(16,24,40,.3); } .vdStkMenu[hidden] { display: none; }
+.vdStkMenu button { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 2px; border: 1px solid transparent; border-radius: 10px; background: #1d2433; color: #fff; cursor: pointer; font: inherit; }
+.vdStkMenu button:hover, .vdStkMenu button:focus-visible { border-color: #f5b301; outline: none; }
+.vdStkMenu canvas { width: 52px; height: 52px; } .vdStkMenu b { font-size: 11.5px; font-weight: 600; line-height: 1.2; text-align: center; } .vdStkMenu code { font-size: 10.5px; opacity: .7; background: none; color: inherit; }
+@media (max-width: 560px) { .vdStkMenu { grid-template-columns: repeat(4, 1fr); } }
+.vdSoan { position: relative; border: 1px solid var(--vt-vien); border-radius: 14px; background: var(--vt-nen2); height: 54vh; min-height: 420px; resize: vertical; overflow: hidden; }
+.vdSoan:focus-within { border-color: var(--vt-ac); box-shadow: 0 0 0 3px var(--vt-acNhat); }
+.vdSoan .vdTo, #vdKB { position: absolute; inset: 0; margin: 0; box-sizing: border-box; padding: 14px 16px; font: 13px/1.65 var(--f-code, "JetBrains Mono", Consolas, monospace); white-space: pre-wrap; overflow-wrap: anywhere; word-break: normal; tab-size: 2; letter-spacing: 0; overflow: auto; border: 0; }
+.vdSoan .vdTo { color: var(--vt-chu); pointer-events: none; overflow: hidden; scrollbar-gutter: stable; }
+#vdKB { width: 100%; height: 100%; min-height: 0 !important; resize: none; background: transparent; color: transparent; caret-color: var(--vt-chu); outline: 0; scrollbar-gutter: stable; }
+#vdKB::placeholder { color: var(--vt-phu); opacity: .8; } #vdKB::selection { background: rgba(201,162,74,.35); color: transparent; }
+.vdTo .t-k { color: #c47a00; font-weight: 700; } .vdTo .t-p { color: #8b5cf6; font-weight: 700; } .vdTo .t-loi { color: #15803d; } .vdTo .t-m { color: #1d6fd8; } .vdTo .t-c { color: #e0522d; } .vdTo .t-s { color: var(--vt-phu); font-weight: 700; } .vdTo .t-cm { color: var(--vt-phu); font-style: italic; }
+.vdTo .t-ng { color: #b45309; font-weight: 700; background: rgba(201,162,74,.16); border-radius: 4px; box-shadow: 0 0 0 2px rgba(201,162,74,.16); }
+:root[data-theme="dark"] .vdTo .t-k { color: #f5c046; } :root[data-theme="dark"] .vdTo .t-loi { color: #6fd39a; } :root[data-theme="dark"] .vdTo .t-m { color: #79b8ff; } :root[data-theme="dark"] .vdTo .t-p { color: #c4a7ff; } :root[data-theme="dark"] .vdTo .t-c { color: #ff8a65; } :root[data-theme="dark"] .vdTo .t-ng { color: #f5c046; }
+.vdSoanChan { display: flex; justify-content: space-between; gap: 10px; font-size: 12px; color: var(--vt-phu); margin-top: -6px; } .vdSoanChan span:first-child { font-weight: 700; font-family: var(--f-code, monospace); }
+@media (max-width: 640px) { .vdSoanChan span:last-child { display: none; } }
+/* giọng đọc */
+.vdGiongDs { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 8px; }
+.vdGiongThe { display: grid; grid-template-columns: 34px 1fr; grid-template-rows: auto auto; gap: 0 10px; align-items: center; padding: 9px 10px; border: 1px solid var(--vt-vien); border-radius: 12px; cursor: pointer; background: var(--vt-mat); transition: border-color .15s, background .15s, box-shadow .15s; }
+.vdGiongThe:hover { border-color: var(--vt-ac); } .vdGiongThe:focus-visible { outline: 2px solid var(--vt-ac); outline-offset: 2px; }
+.vdGiongThe[aria-checked="true"] { border-color: var(--vt-ac); background: var(--vt-acNhat); box-shadow: inset 0 0 0 1px var(--vt-ac); }
+.vdGiongThe b { font-size: 13.5px; color: var(--vt-chu); align-self: end; } .vdGiongThe span { font-size: 12px; color: var(--vt-phu); align-self: start; grid-column: 2; }
+.vdNghe { grid-row: 1 / 3; width: 34px; height: 34px; border-radius: 50%; border: 0; background: var(--vt-nen2); color: var(--vt-chu); display: grid; place-items: center; cursor: pointer; padding: 0; }
+.vdNghe svg { width: 15px; height: 15px; fill: currentColor; } .vdNghe:hover, .vdNghe.dang { background: var(--vt-ac); color: #1b1408; }
+.vdXoay { width: 14px; height: 14px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; animation: vdXoay .7s linear infinite; } @keyframes vdXoay { to { transform: rotate(360deg); } }
+/* nhạc nền */
+.vdTha { display: grid; justify-items: center; gap: 4px; padding: 22px 16px; border: 2px dashed var(--vt-vien); border-radius: 16px; text-align: center; cursor: pointer; background: var(--vt-nen2); transition: border-color .15s, background .15s; position: relative; }
+.vdTha:hover, .vdTha.keo { border-color: var(--vt-ac); background: var(--vt-acNhat); } .vdTha.co { padding: 12px 16px; }
+.vdTha input { position: absolute; inset: 0; opacity: 0; cursor: pointer; } .vdTha svg { width: 28px; height: 28px; fill: none; stroke: var(--vt-ac); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.vdTha b { font-size: 14px; color: var(--vt-chu); } .vdTha span { font-size: 12px; color: var(--vt-phu); } .vdTha.co svg, .vdTha.co span { display: none; }
+.vdSong { display: grid; gap: 8px; padding: 12px; border: 1px solid var(--vt-vien); border-radius: 14px; } .vdSong[hidden] { display: none; }
+.vdSongDau { display: flex; align-items: center; gap: 10px; } .vdSongDau b { font-size: 13px; color: var(--vt-chu); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; } .vdSongDau span { font-size: 12px; color: var(--vt-phu); white-space: nowrap; flex: 1; }
+#vdSong { width: 100%; height: 60px; display: block; border-radius: 8px; background: var(--vt-nen2); --song: #c9a24a; }
+/* hiệu ứng */
+.vdKhoDs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.vdKhoDs button, .vdChuyenDs button { display: grid; justify-items: center; gap: 4px; padding: 12px 8px; border: 1px solid var(--vt-vien); border-radius: 14px; background: var(--vt-mat); color: var(--vt-chu); font: inherit; cursor: pointer; transition: border-color .15s, background .15s; }
+.vdKhoDs button:hover, .vdChuyenDs button:hover { border-color: var(--vt-ac); }
+.vdKhoDs button[aria-pressed="true"], .vdChuyenDs button[aria-pressed="true"] { border-color: var(--vt-ac); background: var(--vt-acNhat); box-shadow: inset 0 0 0 1px var(--vt-ac); }
+.vdKhoDs b { font-size: 13.5px; } .vdKhoDs span { font-size: 12px; color: var(--vt-phu); }
+.vdKhoDs i { display: block; border: 2px solid currentColor; border-radius: 6px; opacity: .75; margin-bottom: 2px; } .vdKhoDs .khoDoc { width: 22px; height: 38px; } .vdKhoDs .khoNgang { width: 52px; height: 30px; margin-top: 4px; margin-bottom: 6px; }
+.vdChuyenDs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; } @media (max-width: 560px) { .vdChuyenDs { grid-template-columns: repeat(2, 1fr); } }
+.vdChuyenDs b { font-size: 12.5px; } .vdChuyenDs code { font-size: 11px; color: var(--vt-phu); }
+.vdMini { width: 54px; height: 36px; border-radius: 6px; background: #121823; position: relative; overflow: hidden; perspective: 120px; }
+.vdMini i { position: absolute; inset: 5px; border-radius: 3px; background: linear-gradient(135deg, #f2d27a, #c9a24a); }
+.vdMini i + i { background: linear-gradient(135deg, #79b8ff, #4f7cff); }
+.vdChuyenDs button:hover .vdMini i, .vdChuyenDs button[aria-pressed="true"] .vdMini i { animation-duration: 1.8s; animation-iteration-count: infinite; animation-timing-function: ease-in-out; }
+.c-mo i:first-child { animation-name: mRa; } .c-mo i + i { animation-name: mVao; }
+.c-truot i:first-child { animation-name: tRa; } .c-truot i + i { animation-name: tVao; }
+.c-day i:first-child { animation-name: dRa; } .c-day i + i { animation-name: dVao; }
+.c-phong i:first-child { animation-name: pRa; } .c-phong i + i { animation-name: pVao; }
+.c-lat i:first-child { animation-name: lRa; } .c-lat i + i { animation-name: lVao; }
+.c-quet i:first-child { animation-name: qRa; } .c-quet i + i { animation-name: qVao; }
+.c-xoay i:first-child { animation-name: xRa; } .c-xoay i + i { animation-name: xVao; }
+.c-ngaunhien i:first-child { animation-name: pRa; } .c-ngaunhien i + i { animation-name: xVao; }
+.vdMini i + i { opacity: 0; }
+@keyframes mRa { 0%,35% { opacity: 1 } 55%,100% { opacity: 0 } } @keyframes mVao { 0%,45% { opacity: 0 } 65%,100% { opacity: 1 } }
+@keyframes tRa { 0%,35% { transform: none } 60%,100% { transform: translateX(-120%) } } @keyframes tVao { 0%,35% { opacity: 1; transform: translateX(120%) } 60%,100% { opacity: 1; transform: none } }
+@keyframes dRa { 0%,35% { transform: none; opacity: 1 } 60%,100% { transform: translateY(-80%); opacity: 0 } } @keyframes dVao { 0%,40% { opacity: 0; transform: translateY(80%) } 65%,100% { opacity: 1; transform: none } }
+@keyframes pRa { 0%,35% { transform: none; opacity: 1 } 60%,100% { transform: scale(1.4); opacity: 0 } } @keyframes pVao { 0%,40% { opacity: 0; transform: scale(.7) } 65%,100% { opacity: 1; transform: none } }
+@keyframes lRa { 0%,30% { transform: rotateY(0) } 50%,100% { transform: rotateY(90deg) } } @keyframes lVao { 0%,50% { opacity: 1; transform: rotateY(-90deg) } 70%,100% { opacity: 1; transform: none } }
+@keyframes qRa { 0%,35% { clip-path: inset(0 0 0 0) } 65%,100% { clip-path: inset(0 0 0 100%) } } @keyframes qVao { 0%,35% { opacity: 1; clip-path: inset(0 100% 0 0) } 65%,100% { opacity: 1; clip-path: inset(0 0 0 0) } }
+@keyframes xRa { 0%,35% { transform: none; opacity: 1 } 60%,100% { transform: rotate(25deg) scale(.7); opacity: 0 } } @keyframes xVao { 0%,40% { opacity: 0; transform: rotate(-25deg) scale(.7) } 65%,100% { opacity: 1; transform: none } }
+@media (prefers-reduced-motion: reduce) { .vdMini i { animation: none !important; } }
+.vdMau { display: flex; gap: 10px; } .vdMau button { width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--vt-mat); background: var(--m); box-shadow: 0 0 0 1px var(--vt-vien); cursor: pointer; }
+.vdMau button[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--vt-ac); }
+/* xem trước */
+.vdXem { position: sticky; top: 12px; display: grid; gap: 10px; background: var(--vt-mat); border: 1px solid var(--vt-vien); border-radius: 20px; padding: 14px; box-shadow: 0 1px 2px rgba(16,24,40,.04); }
+.vdManHinh { border-radius: 16px; overflow: hidden; background: #05070b; display: grid; place-items: center; box-shadow: inset 0 0 0 1px rgba(255,255,255,.04), 0 12px 30px -16px rgba(0,0,0,.6); }
+.vdManHinh canvas { width: 100%; height: auto; max-height: 68vh; aspect-ratio: 9 / 16; object-fit: contain; display: block; cursor: pointer; } .vdManHinh.ngang canvas { aspect-ratio: 16 / 9; }
 .vdDieuKhien { display: flex; align-items: center; gap: 10px; }
-.vdPhat { width: 40px; height: 40px; flex: none; border-radius: 50%; border: 0; background: var(--vt-ac); color: #1b1408; display: grid; place-items: center; cursor: pointer; box-shadow: 0 4px 12px rgba(201,162,74,.35); }
-.vdPhat svg { width: 18px; height: 18px; fill: currentColor; }
-.vdDieuKhien input[type=range] { flex: 1; accent-color: var(--vt-ac); }
+.vdPhat { width: 42px; height: 42px; flex: none; border-radius: 50%; border: 0; background: var(--vt-ac); color: #1b1408; display: grid; place-items: center; cursor: pointer; box-shadow: 0 4px 12px rgba(201,162,74,.35); } .vdPhat svg { width: 18px; height: 18px; fill: currentColor; }
+.vdDieuKhien input[type=range] { flex: 1; }
 .vdGio { font: 600 12px var(--f-code, monospace); color: var(--vt-phu); white-space: nowrap; }
 .vdCanhDs { display: flex; flex-wrap: wrap; gap: 5px; } .vdCanhDs:empty { display: none; }
-.vdCanhDs button { min-width: 30px; height: 26px; border-radius: 7px; border: 1px solid var(--vt-vien); background: var(--vt-nen2); color: var(--vt-phu); font: 600 12px inherit; cursor: pointer; }
-.vdCanhDs button.dang { background: var(--vt-ac); border-color: var(--vt-ac); color: #1b1408; }
-.vdNut { display: flex; gap: 8px; } .vdNut button { flex: 1; justify-content: center; }
+.vdCanhDs button { min-width: 30px; height: 26px; border-radius: 7px; border: 1px solid var(--vt-vien); background: var(--vt-nen2); color: var(--vt-phu); font: 600 12px inherit; cursor: pointer; } .vdCanhDs button.dang { background: var(--vt-ac); border-color: var(--vt-ac); color: #1b1408; }
+.vdTomTat { display: flex; flex-wrap: wrap; gap: 6px; } .vdTomTat:empty { display: none; }
+.vdTomTat span { font-size: 12px; padding: 4px 9px; border-radius: 99px; background: var(--vt-nen2); color: var(--vt-chu); white-space: nowrap; }
+.vdNut { display: grid; grid-template-columns: 1.3fr 1fr; gap: 8px; } .vdNut button { height: 44px; justify-content: center; display: inline-flex; align-items: center; gap: 7px; }
+.vdNut svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .vdTien { height: 6px; border-radius: 99px; background: var(--vt-nen2); overflow: hidden; } .vdTien[hidden] { display: none; } .vdTien i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #c9a24a, #f2d27a); transition: width .2s; }
 .vdTT { margin: 0; font-size: 12.5px; color: var(--vt-phu); line-height: 1.5; } .vdTT.loi { color: #d92d20; }
 .vdTai { justify-content: center; text-decoration: none; } .vdTai[hidden] { display: none; }
-
-/* v15.4 — bảng sticker, nút nghe thử */
-.vdStkMenu{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:8px;margin:6px 0;border:1px solid var(--vt-vien);border-radius:10px;background:var(--vt-mat)}
-.vdStkMenu[hidden]{display:none}
-.vdStkMenu button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border:1px solid transparent;border-radius:8px;background:#1d2433;color:#fff;cursor:pointer;font:inherit}
-.vdStkMenu button:hover,.vdStkMenu button:focus-visible{border-color:#f5b301;outline:none}
-.vdStkMenu canvas{width:52px;height:52px}
-.vdStkMenu b{font-size:11.5px;font-weight:600;line-height:1.2;text-align:center}
-.vdStkMenu code{font-size:10.5px;opacity:.7}
-.vdNghe{align-self:end;justify-self:start;white-space:nowrap}
-@media (max-width:560px){.vdStkMenu{grid-template-columns:repeat(4,1fr)}}
 
 </style>
 </head>
@@ -1378,29 +1476,39 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 <section class="manTab" id="tabVideo" role="tabpanel" aria-labelledby="nutTabVideo" hidden>
 	<div class="vd">
 		<header class="vdDau">
-			<h2>Tạo video</h2>
+			<div class="vdDauTen">
+				<span class="vdDauIco" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="13" height="14" rx="3"/><path d="m16 10 5-3v10l-5-3z"/></svg></span>
+				<div><h2>Tạo video</h2><p>Viết kịch bản → chọn giọng, nhạc, hiệu ứng → xem thử → xuất MP4</p></div>
+			</div>
 			<button class="nutHD" type="button" id="vdHD" aria-expanded="false" aria-controls="vdHDBang" title="Hướng dẫn sử dụng"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.4 1.1 2.2h5c0-.8.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/></svg><span>HDSD</span></button>
 			<div class="hdsd" id="vdHDBang" role="dialog" aria-label="Hướng dẫn sử dụng" hidden><div class="hdsdDau"><b>Hướng dẫn viết kịch bản</b><button class="tuyIco" type="button" data-dong aria-label="Đóng"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><ol class="hdsdDs" id="vdHDDs"></ol></div>
 		</header>
 		<div class="vdThan">
-			<section class="vdBen" aria-label="Kịch bản và thiết lập">
-				<div class="vdThe">
-					<div class="vdTheDau">
-						<b>Kịch bản</b>
-						<div class="vdCongCu">
-							<button class="vt3Nut" type="button" id="vdMoKB" title="Mở tệp kịch bản .txt đã lưu">Mở</button>
-								<button class="vt3Nut" type="button" id="vdLuuKB" title="Lưu kịch bản thành tệp .txt">Lưu</button>
-								<input type="file" id="vdTepKB" accept=".txt,text/plain" hidden>
-								<button class="vt3Nut" type="button" id="vdStk" aria-expanded="false" title="Chọn sticker để chèn">☺ Sticker</button>
-								<button class="vt3Nut" type="button" id="vdChen" aria-expanded="false">+ Chèn</button>
+			<section class="vdBen" aria-label="Soạn video">
+				<nav class="vdThe4" role="tablist" aria-label="Các bước">
+					<button type="button" role="tab" data-the="kb" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><span>Kịch bản</span></button>
+					<button type="button" role="tab" data-the="giong" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span>Giọng đọc</span><i id="vdNhanGiong"></i></button>
+					<button type="button" role="tab" data-the="nhac" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg><span>Nhạc nền</span><i id="vdNhanNhac"></i></button>
+					<button type="button" role="tab" data-the="hinh" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8z"/><path d="M18 15l.9 2.1L21 18l-2.1.9L18 21l-.9-2.1L15 18l2.1-.9z"/></svg><span>Hiệu ứng</span></button>
+				</nav>
+
+				<!-- 1. KỊCH BẢN -->
+				<div class="vdPanel" data-panel="kb">
+					<div class="vdCC">
+						<button class="vdNutAI" type="button" id="vdMoAI" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8z"/></svg>AI viết kịch bản</button>
+						<div class="vdCCPhai">
+							<button class="vdNutNho" type="button" id="vdStk" aria-expanded="false" title="Chọn sticker để chèn">☺ Sticker</button>
+							<button class="vdNutNho" type="button" id="vdChen" aria-expanded="false" title="Chèn hiệu ứng">＋ Chèn</button>
+							<span class="vdVach" aria-hidden="true"></span>
+							<button class="vdNutNho" type="button" id="vdMoKB" title="Mở tệp kịch bản .txt">Mở</button>
+							<button class="vdNutNho" type="button" id="vdLuuKB" title="Lưu kịch bản thành tệp .txt">Lưu</button>
+							<input type="file" id="vdTepKB" accept=".txt,text/plain" hidden>
 						</div>
 					</div>
 					<div class="vdChenMenu" id="vdChenMenu" hidden></div>
-						<div class="vdStkMenu" id="vdStkMenu" hidden></div>
-					<textarea id="vdKB" spellcheck="false" aria-label="Kịch bản" placeholder="Dán kịch bản vào đây (AI viết theo prompt ở dưới), hoặc tự viết:&#10;&#10;tieude: [vang]TỪ KHOÁ[/] NỘI DUNG&#10;---&#10;>> Lời đọc câu thứ nhất.&#10;de: Đề bài có $công thức$&#10;sticker: wow | Ơ kìa!&#10;===&#10;>> Lời đọc tiếp theo.&#10;dong: BƯỚC 1: $x^2-4=0$&#10;khung: $x=\pm 2$"></textarea>
-					<details class="vdAI" open>
-						<summary><b>Nhờ AI viết kịch bản</b><span>dán đề + lời giải → copy prompt → dán kịch bản AI trả về vào ô trên</span></summary>
-						<textarea id="vdDe" rows="5" spellcheck="false" placeholder="Dán ĐỀ BÀI và LỜI GIẢI (code LaTeX hoặc chữ thường). Có thể chỉ dán đề — AI sẽ tự giải."></textarea>
+					<div class="vdStkMenu" id="vdStkMenu" hidden></div>
+					<div class="vdAIHop" id="vdAIHop" hidden>
+						<textarea id="vdDe" rows="4" spellcheck="false" placeholder="Dán ĐỀ BÀI và LỜI GIẢI (code LaTeX hoặc chữ thường). Có thể chỉ dán đề — AI sẽ tự giải."></textarea>
 						<div class="vdAIChon">
 							<label><span>Kiểu video</span><select id="vdKieu"><option value="giai">Giải chi tiết</option><option value="meo">Mẹo nhanh, giải nhanh</option><option value="loi">Chữa lỗi sai thường gặp</option><option value="thucte">Bài toán thực tế</option><option value="lythuyet">Ôn lý thuyết, công thức</option></select></label>
 							<label><span>Độ dài</span><select id="vdDai"><option value="1">Khoảng 1 phút</option><option value="2" selected>Khoảng 2 phút</option><option value="3">Khoảng 3 phút</option></select></label>
@@ -1410,26 +1518,84 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 							<button class="vt3NutChinh nho" type="button" id="vdChepNhac" title="Copy prompt kèm đề và lời giải — dán vào Gemini/ChatGPT/Claude bản web">Copy prompt</button>
 							<button class="vt3Nut" type="button" id="vdAIViet" title="Dùng AI đã cấu hình trong web viết luôn">AI trong web viết</button>
 						</div>
-					</details>
+					</div>
+					<div class="vdSoan">
+						<pre class="vdTo" id="vdKBTo" aria-hidden="true"></pre>
+						<textarea id="vdKB" spellcheck="false" aria-label="Kịch bản" placeholder="Bấm “AI viết kịch bản”, hoặc tự viết:&#10;&#10;tieude: [vang]TỪ KHOÁ[/] NỘI DUNG&#10;---&#10;>> Lời đọc câu thứ nhất.&#10;de: Đề bài có $công thức$&#10;sticker: wow | Ơ kìa!&#10;=== truot&#10;>> Lời đọc tiếp theo.&#10;dong: BƯỚC 1: $x^2-4=0$&#10;khung(1.2): $x=\pm 2$"></textarea>
+					</div>
+					<div class="vdSoanChan"><span id="vdDongSo">Dòng 1</span><span>Đặt con trỏ vào một dòng — khung xem thử nhảy tới đúng hiệu ứng đó.</span></div>
 				</div>
-				<div class="vdThe vdCai">
-					<div class="vdTheDau"><b>Thiết lập</b></div>
-					<div class="vdLuoi">
-						<label><span>Khổ video</span><select id="vdKho"><option value="doc">Dọc 9:16 (Reels, TikTok, Shorts)</option><option value="ngang">Ngang 16:9 (YouTube, bài giảng)</option></select></label>
-						<label><span>Giọng đọc AI</span><select id="vdGiong"><option value="">Không lồng tiếng</option><optgroup label="Giọng nữ"><option value="Kore" selected>Nữ 1 — Kore</option><option value="Aoede">Nữ 2 — Aoede</option><option value="Leda">Nữ 3 — Leda</option><option value="Zephyr">Nữ 4 — Zephyr</option></optgroup><optgroup label="Giọng nam"><option value="Puck">Nam 1 — Puck</option><option value="Charon">Nam 2 — Charon</option><option value="Fenrir">Nam 3 — Fenrir</option><option value="Orus">Nam 4 — Orus</option></optgroup></select></label>
-							<button class="vt3Nut vdNghe" type="button" id="vdNgheGiong" title="Nghe thử giọng đọc đang chọn">▶ Nghe thử giọng</button>
-						<label class="o2"><span>Cách đọc</span><input type="text" id="vdCachDoc" value="Đọc bằng tiếng Việt chuẩn, giọng giáo viên trẻ, rõ ràng, hào hứng, tốc độ hơi nhanh"></label>
-						<label><span>Tên kênh</span><input type="text" id="vdKenh" value="TOÁN THẦY KHOA"></label>
-						<label><span>Màu logo</span><select id="vdMauLogo"><option value="do">Đỏ</option><option value="vang">Vàng</option><option value="trang">Trắng</option></select></label>
-						<label class="bat"><input type="checkbox" id="vdPhuDe" checked><span>Phụ đề</span></label>
-						<label class="bat"><input type="checkbox" id="vdDam" checked><span>Công thức in đậm</span></label>
-						<label class="bat"><input type="checkbox" id="vdMoDau" checked><span>Mở đầu & kết thúc có logo</span></label>
-						<label><span>Nhạc nền: tệp nhạc hoặc video (lấy tiếng)</span><input type="file" id="vdNhac" accept="audio/*,video/*,.mp3,.m4a,.wav,.ogg,.aac,.flac,.mp4,.mov,.m4v,.webm,.mkv"></label>
-						<label><span>Âm lượng nhạc</span><input type="range" id="vdAmNhac" min="0" max="100" value="12"></label>
-							<button class="vt3Nut vdNghe" type="button" id="vdNgheNhac" title="Nghe thử 8 giây nhạc nền">▶ Nghe thử nhạc</button>
+
+				<!-- 2. GIỌNG ĐỌC -->
+				<div class="vdPanel" data-panel="giong" hidden>
+					<div class="vdMuc">
+						<div class="vdMucDau"><b>Giọng</b><div class="vdSeg" data-cho="vdGioi"><button type="button" data-v="nam">Nam</button><button type="button" data-v="nu">Nữ</button><button type="button" data-v="tat">Không lồng tiếng</button></div><input type="hidden" id="vdGioi" value="nam"></div>
+						<div class="vdGiongDs" id="vdGiongDs"></div>
+						<input type="hidden" id="vdGiong" value="Charon">
+					</div>
+					<div class="vdMuc">
+						<div class="vdMucDau"><b>Vùng miền</b><div class="vdSeg" data-cho="vdVung"><button type="button" data-v="nam">Miền Nam</button><button type="button" data-v="bac">Miền Bắc</button><button type="button" data-v="trung">Miền Trung</button></div><input type="hidden" id="vdVung" value="nam"></div>
+						<div class="vdMucDau"><b>Tốc độ đọc</b><div class="vdSeg" data-cho="vdTocDoc"><button type="button" data-v="cham">Chậm</button><button type="button" data-v="vua">Vừa</button><button type="button" data-v="nhanh">Hơi nhanh</button><button type="button" data-v="ratnhanh">Nhanh</button></div><input type="hidden" id="vdTocDoc" value="nhanh"></div>
+					</div>
+					<div class="vdMuc">
+						<b>Phong cách đọc</b>
+						<div class="vdChip" id="vdCachChip"><button type="button">Thầy giáo trẻ, hào hứng</button><button type="button">Ấm áp, chậm rãi giảng giải</button><button type="button">Kể chuyện cuốn hút</button><button type="button">Năng động kiểu video ngắn</button></div>
+						<input class="vdO" type="text" id="vdCachDoc" value="Thầy giáo trẻ, hào hứng" aria-label="Phong cách đọc (chỉ là ghi chú cho AI, không bị đọc thành tiếng)">
+						<p class="vdGhi">Phong cách chỉ là ghi chú cho AI, không bị đọc thành tiếng. Web đọc liền mạch từng nhóm câu bằng một giọng duy nhất, rồi tự cắt khớp với từng hiệu ứng.</p>
+					</div>
+				</div>
+
+				<!-- 3. NHẠC NỀN -->
+				<div class="vdPanel" data-panel="nhac" hidden>
+					<label class="vdTha" id="vdTha">
+						<input type="file" id="vdNhac" accept="audio/*,video/*,.mp3,.m4a,.wav,.ogg,.aac,.flac,.mp4,.mov,.m4v,.webm,.mkv">
+						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+						<b>Kéo thả hoặc bấm để chọn nhạc nền</b><span>Tệp nhạc (MP3, M4A, WAV…) hoặc video (MP4, MOV, WebM…) — web tự lấy tiếng</span>
+					</label>
+					<div class="vdSong" id="vdSongHop" hidden>
+						<div class="vdSongDau"><b id="vdNhacTen"></b><span id="vdNhacDai"></span><button class="vdNutNho" type="button" id="vdNhacXoa">Bỏ nhạc</button></div>
+						<canvas id="vdSong" width="900" height="120" aria-label="Dạng sóng nhạc nền"></canvas>
+						<p class="vdGhi">Vùng sáng là đoạn nhạc sẽ dùng cho video. Nhạc ngắn hơn video sẽ tự lặp lại, nối mượt.</p>
+					</div>
+					<div class="vdLuoi2">
+						<label><span>Bắt đầu nhạc từ giây <output id="vdNhacBDSo">0</output></span><input type="range" id="vdNhacBD" min="0" max="0" value="0" step="1"></label>
+						<label><span>Âm lượng nhạc <output id="vdAmNhacSo">12</output></span><input type="range" id="vdAmNhac" min="0" max="100" value="12"></label>
+					</div>
+					<label class="vdCong"><input type="checkbox" id="vdNhacGiam" checked><i aria-hidden="true"></i>Tự hạ nhỏ nhạc khi đang có lời đọc</label>
+					<button class="vdNutNho" type="button" id="vdNgheNhac">▶ Nghe thử 8 giây</button>
+				</div>
+
+				<!-- 4. HIỆU ỨNG -->
+				<div class="vdPanel" data-panel="hinh" hidden>
+					<div class="vdMuc">
+						<b>Khổ video</b>
+						<div class="vdKhoDs" data-cho="vdKho">
+							<button type="button" data-v="doc"><i class="khoDoc"></i><b>Dọc 9:16</b><span>Reels, TikTok, Shorts</span></button>
+							<button type="button" data-v="ngang"><i class="khoNgang"></i><b>Ngang 16:9</b><span>YouTube, bài giảng</span></button>
+						</div>
+						<input type="hidden" id="vdKho" value="doc">
+					</div>
+					<div class="vdMuc">
+						<b>Chuyển trang <small>(áp dụng cho mọi dấu <code>===</code>; viết <code>=== xoay</code> để chọn riêng từng trang)</small></b>
+						<div class="vdChuyenDs" id="vdChuyenDs" data-cho="vdChuyen"></div>
+						<input type="hidden" id="vdChuyen" value="truot">
+					</div>
+					<div class="vdMuc">
+						<div class="vdMucDau"><b>Tốc độ xuất hiện</b><div class="vdSeg" data-cho="vdToc"><button type="button" data-v="cham">Chậm</button><button type="button" data-v="vua">Vừa</button><button type="button" data-v="nhanh">Nhanh</button></div><input type="hidden" id="vdToc" value="vua"></div>
+						<p class="vdGhi">Chỉnh riêng một dòng: <code>dong(nhanh): …</code>, <code>khung(cham): …</code>, <code>ct(ngay): …</code> — có thể kèm cỡ chữ: <code>dong(1.3 nhanh): …</code></p>
+					</div>
+					<div class="vdMuc vdLuoi2">
+						<label><span>Tên kênh</span><input class="vdO" type="text" id="vdKenh" value="TOÁN THẦY KHOA"></label>
+						<div><span class="vdNhanO">Màu logo</span><div class="vdMau" data-cho="vdMauLogo"><button type="button" data-v="do" style="--m:#e23b2e" title="Đỏ"></button><button type="button" data-v="vang" style="--m:#f5b301" title="Vàng"></button><button type="button" data-v="trang" style="--m:#f4f4f4" title="Trắng"></button></div><input type="hidden" id="vdMauLogo" value="do"></div>
+					</div>
+					<div class="vdMuc vdBat">
+						<label class="vdCong"><input type="checkbox" id="vdPhuDe" checked><i aria-hidden="true"></i>Phụ đề</label>
+						<label class="vdCong"><input type="checkbox" id="vdDam" checked><i aria-hidden="true"></i>Công thức in đậm</label>
+						<label class="vdCong"><input type="checkbox" id="vdMoDau" checked><i aria-hidden="true"></i>Mở đầu & kết thúc có logo</label>
 					</div>
 				</div>
 			</section>
+
 			<section class="vdXem" aria-label="Xem trước và xuất video">
 				<div class="vdManHinh" id="vdManHinh"><canvas id="vdCanvas" width="1080" height="1920" aria-label="Xem trước video"></canvas></div>
 				<div class="vdDieuKhien">
@@ -1438,9 +1604,10 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 					<span class="vdGio" id="vdGio">0:00 / 0:00</span>
 				</div>
 				<div class="vdCanhDs" id="vdCanhDs"></div>
+				<div class="vdTomTat" id="vdTomTat"></div>
 				<div class="vdNut">
-					<button class="vt3NutChinh" type="button" id="vdDung">Dựng & lồng tiếng</button>
-					<button class="vt3Nut" type="button" id="vdXuat" disabled>Xuất MP4</button>
+					<button class="vt3NutChinh" type="button" id="vdDung"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>Dựng & lồng tiếng</button>
+					<button class="vt3Nut" type="button" id="vdXuat" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v12M7 11l5 5 5-5M5 20h14"/></svg>Xuất MP4</button>
 				</div>
 				<div class="vdTien" id="vdTien" hidden><i></i></div>
 				<p class="vdTT" id="vdTT" aria-live="polite"></p>
@@ -5268,7 +5435,7 @@ Trả về DUY NHẤT JSON: {"mau":{…},"hinh":[…]} (nhân đôi mọi dấu 
 		const NEN = "#0e131b", VIEN = "#c9a24a", CHU = "#F2F4F8", FPS = 30, SR = 48000;
 		const FONT = '"Be Vietnam Pro", "Segoe UI", Roboto, system-ui, sans-serif';
 		const MAU_LOGO = { do: "#E0332F", vang: "#E8B54A", trang: "#F5F5F5" };
-		const S = { tl: null, chay: false, t: 0, actx: null, nguon: null, tGoc: 0, amMix: null, giong: new Map(), toan: new Map(), nhac: null, hen: 0, lan: 0, xuatDang: false };
+		const S = { tl: null, chay: false, t: 0, actx: null, nguon: null, tGoc: 0, amMix: null, giong: new Map(), amCau: new Map(), toan: new Map(), nhac: null, hen: 0, lan: 0, xuatDang: false };
 		const kep = (v, a, b) => Math.max(a, Math.min(b, v)), em = p => 1 - Math.pow(1 - kep(p, 0, 1), 3), emIO = p => { p = kep(p, 0, 1); return p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; };
 		const hoa = s => String(s).split(/(\$[^$]*\$)/).map((p, i) => i % 2 ? p : p.toUpperCase().replace(/\[([A-Z]+|\/)\]/g, x => x.toLowerCase())).join("");
 		const gio = t => { t = Math.max(0, t); return Math.floor(t / 60) + ":" + String(Math.floor(t % 60)).padStart(2, "0"); };
@@ -5369,35 +5536,57 @@ dothi: y=1/(x+3) ; x=-2.5..6 ; y=-0.2..0.7 ; lo=3 ; chu=TẠI x=3 CHỈ LÀ MỘ
 >> Vậy đồ thị chỉ có một tiệm cận đứng là x bằng trừ ba.
 khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		];
-		const CHEN = [["Cảnh mới", "---\n>> "], ["Trang mới (xoá màn hình)", "===\n>> "], ["Lời đọc", ">> "], ["Tiêu đề", "tieude: [vang]TỪ KHOÁ[/] NỘI DUNG"], ["Mục lục", "phan: Phần 1 | Phần 2 | Phần 3"], ["Chuyển mục", "muc: 2"], ["Đề bài", "de: Giải phương trình $x^2-4=0$"], ["Dòng chữ + công thức", "dong: TỬ: $\\sqrt{x-3}=0\\iff x=3$"], ["Công thức lớn", "ct: \\int_0^1 x^2\\,dx=\\dfrac13"], ["Khung kết quả (bút chì)", "khung: $\\Leftrightarrow m=12$"], ["Câu hỏi gợi mở", "hoi: Bước tiếp theo nên làm gì?\ncho: 1.5"], ["Sticker", "sticker: wow | Ơ kìa!"], ["Giấy nhớ mẹo", "meo: MẸO QUEN TAY | Dòng 1 | [do]Dòng 2[/]"], ["Cách làm SAI", "sai: Cộng thẳng $30+20=50$"], ["Cách làm ĐÚNG", "dung: $50-10=40$"], ["Nhãn nhấn mạnh", "nhan: [vang]ĐẾM 2 LẦN[/]"], ["Chữ thường", "chu: Ghi chú thêm…"], ["Đồ thị", "dothi: y=1/(x-1) ; x=-2..5 ; y=-3..3 ; lo=2 ; chu=CHÚ THÍCH"], ["Hình TikZ", "hinh:\n\\begin{tikzpicture}\n\\draw (0,0)--(3,0)--(1,2)--cycle;\n\\end{tikzpicture}"], ["Dừng (giây)", "cho: 1.5"]];
+		const CHEN = [["Cảnh mới", "---\n>> "], ["Trang mới (xoá màn hình)", "===\n>> "], ["Trang mới, chuyển trượt", "=== truot\n>> "], ["Trang mới, chuyển xoay", "=== xoay\n>> "], ["Lời đọc", ">> "], ["Tiêu đề", "tieude: [vang]TỪ KHOÁ[/] NỘI DUNG"], ["Mục lục", "phan: Phần 1 | Phần 2 | Phần 3"], ["Chuyển mục", "muc: 2"], ["Đề bài", "de: Giải phương trình $x^2-4=0$"], ["Dòng chữ + công thức", "dong: TỬ: $\\sqrt{x-3}=0\\iff x=3$"], ["Công thức lớn", "ct: \\int_0^1 x^2\\,dx=\\dfrac13"], ["Khung kết quả (bút chì)", "khung: $\\Leftrightarrow m=12$"], ["Câu hỏi gợi mở", "hoi: Bước tiếp theo nên làm gì?\ncho: 1.5"], ["Sticker", "sticker: wow | Ơ kìa!"], ["Giấy nhớ mẹo", "meo: MẸO QUEN TAY | Dòng 1 | [do]Dòng 2[/]"], ["Cách làm SAI", "sai: Cộng thẳng $30+20=50$"], ["Cách làm ĐÚNG", "dung: $50-10=40$"], ["Nhãn nhấn mạnh", "nhan: [vang]ĐẾM 2 LẦN[/]"], ["Chữ thường", "chu: Ghi chú thêm…"], ["Đồ thị", "dothi: y=1/(x-1) ; x=-2..5 ; y=-3..3 ; lo=2 ; chu=CHÚ THÍCH"], ["Hình TikZ", "hinh:\n\\begin{tikzpicture}\n\\draw (0,0)--(3,0)--(1,2)--cycle;\n\\end{tikzpicture}"], ["Dừng (giây)", "cho: 1.5"]];
 		const HDSD = [
 			["Mỗi dòng là một hiệu ứng: <code>tên: nội dung</code>. Dòng <code>&gt;&gt;</code> là lời đọc; các hiệu ứng ngay sau sẽ hiện trong lúc đọc câu đó.", ">> Đạo hàm bằng ba x bình phương trừ ba.\ndong: $f'(x)=3x^2-3$"],
 			["<code>---</code> sang cảnh mới (giữ màn hình) · <code>===</code> sang trang mới (xoá màn hình). Đầu kịch bản: <code>tieude:</code> và (tuỳ chọn) <code>phan:</code> mục lục. Giữa video: <code>tieude: ẩn</code> để ẩn tiêu đề, <code>tieude: …</code> để đổi hoặc hiện lại.", "tieude: TÌM [vang]GTLN[/] CỦA HÀM SỐ\nphan: Đề bài | Lời giải | Kết luận"],
 			["Hiệu ứng: <b>de</b> đề bài · <b>dong</b> dòng chữ + công thức · <b>ct</b> công thức lớn · <b>khung</b> đóng khung kết quả · <b>hoi</b> câu hỏi gợi mở · <b>meo</b> giấy nhớ (tiêu đề | dòng | dòng) · <b>sai</b> / <b>dung</b> · <b>nhan</b> nhãn · <b>chu</b> chữ thường · <b>cho</b> dừng n giây · <b>muc</b> sáng mục n.", "khung: $OM=4$\nhoi: Bước tiếp theo là gì?\ncho: 1.5"],
 			["Công thức viết LaTeX trong <code>$…$</code> (tự chuẩn hoá khi dán). Tô màu: <code>[vang]…[/]</code> — vang, do, xanh, luc, hong, cam, tim.", "dong: TỔNG: [xanh]$S=5$[/]"],
-			["Phóng to, thu nhỏ: thêm hệ số trong ngoặc sau tên hiệu ứng (0.4 – 2.5).", "dong(1.4): $x=2$\nkhung(0.8): $OM=\\sqrt{16}=4$"],
+			["Cỡ chữ và tốc độ từng dòng: thêm trong ngoặc sau tên hiệu ứng — số 0.4 – 2.5 để phóng to/thu nhỏ; <b>nhanh</b>, <b>cham</b>, <b>ngay</b> để chỉnh tốc độ hiện.", "dong(1.4): $x=2$\nkhung(0.8 cham): $OM=4$\nct(ngay): S=\\pi r^2"],
+			["Kiểu chuyển trang: viết sau <code>===</code> — mo, truot, day, phong, lat, quet, xoay, ngaunhien. Không ghi thì dùng kiểu chọn ở thẻ Hiệu ứng.", "=== xoay\n>> Sang phần lời giải."],
 			["Sticker: bấm nút <b>Sticker</b> để chọn. Nhiều sticker liền nhau sẽ hiện lần lượt; số cuối là số giây hiện.", "sticker: wow | Ơ kìa! | 2"],
 			["Đồ thị: <code>dothi: y=… ; x=a..b ; y=c..d</code>, thêm <code>diem=</code> điểm tô, <code>lo=</code> điểm thủng, <code>tc=</code> tiệm cận, <code>chu=</code> chú thích. Hình học: <code>hinh:</code> rồi dán code tikzpicture ở các dòng sau.", "dothi: y=x^2-4 ; x=-3..3 ; y=-5..5 ; diem=-2,2"],
 			["AI viết kịch bản: dán đề + lời giải → <b>Copy prompt</b> → dán vào Gemini/ChatGPT → dán kịch bản trả về vào ô Kịch bản.", ""],
-			["Tiếng: chọn giọng, bấm <b>Nghe thử</b>; bấm <b>Dựng & lồng tiếng</b> rồi ▶ để xem có tiếng. Lời đọc viết như đọc thành tiếng (“x bình phương”, “căn x”). Cuối cùng <b>Xuất MP4</b> (Chrome hoặc Edge trên máy tính).", ""]];
+			["Tiếng: ở thẻ <b>Giọng đọc</b> bấm ▶ trên từng giọng để nghe thử, chọn vùng miền; bấm <b>Dựng & lồng tiếng</b> rồi ▶ để xem có tiếng. Lời đọc viết như đọc thành tiếng (“x bình phương”, “căn x”). Cuối cùng <b>Xuất MP4</b> (Chrome hoặc Edge trên máy tính).", ""]];
 
+		// ---------- chuyển trang & tốc độ ----------
+		const CHUYEN = [["mo", "Mờ dần"], ["truot", "Trượt ngang"], ["day", "Đẩy lên"], ["phong", "Phóng to"], ["lat", "Lật trang"], ["quet", "Quét"], ["xoay", "Xoay"], ["ngaunhien", "Ngẫu nhiên"]];
+		const CHUYEN_AL = { mo: "mo", modan: "mo", fade: "mo", truot: "truot", truotngang: "truot", slide: "truot", day: "day", daylen: "day", push: "day", phong: "phong", phongto: "phong", zoom: "phong", lat: "lat", lattrang: "lat", flip: "lat", quet: "quet", wipe: "quet", xoay: "xoay", ngaunhien: "ngaunhien", random: "ngaunhien" };
+		const TOC_AL = { nhanh: 0.6, ratnhanh: 0.35, cham: 1.6, ratcham: 2.2, ngay: 0.12, tucthi: 0.12, vua: 1 };
+		const CT = 0.5;
+		function apChuyen(ctx, tl, kieu, p, vao, idx) {
+			if (kieu === "ngaunhien") kieu = ["truot", "day", "phong", "lat", "quet", "xoay"][(idx * 7 + 3) % 6];
+			const { W, H } = tl, e = emIO(kep(p, 0, 1)), cx = W / 2, cy = H / 2, dau = vao ? 1 : -1;
+			if (e <= 0) return; if (e >= 1) { ctx.globalAlpha = 0; return; }
+			if (kieu === "truot") { ctx.translate(dau * W * 0.9 * e, 0); ctx.globalAlpha *= 1 - 0.5 * e; }
+			else if (kieu === "day") { ctx.translate(0, dau * H * 0.35 * e); ctx.globalAlpha *= 1 - e; }
+			else if (kieu === "phong") { const k = vao ? 1 - 0.18 * e : 1 + 0.25 * e; ctx.translate(cx, cy); ctx.scale(k, k); ctx.translate(-cx, -cy); ctx.globalAlpha *= 1 - e; }
+			else if (kieu === "lat") { const k = Math.max(0.001, Math.cos(e * Math.PI / 2)); ctx.translate(cx, cy); ctx.scale(k, 1); ctx.translate(-cx, -cy); ctx.globalAlpha *= 1 - 0.3 * e; }
+			else if (kieu === "quet") { ctx.beginPath(); if (vao) ctx.rect(0, 0, W * (1 - e), H); else ctx.rect(W * e, 0, W * (1 - e), H); ctx.clip(); }
+			else if (kieu === "xoay") { const k = 1 - 0.2 * e; ctx.translate(cx, cy); ctx.rotate(-dau * 0.35 * e); ctx.scale(k, k); ctx.translate(-cx, -cy); ctx.globalAlpha *= 1 - e; }
+			else ctx.globalAlpha *= 1 - e;
+		}
 		// ---------- đọc kịch bản ----------
 		function docKB(src) {
 			const kb = { tieude: "", phan: [], canh: [], canhBao: [] }; let canh = null, doan = null;
-			const moiCanh = (trang, toiThieu) => { canh = { trang, toiThieu, doan: [] }; kb.canh.push(canh); doan = null; };
-			const moiDoan = loi => { if (!canh) moiCanh(true, 0); doan = { loi, viec: [] }; canh.doan.push(doan); };
+			const moiCanh = (trang, toiThieu, chuyen) => { canh = { trang, toiThieu, chuyen: chuyen || "", doan: [] }; kb.canh.push(canh); doan = null; };
+			const moiDoan = (loi, dong) => { if (!canh) moiCanh(true, 0); doan = { loi, viec: [], dong: dong || 0 }; canh.doan.push(doan); };
 			const L = String(src || "").replace(/\r/g, "").split("\n");
 			const KHOA = ["tieude", "phan", "muc", "de", "dong", "ct", "khung", "meo", "sai", "dung", "nhan", "chu", "dothi", "hinh", "cho", "trang", "hoi", "sticker"];
 			for (let i = 0; i < L.length; i++) {
 				const l = L[i].trim(); if (!l || l.startsWith("//")) continue; let m;
-				if ((m = l.match(/^(-{3,}|={3,})\s*(?:(\d+(?:[.,]\d+)?)\s*s)?\s*$/))) { moiCanh(l[0] === "=" || !kb.canh.length, m[2] ? +m[2].replace(",", ".") : 0); continue; }
-				if (l.startsWith(">>")) { const t = l.slice(2).trim(); if (doan && !doan.viec.length && doan.loi) doan.loi += " " + t; else moiDoan(t); continue; }
-				if ((m = l.match(/^([a-zA-Z]+)\s*(?:\(\s*([\d.,]+)\s*\))?\s*:\s*([\s\S]*)$/)) && KHOA.includes(m[1].toLowerCase())) {
-					const k = m[1].toLowerCase(), tile = m[2] ? kep(+m[2].replace(",", ".") || 1, 0.4, 2.5) : 1; let v = m[3].trim();
+				if ((m = l.match(/^(-{3,}|={3,})\s*([^:$|]*)$/))) {
+					const so = m[2].match(/(\d+(?:[.,]\d+)?)\s*(?:s|giây|giay)?\b/i), tu = boDauVD(m[2].replace(/(\d+(?:[.,]\d+)?)\s*(?:s|giây|giay)?\b/i, "")), ck = tu ? CHUYEN_AL[tu] : "";
+					if (tu && !ck) kb.canhBao.push("dòng " + (i + 1) + ": chưa có kiểu chuyển “" + m[2].trim() + "” — dùng kiểu mặc định");
+					moiCanh(l[0] === "=" || !kb.canh.length, so ? +so[1].replace(",", ".") : 0, ck); continue; }
+				if (l.startsWith(">>")) { const t = l.slice(2).trim(); if (doan && !doan.viec.length && doan.loi) doan.loi += " " + t; else moiDoan(t, i + 1); continue; }
+				if ((m = l.match(/^([a-zA-Z]+)\s*(?:\(\s*([^)]*)\))?\s*:\s*([\s\S]*)$/)) && KHOA.includes(m[1].toLowerCase())) {
+					const k = m[1].toLowerCase(), thamSo = m[2] || "", so = thamSo.match(/\d+(?:[.,]\d+)?/), tuToc = boDauVD(thamSo.replace(/[\d.,\s]+/g, " ")), tile = so ? kep(+so[0].replace(",", ".") || 1, 0.4, 2.5) : 1, toc = tuToc ? TOC_AL[tuToc] : 0; let v = m[3].trim();
+					if (tuToc && !toc) kb.canhBao.push("dòng " + (i + 1) + ": chưa hiểu “" + thamSo.trim() + "” — dùng: nhanh, cham, ngay hoặc một số như 1.3");
 					if (k === "hinh" && !/\\end\{tikzpicture\}/.test(v)) { const ds = [v]; while (++i < L.length) { ds.push(L[i]); if (/\\end\{tikzpicture\}/.test(L[i])) break; } v = ds.join("\n").trim(); }
 					if (!canh && (k === "tieude" || k === "phan")) { if (k === "tieude") kb.tieude = v; else kb.phan = v.split("|").map(x => x.trim()).filter(Boolean); continue; }
 					if (!doan) moiDoan("");
-					doan.viec.push({ k, v, dong: i + 1, tile }); continue;
+					doan.viec.push({ k, v, dong: i + 1, tile, toc }); continue;
 				}
 				// dòng không đúng cú pháp: nối vào lời đọc ngay trước, hoặc hiện thành chữ thường
 				const mk = l.match(/^([^\s:$]{1,20})\s*:\s*/);
@@ -5584,20 +5773,64 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			let ds = []; try { const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000", { headers: { "x-goog-api-key": khoa } }); const j = await r.json(); ds = ((j && j.models) || []).filter(m => /tts/i.test(m.name || "") && (!m.supportedGenerationMethods || m.supportedGenerationMethods.includes("generateContent"))).map(m => m.name.replace(/^models\//, "")); } catch (e) { }
 			ds.sort((a, b) => (/flash/.test(b) ? 1 : 0) - (/flash/.test(a) ? 1 : 0)); S.dsTTS = [...new Set(ds.concat(["gemini-2.5-flash-preview-tts", "gemini-2.5-pro-preview-tts"]))]; return S.dsTTS;
 		}
-		async function giongGemini(text, voice, cach) {
-			const key = voice + "|" + cach + "|" + text; if (S.giong.has(key)) return S.giong.get(key);
+		// danh sách giọng Gemini (nghe thử để chọn); vùng miền & tốc độ đưa vào ghi chú đạo diễn
+		const GIONG = [["Charon", "nam", "Trầm ấm, rõ ràng"], ["Puck", "nam", "Vui tươi, năng động"], ["Fenrir", "nam", "Hào hứng, sôi nổi"], ["Orus", "nam", "Chắc, dứt khoát"], ["Iapetus", "nam", "Trong, rõ chữ"], ["Algieba", "nam", "Mượt, ấm"], ["Umbriel", "nam", "Thoải mái, dễ nghe"], ["Achird", "nam", "Thân thiện"], ["Sadaltager", "nam", "Điềm tĩnh, hiểu biết"], ["Rasalgethi", "nam", "Kể chuyện cuốn hút"], ["Alnilam", "nam", "Mạnh mẽ"], ["Schedar", "nam", "Đều, cân bằng"], ["Zubenelgenubi", "nam", "Tự nhiên, đời thường"], ["Sadachbia", "nam", "Sinh động"], ["Enceladus", "nam", "Nhẹ, có hơi thở"], ["Algenib", "nam", "Khàn, cá tính"],
+			["Kore", "nu", "Chắc, rõ ràng"], ["Aoede", "nu", "Nhẹ nhàng"], ["Leda", "nu", "Trẻ trung"], ["Zephyr", "nu", "Tươi sáng"], ["Autonoe", "nu", "Sáng, rõ"], ["Despina", "nu", "Mượt mà"], ["Erinome", "nu", "Trong trẻo"], ["Laomedeia", "nu", "Vui tươi"], ["Callirrhoe", "nu", "Thoải mái"], ["Achernar", "nu", "Dịu dàng"], ["Sulafat", "nu", "Ấm áp"], ["Vindemiatrix", "nu", "Hiền, nhẹ"], ["Gacrux", "nu", "Chín chắn"], ["Pulcherrima", "nu", "Tự tin"]];
+		const VUNG = { nam: "Southern Vietnamese accent (Saigon / Ho Chi Minh City), natural Southern intonation and pronunciation", bac: "Northern Vietnamese accent (Hanoi), standard broadcast pronunciation", trung: "Central Vietnamese accent (Hue / Da Nang), gentle and clear", tudo: "natural standard Vietnamese" };
+		const TOC_DOC = { cham: "slow and very clear", vua: "moderate, natural", nhanh: "slightly fast, energetic", ratnhanh: "fast, like short-video narration" };
+		const ghiChuDoc = () => "Read ONLY the TRANSCRIPT below aloud, in Vietnamese. Never read these notes, the headings, or any instruction text.\n### DIRECTOR'S NOTES\nVoice: one single narrator with exactly the same timbre from start to finish. " + (VUNG[$v("vdVung").value] || VUNG.tudo) + ".\nStyle: " + ($v("vdCachDoc").value.trim() || "giáo viên trẻ, rõ ràng, hào hứng") + ".\nPace: " + (TOC_DOC[$v("vdTocDoc").value] || TOC_DOC.vua) + ".\nPause about one second between paragraphs.\n### TRANSCRIPT\n";
+		const ngu = ms => new Promise(z => setTimeout(z, ms));
+		async function goiTTS(loiNhac, voice, bao) {
+			const key = voice + "|" + loiNhac; if (S.giong.has(key)) return S.giong.get(key);
 			const khoa = (typeof AI !== "undefined" && AI.khoaGemini) || ""; if (!khoa) throw new Error("cần khoá Gemini để lồng tiếng — mở Cấu hình AI và dán khoá (hoặc chọn Không lồng tiếng)");
-			const MH = await dsMoHinhTTS(khoa); let loiCuoi = null;
-			for (const mh of MH) for (let lan = 0; lan < 4; lan++) {
-				const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + mh + ":generateContent", { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": khoa }, body: JSON.stringify({ contents: [{ parts: [{ text: (cach ? cach + ": " : "") + text }] }], generationConfig: { responseModalities: ["AUDIO"], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } } } }) });
-				if (r.status === 429 || r.status >= 500) { loiCuoi = new Error("Gemini đang bận (" + r.status + ")"); await new Promise(z => setTimeout(z, 4000 * (lan + 1))); continue; }
-				const j = await r.json().catch(() => null); if (!r.ok) { loiCuoi = new Error("lồng tiếng lỗi: " + ((j && j.error && j.error.message) || r.status)); break; }
+			const MH = S.mhTTS ? [S.mhTTS] : await dsMoHinhTTS(khoa); let loiCuoi = null;
+			for (const mh of MH) { for (let lan = 0; lan < 7; lan++) {
+				const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + mh + ":generateContent", { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": khoa }, body: JSON.stringify({ contents: [{ parts: [{ text: loiNhac }] }], generationConfig: { responseModalities: ["AUDIO"], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } } } }) });
+				const j = await r.json().catch(() => null), js = JSON.stringify(j || {});
+				if (r.status === 429 || r.status >= 500) {
+					if (r.status === 429 && /PerDay|per day|daily/i.test(js)) { loiCuoi = new Error("khoá Gemini đã hết lượt lồng tiếng miễn phí trong ngày — thử lại ngày mai hoặc dùng khoá khác"); break; }
+					const rd = js.match(/"retryDelay"\s*:\s*"(\d+(?:\.\d+)?)s"/), cho = Math.min(75, Math.max(rd ? +rd[1] + 1 : 0, 6 * (lan + 1)));
+					loiCuoi = new Error("Gemini đang bận (" + r.status + ")"); for (let k = Math.round(cho); k > 0; k--) { if (bao) bao("Gemini giới hạn số lượt — chờ " + k + " giây rồi đọc tiếp (giữ nguyên giọng)…"); await ngu(1000); } continue; }
+				if (!r.ok) { loiCuoi = new Error("lồng tiếng lỗi: " + ((j && j.error && j.error.message) || r.status)); break; }
 				const pt = ((((j || {}).candidates || [])[0] || {}).content || {}).parts || [], d = pt.find(x => x.inlineData || x.inline_data); if (!d) { loiCuoi = new Error("Gemini không trả về âm thanh"); break; }
-				const id = d.inlineData || d.inline_data, rate = +(((id.mimeType || id.mime_type || "").match(/rate=(\d+)/) || [])[1] || 24000), b = atob(id.data), n = b.length >> 1, f = new Float32Array(n);
-				for (let i = 0; i < n; i++) { let v = b.charCodeAt(2 * i) | (b.charCodeAt(2 * i + 1) << 8); if (v >= 32768) v -= 65536; f[i] = v / 32768; }
+				const id = d.inlineData || d.inline_data, rate = +(((id.mimeType || id.mime_type || "").match(/rate=(\d+)/) || [])[1] || 24000), bb = atob(id.data), n = bb.length >> 1, f = new Float32Array(n);
+				for (let i = 0; i < n; i++) { let v = bb.charCodeAt(2 * i) | (bb.charCodeAt(2 * i + 1) << 8); if (v >= 32768) v -= 65536; f[i] = v / 32768; }
 				const kq = { pcm: f, sr: rate, dai: n / rate }; S.giong.set(key, kq); S.mhTTS = mh; return kq;
-			}
+			} if (S.mhTTS) break; }
 			throw loiCuoi || new Error("không lồng tiếng được");
+		}
+		const giongGemini = (text, voice, bao) => goiTTS(ghiChuDoc() + text, voice, bao);
+		// cắt bản đọc liền mạch thành từng câu theo các khoảng lặng (quy hoạch động, bám vị trí ước lượng theo độ dài chữ)
+		function catDoan(am, cau) {
+			const { pcm, sr } = am, F = Math.round(sr * 0.01), nF = Math.floor(pcm.length / F), rms = new Float32Array(nF);
+			for (let i = 0; i < nF; i++) { let e = 0; for (let k = i * F; k < (i + 1) * F; k++) e += pcm[k] * pcm[k]; rms[i] = Math.sqrt(e / F); }
+			const xs = Array.from(rms).sort((a, b) => a - b), nguong = Math.max(0.006, xs[Math.floor(nF * 0.95)] * 0.06), im = i => rms[i] < nguong;
+			let a = 0, b = nF - 1; while (a < nF && im(a)) a++; while (b > a && im(b)) b--;
+			const lang = []; for (let i = a; i <= b;) { if (!im(i)) { i++; continue; } let j = i; while (j <= b && im(j)) j++; if (j - i >= 15) lang.push({ t: (i + j) / 2, L: (j - i) / 100 }); i = j; }
+			const N = cau.length, w = cau.map(c => Math.max(4, c.replace(/\s+/g, "").length)), tong = w.reduce((x, y) => x + y, 0), D = Math.max(1, b - a), kv = []; let cum = 0;
+			for (let i = 0; i < N - 1; i++) { cum += w[i]; kv.push(a + D * cum / tong); }
+			let cat = kv.slice();
+			if (lang.length >= N - 1) {
+				const M = lang.length, chi = (i, j) => 6 * Math.abs(lang[j].t - kv[i]) / D - Math.min(lang[j].L, 1.2), C = [], P = [];
+				for (let i = 0; i < N - 1; i++) { C.push(new Float64Array(M).fill(Infinity)); P.push(new Int32Array(M).fill(-1)); for (let j = i; j < M - (N - 2 - i); j++) { if (!i) { C[0][j] = chi(0, j); continue; } let tot = Infinity, tk = -1; for (let q = i - 1; q < j; q++) if (C[i - 1][q] < tot) { tot = C[i - 1][q]; tk = q; } C[i][j] = tot + chi(i, j); P[i][j] = tk; } }
+				let j = -1, tot = Infinity; C[N - 2].forEach((v, q) => { if (v < tot) { tot = v; j = q; } }); for (let i = N - 2; i >= 0; i--) { cat[i] = lang[j].t; j = P[i][j]; }
+			}
+			const bien = [a].concat(cat, [b + 1]), ra = [];
+			for (let i = 0; i < N; i++) { let s0 = Math.floor(bien[i]), s1 = Math.ceil(bien[i + 1]); while (s0 < s1 && im(s0)) s0++; while (s1 > s0 && im(s1 - 1)) s1--; s0 = Math.max(0, s0 - 4); s1 = Math.min(nF, s1 + 6); const p = pcm.slice(s0 * F, Math.max(s0 + 1, s1) * F); ra.push({ pcm: p, sr, dai: p.length / sr }); }
+			return ra;
+		}
+		async function longTieng(cau, voice, bao) {
+			const nhac = ghiChuDoc(), ra = new Array(cau.length).fill(null), nhom = []; let cur = [], dai = 0;
+			cau.forEach((c, i) => { if (cur.length && (cur.length >= 8 || dai + c.length > 900)) { nhom.push(cur); cur = []; dai = 0; } cur.push(i); dai += c.length; }); if (cur.length) nhom.push(cur);
+			let soLoi = 0;
+			for (const g of nhom) {
+				bao("Đang lồng tiếng câu " + (g[0] + 1) + "–" + (g[g.length - 1] + 1) + "/" + cau.length + "…", g[0] / cau.length * 0.6);
+				const kq = S.amCau, khoa = g.map(i => voice + "|" + nhac + "|" + cau[i]);
+				if (khoa.every(k => kq.has(k))) { g.forEach((i, z) => { ra[i] = kq.get(khoa[z]); }); continue; }
+				try { const am = await goiTTS(nhac + g.map(i => cau[i]).join("\n\n"), voice, s2 => bao(s2, g[0] / cau.length * 0.6)); const ds = g.length === 1 ? [am] : catDoan(am, g.map(i => cau[i])); g.forEach((i, z) => { ra[i] = ds[z]; kq.set(khoa[z], ds[z]); }); }
+				catch (e) { S.loiGiong = e.message || String(e); soLoi += g.length; if (/khoá Gemini|hết lượt/.test(S.loiGiong)) { soLoi = cau.length - ra.filter(Boolean).length; break; } }
+			}
+			return { ra, soLoi };
 		}
 		const uocLuong = t => Math.max(1.2, (String(t).trim().split(/\s+/).filter(Boolean).length) / 2.9);
 
@@ -5605,7 +5838,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		async function dung(opt) {
 			const kb = docKB(chuanKB($v("vdKB").value).kb), doc = $v("vdKho").value !== "ngang", W = doc ? 1080 : 1920, H = doc ? 1920 : 1080, u = 1;
 			S.canhBao = kb.canhBao.slice(); const m = 34 * u, khung = { x: m, y: m, w: W - 2 * m, h: H - 2 * m }, coPhu = $v("vdPhuDe").checked, moDau = $v("vdMoDau").checked;
-			const cx0 = khung.x + 54 * u, cw = khung.w - 108 * u, giong = $v("vdGiong").value, cach = $v("vdCachDoc").value.trim(), bao = opt.bao || (() => { });
+			const cx0 = khung.x + 54 * u, cw = khung.w - 108 * u, giong = $v("vdGiong").value, bao = opt.bao || (() => { });
 			try { await document.fonts.load("800 44px " + FONT); await document.fonts.load("900 60px " + FONT); } catch (e) { }
 			// tiêu đề
 			const veTD = async s => s && !/^(ẩn|an|tắt|tat|không|khong|none|-)$/i.test(s.trim()) ? await danDong(hoa(s), { co: (doc ? 64 : 56) * u, nang: "900", mauChu: CHU, pxPt: 6.2, wMax: cw - (doc ? 60 : 300) * u }) : null;
@@ -5615,33 +5848,35 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			// lồng tiếng
 			const doanDs = []; kb.canh.forEach(c => c.doan.forEach(d => doanDs.push(d)));
 			let soLoi = 0; const canGiong = giong ? doanDs.filter(d => d.loi) : [];
-			for (let i = 0; i < canGiong.length; i++) { bao("Đang lồng tiếng " + (i + 1) + "/" + canGiong.length + "…", i / Math.max(1, canGiong.length) * 0.6); if (opt.khongGiong) { const k = giong + "|" + cach + "|" + canGiong[i].loi; canGiong[i].am = S.giong.get(k) || null; continue; } try { canGiong[i].am = await giongGemini(canGiong[i].loi, giong, cach); } catch (e) { if (opt.batBuoc) throw e; soLoi++; canGiong[i].am = null; S.loiGiong = e.message || String(e); if (/khoá Gemini/.test(S.loiGiong)) { soLoi = canGiong.length; break; } } }
+			if (canGiong.length) { if (opt.khongGiong) { const nh = ghiChuDoc(); canGiong.forEach(d => { d.am = S.amCau.get(giong + "|" + nh + "|" + d.loi) || null; }); } else { const kq = await longTieng(canGiong.map(d => d.loi), giong, bao); canGiong.forEach((d, i) => { d.am = kq.ra[i]; }); soLoi = kq.soLoi; } }
 			// phần tử
-			const tl = { W, H, u, khung, doc, dan: [], td: [], phan: kb.phan, muc: [], pt: [], trang: [], phu: [], giong: [], canh: [], moDau, tong: 0, mauLogo: MAU_LOGO[$v("vdMauLogo").value] || MAU_LOGO.do, kenh: $v("vdKenh").value.trim() || "TOÁN THẦY KHOA" };
+			const tl = { W, H, u, khung, doc, dan: [], td: [], moc: [], phan: kb.phan, muc: [], pt: [], trang: [], phu: [], giong: [], canh: [], moDau, tong: 0, mauLogo: MAU_LOGO[$v("vdMauLogo").value] || MAU_LOGO.do, kenh: $v("vdKenh").value.trim() || "TOÁN THẦY KHOA" };
 			let T = moDau ? 2.1 : 0.3; if (td0) tl.td.push({ t: moDau ? 1.7 : 0, dd: td0 });
 			let tdHien = td0; const yDau = () => yTD + (tdHien ? tdHien.h + 34 * u : 0) + (coPhan ? hPhan + 28 * u : 0), yDay = khung.y + khung.h - (coPhu ? 230 : 70) * u;
-			let trang = { t0: T, t1: Infinity }, y = yDau(); tl.trang.push(trang);
-			const sangTrang = t => { if (!trang.pt || !trang.pt.length) { trang.t0 = t; y = yDau(); return 0; } trang.t1 = t; trang = { t0: t + 0.35, t1: Infinity, pt: [] }; tl.trang.push(trang); y = yDau(); return 0.35; };
+			let trang = { t0: T, t1: Infinity, vao: "" }, y = yDau(); tl.trang.push(trang);
+			const chuyenMD = $v("vdChuyen").value || "mo", tocMD = TOC_AL[$v("vdToc").value] || 1;
+			const sangTrang = (t, kieu) => { if (!trang.pt || !trang.pt.length) { trang.t0 = t; if (kieu) trang.vao = kieu; y = yDau(); return 0; } trang.t1 = t; trang = { t0: t + CT * 0.55, t1: Infinity, pt: [], vao: kieu || chuyenMD }; tl.trang.push(trang); y = yDau(); return CT * 0.55; };
 			trang.pt = [];
 			const viec = []; doanDs.forEach(d => d.viec.forEach(v => viec.push(v)));
 			let xong = 0; const tongViec = Math.max(1, viec.length);
 			for (const [ci, c] of kb.canh.entries()) {
-				if (c.trang && ci) T += sangTrang(T);
+				if (c.trang && ci) T += sangTrang(T, c.chuyen); else if (c.trang && c.chuyen) trang.vao = c.chuyen;
 				const t0c = T; tl.canh.push({ t: T, ten: "Cảnh " + (ci + 1) });
 				for (const d of c.doan) {
-					const V = d.am ? d.am.dai : (d.loi ? uocLuong(d.loi) : 0), S0 = T;
+					const V = d.am ? d.am.dai : (d.loi ? uocLuong(d.loi) : 0), S0 = T; if (d.dong) tl.moc.push({ dong: d.dong, t: S0 + 0.05 });
 					if (d.loi) { tl.phu.push({ t0: S0, t1: S0 + V + 0.2, chu: d.loi }); if (d.am) tl.giong.push({ t: S0, am: d.am }); }
-					const hd = d.viec.filter(v => !["muc", "tieude", "cho", "trang", "sticker"].includes(v.k)), gian = hd.length ? Math.max(0.75, V * 0.92 / hd.length) : 0; let i = 0, tCuoi = S0, them = 0;
+					const hd = d.viec.filter(v => !["muc", "tieude", "cho", "trang", "sticker"].includes(v.k)), gian = hd.length ? Math.max(0.75 * tocMD, V * 0.92 / hd.length) : 0; let i = 0, tCuoi = S0, them = 0;
 					for (const v of d.viec) {
 						bao("Đang dựng hiệu ứng " + (++xong) + "/" + tongViec + "…", 0.6 + 0.4 * xong / tongViec);
-						const tA = S0 + 0.12 + i * gian;
+						const tA = S0 + 0.12 + i * gian; tl.moc.push({ dong: v.dong, t: tA + 0.6 });
 						if (v.k === "muc") { tl.muc.push({ t: tA, i: Math.max(1, parseInt(v.v) || 1) - 1 }); continue; }
 						if (v.k === "tieude") { tdHien = await veTD(v.v); tl.td.push({ t: tA, dd: tdHien }); if (!trang.pt || !trang.pt.length) y = yDau(); continue; }
 						if (v.k === "sticker") { const ph = v.v.split("|").map(z => z.trim()); let loai = STK[boDauVD(ph[0])]; if (!loai) { loai = "vui"; S.canhBao.push("dòng " + v.dong + ": chưa có sticker “" + ph[0] + "” — dùng sticker vui"); } const phai = (tl.dan.length % 2) === 0, r = (doc ? 92 : 80) * u, truoc = tl.dan[tl.dan.length - 1], t0s = truoc ? Math.max(tA, truoc.t0 + truoc.dai + 0.15) : tA; tCuoi = Math.max(tCuoi, t0s + 1.4); tl.dan.push({ t0: t0s, dai: Math.max(1.5, parseFloat(String(ph[2] || "").replace(",", ".")) || 3.4), loai, chu: ph[1] || "", phai, r, x: phai ? khung.x + khung.w - r - 46 * u : khung.x + r + 46 * u, y: yDay - r - 10 * u, wMax: khung.w - 2 * r - 160 * u }); continue; }
 						if (v.k === "cho") { them += Math.max(0, parseFloat(String(v.v).replace(",", ".")) || 1); continue; }
-						if (v.k === "trang") { T = Math.max(T, tA); sangTrang(tA); continue; }
+						if (v.k === "trang") { T = Math.max(T, tA); sangTrang(tA, CHUYEN_AL[boDauVD(v.v)] || ""); continue; }
 						let e;
 						try { e = await taoPhanTu(v, { cw, u, doc }); } catch (err) { S.canhBao.push("dòng " + v.dong + ": " + (err.message || err) + " — đã bỏ qua"); continue; }
+						e.d *= v.toc || tocMD; e.dong = v.dong;
 						if (y + e.h > yDay && trang.pt.length) { const lui = sangTrang(tA); e.t0 = tA + lui; } else e.t0 = tA;
 						e.x = cx0; e.y = y; e.w = cw; y += e.h + 30 * u; trang.pt.push(e); tl.pt.push(e); tCuoi = Math.max(tCuoi, e.t0 + e.d); i++;
 					}
@@ -5655,7 +5890,9 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			// âm thanh: giọng + nhạc nền
 			const n = Math.ceil(tl.tong * SR), mix = new Float32Array(n);
 			tl.giong.forEach(g => { const a = g.am, k = a.sr / SR, b0 = Math.round(g.t * SR), len = Math.floor(a.pcm.length / k); for (let i = 0; i < len && b0 + i < n; i++) { const s = i * k, i0 = Math.floor(s), f = s - i0; mix[b0 + i] += (a.pcm[i0] * (1 - f) + (a.pcm[i0 + 1] || 0) * f) * 0.95; } });
-			if (S.nhac) { const vol = (+$v("vdAmNhac").value || 0) / 100, nh = S.nhac; for (let i = 0; i < n; i++) { const fade = Math.min(1, i / SR / 1.5, (n - i) / SR / 2); mix[i] += nh[i % nh.length] * vol * fade; } }
+			if (S.nhac) { const vol = (+$v("vdAmNhac").value || 0) / 100, nh = S.nhac, bd = Math.round(kep(+$v("vdNhacBD").value || 0, 0, Math.max(0, nh.length / SR - 2)) * SR), L = nh.length - bd, XF = Math.min(SR * 2, L >> 2), P = Math.max(1, L - XF);
+				let duck = null; if ($v("vdNhacGiam").checked && tl.giong.length) { duck = new Float32Array(n).fill(1); tl.giong.forEach(g => { const a = Math.max(0, Math.round((g.t - 0.2) * SR)), b = Math.min(n, Math.round((g.t + g.am.dai + 0.3) * SR)); for (let i = a; i < b; i++) duck[i] = 0.4; }); const k = 1 / (SR * 0.25); let v = 1; for (let i = 0; i < n; i++) { v += (duck[i] - v) * k * 4; duck[i] = v; } }
+				for (let i = 0; i < n; i++) { const fade = Math.min(1, i / SR / 1.5, (n - i) / SR / 2), q = i % P; let x = nh[bd + q]; if (i >= P && q < XF) { const f = q / XF; x = x * f + nh[bd + P + q] * (1 - f); } mix[i] += x * vol * fade * (duck ? duck[i] : 1); } }
 			let maxA = 0; for (let i = 0; i < n; i++) maxA = Math.max(maxA, Math.abs(mix[i])); if (maxA > 0.98) for (let i = 0; i < n; i++) mix[i] *= 0.98 / maxA;
 			tl.am = maxA > 0 ? mix : null;
 			return tl;
@@ -5733,7 +5970,9 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			if (tl.phan.length && t > tIntro) { const q = em((t - tIntro) / 0.5), y0 = yTD + (td && td.dd ? td.dd.h + 34 * u : 0), n = tl.phan.length; let cur = -1; tl.muc.forEach(z => { if (t >= z.t) cur = z.i; }); ctx.save(); ctx.globalAlpha *= q; ctx.font = "800 " + 26 * u + "px " + FONT; const ws = tl.phan.map(s2 => ctx.measureText(s2.toUpperCase()).width + 74 * u), tong = ws.reduce((a, b) => a + b, 0) + (n - 1) * 12 * u, k = Math.min(1, (khung.w - 60 * u) / tong); let xx = W / 2 - tong * k / 2; ctx.translate(xx, y0); ctx.scale(k, k); xx = 0;
 				tl.phan.forEach((s2, i) => { const on = i === cur, bw = ws[i], bh = 50 * u; bo2(ctx, xx, 0, bw, bh, bh / 2); ctx.fillStyle = on ? "rgba(79,179,255,.16)" : "rgba(255,255,255,.04)"; ctx.fill(); ctx.strokeStyle = on ? MAU.xanh : "rgba(255,255,255,.14)"; ctx.lineWidth = 2.5 * u; ctx.stroke(); ctx.fillStyle = on ? MAU.xanh : "#3a4352"; ctx.beginPath(); ctx.arc(xx + 27 * u, bh / 2, 15 * u, 0, 7); ctx.fill(); ctx.fillStyle = on ? "#08121d" : "#9aa4b2"; ctx.font = "900 " + 20 * u + "px " + FONT; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(String(i + 1), xx + 27 * u, bh / 2 + 1); ctx.textAlign = "left"; ctx.font = "800 " + 26 * u + "px " + FONT; ctx.fillStyle = on ? "#fff" : "#8a93a3"; ctx.fillText(s2.toUpperCase(), xx + 50 * u, bh / 2 + 1); xx += bw + 12 * u; }); ctx.restore(); }
 			// nội dung theo trang
-			tl.trang.forEach(tr => { if (t < tr.t0 - 0.01 || t > tr.t1 + 0.35) return; const a = t > tr.t1 ? 1 - (t - tr.t1) / 0.35 : 1; ctx.save(); ctx.globalAlpha *= kep(a, 0, 1); tr.pt.forEach(e => { if (t < e.t0) return; vePhanTu(ctx, e, kep((t - e.t0) / e.d, 0, 1), u); }); ctx.restore(); });
+			tl.trang.forEach((tr, k) => { if (t < tr.t0 - 0.01 || t > tr.t1 + CT) return; ctx.save(); const sau = tl.trang[k + 1];
+				if (t > tr.t1) apChuyen(ctx, tl, (sau && sau.vao) || "mo", (t - tr.t1) / CT, false, k + 1); else if (k && tr.vao && t < tr.t0 + CT) apChuyen(ctx, tl, tr.vao, 1 - (t - tr.t0) / CT, true, k);
+				tr.pt.forEach(e => { if (t < e.t0) return; vePhanTu(ctx, e, kep((t - e.t0) / e.d, 0, 1), u); }); ctx.restore(); });
 			tl.dan.forEach(d => veDan(ctx, d, t, u));
 			// phụ đề
 			if ($v("vdPhuDe").checked) { const ph = tl.phu.find(z => t >= z.t0 && t <= z.t1); if (ph) { const tu = ph.chu.split(/\s+/), nhom = []; for (let i = 0; i < tu.length; i += 11) nhom.push(tu.slice(i, i + 11).join(" ")); const k = kep((t - ph.t0) / (ph.t1 - ph.t0), 0, 0.999), s2 = nhom[Math.floor(k * nhom.length)]; ctx.save(); ctx.font = "700 " + 32 * u + "px " + FONT; const tw = Math.min(ctx.measureText(s2).width, khung.w - 120 * u), bh = 62 * u, by = khung.y + khung.h - (tl.doc ? 150 : 90) * u; bo2(ctx, W / 2 - tw / 2 - 28 * u, by, tw + 56 * u, bh, 16 * u); ctx.fillStyle = "rgba(0,0,0,.55)"; ctx.fill(); ctx.fillStyle = "#fff"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(s2, W / 2, by + bh / 2 + 1, khung.w - 120 * u); ctx.restore(); } }
@@ -5766,6 +6005,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 				if (lan !== S.lan) return; S.tl = tl; capCanvas(tl); $v("vdXuat").disabled = false;
 				$v("vdCanhDs").innerHTML = tl.canh.map((c, i) => '<button type="button" data-i="' + i + '">' + (i + 1) + "</button>").join("");
 				veTai(Math.min(S.t, tl.tong)); if (!S.t) veTai(tl.moDau ? 2.2 : 0.5);
+				const gg = $v("vdGiong").value; $v("vdTomTat").innerHTML = ['<span title="Độ dài">⏱ ' + gio(tl.tong) + "</span>", '<span title="Giọng đọc">🎙 ' + (gg ? esc(gg) + " · " + ({ nam: "miền Nam", bac: "miền Bắc", trung: "miền Trung" }[$v("vdVung").value] || "") + (tl.giong.length ? " ✓" : "") : "không lồng tiếng") + "</span>", '<span title="Nhạc nền">🎵 ' + (S.nhac ? "có nhạc" : "không nhạc") + "</span>", '<span title="Chuyển trang">✦ ' + esc((CHUYEN.find(c => c[0] === $v("vdChuyen").value) || ["", "Mờ dần"])[1]) + "</span>"].join(""); if (!$v("vdSongHop").hidden) veSong();
 				const g = $v("vdGiong").value; tt("Video dài " + gio(tl.tong) + " · " + tl.canh.length + " cảnh" + (g ? (tl.giong.length ? " · đã lồng tiếng " + tl.giong.length + " câu" : coGiong ? "" : " · chưa lồng tiếng (bấm Dựng & lồng tiếng)") : "") + (tl.soLoiGiong ? " · " + tl.soLoiGiong + " câu chưa lồng tiếng được (" + (S.loiGiong || "lỗi") + ")" : "") + "." + (tl.soLoiGiong && !tl.am ? " Video đang chưa có tiếng." : "") + (tl.canhBao.length ? " Đã tự xử lý " + tl.canhBao.length + " chỗ: " + tl.canhBao.slice(0, 3).join("; ") + (tl.canhBao.length > 3 ? "; …" : "") : ""), false);
 			} catch (e) { if (lan === S.lan) tt("Chưa dựng được: " + ((e && e.message) || e), true); }
 			finally { if (coGiong) { $v("vdDung").disabled = false; tien(null); } }
@@ -5779,14 +6019,84 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		$v("vdTepKB").addEventListener("change", async e => { const f = e.target.files[0]; if (!f) return; const t = (await f.text()).replace(/^\ufeff/, "").replace(/\r\n?/g, "\n");
 			if ($v("vdKB").value.trim() && $v("vdKB").value !== t && !confirm("Thay kịch bản đang có bằng tệp “" + f.name + "”?")) return;
 			$v("vdKB").value = t; $v("vdKB").dispatchEvent(new Event("input")); toast("Đã mở " + f.name); });
-		const phatNhanh = async (pcm, sr, giay) => { S.actx = S.actx || new (window.AudioContext || window.webkitAudioContext)(); await S.actx.resume(); if (S.nguonThu) { try { S.nguonThu.stop(); } catch (e) { } } const n = Math.min(pcm.length, Math.round((giay || 99) * sr)), b = S.actx.createBuffer(1, n, sr); b.copyToChannel(pcm.subarray(0, n), 0); const src = S.actx.createBufferSource(); src.buffer = b; src.connect(S.actx.destination); src.start(); S.nguonThu = src; };
-		$v("vdNgheGiong").addEventListener("click", async () => { const g = $v("vdGiong").value; if (!g) { toast("Chọn một giọng đọc trước"); return; } const nut = $v("vdNgheGiong"); nut.disabled = true; tt("Đang tạo giọng mẫu…");
-			try { const a = await giongGemini("Xin chào, mình là giọng đọc của kênh " + ($v("vdKenh").value.trim() || "Toán Thầy Khoa") + ". Cùng nhau giải Toán thật vui nhé!", g, $v("vdCachDoc").value.trim()); await phatNhanh(a.pcm, a.sr); tt("Đang phát giọng mẫu (" + (S.mhTTS || "Gemini") + ")."); } catch (e) { tt("Chưa nghe thử được: " + ((e && e.message) || e), true); } nut.disabled = false; });
-		$v("vdNgheNhac").addEventListener("click", async () => { if (!S.nhac) { toast("Chọn tệp nhạc nền trước"); return; } const vol = (+$v("vdAmNhac").value || 0) / 100, n = Math.min(S.nhac.length, SR * 8), p = new Float32Array(n); for (let i = 0; i < n; i++) p[i] = S.nhac[i] * vol * Math.min(1, (n - i) / SR); await phatNhanh(p, SR); tt("Đang phát thử 8 giây nhạc nền ở âm lượng đã chọn."); });
-		$v("vdKB").addEventListener("input", () => { clearTimeout(S.hen); try { localStorage.setItem("tdk_video_kb", $v("vdKB").value); } catch (e) { } S.hen = setTimeout(() => dungLai(false), 900); });
-		["vdKho", "vdDam", "vdPhuDe", "vdMoDau", "vdMauLogo", "vdKenh", "vdGiong", "vdAmNhac"].forEach(id => $v(id).addEventListener("change", () => dungLai(false)));
-		$v("vdNhac").addEventListener("change", async () => { const f = $v("vdNhac").files[0]; if (!f) { S.nhac = null; dungLai(false); return; } const laVideo = /^video\//.test(f.type) || /\.(mp4|mov|m4v|webm|mkv|avi)$/i.test(f.name); if (f.size > 600 * 1048576) { tt("Tệp quá lớn (" + Math.round(f.size / 1048576) + " MB). Hãy chọn tệp dưới 600 MB hoặc cắt ngắn video trước.", true); return; } tt(laVideo ? "Đang tách âm thanh từ video…" : "Đang nạp nhạc nền…");
-			try { const ac = new OfflineAudioContext(1, SR, SR), b = await ac.decodeAudioData(await f.arrayBuffer()); const o = new OfflineAudioContext(1, Math.ceil(b.duration * SR), SR), s2 = o.createBufferSource(); s2.buffer = b; s2.connect(o.destination); s2.start(); S.nhac = (await o.startRendering()).getChannelData(0); toast((laVideo ? "Đã lấy âm thanh từ video làm nhạc nền " : "Đã nạp nhạc nền ") + gio(b.duration) + " — bấm Nghe thử nhạc để kiểm tra"); dungLai(false); } catch (e) { S.nhac = null; tt(laVideo ? "Không tách được âm thanh từ video này (video không có tiếng hoặc định dạng trình duyệt chưa hỗ trợ). Hãy thử tệp MP4 hoặc WebM khác." : "Không đọc được tệp nhạc.", true); } });
+		const phatNhanh = async (pcm, sr, giay) => { S.actx = S.actx || new (window.AudioContext || window.webkitAudioContext)(); await S.actx.resume(); if (S.nguonThu) { try { S.nguonThu.stop(); } catch (e) { } } const n = Math.min(pcm.length, Math.round((giay || 99) * sr)), b = S.actx.createBuffer(1, n, sr); b.copyToChannel(pcm.subarray(0, n), 0); const src = S.actx.createBufferSource(); src.buffer = b; src.connect(S.actx.destination); src.start(); S.nguonThu = src; return src; };
+		// ----- các nhóm nút chọn (thay cho ô chọn): data-cho = id ô ẩn
+		const chonNhom = (id, v, im) => { const o = $v(id); if (!o) return; o.value = v; document.querySelectorAll('[data-cho="' + id + '"] [data-v]').forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === v))); if (!im) o.dispatchEvent(new Event("change")); };
+		document.querySelectorAll("#tabVideo [data-cho]").forEach(n => n.addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (b) chonNhom(n.dataset.cho, b.dataset.v); }));
+		// ----- thẻ bước
+		const moThe = k => { document.querySelectorAll(".vdThe4 [data-the]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.the === k))); document.querySelectorAll(".vdPanel").forEach(p => { p.hidden = p.dataset.panel !== k; }); if (k === "nhac") veSong(); try { localStorage.setItem("tdk_video_the", k); } catch (e) { } };
+		document.querySelector(".vdThe4").addEventListener("click", e => { const b = e.target.closest("[data-the]"); if (b) moThe(b.dataset.the); });
+		// ----- giọng đọc
+		const SONG_TRANG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>', SONG_DUNG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>';
+		function veGiongDs() {
+			const gioi = $v("vdGioi").value, chon = $v("vdGiong").value;
+			$v("vdGiongDs").innerHTML = gioi === "tat" ? '<p class="vdGhi">Video sẽ không có lời đọc — chỉ có phụ đề và nhạc nền (nếu có).</p>' : GIONG.filter(g => g[1] === gioi).map(([ten, , mt]) => '<div class="vdGiongThe" role="radio" tabindex="0" data-g="' + ten + '" aria-checked="' + (ten === chon) + '"><button type="button" class="vdNghe" data-nghe="' + ten + '" aria-label="Nghe thử giọng ' + ten + '">' + SONG_TRANG + '</button><b>' + ten + '</b><span>' + esc(mt) + "</span></div>").join("");
+			$v("vdNhanGiong").textContent = gioi === "tat" ? "tắt" : chon || "";
+		}
+		$v("vdGioi").addEventListener("change", () => { const gioi = $v("vdGioi").value; if (gioi === "tat") { if ($v("vdGiong").value) S.giongCu = $v("vdGiong").value; $v("vdGiong").value = ""; } else { const cu = S["giong_" + gioi] || (S.giongCu && GIONG.some(g => g[0] === S.giongCu && g[1] === gioi) ? S.giongCu : "") || (gioi === "nam" ? "Charon" : "Kore"); $v("vdGiong").value = GIONG.some(g => g[0] === $v("vdGiong").value && g[1] === gioi) ? $v("vdGiong").value : cu; } veGiongDs(); luuCai(); dungLai(false); });
+		const chonGiong = ten => { $v("vdGiong").value = ten; S["giong_" + $v("vdGioi").value] = ten; veGiongDs(); luuCai(); dungLai(false); };
+		$v("vdGiongDs").addEventListener("click", async e => {
+			const n = e.target.closest("[data-nghe]");
+			if (n) { e.stopPropagation(); const ten = n.dataset.nghe; if (S.ngheDang === ten && S.nguonThu) { try { S.nguonThu.stop(); } catch (x) { } return; } S.ngheDang = ten; n.classList.add("dang"); n.innerHTML = '<i class="vdXoay"></i>';
+				try { const a = await giongGemini("Xin chào các bạn, mình là " + ($v("vdKenh").value.trim() || "Toán Thầy Khoa") + ". Hôm nay mình cùng giải một bài Toán thật hay nhé!", ten, s2 => tt(s2)); n.innerHTML = SONG_DUNG; const src = await phatNhanh(a.pcm, a.sr); src.onended = () => { n.classList.remove("dang"); n.innerHTML = SONG_TRANG; if (S.ngheDang === ten) S.ngheDang = ""; }; tt("Đang nghe thử giọng " + ten + "."); }
+				catch (x) { n.classList.remove("dang"); n.innerHTML = SONG_TRANG; S.ngheDang = ""; tt("Chưa nghe thử được: " + ((x && x.message) || x), true); } return; }
+			const c = e.target.closest("[data-g]"); if (c) chonGiong(c.dataset.g); });
+		$v("vdGiongDs").addEventListener("keydown", e => { const c = e.target.closest("[data-g]"); if (c && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); chonGiong(c.dataset.g); } });
+		$v("vdCachChip").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; $v("vdCachDoc").value = b.textContent; $v("vdCachDoc").dispatchEvent(new Event("change")); });
+		// ----- nhạc nền
+		function veSong() {
+			const c = $v("vdSong"), x = c.getContext("2d"), nh = S.nhac; $v("vdSongHop").hidden = !nh; $v("vdTha").classList.toggle("co", !!nh); $v("vdNhanNhac").textContent = nh ? gio(nh.length / SR) : "";
+			if (!nh) return; const r = c.getBoundingClientRect(); if (r.width) { c.width = Math.round(r.width * 2); c.height = 120 * 2; }
+			const W = c.width, H = c.height, dai = nh.length / SR, bd = +$v("vdNhacBD").value || 0, can = S.tl ? S.tl.tong : 0, buoc = Math.max(1, Math.floor(nh.length / W)), mau = getComputedStyle(c).getPropertyValue("--song").trim() || "#c9a24a";
+			x.clearRect(0, 0, W, H); if (!S.nhacDinh) { let m = 0; for (let k = 0; k < nh.length; k += 7) m = Math.max(m, Math.abs(nh[k])); S.nhacDinh = m || 1; } const kd = 1 / S.nhacDinh; const xa = bd / dai * W, xb = Math.min(W, (bd + can) / dai * W);
+			x.fillStyle = "rgba(201,162,74,.12)"; x.fillRect(xa, 0, Math.max(2, xb - xa), H);
+			for (let i = 0; i < W; i++) { let m = 0; for (let k = i * buoc, e = Math.min(nh.length, k + buoc); k < e; k += 4) m = Math.max(m, Math.abs(nh[k])); const h = Math.max(2, m * kd * H * 0.9); x.fillStyle = i >= xa && i <= xb ? mau : "rgba(140,150,165,.45)"; x.fillRect(i, (H - h) / 2, 1, h); }
+			x.fillStyle = mau; x.fillRect(xa - 1, 0, 3, H);
+			if (can > dai - bd) { x.fillStyle = "rgba(201,162,74,.85)"; x.font = "600 22px sans-serif"; x.fillText("↻ lặp lại " + Math.ceil(can / Math.max(1, dai - bd)) + " lần", 12, 28); }
+		}
+		async function napNhac(f) {
+			if (!f) return; const laVideo = /^video\//.test(f.type) || /\.(mp4|mov|m4v|webm|mkv|avi)$/i.test(f.name);
+			if (f.size > 600 * 1048576) { tt("Tệp quá lớn (" + Math.round(f.size / 1048576) + " MB). Hãy chọn tệp dưới 600 MB hoặc cắt ngắn video trước.", true); return; }
+			tt(laVideo ? "Đang tách âm thanh từ video…" : "Đang nạp nhạc nền…");
+			try { const ac = new OfflineAudioContext(1, SR, SR), b = await ac.decodeAudioData(await f.arrayBuffer()); const o = new OfflineAudioContext(1, Math.ceil(b.duration * SR), SR), s2 = o.createBufferSource(); s2.buffer = b; s2.connect(o.destination); s2.start(); S.nhac = (await o.startRendering()).getChannelData(0); S.nhacDinh = 0; $v("vdTha").querySelector("b").textContent = "Đổi tệp nhạc khác";
+				$v("vdNhacTen").textContent = f.name; $v("vdNhacDai").textContent = gio(b.duration) + (laVideo ? " · lấy từ video" : ""); $v("vdNhacBD").max = Math.max(0, Math.floor(b.duration - 2)); $v("vdNhacBD").value = 0; $v("vdNhacBDSo").textContent = "0";
+				toast((laVideo ? "Đã lấy âm thanh từ video làm nhạc nền " : "Đã nạp nhạc nền ") + gio(b.duration)); veSong(); dungLai(false); }
+			catch (e) { tt(laVideo ? "Không tách được âm thanh từ video này (video không có tiếng hoặc định dạng trình duyệt chưa hỗ trợ). Hãy thử tệp MP4 hoặc WebM khác." : "Không đọc được tệp nhạc này — thử MP3 hoặc M4A khác.", true); }
+		}
+		$v("vdNhac").addEventListener("change", () => napNhac($v("vdNhac").files[0]));
+		["dragover", "dragenter"].forEach(k => $v("vdTha").addEventListener(k, e => { e.preventDefault(); $v("vdTha").classList.add("keo"); }));
+		["dragleave", "drop"].forEach(k => $v("vdTha").addEventListener(k, () => $v("vdTha").classList.remove("keo")));
+		$v("vdTha").addEventListener("drop", e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) napNhac(f); });
+		$v("vdNhacXoa").addEventListener("click", () => { S.nhac = null; $v("vdTha").querySelector("b").textContent = "Kéo thả hoặc bấm để chọn nhạc nền"; $v("vdNhac").value = ""; veSong(); dungLai(false); });
+		$v("vdNhacBD").addEventListener("input", () => { $v("vdNhacBDSo").textContent = gio(+$v("vdNhacBD").value); veSong(); });
+		$v("vdAmNhac").addEventListener("input", () => { $v("vdAmNhacSo").textContent = $v("vdAmNhac").value; });
+		$v("vdNgheNhac").addEventListener("click", async () => { if (!S.nhac) { toast("Chọn tệp nhạc nền trước"); return; } const vol = (+$v("vdAmNhac").value || 0) / 100, bd = Math.round((+$v("vdNhacBD").value || 0) * SR), n = Math.min(S.nhac.length - bd, SR * 8), p = new Float32Array(n); for (let i = 0; i < n; i++) p[i] = S.nhac[bd + i] * vol * Math.min(1, (n - i) / SR); await phatNhanh(p, SR); tt("Đang phát thử 8 giây nhạc nền ở âm lượng đã chọn."); });
+		// ----- chuyển trang (thẻ có hoạt hình nhỏ)
+		$v("vdChuyenDs").innerHTML = CHUYEN.map(([k, ten]) => '<button type="button" data-v="' + k + '"><span class="vdMini c-' + k + '"><i></i><i></i></span><b>' + ten + "</b><code>" + k + "</code></button>").join("");
+		// ----- lưu thiết lập
+		const CAI = ["vdGioi", "vdGiong", "vdVung", "vdTocDoc", "vdCachDoc", "vdAmNhac", "vdNhacGiam", "vdKho", "vdChuyen", "vdToc", "vdKenh", "vdMauLogo", "vdPhuDe", "vdDam", "vdMoDau"];
+		function luuCai() { const o = {}; CAI.forEach(id => { const e = $v(id); o[id] = e.type === "checkbox" ? e.checked : e.value; }); try { localStorage.setItem("tdk_video_cai", JSON.stringify(o)); } catch (e) { } }
+		function napCai() { let o = {}; try { o = JSON.parse(localStorage.getItem("tdk_video_cai") || "{}") || {}; } catch (e) { } CAI.forEach(id => { if (!(id in o)) return; const e = $v(id); if (e.type === "checkbox") e.checked = !!o[id]; else e.value = o[id]; });
+			if (o.vdGiong && o.vdGioi && o.vdGioi !== "tat") S["giong_" + o.vdGioi] = o.vdGiong; document.querySelectorAll("#tabVideo [data-cho]").forEach(n => chonNhom(n.dataset.cho, $v(n.dataset.cho).value, true)); $v("vdAmNhacSo").textContent = $v("vdAmNhac").value; veGiongDs(); }
+		CAI.forEach(id => $v(id).addEventListener("change", () => { luuCai(); if (id !== "vdGioi") dungLai(false); }));
+		$v("vdNhacBD").addEventListener("change", () => dungLai(false));
+		// ----- soạn kịch bản: tô màu cú pháp + nhảy tới hiệu ứng theo con trỏ
+		const escH = t => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+		function toDong(l) {
+			if (/^\s*\/\//.test(l)) return '<span class="t-cm">' + escH(l) + "</span>";
+			if (/^\s*(-{3,}|={3,})/.test(l)) return '<span class="t-ng">' + escH(l) + "</span>";
+			if (/^\s*>>/.test(l)) return '<span class="t-loi">' + escH(l) + "</span>";
+			const m = l.match(/^(\s*)([a-zA-Z]+)(\s*\([^)]*\))?(\s*:)([\s\S]*)$/); let dau = "", than = l;
+			if (m) { dau = escH(m[1]) + '<span class="t-k">' + m[2] + "</span>" + (m[3] ? '<span class="t-p">' + escH(m[3]) + "</span>" : "") + '<span class="t-k">' + escH(m[4]) + "</span>"; than = m[5]; }
+			return dau + escH(than).replace(/\$[^$]*\$?/g, z => '<span class="t-m">' + z + "</span>").replace(/\[\/?[a-z]*\]/g, z => '<span class="t-c">' + z + "</span>").replace(/\|/g, '<span class="t-s">|</span>');
+		}
+		const capTo = () => { const v = $v("vdKB").value; $v("vdKBTo").innerHTML = v.split("\n").map(toDong).join("\n") + "\n "; $v("vdKBTo").scrollTop = $v("vdKB").scrollTop; };
+		$v("vdKB").addEventListener("scroll", () => { $v("vdKBTo").scrollTop = $v("vdKB").scrollTop; $v("vdKBTo").scrollLeft = $v("vdKB").scrollLeft; });
+		const theoConTro = () => { const ta = $v("vdKB"), dong = ta.value.slice(0, ta.selectionStart).split("\n").length; $v("vdDongSo").textContent = "Dòng " + dong; if (!S.tl || S.chay || !S.tl.moc) return; let m = null; S.tl.moc.forEach(z => { if (z.dong <= dong && (!m || z.dong >= m.dong)) m = z; }); if (m && Math.abs(m.t - S.t) > 0.05) veTai(m.t); };
+		["click", "keyup"].forEach(k => $v("vdKB").addEventListener(k, () => { clearTimeout(S.henCT); S.henCT = setTimeout(theoConTro, 120); }));
+		$v("vdKB").addEventListener("input", () => { capTo(); clearTimeout(S.hen); try { localStorage.setItem("tdk_video_kb", $v("vdKB").value); } catch (e) { } S.hen = setTimeout(() => dungLai(false), 900); });
+		$v("vdMoAI").addEventListener("click", () => { const h = $v("vdAIHop"); h.hidden = !h.hidden; $v("vdMoAI").setAttribute("aria-expanded", String(!h.hidden)); if (!h.hidden) $v("vdDe").focus(); });
+		$v("vdCanvas").addEventListener("click", () => $v("vdPhat").click());
 
 		// ---------- MP4 (H.264 + AAC/Opus) ----------
 		function taoMp4(o) {
@@ -5801,6 +6111,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			const bang = (ds, ts, offs) => [stts(ds, ts), fbox("stsc", 0, 0, u32(1), u32(1), u32(1), u32(1)), fbox("stsz", 0, 0, u32(0), u32(ds.length), ...ds.map(s2 => u32(s2.b.length))), fbox("stco", 0, 0, u32(ds.length), ...offs.map(u32))];
 			return {
 				video(c, m) { if (m && m.decoderConfig && m.decoderConfig.description) avcC = sao(m.decoderConfig.description); const b = new Uint8Array(c.byteLength); c.copyTo(b); V.push({ b, t: c.timestamp, d: c.duration || 1e6 / o.fps, k: c.type === "key" }); },
+				xoaAm() { A.length = 0; aCfg = null; }, datAac(v) { o.aac = v; },
 				am(c, m) { if (m && m.decoderConfig && m.decoderConfig.description) aCfg = sao(m.decoderConfig.description); const b = new Uint8Array(c.byteLength); c.copyTo(b); A.push({ b, t: c.timestamp, d: c.duration || 0 }); },
 				xong() {
 					if (!avcC) throw new Error("bộ mã hoá không trả cấu hình H.264");
@@ -5844,7 +6155,10 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 					if (i % 15 === 0) { tien(i / N * (ac ? 0.92 : 1)); tt("Đang xuất video " + Math.round(i / N * 100) + "% · còn khoảng " + Math.max(1, Math.round((performance.now() - t0) / 1000 / Math.max(1, i) * (N - i))) + " giây"); await new Promise(r => setTimeout(r, 0)); }
 				}
 				await enc.flush(); enc.close(); if (loi) throw loi;
-				if (ac) { const ae = new AudioEncoder({ output: (c, m) => mux.am(c, m), error: e => { loi = e; } }); ae.configure({ codec: ac, sampleRate: SR, numberOfChannels: 1, bitrate: 128000 }); const am = tl.am, B = 4800; for (let k = 0; k < am.length; k += B) { const n = Math.min(B, am.length - k), d = new AudioData({ format: "f32-planar", sampleRate: SR, numberOfFrames: n, numberOfChannels: 1, timestamp: Math.round(k * 1e6 / SR), data: am.slice(k, k + n) }); ae.encode(d); d.close(); if (ae.encodeQueueSize > 20) await new Promise(r => setTimeout(r, 2)); } await ae.flush(); ae.close(); if (loi) throw loi; }
+				const maAm = async codec => { mux.xoaAm(); mux.datAac(codec === "mp4a.40.2"); let du = 0; const ae = new AudioEncoder({ output: (c, m) => { du += c.duration || 0; mux.am(c, m); }, error: e => { loi = e; } }); ae.configure({ codec, sampleRate: SR, numberOfChannels: 1, bitrate: 128000 }); const am = tl.am, B = 4800;
+					for (let k = 0; k < am.length; k += B) { const n = Math.min(B, am.length - k), d = new AudioData({ format: "f32-planar", sampleRate: SR, numberOfFrames: n, numberOfChannels: 1, timestamp: Math.round(k * 1e6 / SR), data: am.slice(k, k + n) }); ae.encode(d); d.close(); while (ae.encodeQueueSize > 3) await ngu(1); if (k % (B * 100) === 0) { tt("Đang ghép âm thanh " + Math.round(k / am.length * 100) + "%"); await ngu(0); } }
+					await ae.flush(); ae.close(); if (loi) throw loi; return du / 1e6; };
+				if (ac) { let du = await maAm(ac); if (du && du < tl.am.length / SR * 0.97 && ac !== "opus") { try { if ((await AudioEncoder.isConfigSupported({ codec: "opus", sampleRate: SR, numberOfChannels: 1, bitrate: 128000 })).supported) { ac = "opus"; du = await maAm("opus"); } } catch (e) { } } }
 				const blob = mux.xong(), a = $v("vdTai"); if (a.href) URL.revokeObjectURL(a.href); a.href = URL.createObjectURL(blob); a.hidden = false; S.blob = blob;
 				tien(null); tt("Xong! Video " + gio(tl.tong) + ", " + (blob.size / 1048576).toFixed(1) + " MB" + (tl.am && !ac ? " (máy này không mã hoá được âm thanh — video không có tiếng)" : "") + ". Bấm Tải video về máy.");
 			} catch (e) { tien(null); tt("Xuất video lỗi: " + ((e && e.message) || e), true); }
@@ -5873,7 +6187,7 @@ CÚ PHÁP KỊCH BẢN (mỗi hiệu ứng một dòng):
 tieude: TIÊU ĐỀ IN HOA với [vang]từ khoá[/]        (đặt ở đầu; có thể đổi tiêu đề giữa video; "tieude: ẩn" để ẩn tiêu đề)
 phan: Đề bài | Phân tích | Lời giải | Kết luận      (tuỳ chọn, mục lục; trong cảnh dùng muc: 2 để sáng mục)
 ---                                               (cảnh mới, giữ màn hình)
-===                                               (trang mới, xoá màn hình)
+===                                               (trang mới, xoá màn hình; có thể ghi kiểu chuyển: === truot | day | phong | lat | quet | xoay — đổi kiểu ở vài chỗ chuyển ý quan trọng cho sinh động)
 >> lời đọc                                        (1–2 câu, ≤ 25 từ; các hiệu ứng ngay sau lời đọc sẽ hiện trong lúc đọc câu đó)
 de: đề bài có $công thức$
 dong: CHỮ IN HOA NGẮN: $công thức$                (dòng trình bày)
@@ -5889,6 +6203,7 @@ dothi: y=x^2-4x+3 ; x=-1..5 ; y=-2..6 ; diem=1,3 ; lo=2 ; tc=1 ; chu=CHÚ THÍCH
 hinh:                                             (hình học: dòng sau dán code \\begin{tikzpicture}…\\end{tikzpicture}, toạ độ ≤ 6 cm, nét đơn giản)
 sticker: tên | lời thoại ngắn                     (tên: vui, haha, wow, suynghi, hoi, oi, gioi, bongden, tada, tim)
 cho: 1.5                                          (dừng thêm 1,5 giây)
+Tham số trong ngoặc (tuỳ chọn) sau tên hiệu ứng: cỡ chữ 0.4–2.5 và/hoặc tốc độ hiện nhanh | cham | ngay. Ví dụ: khung(1.2): $…$ · dong(nhanh): $…$ · ct(1.3 cham): …
 
 TÔ MÀU (nhất quán cả video): [vang]…[/] kết quả, từ khoá chính · [do]…[/] sai, chú ý, bẫy · [luc]…[/] đúng · [xanh]…[/] và [cam]…[/] hai đại lượng cần phân biệt · [hong]…[/], [tim]…[/] đại lượng phụ. Dùng được cả bên trong $…$.
 
@@ -5913,7 +6228,7 @@ ${de}`;
 		const layNhac = () => { const de = $v("vdDe").value.trim(); if (!de) { $v("vdDe").focus(); toast("Dán đề bài (và lời giải) vào ô trước"); return null; } return nhacAI(de, $v("vdKieu").value, +$v("vdDai").value || 2, $v("vdDoiTuong").value); };
 		$v("vdChepNhac").addEventListener("click", async () => { const s2 = layNhac(); if (!s2) return; try { await navigator.clipboard.writeText(s2); toast("Đã copy prompt + đề + lời giải — dán vào Gemini/ChatGPT/Claude, rồi dán kịch bản trả về vào ô Kịch bản"); } catch (e) { toast("Trình duyệt không cho copy"); } });
 		$v("vdAIViet").addEventListener("click", async () => { const s2 = layNhac(); if (!s2) return; const nut = $v("vdAIViet"); nut.disabled = true; tt("AI đang viết kịch bản…");
-			try { let t = await bo()._w2t.goiHinh(vtAI(null).ai, s2, [], { loai: "video" }); t = String(t || "").replace(/^```[a-z]*\n?|```\s*$/gm, "").trim(); t = chuanKB(t).kb; docKB(t); $v("vdKB").value = t; try { localStorage.setItem("tdk_video_kb", t); } catch (e) { } tt("AI đã viết xong kịch bản — xem lại rồi bấm Dựng & lồng tiếng."); dungLai(false); }
+			try { let t = await bo()._w2t.goiHinh(vtAI(null).ai, s2, [], { loai: "video" }); t = String(t || "").replace(/^```[a-z]*\n?|```\s*$/gm, "").trim(); t = chuanKB(t).kb; docKB(t); $v("vdKB").value = t; try { localStorage.setItem("tdk_video_kb", t); } catch (e) { } capTo(); tt("AI đã viết xong kịch bản — xem lại rồi bấm Dựng & lồng tiếng."); dungLai(false); }
 			catch (e) { tt("Chưa viết được: " + ((e && e.message) || e), true); } nut.disabled = false; });
 
 		// ---------- chèn, mẫu, HDSD ----------
@@ -5933,12 +6248,13 @@ ${de}`;
 		function khoiDong() {
 			if (daMo) return; daMo = true;
 			if (!document.querySelector('link[data-vd-font]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.dataset.vdFont = "1"; l.href = "https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@600;700;800;900&display=swap"; document.head.appendChild(l); }
-			let kb = ""; try { kb = localStorage.getItem("tdk_video_kb") || ""; } catch (e) { } $v("vdKB").value = kb;
+			let kb = ""; try { kb = localStorage.getItem("tdk_video_kb") || ""; } catch (e) { } $v("vdKB").value = kb; capTo(); napCai();
+			let the = "kb"; try { the = localStorage.getItem("tdk_video_the") || "kb"; } catch (e) { } moThe(the);
 			setTimeout(() => dungLai(false), 300);
 		}
 		return { khoiDong, _S: S, _xuat: xuatMp4 };
 	})();
-	function khoiDongVideo() { VD_API.khoiDong(); }
+	function khoiDongVideo() { VD_API.khoiDong(); window.TDKVideo = VD_API; }
 	try { const t = docO("tab"); if (t && $(t)) chonTab(t, false); } catch (e) { }
 	capNhatChip(); capNhatDem();
 })();
