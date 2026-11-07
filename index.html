@@ -1388,7 +1388,10 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 					<div class="vdTheDau">
 						<b>Kịch bản</b>
 						<div class="vdCongCu">
-							<button class="vt3Nut" type="button" id="vdStk" aria-expanded="false" title="Chọn sticker để chèn">☺ Sticker</button>
+							<button class="vt3Nut" type="button" id="vdMoKB" title="Mở tệp kịch bản .txt đã lưu">Mở</button>
+								<button class="vt3Nut" type="button" id="vdLuuKB" title="Lưu kịch bản thành tệp .txt">Lưu</button>
+								<input type="file" id="vdTepKB" accept=".txt,text/plain" hidden>
+								<button class="vt3Nut" type="button" id="vdStk" aria-expanded="false" title="Chọn sticker để chèn">☺ Sticker</button>
 								<button class="vt3Nut" type="button" id="vdChen" aria-expanded="false">+ Chèn</button>
 						</div>
 					</div>
@@ -5768,6 +5771,14 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			finally { if (coGiong) { $v("vdDung").disabled = false; tien(null); } }
 		}
 		$v("vdDung").addEventListener("click", () => dungLai(true));
+		$v("vdLuuKB").addEventListener("click", () => {
+			const kb = $v("vdKB").value; if (!kb.trim()) { toast("Kịch bản đang trống"); return; }
+			const td = ((kb.match(/^\s*tieude\s*:\s*(.+)$/mi) || [])[1] || "kich-ban").replace(/\[\/?[a-z]*\]|\$[^$]*\$/gi, "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, "").toLowerCase().slice(0, 50) || "kich-ban";
+			const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["\ufeff" + kb.replace(/\r?\n/g, "\r\n")], { type: "text/plain;charset=utf-8" })); a.download = "video-" + td + ".txt"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); toast("Đã lưu " + a.download); });
+		$v("vdMoKB").addEventListener("click", () => { $v("vdTepKB").value = ""; $v("vdTepKB").click(); });
+		$v("vdTepKB").addEventListener("change", async e => { const f = e.target.files[0]; if (!f) return; const t = (await f.text()).replace(/^\ufeff/, "").replace(/\r\n?/g, "\n");
+			if ($v("vdKB").value.trim() && $v("vdKB").value !== t && !confirm("Thay kịch bản đang có bằng tệp “" + f.name + "”?")) return;
+			$v("vdKB").value = t; $v("vdKB").dispatchEvent(new Event("input")); toast("Đã mở " + f.name); });
 		const phatNhanh = async (pcm, sr, giay) => { S.actx = S.actx || new (window.AudioContext || window.webkitAudioContext)(); await S.actx.resume(); if (S.nguonThu) { try { S.nguonThu.stop(); } catch (e) { } } const n = Math.min(pcm.length, Math.round((giay || 99) * sr)), b = S.actx.createBuffer(1, n, sr); b.copyToChannel(pcm.subarray(0, n), 0); const src = S.actx.createBufferSource(); src.buffer = b; src.connect(S.actx.destination); src.start(); S.nguonThu = src; };
 		$v("vdNgheGiong").addEventListener("click", async () => { const g = $v("vdGiong").value; if (!g) { toast("Chọn một giọng đọc trước"); return; } const nut = $v("vdNgheGiong"); nut.disabled = true; tt("Đang tạo giọng mẫu…");
 			try { const a = await giongGemini("Xin chào, mình là giọng đọc của kênh " + ($v("vdKenh").value.trim() || "Toán Thầy Khoa") + ". Cùng nhau giải Toán thật vui nhé!", g, $v("vdCachDoc").value.trim()); await phatNhanh(a.pcm, a.sr); tt("Đang phát giọng mẫu (" + (S.mhTTS || "Gemini") + ")."); } catch (e) { tt("Chưa nghe thử được: " + ((e && e.message) || e), true); } nut.disabled = false; });
