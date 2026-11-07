@@ -1383,11 +1383,19 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 					</div>
 					<div class="vdChenMenu" id="vdChenMenu" hidden></div>
 					<textarea id="vdKB" spellcheck="false" aria-label="Kịch bản"></textarea>
-					<div class="vdAI">
-						<input type="text" id="vdDe" placeholder="Dán đề bài — AI viết kịch bản theo phong cách mẹo nhanh" aria-label="Đề bài cho AI">
-						<button class="vt3NutChinh nho" type="button" id="vdAIViet">AI viết</button>
-						<button class="vt3Nut" type="button" id="vdChepNhac" title="Copy prompt để hỏi Gemini/ChatGPT bản web, rồi dán kết quả vào ô kịch bản">Copy prompt</button>
-					</div>
+					<details class="vdAI" open>
+						<summary><b>Nhờ AI viết kịch bản</b><span>dán đề + lời giải → copy prompt → dán kịch bản AI trả về vào ô trên</span></summary>
+						<textarea id="vdDe" rows="5" spellcheck="false" placeholder="Dán ĐỀ BÀI và LỜI GIẢI (code LaTeX hoặc chữ thường). Có thể chỉ dán đề — AI sẽ tự giải."></textarea>
+						<div class="vdAIChon">
+							<label><span>Kiểu video</span><select id="vdKieu"><option value="giai">Giải chi tiết</option><option value="meo">Mẹo nhanh, giải nhanh</option><option value="loi">Chữa lỗi sai thường gặp</option><option value="thucte">Bài toán thực tế</option><option value="lythuyet">Ôn lý thuyết, công thức</option></select></label>
+							<label><span>Độ dài</span><select id="vdDai"><option value="1">Khoảng 1 phút</option><option value="2" selected>Khoảng 2 phút</option><option value="3">Khoảng 3 phút</option></select></label>
+							<label><span>Đối tượng</span><select id="vdDoiTuong"><option value="THPT">Học sinh THPT</option><option value="THCS">Học sinh THCS</option><option value="ôn thi tốt nghiệp THPT">Ôn thi tốt nghiệp THPT</option><option value="ôn thi ĐGNL (HSA, TSA, V-ACT)">Ôn thi đánh giá năng lực</option></select></label>
+						</div>
+						<div class="vdAINut">
+							<button class="vt3NutChinh nho" type="button" id="vdChepNhac" title="Copy prompt kèm đề và lời giải — dán vào Gemini/ChatGPT/Claude bản web">Copy prompt</button>
+							<button class="vt3Nut" type="button" id="vdAIViet" title="Dùng AI đã cấu hình trong web viết luôn">AI trong web viết</button>
+						</div>
+					</details>
 				</div>
 				<div class="vdThe vdCai">
 					<div class="vdTheDau"><b>Thiết lập</b></div>
@@ -1395,9 +1403,10 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 						<label><span>Khổ video</span><select id="vdKho"><option value="doc">Dọc 9:16 (Reels, TikTok, Shorts)</option><option value="ngang">Ngang 16:9 (YouTube, bài giảng)</option></select></label>
 						<label><span>Giọng đọc AI</span><select id="vdGiong"><option value="">Không lồng tiếng</option><optgroup label="Giọng nữ"><option value="Kore" selected>Nữ 1 — Kore</option><option value="Aoede">Nữ 2 — Aoede</option><option value="Leda">Nữ 3 — Leda</option><option value="Zephyr">Nữ 4 — Zephyr</option></optgroup><optgroup label="Giọng nam"><option value="Puck">Nam 1 — Puck</option><option value="Charon">Nam 2 — Charon</option><option value="Fenrir">Nam 3 — Fenrir</option><option value="Orus">Nam 4 — Orus</option></optgroup></select></label>
 						<label class="o2"><span>Cách đọc</span><input type="text" id="vdCachDoc" value="Đọc bằng tiếng Việt chuẩn, giọng giáo viên trẻ, rõ ràng, hào hứng, tốc độ hơi nhanh"></label>
-						<label><span>Tên kênh</span><input type="text" id="vdKenh" value="TDK MATH"></label>
+						<label><span>Tên kênh</span><input type="text" id="vdKenh" value="TOÁN THẦY KHOA"></label>
 						<label><span>Màu logo</span><select id="vdMauLogo"><option value="do">Đỏ</option><option value="vang">Vàng</option><option value="trang">Trắng</option></select></label>
 						<label class="bat"><input type="checkbox" id="vdPhuDe" checked><span>Phụ đề</span></label>
+						<label class="bat"><input type="checkbox" id="vdDam" checked><span>Công thức in đậm</span></label>
 						<label class="bat"><input type="checkbox" id="vdMoDau" checked><span>Mở đầu & kết thúc có logo</span></label>
 						<label><span>Nhạc nền (tuỳ chọn)</span><input type="file" id="vdNhac" accept="audio/*"></label>
 						<label><span>Âm lượng nhạc</span><input type="range" id="vdAmNhac" min="0" max="100" value="12"></label>
@@ -5250,6 +5259,49 @@ Trả về DUY NHẤT JSON: {"mau":{…},"hinh":[…]} (nhân đôi mọi dấu 
 
 		// ---------- kịch bản mẫu ----------
 		const MAU_KB = [
+			["Giải chi tiết: GTLN – GTNN trên đoạn", `tieude: TÌM [vang]GIÁ TRỊ LỚN NHẤT[/] CỦA HÀM BẬC BA TRÊN ĐOẠN
+phan: Đề bài | Phân tích | Lời giải | Kết luận
+
+---
+muc: 1
+>> Câu này nhìn thì dễ, nhưng rất nhiều bạn quên mất một bước quan trọng!
+sticker: wow | Ơ kìa!
+>> Tìm giá trị lớn nhất và nhỏ nhất của hàm số f x bằng x mũ ba trừ ba x cộng một trên đoạn từ không đến hai.
+de: Tìm GTLN, GTNN của $f(x)=x^3-3x+1$ trên $[0;2]$
+
+---
+muc: 2
+>> Trước khi giải, các bạn thử nghĩ xem: giá trị lớn nhất nằm ở đâu?
+hoi: Giá trị lớn nhất đạt tại điểm cực trị hay tại đầu mút?
+sticker: suynghi | Hmm…
+cho: 1.5
+>> Câu trả lời: phải so sánh cả điểm cực trị nằm trong đoạn và hai đầu mút.
+meo: QUY TẮC 3 BƯỚC | Tính $f'(x)$, tìm nghiệm thuộc đoạn | So sánh $f$ tại các nghiệm và hai đầu mút
+
+===
+muc: 3
+>> Đạo hàm f phẩy x bằng ba x bình phương trừ ba.
+dong: ĐẠO HÀM: $f'(x)=3x^2-3$
+>> Cho đạo hàm bằng không, được x bằng một hoặc x bằng trừ một.
+dong: $f'(x)=0\\Leftrightarrow x=1$ hoặc $x=-1$
+>> Nhưng trừ một không thuộc đoạn từ không đến hai, nên phải loại nhé!
+sai: $x=-1\\in[0;2]$
+sticker: oi | Bẫy đấy nha!
+
+===
+>> Bây giờ tính f tại không, tại một và tại hai.
+dong: $f(0)=[xanh]1[/]$, $f(1)=[do]-1[/]$, $f(2)=[vang]3[/]$
+>> Vậy giá trị lớn nhất bằng ba tại x bằng hai, giá trị nhỏ nhất bằng trừ một tại x bằng một.
+khung: $\\max\\limits_{[0;2]}f(x)=3$, $\\min\\limits_{[0;2]}f(x)=-1$
+sticker: tada | Tèn ten!
+
+---
+muc: 4
+>> Nhìn đồ thị cho chắc: điểm cao nhất ở đầu mút x bằng hai, điểm thấp nhất tại x bằng một.
+dothi: y=x^3-3x+1 ; x=-0.3..2.3 ; y=-1.5..3.5 ; diem=1,2 ; chu=CAO NHẤT TẠI ĐẦU MÚT x=2
+>> Nhớ nha: luôn so sánh cả hai đầu mút. Thử ngay bài tương tự rồi bình luận đáp án nhé!
+nhan: [luc]ĐỪNG QUÊN HAI ĐẦU MÚT![/]
+sticker: gioi | Chuẩn không cần chỉnh!`],
 			["Mẹo nhẩm nghiệm phương trình bậc hai", `tieude: [vang]MẸO NHẨM NGHIỆM[/] PHƯƠNG TRÌNH [luc]BẬC HAI[/]
 phan: Đề bài | Mẹo | Lời giải | Kiểm tra
 
@@ -5300,7 +5352,7 @@ dothi: y=1/(x+3) ; x=-2.5..6 ; y=-0.2..0.7 ; lo=3 ; chu=TẠI x=3 CHỈ LÀ MỘ
 >> Vậy đồ thị chỉ có một tiệm cận đứng là x bằng trừ ba.
 khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		];
-		const CHEN = [["Cảnh mới", "---\n>> "], ["Trang mới (xoá màn hình)", "===\n>> "], ["Lời đọc", ">> "], ["Tiêu đề", "tieude: [vang]TỪ KHOÁ[/] NỘI DUNG"], ["Mục lục", "phan: Phần 1 | Phần 2 | Phần 3"], ["Chuyển mục", "muc: 2"], ["Đề bài", "de: Giải phương trình $x^2-4=0$"], ["Dòng chữ + công thức", "dong: TỬ: $\\sqrt{x-3}=0\\iff x=3$"], ["Công thức lớn", "ct: \\int_0^1 x^2\\,dx=\\dfrac13"], ["Khung kết quả (bút chì)", "khung: $\\iff m=12$"], ["Giấy nhớ mẹo", "meo: MẸO QUEN TAY | Dòng 1 | [do]Dòng 2[/]"], ["Cách làm SAI", "sai: Cộng thẳng $30+20=50$"], ["Cách làm ĐÚNG", "dung: $50-10=40$"], ["Nhãn nhấn mạnh", "nhan: [vang]ĐẾM 2 LẦN[/]"], ["Chữ thường", "chu: Ghi chú thêm…"], ["Đồ thị", "dothi: y=1/(x-1) ; x=-2..5 ; y=-3..3 ; lo=2 ; chu=CHÚ THÍCH"], ["Hình TikZ", "hinh:\n\\begin{tikzpicture}\n\\draw (0,0)--(3,0)--(1,2)--cycle;\n\\end{tikzpicture}"], ["Dừng (giây)", "cho: 1.5"]];
+		const CHEN = [["Cảnh mới", "---\n>> "], ["Trang mới (xoá màn hình)", "===\n>> "], ["Lời đọc", ">> "], ["Tiêu đề", "tieude: [vang]TỪ KHOÁ[/] NỘI DUNG"], ["Mục lục", "phan: Phần 1 | Phần 2 | Phần 3"], ["Chuyển mục", "muc: 2"], ["Đề bài", "de: Giải phương trình $x^2-4=0$"], ["Dòng chữ + công thức", "dong: TỬ: $\\sqrt{x-3}=0\\iff x=3$"], ["Công thức lớn", "ct: \\int_0^1 x^2\\,dx=\\dfrac13"], ["Khung kết quả (bút chì)", "khung: $\\Leftrightarrow m=12$"], ["Câu hỏi gợi mở", "hoi: Bước tiếp theo nên làm gì?\ncho: 1.5"], ["Sticker", "sticker: wow | Ơ kìa!"], ["Giấy nhớ mẹo", "meo: MẸO QUEN TAY | Dòng 1 | [do]Dòng 2[/]"], ["Cách làm SAI", "sai: Cộng thẳng $30+20=50$"], ["Cách làm ĐÚNG", "dung: $50-10=40$"], ["Nhãn nhấn mạnh", "nhan: [vang]ĐẾM 2 LẦN[/]"], ["Chữ thường", "chu: Ghi chú thêm…"], ["Đồ thị", "dothi: y=1/(x-1) ; x=-2..5 ; y=-3..3 ; lo=2 ; chu=CHÚ THÍCH"], ["Hình TikZ", "hinh:\n\\begin{tikzpicture}\n\\draw (0,0)--(3,0)--(1,2)--cycle;\n\\end{tikzpicture}"], ["Dừng (giây)", "cho: 1.5"]];
 		const HDSD = [
 			["<b>Cấu trúc:</b> đầu kịch bản đặt <code>tieude:</code> và <code>phan:</code> (mục lục). <code>---</code> mở cảnh mới, <code>===</code> mở trang mới (xoá màn hình). Màn hình đầy sẽ tự sang trang.", ""],
 			["<b>Lời đọc:</b> dòng bắt đầu bằng <code>&gt;&gt;</code>. Các dòng hiệu ứng ngay sau một lời đọc sẽ hiện lần lượt trong lúc câu đó được đọc.", ">> Tử bằng không khi x bằng ba."],
@@ -5308,6 +5360,10 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			["<b>Công thức:</b> viết LaTeX trong $…$ (dùng được \\dfrac, \\sqrt, \\int, \\Rightarrow…). <code>ct:</code> là công thức lớn, không cần $.", "dong: THAY $x=3$ VÀO MẪU: $3^2+3-m=0$"],
 			["<b>Hiệu ứng:</b> de (khung đề), dong (dòng chữ), ct (công thức lớn), khung (đóng khung kết quả, có bút chì), meo (giấy nhớ: tiêu đề | dòng | dòng), sai (dấu ✗ SAI), dung (dấu ✓ ĐÚNG), nhan (nhãn bo tròn), chu (chữ thường), cho (dừng n giây), muc (sáng mục thứ n), trang (sang trang).", ""],
 			["<b>Đồ thị:</b> hàm số ; khoảng x ; khoảng y ; lo = hoành độ điểm thủng ; diem = các điểm tô ; tc = tiệm cận đứng ; chu = chú thích ; mau = màu đường.", "dothi: y=1/(x+3) ; x=-2.5..6 ; y=-0.2..0.7 ; lo=3 ; chu=CHỈ LÀ MỘT CÁI LỖ"],
+			["<b>Câu hỏi gợi mở:</b> <code>hoi:</code> hiện thẻ câu hỏi; nên thêm <code>cho: 1.5</code> ngay sau để người xem kịp nghĩ.", "hoi: Giá trị lớn nhất đạt tại cực trị hay đầu mút?"],
+			["<b>Sticker:</b> <code>sticker: tên | lời thoại</code> — nhân vật dễ thương bật ra ở góc màn hình kèm bong bóng thoại. Tên: vui, haha, wow, suynghi, hoi, oi, gioi, bongden, tada, tim.", "sticker: tada | Tèn ten!"],
+			["<b>Chuẩn hoá LaTeX:</b> dán kịch bản vào ô, web tự chuẩn hoá các công thức trong $…$ theo chuẩn của web (\\dfrac, 2{,}5, 90^\\circ, tích phân…).", ""],
+			["<b>Công thức in đậm:</b> bật ở Thiết lập để công thức đậm như chữ (dùng \\boldmath).", ""],
 			["<b>Hình TikZ:</b> <code>hinh:</code> rồi dán code tikzpicture ở các dòng sau (lấy từ các tab Vẽ hình). Nét đen tự đổi thành nét sáng trên nền tối.", ""],
 			["<b>Giọng đọc:</b> chọn giọng Gemini ở Thiết lập (dùng khoá Gemini trong Cấu hình AI). Bấm <b>Dựng & lồng tiếng</b>: web tạo giọng từng câu, mỗi cảnh tự kéo dài đúng bằng lời đọc. Câu nào không đổi sẽ dùng lại, không tốn lượt.", ""],
 			["<b>Viết lời đọc như đọc thành tiếng:</b> “x bình phương”, “căn x trừ ba”, “đen-ta”… để giọng AI đọc đúng.", ""],
@@ -5320,7 +5376,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			const moiCanh = (trang, toiThieu) => { canh = { trang, toiThieu, doan: [] }; kb.canh.push(canh); doan = null; };
 			const moiDoan = loi => { if (!canh) moiCanh(true, 0); doan = { loi, viec: [] }; canh.doan.push(doan); };
 			const L = String(src || "").replace(/\r/g, "").split("\n");
-			const KHOA = ["tieude", "phan", "muc", "de", "dong", "ct", "khung", "meo", "sai", "dung", "nhan", "chu", "dothi", "hinh", "cho", "trang"];
+			const KHOA = ["tieude", "phan", "muc", "de", "dong", "ct", "khung", "meo", "sai", "dung", "nhan", "chu", "dothi", "hinh", "cho", "trang", "hoi", "sticker"];
 			for (let i = 0; i < L.length; i++) {
 				const l = L[i].trim(); if (!l || l.startsWith("//")) continue; let m;
 				if ((m = l.match(/^(-{3,}|={3,})\s*(?:(\d+(?:[.,]\d+)?)\s*s)?\s*$/))) { moiCanh(l[0] === "=" || !kb.canh.length, m[2] ? +m[2].replace(",", ".") : 0); continue; }
@@ -5374,11 +5430,12 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		}
 
 		// ---------- dàn dòng chữ + công thức, ngắt dòng theo bề rộng ----------
+		const boc = tex => $v("vdDam").checked ? "{\\boldmath$" + tex + "$}" : "$" + tex + "$";
 		const ctxDo = document.createElement("canvas").getContext("2d");
 		async function danDong(s, o) { // o: {co, nang, mauChu, pxPt, wMax, giua}
 			const manh = tachMau(s), muc = [];
 			for (const m of manh) {
-				if (m.toan) { const a = await napToan("$\\displaystyle " + (m.mau ? "\\textcolor[HTML]{" + hexTeX(m.mau) + "}{" + m.nd + "}" : m.nd) + "$", o.pxPt, o.mauToan || o.mauChu); muc.push({ toan: true, a, w: a.w, h: a.h }); }
+				if (m.toan) { const a = await napToan(boc("\\displaystyle " + (m.mau ? "\\textcolor[HTML]{" + hexTeX(m.mau) + "}{" + m.nd + "}" : m.nd)), o.pxPt, o.mauToan || o.mauChu); muc.push({ toan: true, a, w: a.w, h: a.h }); }
 				else m.nd.split(/(\s+)/).forEach(t => { if (!t) return; ctxDo.font = o.nang + " " + o.co + "px " + FONT; muc.push({ toan: false, chu: t, mau: m.mau || o.mauChu, w: ctxDo.measureText(t).width, h: o.co, trang: /^\s+$/.test(t) }); });
 			}
 			const dong = []; let cur = [], cw = 0;
@@ -5451,6 +5508,43 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			ctx.restore();
 		}
 
+		// ---------- sticker vector đáng yêu ----------
+		const STK = { vui: "vui", cuoi: "haha", haha: "haha", wow: "wow", ngacnhien: "wow", suynghi: "suynghi", hoi: "hoi", thacmac: "hoi", oi: "oi", sai: "oi", toang: "oi", gioi: "gioi", ok: "gioi", khen: "gioi", bongden: "bongden", ytuong: "bongden", tada: "tada", chucmung: "tada", tim: "tim", yeu: "tim" };
+		const boDauVD = s => String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/[^a-z]/g, "");
+		function veSticker(ctx, loai, r, tt) {
+			const mat = (fill) => { const g = ctx.createRadialGradient(-r * .3, -r * .35, r * .1, 0, 0, r); g.addColorStop(0, fill ? fill[0] : "#FFE07A"); g.addColorStop(1, fill ? fill[1] : "#F5A91C"); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, r, 0, 7); ctx.fill(); ctx.lineWidth = r * .06; ctx.strokeStyle = fill ? fill[2] : "#C27A06"; ctx.stroke(); };
+			const mo = (x, y, s2) => { ctx.fillStyle = "#3a2410"; ctx.beginPath(); ctx.ellipse(x, y, s2 * .7, s2, 0, 0, 7); ctx.fill(); ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(x - s2 * .22, y - s2 * .35, s2 * .3, 0, 7); ctx.fill(); };
+			const cong = (x, y, w, len) => { ctx.strokeStyle = "#3a2410"; ctx.lineWidth = w; ctx.lineCap = "round"; ctx.beginPath(); ctx.arc(x, y + len * .4, len, Math.PI * 1.15, Math.PI * 1.85); ctx.stroke(); };
+			const ma = () => { ctx.fillStyle = "rgba(255,110,130,.45)"; ctx.beginPath(); ctx.ellipse(-r * .55, r * .2, r * .17, r * .1, 0, 0, 7); ctx.ellipse(r * .55, r * .2, r * .17, r * .1, 0, 0, 7); ctx.fill(); };
+			const cuoi = (w) => { ctx.strokeStyle = "#3a2410"; ctx.lineWidth = r * .08; ctx.lineCap = "round"; ctx.beginPath(); ctx.arc(0, r * .12, r * (w || .38), Math.PI * .15, Math.PI * .85); ctx.stroke(); };
+			const mieng = (h) => { ctx.fillStyle = "#6b1d1d"; ctx.beginPath(); ctx.moveTo(-r * .38, r * .18); ctx.quadraticCurveTo(0, r * (.18 + h), r * .38, r * .18); ctx.closePath(); ctx.fill(); ctx.fillStyle = "#ff8a8a"; ctx.beginPath(); ctx.ellipse(0, r * (.12 + h * .62), r * .16, r * .08, 0, 0, 7); ctx.fill(); };
+			const sao = (x, y, s2, mau) => { ctx.fillStyle = mau || "#fff"; ctx.beginPath(); for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4, l = i % 2 ? s2 * .35 : s2; ctx.lineTo(x + Math.cos(a) * l, y + Math.sin(a) * l); } ctx.closePath(); ctx.fill(); };
+			const giot = (x, y, s2) => { ctx.fillStyle = "#6EC6FF"; ctx.beginPath(); ctx.moveTo(x, y - s2); ctx.quadraticCurveTo(x + s2 * .9, y + s2 * .3, x, y + s2 * .6); ctx.quadraticCurveTo(x - s2 * .9, y + s2 * .3, x, y - s2); ctx.fill(); };
+			const chuHoi = (x, y, s2, mau) => { ctx.fillStyle = mau || "#fff"; ctx.font = "900 " + s2 + "px " + FONT; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("?", x, y); };
+			if (loai === "bongden") { const sang = .5 + .5 * Math.sin(tt * 5); ctx.strokeStyle = "rgba(255,214,90," + (.5 + .4 * sang) + ")"; ctx.lineWidth = r * .07; ctx.lineCap = "round"; for (let i = 0; i < 7; i++) { const a = -Math.PI / 2 + (i - 3) * .45; ctx.beginPath(); ctx.moveTo(Math.cos(a) * r * 1.1, -r * .15 + Math.sin(a) * r * 1.1); ctx.lineTo(Math.cos(a) * r * (1.32 + .08 * sang), -r * .15 + Math.sin(a) * r * (1.32 + .08 * sang)); ctx.stroke(); }
+				ctx.save(); ctx.translate(0, -r * .15); ctx.scale(.85, .85); mat(["#FFF6C2", "#FFD54A", "#D9A300"]); ctx.restore(); ctx.fillStyle = "#8a94a3"; ctx.fillRect(-r * .33, r * .62, r * .66, r * .14); ctx.fillStyle = "#6b7482"; ctx.fillRect(-r * .29, r * .78, r * .58, r * .13); ctx.fillRect(-r * .18, r * .93, r * .36, r * .1);
+				mo(-r * .25, -r * .2, r * .1); mo(r * .25, -r * .2, r * .1); cuoi(.25); return; }
+			if (loai === "hoi") { ctx.fillStyle = "#4FB3FF"; ctx.beginPath(); ctx.arc(0, 0, r, 0, 7); ctx.fill(); ctx.beginPath(); ctx.moveTo(-r * .35, r * .85); ctx.lineTo(-r * .7, r * 1.25); ctx.lineTo(r * .05, r * .95); ctx.fill(); ctx.lineWidth = r * .06; ctx.strokeStyle = "#2a8be0"; ctx.beginPath(); ctx.arc(0, 0, r, 0, 7); ctx.stroke(); chuHoi(0, r * .05, r * 1.25); return; }
+			if (loai === "tim") { const p = 1 + .06 * Math.sin(tt * 8); ctx.save(); ctx.scale(p, p); ctx.fillStyle = "#FF5A7A"; ctx.beginPath(); ctx.moveTo(0, r * .95); ctx.bezierCurveTo(-r * 1.4, -r * .05, -r * .75, -r * 1.05, 0, -r * .45); ctx.bezierCurveTo(r * .75, -r * 1.05, r * 1.4, -r * .05, 0, r * .95); ctx.fill(); ctx.lineWidth = r * .06; ctx.strokeStyle = "#d63a5c"; ctx.stroke(); ctx.restore(); mo(-r * .28, -r * .1, r * .1); mo(r * .28, -r * .1, r * .1); cuoi(.22); ma(); return; }
+			mat();
+			if (loai === "vui") { mo(-r * .32, -r * .15, r * .13); mo(r * .32, -r * .15, r * .13); cuoi(); ma(); }
+			else if (loai === "haha") { cong(-r * .32, -r * .12, r * .08, r * .16); cong(r * .32, -r * .12, r * .08, r * .16); mieng(.5); giot(-r * .78, -r * .05, r * .14); giot(r * .78, -r * .05, r * .14); ma(); }
+			else if (loai === "wow") { [-1, 1].forEach(s2 => { ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(s2 * r * .32, -r * .15, r * .2, 0, 7); ctx.fill(); ctx.fillStyle = "#3a2410"; ctx.beginPath(); ctx.arc(s2 * r * .32, -r * .13, r * .1, 0, 7); ctx.fill(); ctx.strokeStyle = "#3a2410"; ctx.lineWidth = r * .06; ctx.beginPath(); ctx.moveTo(s2 * r * .2, -r * .5); ctx.lineTo(s2 * r * .45, -r * .58); ctx.stroke(); }); ctx.fillStyle = "#6b1d1d"; ctx.beginPath(); ctx.ellipse(0, r * .4, r * .14, r * .18, 0, 0, 7); ctx.fill(); sao(r * .95, -r * .85, r * .22 * (1 + .2 * Math.sin(tt * 9)), "#FFF4B8"); }
+			else if (loai === "suynghi") { mo(-r * .25, -r * .22, r * .11); mo(r * .38, -r * .22, r * .11); ctx.strokeStyle = "#3a2410"; ctx.lineWidth = r * .07; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(-r * .15, r * .38); ctx.lineTo(r * .2, r * .32); ctx.stroke(); ctx.fillStyle = "#FFD45C"; ctx.strokeStyle = "#C27A06"; ctx.lineWidth = r * .05; ctx.beginPath(); ctx.ellipse(r * .35, r * .72, r * .2, r * .15, -.4, 0, 7); ctx.fill(); ctx.stroke(); chuHoi(r * .95, -r * .95 + Math.sin(tt * 4) * r * .08, r * .6, "#FFC94D"); }
+			else if (loai === "oi") { [-1, 1].forEach(s2 => { ctx.strokeStyle = "#3a2410"; ctx.lineWidth = r * .08; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(s2 * r * .32 - r * .11, -r * .26); ctx.lineTo(s2 * r * .32 + r * .11, -r * .04); ctx.moveTo(s2 * r * .32 + r * .11, -r * .26); ctx.lineTo(s2 * r * .32 - r * .11, -r * .04); ctx.stroke(); }); ctx.beginPath(); for (let i = 0; i <= 16; i++) { const x = -r * .35 + i * r * .7 / 16, y = r * .38 + Math.sin(i * 1.2) * r * .06; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.stroke(); giot(r * .72, -r * .62 + Math.sin(tt * 6) * r * .04, r * .18); }
+			else if (loai === "gioi") { cong(-r * .32, -r * .12, r * .08, r * .16); mo(r * .32, -r * .15, r * .13); cuoi(.4); ma(); sao(-r * .95, -r * .8, r * .2 * (1 + .25 * Math.sin(tt * 8)), "#FFF4B8"); sao(r * 1, -r * .65, r * .15 * (1 + .25 * Math.cos(tt * 8)), "#FFF4B8"); }
+			else if (loai === "tada") { cong(-r * .32, -r * .1, r * .08, r * .16); cong(r * .32, -r * .1, r * .08, r * .16); mieng(.42); ma(); ctx.save(); ctx.translate(r * .15, -r * .82); ctx.rotate(.3); ctx.fillStyle = "#4FB3FF"; ctx.beginPath(); ctx.moveTo(-r * .32, 0); ctx.lineTo(0, -r * .75); ctx.lineTo(r * .32, 0); ctx.closePath(); ctx.fill(); ctx.strokeStyle = "#FF5A7A"; ctx.lineWidth = r * .07; ctx.beginPath(); ctx.moveTo(-r * .2, -r * .25); ctx.lineTo(r * .2, -r * .25); ctx.moveTo(-r * .1, -r * .5); ctx.lineTo(r * .1, -r * .5); ctx.stroke(); ctx.fillStyle = "#FFC94D"; ctx.beginPath(); ctx.arc(0, -r * .78, r * .1, 0, 7); ctx.fill(); ctx.restore();
+				const mauCF = ["#FF5A7A", "#4FB3FF", "#4ADE80", "#FFC94D", "#B794F6"]; for (let i = 0; i < 14; i++) { const a = i * 2.4, d = r * (1.15 + .55 * ((tt * .9 + i * .13) % 1)); ctx.fillStyle = mauCF[i % 5]; ctx.save(); ctx.translate(Math.cos(a) * d, Math.sin(a) * d); ctx.rotate(tt * 3 + i); ctx.fillRect(-r * .06, -r * .03, r * .12, r * .06); ctx.restore(); } }
+		}
+		function veDan(ctx, d, t, u) { // sticker nổi: bật ra, nhún nhảy, có bong bóng thoại
+			const lt = t - d.t0, het = d.t0 + d.dai; if (lt < 0 || t > het) return;
+			const vao = kep(lt / .4, 0, 1), s0 = vao < 1 ? 1 + 2.2 * Math.pow(vao - 1, 3) + 1.2 * Math.pow(vao - 1, 2) : 1, ra = kep((het - t) / .3, 0, 1), sc = Math.max(0, s0) * (0.6 + 0.4 * ra);
+			const r = d.r, phai = d.phai; ctx.save(); ctx.globalAlpha *= ra; ctx.translate(d.x, d.y + Math.sin(lt * 3.2) * 6 * u); ctx.rotate(Math.sin(lt * 4.5) * .06); ctx.scale(sc, sc);
+			ctx.shadowColor = "rgba(0,0,0,.35)"; ctx.shadowBlur = 18 * u; ctx.shadowOffsetY = 8 * u; veSticker(ctx, d.loai, r, lt); ctx.restore();
+			if (d.chu && lt > .25) { const q = em((lt - .25) / .3) * ra; ctx.save(); ctx.globalAlpha *= q; ctx.font = "900 " + 36 * u + "px " + FONT; const tw = Math.min(ctx.measureText(d.chu).width, d.wMax), bw = tw + 48 * u, bh = 70 * u, bx = phai ? d.x - r - 26 * u - bw : d.x + r + 26 * u, by = d.y - r - 10 * u;
+				ctx.translate(bx + bw / 2, by + bh / 2); ctx.scale(.8 + .2 * q, .8 + .2 * q); ctx.translate(-(bx + bw / 2), -(by + bh / 2)); bo2(ctx, bx, by, bw, bh, 22 * u); ctx.fillStyle = "#fff"; ctx.fill(); ctx.beginPath(); const tx = phai ? bx + bw - 30 * u : bx + 30 * u; ctx.moveTo(tx - 14 * u, by + bh - 2); ctx.lineTo(tx + (phai ? 26 : -26) * u, by + bh + 26 * u); ctx.lineTo(tx + 14 * u, by + bh - 2); ctx.fill();
+				ctx.fillStyle = "#1b2433"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(d.chu, bx + bw / 2, by + bh / 2 + 2 * u, d.wMax); ctx.restore(); }
+		}
 		// ---------- lồng tiếng Gemini ----------
 		async function giongGemini(text, voice, cach) {
 			const key = voice + "|" + cach + "|" + text; if (S.giong.has(key)) return S.giong.get(key);
@@ -5485,7 +5579,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			let soLoi = 0; const canGiong = giong ? doanDs.filter(d => d.loi) : [];
 			for (let i = 0; i < canGiong.length; i++) { bao("Đang lồng tiếng " + (i + 1) + "/" + canGiong.length + "…", i / Math.max(1, canGiong.length) * 0.6); if (opt.khongGiong) { const k = giong + "|" + cach + "|" + canGiong[i].loi; canGiong[i].am = S.giong.get(k) || null; continue; } try { canGiong[i].am = await giongGemini(canGiong[i].loi, giong, cach); } catch (e) { if (opt.batBuoc) throw e; soLoi++; canGiong[i].am = null; } }
 			// phần tử
-			const tl = { W, H, u, khung, doc, td: [], phan: kb.phan, muc: [], pt: [], trang: [], phu: [], giong: [], canh: [], moDau, tong: 0, mauLogo: MAU_LOGO[$v("vdMauLogo").value] || MAU_LOGO.do, kenh: $v("vdKenh").value.trim() || "TDK MATH" };
+			const tl = { W, H, u, khung, doc, dan: [], td: [], phan: kb.phan, muc: [], pt: [], trang: [], phu: [], giong: [], canh: [], moDau, tong: 0, mauLogo: MAU_LOGO[$v("vdMauLogo").value] || MAU_LOGO.do, kenh: $v("vdKenh").value.trim() || "TOÁN THẦY KHOA" };
 			let T = moDau ? 2.1 : 0.3; if (td0) tl.td.push({ t: moDau ? 1.7 : 0, dd: td0 });
 			let tdHien = td0; const yDau = () => yTD + (tdHien ? tdHien.h + 34 * u : 0) + (coPhan ? hPhan + 28 * u : 0), yDay = khung.y + khung.h - (coPhu ? 230 : 70) * u;
 			let trang = { t0: T, t1: Infinity }, y = yDau(); tl.trang.push(trang);
@@ -5499,12 +5593,13 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 				for (const d of c.doan) {
 					const V = d.am ? d.am.dai : (d.loi ? uocLuong(d.loi) : 0), S0 = T;
 					if (d.loi) { tl.phu.push({ t0: S0, t1: S0 + V + 0.2, chu: d.loi }); if (d.am) tl.giong.push({ t: S0, am: d.am }); }
-					const hd = d.viec.filter(v => !["muc", "tieude", "cho", "trang"].includes(v.k)), gian = hd.length ? Math.max(0.75, V * 0.92 / hd.length) : 0; let i = 0, tCuoi = S0, them = 0;
+					const hd = d.viec.filter(v => !["muc", "tieude", "cho", "trang", "sticker"].includes(v.k)), gian = hd.length ? Math.max(0.75, V * 0.92 / hd.length) : 0; let i = 0, tCuoi = S0, them = 0;
 					for (const v of d.viec) {
 						bao("Đang dựng hiệu ứng " + (++xong) + "/" + tongViec + "…", 0.6 + 0.4 * xong / tongViec);
 						const tA = S0 + 0.12 + i * gian;
 						if (v.k === "muc") { tl.muc.push({ t: tA, i: Math.max(1, parseInt(v.v) || 1) - 1 }); continue; }
 						if (v.k === "tieude") { tdHien = await veTD(v.v); tl.td.push({ t: tA, dd: tdHien }); continue; }
+						if (v.k === "sticker") { const ph = v.v.split("|").map(z => z.trim()), loai = STK[boDauVD(ph[0])]; if (!loai) throw new Error("dòng " + v.dong + ": chưa có sticker “" + ph[0] + "” (có: vui, haha, wow, suynghi, hoi, oi, gioi, bongden, tada, tim)"); const phai = (tl.dan.length % 2) === 0, r = (doc ? 92 : 80) * u; tl.dan.push({ t0: tA, dai: Math.max(1.5, parseFloat(String(ph[2] || "").replace(",", ".")) || 3.4), loai, chu: ph[1] || "", phai, r, x: phai ? khung.x + khung.w - r - 46 * u : khung.x + r + 46 * u, y: yDay - r - 10 * u, wMax: khung.w - 2 * r - 160 * u }); continue; }
 						if (v.k === "cho") { them += Math.max(0, parseFloat(String(v.v).replace(",", ".")) || 1); continue; }
 						if (v.k === "trang") { T = Math.max(T, tA); sangTrang(tA); continue; }
 						let e;
@@ -5531,7 +5626,8 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			const { cw, u } = o, k = v.k, s = v.v;
 			const D = { co: (o.doc ? 54 : 50) * u, nang: "800", mauChu: CHU, pxPt: (o.doc ? 6.1 : 5.6) * u, wMax: cw - 40 * u };
 			if (k === "dong" || k === "chu") { const dd = await danDong(s, k === "chu" ? Object.assign({}, D, { co: 42 * u, nang: "600", mauChu: "#c9d1dc", pxPt: 5 * u }) : D); return { loai: "dong", dd, h: dd.h, d: 0.9 }; }
-			if (k === "ct") { const a = await napToan("$\\displaystyle " + s.replace(/^\$|\$$/g, "") + "$", 8.2 * u, CHU); const sc = Math.min(1, (cw - 40 * u) / a.w); return { loai: "ct", a, sc, h: a.h * sc, d: 1.0 }; }
+			if (k === "ct") { const a = await napToan(boc("\\displaystyle " + s.replace(/^\$|\$$/g, "")), 8.2 * u, CHU); const sc = Math.min(1, (cw - 40 * u) / a.w); return { loai: "ct", a, sc, h: a.h * sc, d: 1.0 }; }
+			if (k === "hoi") { const dd = await danDong(s, Object.assign({}, D, { wMax: cw - 190 * u })); return { loai: "hoi", dd, h: dd.h + 96 * u, d: 0.9 }; }
 			if (k === "khung") { const dd = await danDong(s, Object.assign({}, D, { mauToan: MAU.vang })); return { loai: "khung", dd, h: dd.h + 44 * u, d: 1.8 }; }
 			if (k === "sai" || k === "dung") { const dd = await danDong(s, Object.assign({}, D, { wMax: cw - 220 * u })); return { loai: k, dd, h: Math.max(dd.h, 60 * u), d: 1.3 }; }
 			if (k === "nhan") { const dd = await danDong(hoa(s), Object.assign({}, D, { co: 44 * u, nang: "900", mauChu: MAU.vang, wMax: cw - 120 * u })); const mm = s.match(/^\s*\[([a-z]+)\]/); return { loai: "nhan", dd, mau: mm && MAU[mm[1]] ? MAU[mm[1]] : MAU.vang, h: dd.h + 34 * u, d: 0.6 }; }
@@ -5575,6 +5671,10 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 				ctx.shadowColor = "rgba(0,0,0,.45)"; ctx.shadowBlur = 26 * u; ctx.shadowOffsetY = 12 * u; const gr = ctx.createLinearGradient(0, y, 0, y + e.h); gr.addColorStop(0, "#f9d86a"); gr.addColorStop(1, "#f3c84a"); ctx.fillStyle = gr; ctx.fillRect(mx, y, mw, e.h); ctx.shadowColor = "transparent"; ctx.fillStyle = "rgba(0,0,0,.07)"; ctx.fillRect(mx, y, mw, 26 * u);
 				let yy = y + 44 * u; veDong(ctx, e.td, mx, yy, mw, 1); yy += e.td.h + 22 * u; e.ds.forEach((dd, i) => { veDong(ctx, dd, mx + 40 * u, yy, mw - 80 * u, kep((p * e.d - 0.7 - i * 0.5) / 0.45, 0, 1)); yy += dd.h + 22 * u; }); ctx.restore(); return;
 			}
+			if (e.loai === "hoi") { const q = em(p / 0.6), dd = e.dd, bh = e.h - 18 * u; ctx.save(); ctx.globalAlpha *= q; ctx.translate((1 - q) * -40 * u, 0); bo2(ctx, x, y + 16 * u, w, bh, 24 * u); ctx.fillStyle = "rgba(79,179,255,.09)"; ctx.fill(); ctx.strokeStyle = MAU.xanh; ctx.lineWidth = 3 * u; ctx.stroke();
+				const tw = 230 * u; bo2(ctx, x + 30 * u, y, tw, 36 * u, 10 * u); ctx.fillStyle = "#0b1b2b"; ctx.fill(); ctx.strokeStyle = MAU.xanh; ctx.stroke(); ctx.fillStyle = MAU.xanh; ctx.font = "900 " + 22 * u + "px " + FONT; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("CÂU HỎI GỢI MỞ", x + 30 * u + tw / 2, y + 19 * u);
+				const ix = x + 70 * u, iy = y + 16 * u + bh / 2, nh = 1 + .08 * Math.sin(p * e.d * 7); ctx.fillStyle = MAU.xanh; ctx.beginPath(); ctx.arc(ix, iy, 36 * u * nh, 0, 7); ctx.fill(); ctx.fillStyle = "#08121d"; ctx.font = "900 " + 46 * u + "px " + FONT; ctx.fillText("?", ix, iy + 2 * u); ctx.textAlign = "left";
+				veDong(ctx, Object.assign({}, dd, { o: Object.assign({}, dd.o, { trai: true }) }), x + 130 * u, y + 16 * u + (bh - dd.h) / 2, w - 160 * u, kep((p - 0.25) / 0.75, 0, 1)); ctx.restore(); return; }
 			if (e.loai === "dothi") { veDoThi(ctx, e.g, x + (w - e.gw) / 2, y + 40 * u, e.gw, e.gh, p, u); return; }
 			if (e.loai === "hinh") { const q = em(p), s2 = 0.92 + 0.08 * q; ctx.save(); ctx.globalAlpha *= q; ctx.translate(x + w / 2, y + e.a.h / 2); ctx.scale(s2, s2); ctx.drawImage(e.a.c, -e.a.w / 2, -e.a.h / 2); ctx.restore(); }
 		}
@@ -5596,11 +5696,12 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 				tl.phan.forEach((s2, i) => { const on = i === cur, bw = ws[i], bh = 50 * u; bo2(ctx, xx, 0, bw, bh, bh / 2); ctx.fillStyle = on ? "rgba(79,179,255,.16)" : "rgba(255,255,255,.04)"; ctx.fill(); ctx.strokeStyle = on ? MAU.xanh : "rgba(255,255,255,.14)"; ctx.lineWidth = 2.5 * u; ctx.stroke(); ctx.fillStyle = on ? MAU.xanh : "#3a4352"; ctx.beginPath(); ctx.arc(xx + 27 * u, bh / 2, 15 * u, 0, 7); ctx.fill(); ctx.fillStyle = on ? "#08121d" : "#9aa4b2"; ctx.font = "900 " + 20 * u + "px " + FONT; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(String(i + 1), xx + 27 * u, bh / 2 + 1); ctx.textAlign = "left"; ctx.font = "800 " + 26 * u + "px " + FONT; ctx.fillStyle = on ? "#fff" : "#8a93a3"; ctx.fillText(s2.toUpperCase(), xx + 50 * u, bh / 2 + 1); xx += bw + 12 * u; }); ctx.restore(); }
 			// nội dung theo trang
 			tl.trang.forEach(tr => { if (t < tr.t0 - 0.01 || t > tr.t1 + 0.35) return; const a = t > tr.t1 ? 1 - (t - tr.t1) / 0.35 : 1; ctx.save(); ctx.globalAlpha *= kep(a, 0, 1); tr.pt.forEach(e => { if (t < e.t0) return; vePhanTu(ctx, e, kep((t - e.t0) / e.d, 0, 1), u); }); ctx.restore(); });
+			tl.dan.forEach(d => veDan(ctx, d, t, u));
 			// phụ đề
 			if ($v("vdPhuDe").checked) { const ph = tl.phu.find(z => t >= z.t0 && t <= z.t1); if (ph) { const tu = ph.chu.split(/\s+/), nhom = []; for (let i = 0; i < tu.length; i += 11) nhom.push(tu.slice(i, i + 11).join(" ")); const k = kep((t - ph.t0) / (ph.t1 - ph.t0), 0, 0.999), s2 = nhom[Math.floor(k * nhom.length)]; ctx.save(); ctx.font = "700 " + 32 * u + "px " + FONT; const tw = Math.min(ctx.measureText(s2).width, khung.w - 120 * u), bh = 62 * u, by = khung.y + khung.h - (tl.doc ? 150 : 90) * u; bo2(ctx, W / 2 - tw / 2 - 28 * u, by, tw + 56 * u, bh, 16 * u); ctx.fillStyle = "rgba(0,0,0,.55)"; ctx.fill(); ctx.fillStyle = "#fff"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(s2, W / 2, by + bh / 2 + 1, khung.w - 120 * u); ctx.restore(); } }
 			ctx.restore();
 			// kết thúc
-			if (outro) { const q = kep((t - tOutro - 0.3) / 1.4, 0, 1); veLogo(ctx, W / 2, H * 0.42, (tl.doc ? 440 : 360) * u, tl.mauLogo, q); const q2 = em((t - tOutro - 1.2) / 0.5); ctx.save(); ctx.globalAlpha = q2; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.font = "900 " + 46 * u + "px " + FONT; ctx.fillStyle = CHU; const yy = H * 0.42 + (tl.doc ? 330 : 270) * u; ctx.fillText("THEO DÕI ", W / 2 - ctx.measureText(tl.kenh.toUpperCase()).width / 2, yy); ctx.fillStyle = MAU.vang; ctx.fillText(tl.kenh.toUpperCase(), W / 2 + ctx.measureText("THEO DÕI ").width / 2, yy); ctx.font = "600 " + 30 * u + "px " + FONT; ctx.fillStyle = "#aab3c0"; ctx.fillText("để xem thêm mẹo Toán mỗi ngày", W / 2, yy + 58 * u); ctx.restore(); }
+			if (outro) { const q = kep((t - tOutro - 0.3) / 1.4, 0, 1); veLogo(ctx, W / 2, H * 0.42, (tl.doc ? 440 : 360) * u, tl.mauLogo, q); const q2 = em((t - tOutro - 1.2) / 0.5); ctx.save(); ctx.globalAlpha = q2; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.font = "900 " + 46 * u + "px " + FONT; ctx.fillStyle = CHU; const yy = H * 0.42 + (tl.doc ? 330 : 270) * u; ctx.fillText("THEO DÕI ", W / 2 - ctx.measureText(tl.kenh.toUpperCase()).width / 2, yy); ctx.fillStyle = MAU.vang; ctx.fillText(tl.kenh.toUpperCase(), W / 2 + ctx.measureText("THEO DÕI ").width / 2, yy); ctx.font = "600 " + 30 * u + "px " + FONT; ctx.fillStyle = "#aab3c0"; ctx.fillText("để xem thêm những bài Toán hay mỗi ngày", W / 2, yy + 58 * u); ctx.restore(); }
 		}
 
 		// ---------- xem trước ----------
@@ -5633,7 +5734,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		}
 		$v("vdDung").addEventListener("click", () => dungLai(true));
 		$v("vdKB").addEventListener("input", () => { clearTimeout(S.hen); try { localStorage.setItem("tdk_video_kb", $v("vdKB").value); } catch (e) { } S.hen = setTimeout(() => dungLai(false), 900); });
-		["vdKho", "vdPhuDe", "vdMoDau", "vdMauLogo", "vdKenh", "vdGiong", "vdAmNhac"].forEach(id => $v(id).addEventListener("change", () => dungLai(false)));
+		["vdKho", "vdDam", "vdPhuDe", "vdMoDau", "vdMauLogo", "vdKenh", "vdGiong", "vdAmNhac"].forEach(id => $v(id).addEventListener("change", () => dungLai(false)));
 		$v("vdNhac").addEventListener("change", async () => { const f = $v("vdNhac").files[0]; if (!f) { S.nhac = null; dungLai(false); return; } try { const ac = new OfflineAudioContext(1, SR, SR), b = await ac.decodeAudioData(await f.arrayBuffer()); const o = new OfflineAudioContext(1, Math.ceil(b.duration * SR), SR), s2 = o.createBufferSource(); s2.buffer = b; s2.connect(o.destination); s2.start(); S.nhac = (await o.startRendering()).getChannelData(0); tt("Đã nạp nhạc nền " + gio(b.duration) + "."); dungLai(false); } catch (e) { tt("Không đọc được tệp nhạc.", true); } });
 
 		// ---------- MP4 (H.264 + AAC/Opus) ----------
@@ -5700,23 +5801,66 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		}
 		$v("vdXuat").addEventListener("click", xuatMp4);
 
-		// ---------- AI viết kịch bản ----------
-		const nhacAI = de => `Bạn là giáo viên Toán làm video ngắn kiểu "mẹo nhanh" (dọc 9:16, 1–2 phút) cho học sinh THPT Việt Nam. Viết KỊCH BẢN cho đề bài dưới đây theo đúng CÚ PHÁP sau (chỉ trả về kịch bản, không giải thích, không bọc trong \`\`\`):
-- Dòng đầu: tieude: tiêu đề IN HOA ngắn gây tò mò, tô màu từ khoá bằng [vang]…[/], [do]…[/], [luc]…[/], [xanh]…[/].
-- (Tuỳ chọn) phan: Đề bài | Mẹo | Lời giải | Kết luận  — rồi trong cảnh dùng muc: số thứ tự mục.
-- Mỗi cảnh mở bằng dòng --- ; dùng === khi cần xoá màn hình sang trang mới (mỗi trang tối đa 4–5 dòng hiệu ứng).
-- Lời đọc: dòng bắt đầu bằng >> , viết như đọc thành tiếng, câu ngắn, tự nhiên ("x bình phương", "căn x trừ ba", "đen-ta", "phần", "trên"). Ngay sau mỗi lời đọc là các dòng hiệu ứng minh hoạ đúng câu đó.
-- Hiệu ứng: de: (khung đề) · dong: (dòng chữ + công thức) · ct: (công thức lớn, LaTeX không cần $) · khung: (đóng khung kết quả) · meo: TIÊU ĐỀ | dòng | dòng (giấy nhớ mẹo) · sai: (cách làm sai thường gặp) · dung: (cách đúng) · nhan: (nhãn nhấn mạnh) · chu: (chữ thường) · dothi: y=… ; x=a..b ; y=c..d ; lo=… (điểm thủng) ; diem=… (điểm tô) ; tc=… (tiệm cận đứng) ; chu=CHÚ THÍCH · cho: số giây dừng.
-- Công thức LaTeX đặt trong $…$ (dothi dùng cú pháp máy tính: x^2, sqrt(x), 1/(x+1)). Chữ thường IN HOA phần nhãn (TỬ:, THAY … VÀO MẪU:).
-- Cấu trúc nên có: câu mở đầu gây tò mò → đề → mẹo hoặc lỗi sai hay gặp → giải từng bước → kết quả đóng khung → câu chốt.
-VÍ DỤ KỊCH BẢN:
+		// ---------- prompt AI viết kịch bản (toàn diện, mọi dạng bài) ----------
+		const KIEU_VD = { giai: "GIẢI CHI TIẾT: dẫn dắt từ phân tích đề → hướng giải → từng bước tính → kết quả → kiểm tra, chốt phương pháp.", meo: "MẸO NHANH: giới thiệu mẹo/công thức tính nhanh, so sánh với cách thông thường, áp dụng vào đề, lưu ý khi nào mẹo không dùng được.", loi: "CHỮA LỖI SAI: nêu cách làm sai phổ biến (dùng sai:), hỏi người xem sai ở đâu (hoi:), chỉ ra chỗ sai, rồi giải đúng (dung:).", thucte: "BÀI TOÁN THỰC TẾ: kể bối cảnh đời sống ngắn gọn, mô hình hoá bằng toán (đặt ẩn, lập hàm/phương trình, vẽ đồ thị hoặc hình minh hoạ), giải và trả lời bằng ngôn ngữ thực tế, có đơn vị.", lythuyet: "ÔN LÝ THUYẾT: nêu định nghĩa/công thức trọng tâm, ví dụ minh hoạ ngắn, các bẫy hay gặp, câu hỏi tự kiểm tra." };
+		const nhacAI = (de, kieu, dai, dt) => `VAI TRÒ: Bạn là biên kịch nội dung (content creator) chuyên làm video Toán ngắn, dễ hiểu, cuốn hút cho ${dt} Việt Nam — phong cách thân thiện, hài hước nhẹ nhàng, chính xác tuyệt đối về toán học. Kênh: “${$v("vdKenh").value.trim() || "TOÁN THẦY KHOA"}”.
+
+NHIỆM VỤ: Từ ĐỀ BÀI và LỜI GIẢI ở cuối, viết KỊCH BẢN video dài khoảng ${dai} phút (≈ ${dai * 150} từ lời đọc), kiểu ${KIEU_VD[kieu] || KIEU_VD.giai}
+- Bám đúng lời giải được cung cấp: giữ nguyên số liệu, các bước, kết quả. KHÔNG bịa số. Nếu chỉ có đề, tự giải cẩn thận, kiểm tra lại từng phép tính trước khi viết.
+- Chỉ trả về kịch bản theo đúng CÚ PHÁP bên dưới, không lời dẫn, không giải thích, không bọc trong \`\`\`.
+
+CẤU TRÚC NÊN CÓ:
+1. Câu móc (3–5 giây đầu): một câu hỏi/khẳng định gây tò mò hoặc lỗi sai hay gặp → tiêu đề IN HOA ngắn (≤ 12 từ) có tô màu từ khoá.
+2. Đề bài (de:), đọc đề ngắn gọn, nêu điều cần tìm.
+3. 2–3 CÂU HỎI GỢI MỞ (hoi:) đặt ở những chỗ then chốt: “Đề cho gì, hỏi gì?”, “Bước tiếp theo nên làm gì?”, “Vì sao không chọn …?”. Sau mỗi câu hỏi thêm cho: 1.5 để người xem kịp nghĩ, rồi mới trả lời.
+4. Phân tích hướng giải → các bước giải, mỗi trang (===) tối đa 4–5 dòng hiệu ứng; kết quả quan trọng dùng khung:.
+5. Kiểm tra / so sánh / minh hoạ trực quan (dothi: hoặc hinh:) nếu phù hợp; lỗi sai hay gặp dùng sai:, cách đúng dùng dung:.
+6. Chốt kiến thức (meo: hoặc nhan:) và câu kết thân thiện (gợi ý thử bài tương tự, bình luận đáp án).
+7. 4–7 STICKER rải đều ở các khoảnh khắc cảm xúc: mở đầu, khi đặt câu hỏi, khi phát hiện lỗi sai, khi ra kết quả, khi kết thúc. Bong bóng thoại ngắn (≤ 6 từ), dễ thương, hài hước, ví dụ: “Ơ kìa!”, “Khoan đã…”, “Dễ ợt!”, “Bẫy đấy nha!”, “Chuẩn không cần chỉnh!”, “Tèn ten!”.
+
+CÚ PHÁP KỊCH BẢN (mỗi hiệu ứng một dòng):
+tieude: TIÊU ĐỀ IN HOA với [vang]từ khoá[/]        (đặt ở đầu; có thể đổi tiêu đề giữa video)
+phan: Đề bài | Phân tích | Lời giải | Kết luận      (tuỳ chọn, mục lục; trong cảnh dùng muc: 2 để sáng mục)
+---                                               (cảnh mới, giữ màn hình)
+===                                               (trang mới, xoá màn hình)
+>> lời đọc                                        (1–2 câu, ≤ 25 từ; các hiệu ứng ngay sau lời đọc sẽ hiện trong lúc đọc câu đó)
+de: đề bài có $công thức$
+dong: CHỮ IN HOA NGẮN: $công thức$                (dòng trình bày)
+ct: công thức lớn viết LaTeX, không cần $
+khung: kết quả quan trọng $...$                   (đóng khung vàng, có bút chì vẽ)
+hoi: câu hỏi gợi mở?                              (thẻ câu hỏi; tiếp theo nên có cho: 1.5)
+meo: TIÊU ĐỀ | dòng 1 | dòng 2                    (giấy nhớ: mẹo, công thức, lưu ý)
+sai: cách làm sai thường gặp $...$                (gạch đỏ, dấu ✗ SAI)
+dung: cách làm đúng $...$                         (dấu ✓ ĐÚNG)
+nhan: [luc]NHÃN NGẮN[/]                           (nhãn bo tròn nhấn mạnh)
+chu: câu chữ thường, giải thích thêm
+dothi: y=x^2-4x+3 ; x=-1..5 ; y=-2..6 ; diem=1,3 ; lo=2 ; tc=1 ; chu=CHÚ THÍCH   (hàm viết kiểu máy tính: x^2, sqrt(x), 1/(x-1), sin(x), abs(x); diem = hoành độ điểm tô, lo = điểm thủng, tc = tiệm cận đứng)
+hinh:                                             (hình học: dòng sau dán code \\begin{tikzpicture}…\\end{tikzpicture}, toạ độ ≤ 6 cm, nét đơn giản)
+sticker: tên | lời thoại ngắn                     (tên: vui, haha, wow, suynghi, hoi, oi, gioi, bongden, tada, tim)
+cho: 1.5                                          (dừng thêm 1,5 giây)
+
+TÔ MÀU (nhất quán cả video): [vang]…[/] kết quả, từ khoá chính · [do]…[/] sai, chú ý, bẫy · [luc]…[/] đúng · [xanh]…[/] và [cam]…[/] hai đại lượng cần phân biệt · [hong]…[/], [tim]…[/] đại lượng phụ. Dùng được cả bên trong $…$.
+
+CHUẨN LATEX (bắt buộc): công thức trong $…$; phân số \\dfrac{}{}; số thập phân dấu phẩy 2{,}5; tương đương \\Leftrightarrow, suy ra \\Rightarrow; khoảng, đoạn: (a;b), [a;b]; độ 90^\\circ; tích phân \\displaystyle\\int\\limits_a^b f(x)\\,\\mathrm{d}x; vectơ \\overrightarrow{AB}; góc \\widehat{ABC}; hệ \\begin{cases}…\\end{cases}; logarit \\log_a b; không dùng \\frac, \\over, \\bf, $$…$$.
+
+LỜI ĐỌC (cho giọng AI tiếng Việt): viết như nói thành tiếng, câu ngắn, tự nhiên, xưng “mình – các bạn”; đọc ký hiệu bằng chữ: x bình phương, x mũ ba, căn x trừ ba, a phần b (hoặc a trên b), đen-ta, tích phân từ 0 đến 1 của…, vectơ AB, góc ABC, thuộc, lớn hơn hoặc bằng, suy ra, tương đương. Không đọc ký hiệu LaTeX, không viết ký hiệu toán trong lời đọc.
+
+VÍ DỤ KỊCH BẢN (chỉ minh hoạ cú pháp, không chép nội dung):
 ${MAU_KB[0][1]}
 
-ĐỀ BÀI:
+ĐỀ BÀI VÀ LỜI GIẢI:
 ${de}`;
-		$v("vdChepNhac").addEventListener("click", async () => { const de = $v("vdDe").value.trim(); if (!de) { $v("vdDe").focus(); return; } try { await navigator.clipboard.writeText(nhacAI(de)); toast("Đã copy prompt — dán vào Gemini/ChatGPT rồi dán kịch bản về ô Kịch bản"); } catch (e) { toast("Trình duyệt không cho copy"); } });
-		$v("vdAIViet").addEventListener("click", async () => { const de = $v("vdDe").value.trim(); if (!de) { $v("vdDe").focus(); return; } const nut = $v("vdAIViet"); nut.disabled = true; tt("AI đang viết kịch bản…");
-			try { let t = await bo()._w2t.goiHinh(vtAI(null).ai, nhacAI(de), [], { loai: "video" }); t = String(t || "").replace(/^```[a-z]*\n?|```\s*$/gm, "").trim(); docKB(t); $v("vdKB").value = t; try { localStorage.setItem("tdk_video_kb", t); } catch (e) { } tt("AI đã viết xong kịch bản — xem lại rồi bấm Dựng & lồng tiếng."); dungLai(false); }
+		// chuẩn hoá công thức trong kịch bản theo bộ chuẩn hoá của web
+		function chuanMot(x, ct) { const CH = (window.TDK || {}).chuanHoa; if (!CH) return null; try { const r = CH("$" + x + "$", { khoiDinhDanh: false, ghiChuSuaTay: false, thutLe: false, xoaCommentCode: false, xoaCanChinh: false, bocSo: false, bocTenDiem: false }).ketQua.trim(); if (!/^\$[\s\S]*\$$/.test(r)) return null; if (ct) { const m = r.match(/^\$([^$]*)\$$/); return m ? m[1] : null; } return r; } catch (e) { return null; } }
+		function chuanKB(src) { let doi = 0, trongHinh = false; const L = String(src).split("\n").map(l => { const t = l.trim(); if (trongHinh) { if (/\\end\{tikzpicture\}/.test(t)) trongHinh = false; return l; } if (/^hinh\s*:/i.test(t)) { if (!/\\end\{tikzpicture\}/.test(t)) trongHinh = true; return l; } if (!t || t.startsWith(">>") || t.startsWith("//") || /^(dothi|sticker|cho|muc|phan)\s*:/i.test(t)) return l;
+			const m = l.match(/^(\s*ct\s*:\s*)(.*)$/i); if (m) { const v = m[2].replace(/^\$|\$$/g, ""), r = chuanMot(v, true); if (r != null && r !== v) { doi++; return m[1] + r; } return l; }
+			return l.replace(/\$([^$]+)\$/g, (z, x) => { const r = chuanMot(x); if (r != null && r !== z) { doi++; return r; } return z; }); });
+			return { kb: L.join("\n"), doi }; }
+		$v("vdKB").addEventListener("paste", () => setTimeout(() => { const ta = $v("vdKB"), c = chuanKB(ta.value); if (c.doi) { const vt = ta.selectionStart; ta.value = c.kb; ta.selectionStart = ta.selectionEnd = Math.min(vt, ta.value.length); toast("Đã chuẩn hoá " + c.doi + " công thức LaTeX"); ta.dispatchEvent(new Event("input")); } }, 0));
+		const layNhac = () => { const de = $v("vdDe").value.trim(); if (!de) { $v("vdDe").focus(); toast("Dán đề bài (và lời giải) vào ô trước"); return null; } return nhacAI(de, $v("vdKieu").value, +$v("vdDai").value || 2, $v("vdDoiTuong").value); };
+		$v("vdChepNhac").addEventListener("click", async () => { const s2 = layNhac(); if (!s2) return; try { await navigator.clipboard.writeText(s2); toast("Đã copy prompt + đề + lời giải — dán vào Gemini/ChatGPT/Claude, rồi dán kịch bản trả về vào ô Kịch bản"); } catch (e) { toast("Trình duyệt không cho copy"); } });
+		$v("vdAIViet").addEventListener("click", async () => { const s2 = layNhac(); if (!s2) return; const nut = $v("vdAIViet"); nut.disabled = true; tt("AI đang viết kịch bản…");
+			try { let t = await bo()._w2t.goiHinh(vtAI(null).ai, s2, [], { loai: "video" }); t = String(t || "").replace(/^```[a-z]*\n?|```\s*$/gm, "").trim(); t = chuanKB(t).kb; docKB(t); $v("vdKB").value = t; try { localStorage.setItem("tdk_video_kb", t); } catch (e) { } tt("AI đã viết xong kịch bản — xem lại rồi bấm Dựng & lồng tiếng."); dungLai(false); }
 			catch (e) { tt("Chưa viết được: " + ((e && e.message) || e), true); } nut.disabled = false; });
 
 		// ---------- chèn, mẫu, HDSD ----------
