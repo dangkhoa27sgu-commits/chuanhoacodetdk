@@ -5360,7 +5360,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			["<b>Hiệu ứng:</b> de (khung đề), dong (dòng chữ), ct (công thức lớn), khung (đóng khung kết quả, có bút chì), meo (giấy nhớ: tiêu đề | dòng | dòng), sai (dấu ✗ SAI), dung (dấu ✓ ĐÚNG), nhan (nhãn bo tròn), chu (chữ thường), cho (dừng n giây), muc (sáng mục thứ n), trang (sang trang).", ""],
 			["<b>Đồ thị:</b> hàm số ; khoảng x ; khoảng y ; lo = hoành độ điểm thủng ; diem = các điểm tô ; tc = tiệm cận đứng ; chu = chú thích ; mau = màu đường.", "dothi: y=1/(x+3) ; x=-2.5..6 ; y=-0.2..0.7 ; lo=3 ; chu=CHỈ LÀ MỘT CÁI LỖ"],
 			["<b>Câu hỏi gợi mở:</b> <code>hoi:</code> hiện thẻ câu hỏi; nên thêm <code>cho: 1.5</code> ngay sau để người xem kịp nghĩ.", "hoi: Giá trị lớn nhất đạt tại cực trị hay đầu mút?"],
-			["<b>Sticker:</b> <code>sticker: tên | lời thoại</code> — nhân vật dễ thương bật ra ở góc màn hình kèm bong bóng thoại. Tên: vui, haha, wow, suynghi, hoi, oi, gioi, bongden, tada, tim.", "sticker: tada | Tèn ten!"],
+			["<b>Sticker:</b> <code>sticker: tên | lời thoại</code> — nhân vật dễ thương bật ra ở góc màn hình kèm bong bóng thoại. Viết nhiều sticker liên tiếp thì chúng hiện lần lượt: sticker trước biến mất rồi sticker sau mới hiện (số cuối là số giây hiện, vd <code>sticker: wow | Ơ kìa! | 2</code>). Tên: vui, haha, wow, suynghi, hoi, oi, gioi, bongden, tada, tim.", "sticker: tada | Tèn ten!"],
 			["<b>Chuẩn hoá LaTeX:</b> dán kịch bản vào ô, web tự chuẩn hoá các công thức trong $…$ theo chuẩn của web (\\dfrac, 2{,}5, 90^\\circ, tích phân…).", ""],
 			["<b>Công thức in đậm:</b> bật ở Thiết lập để công thức đậm như chữ (dùng \\boldmath).", ""],
 			["<b>Hình TikZ:</b> <code>hinh:</code> rồi dán code tikzpicture ở các dòng sau (lấy từ các tab Vẽ hình). Nét đen tự đổi thành nét sáng trên nền tối.", ""],
@@ -5619,7 +5619,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 						const tA = S0 + 0.12 + i * gian;
 						if (v.k === "muc") { tl.muc.push({ t: tA, i: Math.max(1, parseInt(v.v) || 1) - 1 }); continue; }
 						if (v.k === "tieude") { tdHien = await veTD(v.v); tl.td.push({ t: tA, dd: tdHien }); continue; }
-						if (v.k === "sticker") { const ph = v.v.split("|").map(z => z.trim()); let loai = STK[boDauVD(ph[0])]; if (!loai) { loai = "vui"; S.canhBao.push("dòng " + v.dong + ": chưa có sticker “" + ph[0] + "” — dùng sticker vui"); } const phai = (tl.dan.length % 2) === 0, r = (doc ? 92 : 80) * u; tl.dan.push({ t0: tA, dai: Math.max(1.5, parseFloat(String(ph[2] || "").replace(",", ".")) || 3.4), loai, chu: ph[1] || "", phai, r, x: phai ? khung.x + khung.w - r - 46 * u : khung.x + r + 46 * u, y: yDay - r - 10 * u, wMax: khung.w - 2 * r - 160 * u }); continue; }
+						if (v.k === "sticker") { const ph = v.v.split("|").map(z => z.trim()); let loai = STK[boDauVD(ph[0])]; if (!loai) { loai = "vui"; S.canhBao.push("dòng " + v.dong + ": chưa có sticker “" + ph[0] + "” — dùng sticker vui"); } const phai = (tl.dan.length % 2) === 0, r = (doc ? 92 : 80) * u, truoc = tl.dan[tl.dan.length - 1], t0s = truoc ? Math.max(tA, truoc.t0 + truoc.dai + 0.15) : tA; tCuoi = Math.max(tCuoi, t0s + 1.4); tl.dan.push({ t0: t0s, dai: Math.max(1.5, parseFloat(String(ph[2] || "").replace(",", ".")) || 3.4), loai, chu: ph[1] || "", phai, r, x: phai ? khung.x + khung.w - r - 46 * u : khung.x + r + 46 * u, y: yDay - r - 10 * u, wMax: khung.w - 2 * r - 160 * u }); continue; }
 						if (v.k === "cho") { them += Math.max(0, parseFloat(String(v.v).replace(",", ".")) || 1); continue; }
 						if (v.k === "trang") { T = Math.max(T, tA); sangTrang(tA); continue; }
 						let e;
