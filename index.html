@@ -963,6 +963,10 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 .vdLoiDoi { display: flex; gap: 4px; justify-content: flex-end; }
 .vdLoiDoi button { width: 28px; height: 26px; border: 1px solid var(--vt-vien); border-radius: 7px; background: var(--vt-mat); color: var(--vt-chu); font-size: 11px; cursor: pointer; } .vdLoiDoi button:hover { border-color: var(--vt-ac); background: var(--vt-acNhat); }
 .vdChiPhi { margin: 0; padding: 8px 12px; border-radius: 10px; background: var(--vt-acNhat); font-size: 12.5px; color: var(--vt-chu); } .vdChiPhi:empty { display: none; }
+.vdManHinh.keo { outline: 3px dashed var(--vt-ac); outline-offset: -6px; }
+#vdLoiBao.loi { color: #d97706; font-weight: 600; }
+.vdNutLoi { border-color: var(--vt-ac); }
+.vdLoiDs li.nghi { box-shadow: inset 3px 0 0 #d97706; } .vdLoiDs li.nghi .vdLoiChu::before { content: "⚠ "; color: #d97706; }
 
 </style>
 </head>
@@ -1514,6 +1518,8 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 					<div class="vdCC">
 						<button class="vdNutAI" type="button" id="vdMoAI" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8z"/></svg>AI viết kịch bản</button>
 						<div class="vdCCPhai">
+							<button class="vdNutNho vdNutLoi" type="button" id="vdChepLoi2" title="Copy toàn bộ lời đọc (các dòng >>) để dán vào CapCut">📋 Copy lời đọc</button>
+							<span class="vdVach" aria-hidden="true"></span>
 							<button class="vdNutNho" type="button" id="vdStk" aria-expanded="false" title="Chọn sticker để chèn">☺ Sticker</button>
 							<button class="vdNutNho" type="button" id="vdChen" aria-expanded="false" title="Chèn hiệu ứng">＋ Chèn</button>
 							<span class="vdVach" aria-hidden="true"></span>
@@ -1548,9 +1554,9 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 					<div class="vdMucDau vdNguonDau"><b>Nguồn giọng</b><div class="vdSeg" data-cho="vdNguon"><button type="button" data-v="ai">Giọng AI (Gemini)</button><button type="button" data-v="file">File lời đọc / thu âm</button></div><input type="hidden" id="vdNguon" value="ai"></div>
 					<div class="vdNguonFile" id="vdNguonFile" hidden>
 						<ol class="vdBuocNho">
-							<li><span><b>Lấy lời đọc:</b> bấm <button class="vdNutNho" type="button" id="vdChepLoi">Copy lời đọc</button> — đọc lần lượt từng câu (hoặc dán vào app tạo giọng như CapCut, Vbee, FPT.AI).</span></li>
-							<li><span><b>Thu / xuất file:</b> nghỉ khoảng <b>1 giây</b> giữa các câu, đọc đúng thứ tự.</span></li>
-							<li><span><b>Tải file lên:</b> web tự làm đẹp giọng và cắt khớp từng câu với hiệu ứng.</span></li>
+							<li><span><b>Copy lời đọc:</b> bấm <button class="vdNutNho" type="button" id="vdChepLoi">📋 Copy lời đọc</button> (hoặc nút cùng tên ở thẻ Kịch bản).</span></li>
+							<li><span><b>CapCut:</b> thêm <i>Văn bản</i> → dán → <i>Văn bản thành giọng nói</i> → chọn giọng → <i>Xuất</i> (chọn <i>Âm thanh</i> MP3, hoặc xuất video cũng được).</span></li>
+							<li><span><b>Tải lên:</b> kéo file vào đây <b>hoặc kéo thẳng vào khung xem thử</b> — web tự cắt khớp từng câu với chữ hiện.</span></li>
 						</ol>
 						<label class="vdTha" id="vdLoiTha">
 							<input type="file" id="vdLoiTep" accept="audio/*,video/*,.mp3,.m4a,.wav,.ogg,.aac,.flac,.webm,.mp4,.mov,.m4v">
@@ -5864,22 +5870,26 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		}
 		const giongGemini = (text, voice, bao) => goiTTS(ghiChuDoc() + text, voice, bao);
 		// cắt bản đọc liền mạch thành từng câu theo các khoảng lặng (quy hoạch động, bám vị trí ước lượng theo độ dài chữ)
-		function catDoan(am, cau, lech) {
+		function catDoan(am, cau, lech) { S.loiNghi = new Set();
 			const { pcm, sr } = am, F = Math.round(sr * 0.01), nF = Math.floor(pcm.length / F), rms = new Float32Array(nF);
 			for (let i = 0; i < nF; i++) { let e = 0; for (let k = i * F; k < (i + 1) * F; k++) e += pcm[k] * pcm[k]; rms[i] = Math.sqrt(e / F); }
 			const xs = Array.from(rms).sort((a, b) => a - b), nguong = Math.max(0.006, xs[Math.floor(nF * 0.95)] * 0.06), im = i => rms[i] < nguong;
 			let a = 0, b = nF - 1; while (a < nF && im(a)) a++; while (b > a && im(b)) b--;
 			const lang = []; for (let i = a; i <= b;) { if (!im(i)) { i++; continue; } let j = i; while (j <= b && im(j)) j++; if (j - i >= 15) lang.push({ t: (i + j) / 2, L: (j - i) / 100 }); i = j; }
-			const N = cau.length, w = cau.map(c => Math.max(4, c.replace(/\s+/g, "").length)), tong = w.reduce((x, y) => x + y, 0), D = Math.max(1, b - a), kv = []; let cum = 0;
-			for (let i = 0; i < N - 1; i++) { cum += w[i]; kv.push(a + D * cum / tong); }
-			let cat = kv.slice();
+			const N = cau.length, w = cau.map(c => Math.max(1, c.trim().split(/\s+/).length)), tong = w.reduce((x, y) => x + y, 0), kv = []; let cum = 0;
+			// trục "thời gian nói" (bỏ các khoảng lặng) để sai số không cộng dồn theo các chỗ ngắt
+			const sp = new Float32Array(nF + 1); for (let i = 0; i < nF; i++) sp[i + 1] = sp[i] + (i >= a && i <= b && !im(i) ? 1 : 0); const D = Math.max(1, sp[b + 1]);
+			const veThuc = v => { let lo = a, hi = b; while (lo < hi) { const m = (lo + hi) >> 1; if (sp[m] < v) lo = m + 1; else hi = m; } return lo; };
+			for (let i = 0; i < N - 1; i++) { cum += w[i]; kv.push(D * cum / tong); }
+			let cat = kv.map(veThuc); lang.forEach(z => { z.s = sp[Math.floor(z.t)]; });
 			if (lang.length >= N - 1) {
-				const M = lang.length, chi = (i, j) => 6 * Math.abs(lang[j].t - kv[i]) / D - Math.min(lang[j].L, 1.2), C = [], P = [];
-				for (let i = 0; i < N - 1; i++) { C.push(new Float64Array(M).fill(Infinity)); P.push(new Int32Array(M).fill(-1)); for (let j = i; j < M - (N - 2 - i); j++) { if (!i) { C[0][j] = chi(0, j); continue; } let tot = Infinity, tk = -1; for (let q = i - 1; q < j; q++) if (C[i - 1][q] < tot) { tot = C[i - 1][q]; tk = q; } C[i][j] = tot + chi(i, j); P[i][j] = tk; } }
-				let j = -1, tot = Infinity; C[N - 2].forEach((v, q) => { if (v < tot) { tot = v; j = q; } }); for (let i = N - 2; i >= 0; i--) { cat[i] = lang[j].t; j = P[i][j]; }
+				const M = lang.length, chi = (i, j) => 6 * Math.abs(lang[j].s - kv[i]) / D - Math.min(lang[j].L, 1.2) + (i ? 0 : 1.2 * Math.abs(lang[j].s - kv[0]) / (D * w[0] / tong)), C = [], P = [];
+				for (let i = 0; i < N - 1; i++) { C.push(new Float64Array(M).fill(Infinity)); P.push(new Int32Array(M).fill(-1)); for (let j = i; j < M - (N - 2 - i); j++) { if (!i) { C[0][j] = chi(0, j); continue; } let tot = Infinity, tk = -1; const Le = D * w[i] / tong; for (let q = i - 1; q < j; q++) { const v = C[i - 1][q] + 1.2 * Math.abs((lang[j].s - lang[q].s) - Le) / Le; if (v < tot) { tot = v; tk = q; } } C[i][j] = tot + chi(i, j); P[i][j] = tk; } }
+				let j = -1, tot = Infinity; C[N - 2].forEach((v, q) => { if (v < tot) { tot = v; j = q; } }); var yeu = 0; const chon = []; for (let i = N - 2; i >= 0; i--) { cat[i] = lang[j].t; chon[i] = j; j = P[i][j]; }
+				for (let i = 0; i < N - 1; i++) { const z = lang[chon[i]], t0 = i ? cat[i - 1] : a, t1 = i < N - 2 ? cat[i + 1] : b; let mx = 0; lang.forEach((q, k) => { if (q.t > t0 && q.t < t1 && k !== chon[i]) mx = Math.max(mx, q.L); }); if (z.L < 0.2 || z.L < mx * 1.3) { yeu++; (S.loiNghi = S.loiNghi || new Set()).add(i + 1); } }
 			}
 			if (lech) for (let i = 0; i < cat.length; i++) cat[i] = kep(cat[i] + (lech[i] || 0) * 100, (i ? cat[i - 1] : a) + 5, b - 5);
-			const bien = [a].concat(cat, [b + 1]), ra = []; ra.cat = cat.map(f => f / 100); ra.dau = a / 100; ra.cuoi = (b + 1) / 100;
+			const bien = [a].concat(cat, [b + 1]), ra = []; ra.cat = cat.map(f => f / 100); ra.dau = a / 100; ra.cuoi = (b + 1) / 100; ra.yeu = lang.length >= N - 1 ? (typeof yeu === "number" ? yeu : 0) : N - 1;
 			for (let i = 0; i < N; i++) { let s0 = Math.floor(bien[i]), s1 = Math.ceil(bien[i + 1]); while (s0 < s1 && im(s0)) s0++; while (s1 > s0 && im(s1 - 1)) s1--; s0 = Math.max(0, s0 - 4); s1 = Math.min(nF, s1 + 6); const p = pcm.slice(s0 * F, Math.max(s0 + 1, s1) * F); ra.push({ pcm: p, sr, dai: p.length / sr }); }
 			return ra;
 		}
@@ -6190,7 +6200,8 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		const capNguon = () => { const f = $v("vdNguon").value === "file"; $v("vdNguonFile").hidden = !f; $v("vdNguonAI").hidden = f; $v("vdNhanGiong").textContent = f ? (S.loiXL ? "file" : "") : $v("vdGioi").value === "tat" ? "tắt" : $v("vdGiong").value; };
 		$v("vdNguon").addEventListener("change", capNguon);
 		const layLoiDoc = () => { const kb = docKB(chuanKB($v("vdKB").value).kb), ds = []; kb.canh.forEach(c => c.doan.forEach(d => { if (d.loi) ds.push(d.loi); })); return ds; };
-		$v("vdChepLoi").addEventListener("click", async () => { const ds = layLoiDoc(); if (!ds.length) { toast("Kịch bản chưa có dòng >> nào"); return; } try { await navigator.clipboard.writeText(ds.join("\n\n")); toast("Đã copy " + ds.length + " câu lời đọc — đọc lần lượt, nghỉ 1 giây giữa các câu"); } catch (e) { toast("Trình duyệt không cho copy"); } });
+		const chepLoi = async () => { const ds = layLoiDoc(); if (!ds.length) { toast("Kịch bản chưa có dòng >> nào"); return; } try { await navigator.clipboard.writeText(ds.join("\n\n")); toast("Đã copy " + ds.length + " câu lời đọc — dán vào CapCut → Văn bản thành giọng nói → xuất âm thanh, rồi kéo file vào khung xem thử"); } catch (e) { toast("Trình duyệt không cho copy"); } };
+		$v("vdChepLoi").addEventListener("click", chepLoi); $v("vdChepLoi2").addEventListener("click", chepLoi);
 		function veLoi() {
 			const c = $v("vdLoiSong"), x = c.getContext("2d"), p = S.loiXL; $v("vdLoiHop").hidden = $v("vdLoiCai").hidden = !p; $v("vdLoiTha").classList.toggle("co", !!p); if (!p) return;
 			const r = c.getBoundingClientRect(); if (r.width) { c.width = Math.round(r.width * 2); c.height = 240; } const W = c.width, H = c.height, buoc = Math.max(1, Math.floor(p.length / W)), dai = p.length / SRV, mau = "#c9a24a";
@@ -6198,14 +6209,16 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			for (let i = 0; i < W; i++) { let m = 0; for (let k = i * buoc, e = Math.min(p.length, k + buoc); k < e; k += 3) m = Math.max(m, Math.abs(p[k])); const h = Math.max(2, m / pk * H * 0.85); x.fillStyle = "rgba(140,150,165,.6)"; x.fillRect(i, (H - h) / 2, 1, h); }
 			const ct = S.loiCat; if (ct) { const bien = [ct.dau].concat(ct.cat); x.font = "700 22px sans-serif"; bien.forEach((t, i) => { const xx = t / dai * W; x.fillStyle = mau; x.fillRect(xx - 1, 0, 3, H); x.fillStyle = "#1b1408"; x.beginPath(); x.arc(xx + 15, 18, 14, 0, 7); x.fillStyle = mau; x.fill(); x.fillStyle = "#1b1408"; x.textAlign = "center"; x.fillText(String(i + 1), xx + 15, 26); }); x.textAlign = "left"; }
 			const cau = S.loiCauDs || [], ds = S.loiDs || [];
-			$v("vdLoiBao").textContent = cau.length ? "Đã cắt thành " + cau.length + " câu, khớp với " + cau.length + " dòng >> trong kịch bản. Vạch vàng là điểm bắt đầu mỗi câu." : "Kịch bản chưa có dòng >> nào.";
-			$v("vdLoiDs").innerHTML = cau.map((t, i) => '<li><button type="button" class="vdNghe" data-loi="' + i + '" aria-label="Nghe câu ' + (i + 1) + '">' + SONG_TRANG + '</button><span class="vdLoiChu">' + esc(t) + '</span><span class="vdLoiGio">' + (ds[i] ? ds[i].dai.toFixed(1) + "s" : "") + "</span>" + (i ? '<span class="vdLoiDoi"><button type="button" data-doi="' + (i - 1) + '" data-d="-0.15" title="Bắt đầu sớm hơn 0,15 giây">◀</button><button type="button" data-doi="' + (i - 1) + '" data-d="0.15" title="Bắt đầu muộn hơn 0,15 giây">▶</button></span>' : '<span class="vdLoiDoi"></span>') + "</li>").join("");
+			const luc = S.loiCauLuc || [], doi = cau.findIndex((t, i) => luc[i] !== t), khac = luc.length && (doi >= 0 || luc.length !== cau.length);
+			$v("vdLoiBao").classList.toggle("loi", !!(khac || (ct && ct.yeu)));
+			$v("vdLoiBao").textContent = !cau.length ? "Kịch bản chưa có dòng >> nào." : khac ? "⚠ Lời đọc trong kịch bản đã thay đổi sau khi tải file (từ câu " + ((doi >= 0 ? doi : Math.min(luc.length, cau.length)) + 1) + "). Hãy bấm Copy lời đọc, tạo lại giọng trong CapCut rồi tải file mới." : "Đã cắt thành " + cau.length + " câu, khớp " + cau.length + " dòng >> trong kịch bản. Vạch vàng là điểm bắt đầu mỗi câu." + (ct && ct.yeu ? " ⚠ Có " + ct.yeu + " chỗ chuyển câu chưa rõ (nghỉ quá ngắn) — nghe thử các câu và chỉnh bằng nút ◀ ▶ nếu lệch." : "");
+			$v("vdLoiDs").innerHTML = cau.map((t, i) => '<li' + (S.loiNghi && S.loiNghi.has(i) ? ' class="nghi" title="Chỗ chuyển sang câu này chưa rõ — nghe thử và chỉnh nếu lệch"' : "") + '><button type="button" class="vdNghe" data-loi="' + i + '" aria-label="Nghe câu ' + (i + 1) + '">' + SONG_TRANG + '</button><span class="vdLoiChu">' + esc(t) + '</span><span class="vdLoiGio">' + (ds[i] ? ds[i].dai.toFixed(1) + "s" : "") + "</span>" + (i ? '<span class="vdLoiDoi"><button type="button" data-doi="' + (i - 1) + '" data-d="-0.15" title="Bắt đầu sớm hơn 0,15 giây">◀</button><button type="button" data-doi="' + (i - 1) + '" data-d="0.15" title="Bắt đầu muộn hơn 0,15 giây">▶</button></span>' : '<span class="vdLoiDoi"></span>') + "</li>").join("");
 		}
 		$v("vdLoiDs").addEventListener("click", async e => { const b = e.target.closest("[data-loi]"); if (b) { const a = (S.loiDs || [])[+b.dataset.loi]; if (a) { await phatNhanh(a.pcm, a.sr); } return; } const d = e.target.closest("[data-doi]"); if (d) { const i = +d.dataset.doi; S.loiLech = S.loiLech || []; S.loiLech[i] = Math.round(((S.loiLech[i] || 0) + +d.dataset.d) * 100) / 100; await dungLai(false); const a = (S.loiDs || [])[i + 1]; if (a) phatNhanh(a.pcm, a.sr, 2.5); } });
 		async function xuLyLoi() { if (!S.loiGoc) return; tt("Đang làm đẹp giọng…"); await ngu(30); S.loiXL = await lamDepGiong(S.loiGoc); S.loiPhien = (S.loiPhien || 0) + 1; S.loiKey = ""; capNguon(); await dungLai(false); }
 		async function napLoi(f) {
 			if (!f) return; if (f.size > 600 * 1048576) { tt("Tệp quá lớn, hãy chọn tệp dưới 600 MB.", true); return; } tt("Đang đọc file lời đọc…");
-			try { const ac = new OfflineAudioContext(1, SRV, SRV), b = await ac.decodeAudioData(await f.arrayBuffer()); const o = new OfflineAudioContext(1, Math.ceil(b.duration * SRV), SRV), s2 = o.createBufferSource(); s2.buffer = b; s2.connect(o.destination); s2.start(); S.loiGoc = (await o.startRendering()).getChannelData(0).slice(); S.loiLech = []; S.loiSoCau = -1;
+			try { const ac = new OfflineAudioContext(1, SRV, SRV), b = await ac.decodeAudioData(await f.arrayBuffer()); const o = new OfflineAudioContext(1, Math.ceil(b.duration * SRV), SRV), s2 = o.createBufferSource(); s2.buffer = b; s2.connect(o.destination); s2.start(); S.loiGoc = (await o.startRendering()).getChannelData(0).slice(); S.loiLech = []; S.loiSoCau = -1; S.loiCauLuc = layLoiDoc(); if ($v("vdNguon").value !== "file") chonNhom("vdNguon", "file");
 				$v("vdLoiTen").textContent = f.name; $v("vdLoiDai").textContent = gio(b.duration); $v("vdLoiTha").querySelector("b").textContent = "Đổi file lời đọc khác"; await xuLyLoi(); toast("Đã nạp lời đọc " + gio(b.duration) + " — bấm ▶ để xem video có tiếng"); }
 			catch (e) { tt("Không đọc được file lời đọc này — thử MP3, M4A hoặc WAV khác.", true); }
 		}
@@ -6243,6 +6256,8 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		$v("vdKB").addEventListener("input", () => { capTo(); clearTimeout(S.hen); try { localStorage.setItem("tdk_video_kb", $v("vdKB").value); } catch (e) { } S.hen = setTimeout(() => dungLai(false), 900); });
 		$v("vdMoAI").addEventListener("click", () => { const h = $v("vdAIHop"); h.hidden = !h.hidden; $v("vdMoAI").setAttribute("aria-expanded", String(!h.hidden)); if (!h.hidden) $v("vdDe").focus(); });
 		$v("vdCanvas").addEventListener("click", () => $v("vdPhat").click());
+		const mh = $v("vdManHinh"); ["dragover", "dragenter"].forEach(k => mh.addEventListener(k, e => { e.preventDefault(); mh.classList.add("keo"); })); ["dragleave", "drop"].forEach(k => mh.addEventListener(k, () => mh.classList.remove("keo")));
+		mh.addEventListener("drop", e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (!f) return; if (/^(audio|video)\//.test(f.type) || /\.(mp3|m4a|wav|ogg|aac|flac|webm|mp4|mov|m4v)$/i.test(f.name)) napLoi(f); else toast("Hãy kéo thả file âm thanh hoặc video xuất từ CapCut"); });
 
 		// ---------- MP4 (H.264 + AAC/Opus) ----------
 		function taoMp4(o) {
