@@ -838,6 +838,17 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 .vdTT { margin: 0; font-size: 12.5px; color: var(--vt-phu); line-height: 1.5; } .vdTT.loi { color: #d92d20; }
 .vdTai { justify-content: center; text-decoration: none; } .vdTai[hidden] { display: none; }
 
+/* v15.4 — bảng sticker, nút nghe thử */
+.vdStkMenu{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:8px;margin:6px 0;border:1px solid var(--vt-vien);border-radius:10px;background:var(--vt-mat)}
+.vdStkMenu[hidden]{display:none}
+.vdStkMenu button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border:1px solid transparent;border-radius:8px;background:#1d2433;color:#fff;cursor:pointer;font:inherit}
+.vdStkMenu button:hover,.vdStkMenu button:focus-visible{border-color:#f5b301;outline:none}
+.vdStkMenu canvas{width:52px;height:52px}
+.vdStkMenu b{font-size:11.5px;font-weight:600;line-height:1.2;text-align:center}
+.vdStkMenu code{font-size:10.5px;opacity:.7}
+.vdNghe{align-self:end;justify-self:start;white-space:nowrap}
+@media (max-width:560px){.vdStkMenu{grid-template-columns:repeat(4,1fr)}}
+
 </style>
 </head>
 <body>
@@ -1377,10 +1388,12 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 					<div class="vdTheDau">
 						<b>Kịch bản</b>
 						<div class="vdCongCu">
-							<button class="vt3Nut" type="button" id="vdChen" aria-expanded="false">+ Chèn</button>
+							<button class="vt3Nut" type="button" id="vdStk" aria-expanded="false" title="Chọn sticker để chèn">☺ Sticker</button>
+								<button class="vt3Nut" type="button" id="vdChen" aria-expanded="false">+ Chèn</button>
 						</div>
 					</div>
 					<div class="vdChenMenu" id="vdChenMenu" hidden></div>
+						<div class="vdStkMenu" id="vdStkMenu" hidden></div>
 					<textarea id="vdKB" spellcheck="false" aria-label="Kịch bản" placeholder="Dán kịch bản vào đây (AI viết theo prompt ở dưới), hoặc tự viết:&#10;&#10;tieude: [vang]TỪ KHOÁ[/] NỘI DUNG&#10;---&#10;>> Lời đọc câu thứ nhất.&#10;de: Đề bài có $công thức$&#10;sticker: wow | Ơ kìa!&#10;===&#10;>> Lời đọc tiếp theo.&#10;dong: BƯỚC 1: $x^2-4=0$&#10;khung: $x=\pm 2$"></textarea>
 					<details class="vdAI" open>
 						<summary><b>Nhờ AI viết kịch bản</b><span>dán đề + lời giải → copy prompt → dán kịch bản AI trả về vào ô trên</span></summary>
@@ -1401,6 +1414,7 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 					<div class="vdLuoi">
 						<label><span>Khổ video</span><select id="vdKho"><option value="doc">Dọc 9:16 (Reels, TikTok, Shorts)</option><option value="ngang">Ngang 16:9 (YouTube, bài giảng)</option></select></label>
 						<label><span>Giọng đọc AI</span><select id="vdGiong"><option value="">Không lồng tiếng</option><optgroup label="Giọng nữ"><option value="Kore" selected>Nữ 1 — Kore</option><option value="Aoede">Nữ 2 — Aoede</option><option value="Leda">Nữ 3 — Leda</option><option value="Zephyr">Nữ 4 — Zephyr</option></optgroup><optgroup label="Giọng nam"><option value="Puck">Nam 1 — Puck</option><option value="Charon">Nam 2 — Charon</option><option value="Fenrir">Nam 3 — Fenrir</option><option value="Orus">Nam 4 — Orus</option></optgroup></select></label>
+							<button class="vt3Nut vdNghe" type="button" id="vdNgheGiong" title="Nghe thử giọng đọc đang chọn">▶ Nghe thử giọng</button>
 						<label class="o2"><span>Cách đọc</span><input type="text" id="vdCachDoc" value="Đọc bằng tiếng Việt chuẩn, giọng giáo viên trẻ, rõ ràng, hào hứng, tốc độ hơi nhanh"></label>
 						<label><span>Tên kênh</span><input type="text" id="vdKenh" value="TOÁN THẦY KHOA"></label>
 						<label><span>Màu logo</span><select id="vdMauLogo"><option value="do">Đỏ</option><option value="vang">Vàng</option><option value="trang">Trắng</option></select></label>
@@ -1409,6 +1423,7 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 						<label class="bat"><input type="checkbox" id="vdMoDau" checked><span>Mở đầu & kết thúc có logo</span></label>
 						<label><span>Nhạc nền (tuỳ chọn)</span><input type="file" id="vdNhac" accept="audio/*"></label>
 						<label><span>Âm lượng nhạc</span><input type="range" id="vdAmNhac" min="0" max="100" value="12"></label>
+							<button class="vt3Nut vdNghe" type="button" id="vdNgheNhac" title="Nghe thử 8 giây nhạc nền">▶ Nghe thử nhạc</button>
 					</div>
 				</div>
 			</section>
@@ -5353,21 +5368,15 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		];
 		const CHEN = [["Cảnh mới", "---\n>> "], ["Trang mới (xoá màn hình)", "===\n>> "], ["Lời đọc", ">> "], ["Tiêu đề", "tieude: [vang]TỪ KHOÁ[/] NỘI DUNG"], ["Mục lục", "phan: Phần 1 | Phần 2 | Phần 3"], ["Chuyển mục", "muc: 2"], ["Đề bài", "de: Giải phương trình $x^2-4=0$"], ["Dòng chữ + công thức", "dong: TỬ: $\\sqrt{x-3}=0\\iff x=3$"], ["Công thức lớn", "ct: \\int_0^1 x^2\\,dx=\\dfrac13"], ["Khung kết quả (bút chì)", "khung: $\\Leftrightarrow m=12$"], ["Câu hỏi gợi mở", "hoi: Bước tiếp theo nên làm gì?\ncho: 1.5"], ["Sticker", "sticker: wow | Ơ kìa!"], ["Giấy nhớ mẹo", "meo: MẸO QUEN TAY | Dòng 1 | [do]Dòng 2[/]"], ["Cách làm SAI", "sai: Cộng thẳng $30+20=50$"], ["Cách làm ĐÚNG", "dung: $50-10=40$"], ["Nhãn nhấn mạnh", "nhan: [vang]ĐẾM 2 LẦN[/]"], ["Chữ thường", "chu: Ghi chú thêm…"], ["Đồ thị", "dothi: y=1/(x-1) ; x=-2..5 ; y=-3..3 ; lo=2 ; chu=CHÚ THÍCH"], ["Hình TikZ", "hinh:\n\\begin{tikzpicture}\n\\draw (0,0)--(3,0)--(1,2)--cycle;\n\\end{tikzpicture}"], ["Dừng (giây)", "cho: 1.5"]];
 		const HDSD = [
-			["<b>Cấu trúc:</b> đầu kịch bản đặt <code>tieude:</code> và <code>phan:</code> (mục lục). <code>---</code> mở cảnh mới, <code>===</code> mở trang mới (xoá màn hình). Màn hình đầy sẽ tự sang trang.", ""],
-			["<b>Lời đọc:</b> dòng bắt đầu bằng <code>&gt;&gt;</code>. Các dòng hiệu ứng ngay sau một lời đọc sẽ hiện lần lượt trong lúc câu đó được đọc.", ">> Tử bằng không khi x bằng ba."],
-			["<b>Tô màu:</b> bọc chữ hoặc công thức trong [vang]…[/]. Màu: vang, do, xanh, luc, hong, cam, tim, trang, xam.", "tieude: [vang]MẸO[/] TÌM [do]TIỆM CẬN[/]"],
-			["<b>Công thức:</b> viết LaTeX trong $…$ (dùng được \\dfrac, \\sqrt, \\int, \\Rightarrow…). <code>ct:</code> là công thức lớn, không cần $.", "dong: THAY $x=3$ VÀO MẪU: $3^2+3-m=0$"],
-			["<b>Hiệu ứng:</b> de (khung đề), dong (dòng chữ), ct (công thức lớn), khung (đóng khung kết quả, có bút chì), meo (giấy nhớ: tiêu đề | dòng | dòng), sai (dấu ✗ SAI), dung (dấu ✓ ĐÚNG), nhan (nhãn bo tròn), chu (chữ thường), cho (dừng n giây), muc (sáng mục thứ n), trang (sang trang).", ""],
-			["<b>Đồ thị:</b> hàm số ; khoảng x ; khoảng y ; lo = hoành độ điểm thủng ; diem = các điểm tô ; tc = tiệm cận đứng ; chu = chú thích ; mau = màu đường.", "dothi: y=1/(x+3) ; x=-2.5..6 ; y=-0.2..0.7 ; lo=3 ; chu=CHỈ LÀ MỘT CÁI LỖ"],
-			["<b>Câu hỏi gợi mở:</b> <code>hoi:</code> hiện thẻ câu hỏi; nên thêm <code>cho: 1.5</code> ngay sau để người xem kịp nghĩ.", "hoi: Giá trị lớn nhất đạt tại cực trị hay đầu mút?"],
-			["<b>Sticker:</b> <code>sticker: tên | lời thoại</code> — nhân vật dễ thương bật ra ở góc màn hình kèm bong bóng thoại. Viết nhiều sticker liên tiếp thì chúng hiện lần lượt: sticker trước biến mất rồi sticker sau mới hiện (số cuối là số giây hiện, vd <code>sticker: wow | Ơ kìa! | 2</code>). Tên: vui, haha, wow, suynghi, hoi, oi, gioi, bongden, tada, tim.", "sticker: tada | Tèn ten!"],
-			["<b>Chuẩn hoá LaTeX:</b> dán kịch bản vào ô, web tự chuẩn hoá các công thức trong $…$ theo chuẩn của web (\\dfrac, 2{,}5, 90^\\circ, tích phân…).", ""],
-			["<b>Công thức in đậm:</b> bật ở Thiết lập để công thức đậm như chữ (dùng \\boldmath).", ""],
-			["<b>Hình TikZ:</b> <code>hinh:</code> rồi dán code tikzpicture ở các dòng sau (lấy từ các tab Vẽ hình). Nét đen tự đổi thành nét sáng trên nền tối.", ""],
-			["<b>Giọng đọc:</b> chọn giọng Gemini ở Thiết lập (dùng khoá Gemini trong Cấu hình AI). Bấm <b>Dựng & lồng tiếng</b>: web tạo giọng từng câu, mỗi cảnh tự kéo dài đúng bằng lời đọc. Câu nào không đổi sẽ dùng lại, không tốn lượt.", ""],
-			["<b>Viết lời đọc như đọc thành tiếng:</b> “x bình phương”, “căn x trừ ba”, “đen-ta”… để giọng AI đọc đúng.", ""],
-			["<b>Xuất MP4:</b> sau khi dựng, bấm <b>Xuất MP4</b> — video 1080p, 30 hình/giây, có tiếng. Nên dùng Chrome hoặc Edge trên máy tính; giữ tab mở trong lúc xuất.", ""],
-			["<b>AI viết kịch bản:</b> dán đề bài rồi bấm AI viết (hoặc Copy prompt để hỏi Gemini/ChatGPT bản web và dán kết quả vào ô kịch bản).", ""]];
+			["Mỗi dòng là một hiệu ứng: <code>tên: nội dung</code>. Dòng <code>&gt;&gt;</code> là lời đọc; các hiệu ứng ngay sau sẽ hiện trong lúc đọc câu đó.", ">> Đạo hàm bằng ba x bình phương trừ ba.\ndong: $f'(x)=3x^2-3$"],
+			["<code>---</code> sang cảnh mới (giữ màn hình) · <code>===</code> sang trang mới (xoá màn hình). Đầu kịch bản: <code>tieude:</code> và (tuỳ chọn) <code>phan:</code> mục lục.", "tieude: TÌM [vang]GTLN[/] CỦA HÀM SỐ\nphan: Đề bài | Lời giải | Kết luận"],
+			["Hiệu ứng: <b>de</b> đề bài · <b>dong</b> dòng chữ + công thức · <b>ct</b> công thức lớn · <b>khung</b> đóng khung kết quả · <b>hoi</b> câu hỏi gợi mở · <b>meo</b> giấy nhớ (tiêu đề | dòng | dòng) · <b>sai</b> / <b>dung</b> · <b>nhan</b> nhãn · <b>chu</b> chữ thường · <b>cho</b> dừng n giây · <b>muc</b> sáng mục n.", "khung: $OM=4$\nhoi: Bước tiếp theo là gì?\ncho: 1.5"],
+			["Công thức viết LaTeX trong <code>$…$</code> (tự chuẩn hoá khi dán). Tô màu: <code>[vang]…[/]</code> — vang, do, xanh, luc, hong, cam, tim.", "dong: TỔNG: [xanh]$S=5$[/]"],
+			["Phóng to, thu nhỏ: thêm hệ số trong ngoặc sau tên hiệu ứng (0.4 – 2.5).", "dong(1.4): $x=2$\nkhung(0.8): $OM=\\sqrt{16}=4$"],
+			["Sticker: bấm nút <b>Sticker</b> để chọn. Nhiều sticker liền nhau sẽ hiện lần lượt; số cuối là số giây hiện.", "sticker: wow | Ơ kìa! | 2"],
+			["Đồ thị: <code>dothi: y=… ; x=a..b ; y=c..d</code>, thêm <code>diem=</code> điểm tô, <code>lo=</code> điểm thủng, <code>tc=</code> tiệm cận, <code>chu=</code> chú thích. Hình học: <code>hinh:</code> rồi dán code tikzpicture ở các dòng sau.", "dothi: y=x^2-4 ; x=-3..3 ; y=-5..5 ; diem=-2,2"],
+			["AI viết kịch bản: dán đề + lời giải → <b>Copy prompt</b> → dán vào Gemini/ChatGPT → dán kịch bản trả về vào ô Kịch bản.", ""],
+			["Tiếng: chọn giọng, bấm <b>Nghe thử</b>; bấm <b>Dựng & lồng tiếng</b> rồi ▶ để xem có tiếng. Lời đọc viết như đọc thành tiếng (“x bình phương”, “căn x”). Cuối cùng <b>Xuất MP4</b> (Chrome hoặc Edge trên máy tính).", ""]];
 
 		// ---------- đọc kịch bản ----------
 		function docKB(src) {
@@ -5380,12 +5389,12 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 				const l = L[i].trim(); if (!l || l.startsWith("//")) continue; let m;
 				if ((m = l.match(/^(-{3,}|={3,})\s*(?:(\d+(?:[.,]\d+)?)\s*s)?\s*$/))) { moiCanh(l[0] === "=" || !kb.canh.length, m[2] ? +m[2].replace(",", ".") : 0); continue; }
 				if (l.startsWith(">>")) { const t = l.slice(2).trim(); if (doan && !doan.viec.length && doan.loi) doan.loi += " " + t; else moiDoan(t); continue; }
-				if ((m = l.match(/^([a-zA-Z]+)\s*:\s*([\s\S]*)$/)) && KHOA.includes(m[1].toLowerCase())) {
-					const k = m[1].toLowerCase(); let v = m[2].trim();
+				if ((m = l.match(/^([a-zA-Z]+)\s*(?:\(\s*([\d.,]+)\s*\))?\s*:\s*([\s\S]*)$/)) && KHOA.includes(m[1].toLowerCase())) {
+					const k = m[1].toLowerCase(), tile = m[2] ? kep(+m[2].replace(",", ".") || 1, 0.4, 2.5) : 1; let v = m[3].trim();
 					if (k === "hinh" && !/\\end\{tikzpicture\}/.test(v)) { const ds = [v]; while (++i < L.length) { ds.push(L[i]); if (/\\end\{tikzpicture\}/.test(L[i])) break; } v = ds.join("\n").trim(); }
 					if (!canh && (k === "tieude" || k === "phan")) { if (k === "tieude") kb.tieude = v; else kb.phan = v.split("|").map(x => x.trim()).filter(Boolean); continue; }
 					if (!doan) moiDoan("");
-					doan.viec.push({ k, v, dong: i + 1 }); continue;
+					doan.viec.push({ k, v, dong: i + 1, tile }); continue;
 				}
 				// dòng không đúng cú pháp: nối vào lời đọc ngay trước, hoặc hiện thành chữ thường
 				const mk = l.match(/^([^\s:$]{1,20})\s*:\s*/);
@@ -5420,12 +5429,13 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			s2 = s2.replace(/\\begin\{cases\}|\\end\{cases\}/g, "").replace(/\\\\/g, " ; ").replace(/&/g, "").replace(/\\([a-zA-Z]+)/g, (m, k) => KY[k] != null ? KY[k] : "").replace(/\^\{?2\}?/g, "²").replace(/\^\{?3\}?/g, "³").replace(/_\{?([0-9a-z])\}?/g, "$1").replace(/[{}]/g, "").replace(/\{,\}/g, ",").replace(/\s+/g, " ").trim();
 			return s2;
 		}
+		let hangTeX = Promise.resolve(); const xepHang = fn => { const p = hangTeX.then(fn, fn); hangTeX = p.catch(() => { }); return p; };
 		async function bienDichToan(tex, mauChu) {
 			const B = bo(); if (!B || !B.veTikz) throw new Error("bộ vẽ TeX chưa sẵn sàng — tải lại trang");
 			const nut = c => "\\begin{tikzpicture}\\node[text={rgb,255:red," + parseInt(mauChu.slice(1, 3), 16) + ";green," + parseInt(mauChu.slice(3, 5), 16) + ";blue," + parseInt(mauChu.slice(5, 7), 16) + "},inner sep=0.8pt]{" + c + "};\\end{tikzpicture}";
 			// thử lần lượt: nguyên văn → bỏ lệnh lạ, chuẩn hoá nhẹ → bỏ màu → đổi \text{…} có dấu thành \mathrm
 			const bien = [tex, tex.replace(/\\(?:boldmath|bm|boldsymbol)\b/g, "").replace(/\$\$/g, "$").replace(/\\(?:tfrac|frac)\b/g, "\\dfrac").replace(/(\d)\.(\d)/g, "$1{,}$2"), tex.replace(/\\textcolor(?:\[[^\]]*\])?\{[^{}]*\}/g, ""), tex.replace(/\\text\{([^{}]*)\}/g, "\\mathrm{$1}")];
-			let loi = null; for (const c of [...new Set(bien)]) { const v = await B.veTikz(nut(c), { doPhanGiai: 1 }); if (!v.loi && v.svg) return v; loi = loi || v.loi; }
+			let loi = null; for (const c of [...new Set(bien)]) { const v = await xepHang(() => B.veTikz(nut(c), { doPhanGiai: 1 })); if (!v.loi && v.svg) return v; loi = loi || v.loi; }
 			throw new Error(String(loi || "lỗi biên dịch").slice(0, 90));
 		}
 		function napToan(tex, pxPt, mauChu, dam) {
@@ -5433,7 +5443,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			const key = pxPt + "|" + mauChu + "|" + (dam ? 1 : 0) + "|" + tex; if (S.toan.has(key)) return S.toan.get(key);
 			const p = (async () => {
 				let v = null, chu = null; try { v = await bienDichToan(tex, mauChu); } catch (e) { chu = texThanhChu(tex); (S.canhBao || []).push("công thức “" + tex.replace(/^\$|\$$/g, "").slice(0, 40) + "” không biên dịch được (" + e.message + ") — đã hiện dạng chữ"); }
-				if (chu != null) { const co = Math.round(pxPt * 10), c = document.createElement("canvas"), x0 = c.getContext("2d"); x0.font = "italic 600 " + co + "px 'Times New Roman', serif"; const w = Math.ceil(x0.measureText(chu).width) + 6, h = Math.ceil(co * 1.3); c.width = w; c.height = h; const x = c.getContext("2d"); x.font = "italic 600 " + co + "px 'Times New Roman', serif"; x.fillStyle = mauChu; x.textBaseline = "middle"; x.fillText(chu, 3, h / 2); return { c, w, h }; }
+				if (chu != null) { const co = Math.round(pxPt * 10), c = document.createElement("canvas"), x0 = c.getContext("2d"); x0.font = "italic 600 " + co + "px 'Times New Roman', serif"; const w = Math.ceil(x0.measureText(chu).width) + 6, h = Math.ceil(co * 1.3); c.width = w; c.height = h; const x = c.getContext("2d"); x.font = "italic 600 " + co + "px 'Times New Roman', serif"; x.fillStyle = mauChu; x.textBaseline = "middle"; x.fillText(chu, 3, h / 2); setTimeout(() => S.toan.delete(key), 0); return { c, w, h }; }
 				const im = await svgAnh(v.svg), o = dam ? Math.max(0.6, pxPt * 0.11) : 0, w = Math.max(1, Math.ceil(v.wPt * pxPt + 2 * o)), h = Math.max(1, Math.ceil(v.hPt * pxPt + 2 * o)), c = document.createElement("canvas"); c.width = w; c.height = h; const x = c.getContext("2d");
 				if (dam) { for (const [dx, dy] of [[0, 0], [-1, 0], [1, 0], [0, -1], [0, 1], [-.7, -.7], [.7, .7], [-.7, .7], [.7, -.7]]) x.drawImage(im, o + dx * o, o + dy * o, w - 2 * o, h - 2 * o); } else x.drawImage(im, 0, 0, w, h);
 				return { c, w, h };
@@ -5443,7 +5453,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		function napHinh(code, wMax, hMax) {
 			const key = "H|" + wMax + "|" + hMax + "|" + code; if (S.toan.has(key)) return S.toan.get(key);
 			const p = (async () => {
-				const v = await bo().veTikz(code, { doPhanGiai: 1 }); if (v.loi || !v.svg) throw new Error("hình TikZ lỗi: " + String(v.loi || "").slice(0, 100));
+				const v = await xepHang(() => bo().veTikz(code, { doPhanGiai: 1 })); if (v.loi || !v.svg) throw new Error("hình TikZ lỗi: " + String(v.loi || "").slice(0, 100));
 				const im = await svgAnh(v.svg), k = Math.min(wMax / v.wPt, hMax / v.hPt, 5.5), w = Math.ceil(v.wPt * k), h = Math.ceil(v.hPt * k), c = document.createElement("canvas"); c.width = w; c.height = h; const x = c.getContext("2d"); x.filter = "invert(1) hue-rotate(180deg) brightness(1.05)"; x.drawImage(im, 0, 0, w, h); return { c, w, h };
 			})();
 			S.toan.set(key, p); p.catch(() => S.toan.delete(key)); return p;
@@ -5566,10 +5576,15 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 				ctx.fillStyle = "#1b2433"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(d.chu, bx + bw / 2, by + bh / 2 + 2 * u, d.wMax); ctx.restore(); }
 		}
 		// ---------- lồng tiếng Gemini ----------
+		async function dsMoHinhTTS(khoa) {
+			if (S.dsTTS) return S.mhTTS ? [S.mhTTS].concat(S.dsTTS.filter(x => x !== S.mhTTS)) : S.dsTTS;
+			let ds = []; try { const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000", { headers: { "x-goog-api-key": khoa } }); const j = await r.json(); ds = ((j && j.models) || []).filter(m => /tts/i.test(m.name || "") && (!m.supportedGenerationMethods || m.supportedGenerationMethods.includes("generateContent"))).map(m => m.name.replace(/^models\//, "")); } catch (e) { }
+			ds.sort((a, b) => (/flash/.test(b) ? 1 : 0) - (/flash/.test(a) ? 1 : 0)); S.dsTTS = [...new Set(ds.concat(["gemini-2.5-flash-preview-tts", "gemini-2.5-pro-preview-tts"]))]; return S.dsTTS;
+		}
 		async function giongGemini(text, voice, cach) {
 			const key = voice + "|" + cach + "|" + text; if (S.giong.has(key)) return S.giong.get(key);
 			const khoa = (typeof AI !== "undefined" && AI.khoaGemini) || ""; if (!khoa) throw new Error("cần khoá Gemini để lồng tiếng — mở Cấu hình AI và dán khoá (hoặc chọn Không lồng tiếng)");
-			const MH = ["gemini-2.5-flash-preview-tts", "gemini-2.5-pro-preview-tts"]; let loiCuoi = null;
+			const MH = await dsMoHinhTTS(khoa); let loiCuoi = null;
 			for (const mh of MH) for (let lan = 0; lan < 4; lan++) {
 				const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + mh + ":generateContent", { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": khoa }, body: JSON.stringify({ contents: [{ parts: [{ text: (cach ? cach + ": " : "") + text }] }], generationConfig: { responseModalities: ["AUDIO"], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } } } }) });
 				if (r.status === 429 || r.status >= 500) { loiCuoi = new Error("Gemini đang bận (" + r.status + ")"); await new Promise(z => setTimeout(z, 4000 * (lan + 1))); continue; }
@@ -5577,7 +5592,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 				const pt = ((((j || {}).candidates || [])[0] || {}).content || {}).parts || [], d = pt.find(x => x.inlineData || x.inline_data); if (!d) { loiCuoi = new Error("Gemini không trả về âm thanh"); break; }
 				const id = d.inlineData || d.inline_data, rate = +(((id.mimeType || id.mime_type || "").match(/rate=(\d+)/) || [])[1] || 24000), b = atob(id.data), n = b.length >> 1, f = new Float32Array(n);
 				for (let i = 0; i < n; i++) { let v = b.charCodeAt(2 * i) | (b.charCodeAt(2 * i + 1) << 8); if (v >= 32768) v -= 65536; f[i] = v / 32768; }
-				const kq = { pcm: f, sr: rate, dai: n / rate }; S.giong.set(key, kq); return kq;
+				const kq = { pcm: f, sr: rate, dai: n / rate }; S.giong.set(key, kq); S.mhTTS = mh; return kq;
 			}
 			throw loiCuoi || new Error("không lồng tiếng được");
 		}
@@ -5597,7 +5612,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			// lồng tiếng
 			const doanDs = []; kb.canh.forEach(c => c.doan.forEach(d => doanDs.push(d)));
 			let soLoi = 0; const canGiong = giong ? doanDs.filter(d => d.loi) : [];
-			for (let i = 0; i < canGiong.length; i++) { bao("Đang lồng tiếng " + (i + 1) + "/" + canGiong.length + "…", i / Math.max(1, canGiong.length) * 0.6); if (opt.khongGiong) { const k = giong + "|" + cach + "|" + canGiong[i].loi; canGiong[i].am = S.giong.get(k) || null; continue; } try { canGiong[i].am = await giongGemini(canGiong[i].loi, giong, cach); } catch (e) { if (opt.batBuoc) throw e; soLoi++; canGiong[i].am = null; } }
+			for (let i = 0; i < canGiong.length; i++) { bao("Đang lồng tiếng " + (i + 1) + "/" + canGiong.length + "…", i / Math.max(1, canGiong.length) * 0.6); if (opt.khongGiong) { const k = giong + "|" + cach + "|" + canGiong[i].loi; canGiong[i].am = S.giong.get(k) || null; continue; } try { canGiong[i].am = await giongGemini(canGiong[i].loi, giong, cach); } catch (e) { if (opt.batBuoc) throw e; soLoi++; canGiong[i].am = null; S.loiGiong = e.message || String(e); if (/khoá Gemini/.test(S.loiGiong)) { soLoi = canGiong.length; break; } } }
 			// phần tử
 			const tl = { W, H, u, khung, doc, dan: [], td: [], phan: kb.phan, muc: [], pt: [], trang: [], phu: [], giong: [], canh: [], moDau, tong: 0, mauLogo: MAU_LOGO[$v("vdMauLogo").value] || MAU_LOGO.do, kenh: $v("vdKenh").value.trim() || "TOÁN THẦY KHOA" };
 			let T = moDau ? 2.1 : 0.3; if (td0) tl.td.push({ t: moDau ? 1.7 : 0, dd: td0 });
@@ -5643,7 +5658,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			return tl;
 		}
 		async function taoPhanTu(v, o) {
-			const { cw, u } = o, k = v.k, s = v.v;
+			const { cw } = o, u = o.u * (v.tile || 1), k = v.k, s = v.v;
 			const D = { co: (o.doc ? 54 : 50) * u, nang: "800", mauChu: CHU, pxPt: (o.doc ? 6.1 : 5.6) * u, wMax: cw - 40 * u };
 			if (k === "dong" || k === "chu") { const dd = await danDong(s, k === "chu" ? Object.assign({}, D, { co: 42 * u, nang: "600", mauChu: "#c9d1dc", pxPt: 5 * u }) : D); return { loai: "dong", dd, h: dd.h, d: 0.9 }; }
 			if (k === "ct") { const a = await napToan(boc("\\displaystyle " + s.replace(/^\$|\$$/g, "")), 8.2 * u, CHU); const sc = Math.min(1, (cw - 40 * u) / a.w); return { loai: "ct", a, sc, h: a.h * sc, d: 1.0 }; }
@@ -5729,10 +5744,10 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		function capCanvas(tl) { if (cv.width !== tl.W || cv.height !== tl.H) { cv.width = tl.W; cv.height = tl.H; } $v("vdManHinh").classList.toggle("ngang", !tl.doc); }
 		function veTai(t) { if (!S.tl) return; S.t = kep(t, 0, S.tl.tong); veKhung(cx, S.tl, S.t); $v("vdTua").value = Math.round(S.t / S.tl.tong * 1000); $v("vdGio").textContent = gio(S.t) + " / " + gio(S.tl.tong); $v("vdCanhDs").querySelectorAll("button").forEach((b, i) => { const c = S.tl.canh[i], c2 = S.tl.canh[i + 1]; b.classList.toggle("dang", S.t >= c.t && (!c2 || S.t < c2.t)); }); }
 		function dungPhat() { S.chay = false; if (S.nguon) { try { S.nguon.stop(); } catch (e) { } S.nguon = null; } $v("vdPhat").innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>'; $v("vdPhat").setAttribute("aria-label", "Phát"); }
-		function phat() {
-			if (!S.tl) return; if (S.t >= S.tl.tong - 0.05) S.t = 0; S.chay = true; $v("vdPhat").innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>'; $v("vdPhat").setAttribute("aria-label", "Tạm dừng");
+		async function phat() {
+			if (!S.tl) return; if (!S.tl.am && !S.baoKhongTieng) { S.baoKhongTieng = true; toast("Video chưa có tiếng — bấm Dựng & lồng tiếng (hoặc chọn nhạc nền) rồi phát lại"); } if (S.t >= S.tl.tong - 0.05) S.t = 0; S.chay = true; $v("vdPhat").innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>'; $v("vdPhat").setAttribute("aria-label", "Tạm dừng");
 			let dongHo;
-			if (S.tl.am) { try { S.actx = S.actx || new (window.AudioContext || window.webkitAudioContext)(); S.actx.resume(); const b = S.actx.createBuffer(1, S.tl.am.length, SR); b.copyToChannel(S.tl.am, 0); const n = S.actx.createBufferSource(); n.buffer = b; n.connect(S.actx.destination); n.start(0, S.t); S.nguon = n; const g0 = S.actx.currentTime - S.t; dongHo = () => S.actx.currentTime - g0; } catch (e) { } }
+			if (S.tl.am) { try { S.actx = S.actx || new (window.AudioContext || window.webkitAudioContext)(); await S.actx.resume(); const b = S.actx.createBuffer(1, S.tl.am.length, SR); b.copyToChannel(S.tl.am, 0); const n = S.actx.createBufferSource(); n.buffer = b; n.connect(S.actx.destination); n.start(0, S.t); S.nguon = n; const g0 = S.actx.currentTime - S.t; dongHo = () => S.actx.currentTime - g0; } catch (e) { } }
 			if (!dongHo) { const g0 = performance.now() / 1000 - S.t; dongHo = () => performance.now() / 1000 - g0; }
 			const vong = () => { if (!S.chay) return; const t = dongHo(); if (t >= S.tl.tong) { veTai(S.tl.tong); dungPhat(); return; } veTai(t); requestAnimationFrame(vong); }; requestAnimationFrame(vong);
 		}
@@ -5748,11 +5763,15 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 				if (lan !== S.lan) return; S.tl = tl; capCanvas(tl); $v("vdXuat").disabled = false;
 				$v("vdCanhDs").innerHTML = tl.canh.map((c, i) => '<button type="button" data-i="' + i + '">' + (i + 1) + "</button>").join("");
 				veTai(Math.min(S.t, tl.tong)); if (!S.t) veTai(tl.moDau ? 2.2 : 0.5);
-				const g = $v("vdGiong").value; tt("Video dài " + gio(tl.tong) + " · " + tl.canh.length + " cảnh" + (g ? (tl.giong.length ? " · đã lồng tiếng " + tl.giong.length + " câu" : coGiong ? "" : " · chưa lồng tiếng (bấm Dựng & lồng tiếng)") : "") + (tl.soLoiGiong ? " · " + tl.soLoiGiong + " câu chưa lồng tiếng được" : "") + "." + (tl.canhBao.length ? " Đã tự xử lý " + tl.canhBao.length + " chỗ: " + tl.canhBao.slice(0, 3).join("; ") + (tl.canhBao.length > 3 ? "; …" : "") : ""), false);
+				const g = $v("vdGiong").value; tt("Video dài " + gio(tl.tong) + " · " + tl.canh.length + " cảnh" + (g ? (tl.giong.length ? " · đã lồng tiếng " + tl.giong.length + " câu" : coGiong ? "" : " · chưa lồng tiếng (bấm Dựng & lồng tiếng)") : "") + (tl.soLoiGiong ? " · " + tl.soLoiGiong + " câu chưa lồng tiếng được (" + (S.loiGiong || "lỗi") + ")" : "") + "." + (tl.soLoiGiong && !tl.am ? " Video đang chưa có tiếng." : "") + (tl.canhBao.length ? " Đã tự xử lý " + tl.canhBao.length + " chỗ: " + tl.canhBao.slice(0, 3).join("; ") + (tl.canhBao.length > 3 ? "; …" : "") : ""), false);
 			} catch (e) { if (lan === S.lan) tt("Chưa dựng được: " + ((e && e.message) || e), true); }
 			finally { if (coGiong) { $v("vdDung").disabled = false; tien(null); } }
 		}
 		$v("vdDung").addEventListener("click", () => dungLai(true));
+		const phatNhanh = async (pcm, sr, giay) => { S.actx = S.actx || new (window.AudioContext || window.webkitAudioContext)(); await S.actx.resume(); if (S.nguonThu) { try { S.nguonThu.stop(); } catch (e) { } } const n = Math.min(pcm.length, Math.round((giay || 99) * sr)), b = S.actx.createBuffer(1, n, sr); b.copyToChannel(pcm.subarray(0, n), 0); const src = S.actx.createBufferSource(); src.buffer = b; src.connect(S.actx.destination); src.start(); S.nguonThu = src; };
+		$v("vdNgheGiong").addEventListener("click", async () => { const g = $v("vdGiong").value; if (!g) { toast("Chọn một giọng đọc trước"); return; } const nut = $v("vdNgheGiong"); nut.disabled = true; tt("Đang tạo giọng mẫu…");
+			try { const a = await giongGemini("Xin chào, mình là giọng đọc của kênh " + ($v("vdKenh").value.trim() || "Toán Thầy Khoa") + ". Cùng nhau giải Toán thật vui nhé!", g, $v("vdCachDoc").value.trim()); await phatNhanh(a.pcm, a.sr); tt("Đang phát giọng mẫu (" + (S.mhTTS || "Gemini") + ")."); } catch (e) { tt("Chưa nghe thử được: " + ((e && e.message) || e), true); } nut.disabled = false; });
+		$v("vdNgheNhac").addEventListener("click", async () => { if (!S.nhac) { toast("Chọn tệp nhạc nền trước"); return; } const vol = (+$v("vdAmNhac").value || 0) / 100, n = Math.min(S.nhac.length, SR * 8), p = new Float32Array(n); for (let i = 0; i < n; i++) p[i] = S.nhac[i] * vol * Math.min(1, (n - i) / SR); await phatNhanh(p, SR); tt("Đang phát thử 8 giây nhạc nền ở âm lượng đã chọn."); });
 		$v("vdKB").addEventListener("input", () => { clearTimeout(S.hen); try { localStorage.setItem("tdk_video_kb", $v("vdKB").value); } catch (e) { } S.hen = setTimeout(() => dungLai(false), 900); });
 		["vdKho", "vdDam", "vdPhuDe", "vdMoDau", "vdMauLogo", "vdKenh", "vdGiong", "vdAmNhac"].forEach(id => $v(id).addEventListener("change", () => dungLai(false)));
 		$v("vdNhac").addEventListener("change", async () => { const f = $v("vdNhac").files[0]; if (!f) { S.nhac = null; dungLai(false); return; } try { const ac = new OfflineAudioContext(1, SR, SR), b = await ac.decodeAudioData(await f.arrayBuffer()); const o = new OfflineAudioContext(1, Math.ceil(b.duration * SR), SR), s2 = o.createBufferSource(); s2.buffer = b; s2.connect(o.destination); s2.start(); S.nhac = (await o.startRendering()).getChannelData(0); tt("Đã nạp nhạc nền " + gio(b.duration) + "."); dungLai(false); } catch (e) { tt("Không đọc được tệp nhạc.", true); } });
@@ -5886,13 +5905,18 @@ ${de}`;
 			catch (e) { tt("Chưa viết được: " + ((e && e.message) || e), true); } nut.disabled = false; });
 
 		// ---------- chèn, mẫu, HDSD ----------
+		const STK_DS = [["vui", "Vui vẻ", "Chào cả nhà!"], ["haha", "Cười lớn", "Hài thật sự!"], ["wow", "Ngạc nhiên", "Ơ kìa!"], ["suynghi", "Suy nghĩ", "Hmm…"], ["hoi", "Câu hỏi", "Bạn chọn gì?"], ["oi", "Sai, bẫy", "Bẫy đấy nha!"], ["gioi", "Khen giỏi", "Chuẩn không cần chỉnh!"], ["bongden", "Ý tưởng", "Ra rồi nhé!"], ["tada", "Chúc mừng", "Tèn ten!"], ["tim", "Thả tim", "Thả tim nha!"]];
+		$v("vdStkMenu").innerHTML = STK_DS.map(([k, ten]) => '<button type="button" data-k="' + k + '" title="sticker: ' + k + '"><canvas width="120" height="120"></canvas><b>' + esc(ten) + "</b><code>" + k + "</code></button>").join("");
+		$v("vdStkMenu").querySelectorAll("canvas").forEach((c, i) => { const x = c.getContext("2d"); x.translate(60, 64); veSticker(x, STK_DS[i][0], 36, 0.6); });
+		$v("vdStk").addEventListener("click", () => { const m = $v("vdStkMenu"); m.hidden = !m.hidden; $v("vdStk").setAttribute("aria-expanded", String(!m.hidden)); $v("vdChenMenu").hidden = true; });
+		$v("vdStkMenu").addEventListener("click", e => { const b = e.target.closest("button[data-k]"); if (!b) return; const d = STK_DS.find(z => z[0] === b.dataset.k), ta = $v("vdKB"), a = ta.selectionStart, dau = ta.value.slice(0, a); ta.setRangeText((dau && !dau.endsWith("\n") ? "\n" : "") + "sticker: " + d[0] + " | " + d[2], a, ta.selectionEnd, "end"); ta.focus(); $v("vdStkMenu").hidden = true; ta.dispatchEvent(new Event("input")); });
 		$v("vdChenMenu").innerHTML = CHEN.map((c, i) => '<button type="button" data-i="' + i + '">' + esc(c[0]) + "</button>").join("");
 		$v("vdChen").addEventListener("click", () => { const m = $v("vdChenMenu"); m.hidden = !m.hidden; $v("vdChen").setAttribute("aria-expanded", String(!m.hidden)); });
 		$v("vdChenMenu").addEventListener("click", e => { const b = e.target.closest("button[data-i]"); if (!b) return; const ta = $v("vdKB"), s = CHEN[+b.dataset.i][1], a = ta.selectionStart, dau = ta.value.slice(0, a), chen = (dau && !dau.endsWith("\n") ? "\n" : "") + s; ta.setRangeText(chen, a, ta.selectionEnd, "end"); ta.focus(); $v("vdChenMenu").hidden = true; $v("vdChen").setAttribute("aria-expanded", "false"); ta.dispatchEvent(new Event("input")); });
 		$v("vdHDDs").innerHTML = HDSD.map(([a, vd]) => "<li><p>" + a + "</p>" + (vd ? "<code>" + esc(vd) + "</code>" : "") + "</li>").join("");
 		$v("vdHD").addEventListener("click", () => { const b = $v("vdHDBang"); b.hidden = !b.hidden; $v("vdHD").setAttribute("aria-expanded", String(!b.hidden)); });
 		$v("vdHDBang").addEventListener("click", e => { if (e.target.closest("[data-dong]")) { $v("vdHDBang").hidden = true; $v("vdHD").setAttribute("aria-expanded", "false"); } });
-		document.addEventListener("click", e => { if (!e.target.closest("#vdHD, #vdHDBang") && !$v("vdHDBang").hidden) { $v("vdHDBang").hidden = true; $v("vdHD").setAttribute("aria-expanded", "false"); } if (!e.target.closest("#vdChen, #vdChenMenu")) $v("vdChenMenu").hidden = true; });
+		document.addEventListener("click", e => { if (!e.target.closest("#vdHD, #vdHDBang") && !$v("vdHDBang").hidden) { $v("vdHDBang").hidden = true; $v("vdHD").setAttribute("aria-expanded", "false"); } if (!e.target.closest("#vdChen, #vdChenMenu")) $v("vdChenMenu").hidden = true; if (!e.target.closest("#vdStk, #vdStkMenu")) $v("vdStkMenu").hidden = true; });
 		let daMo = false;
 		function khoiDong() {
 			if (daMo) return; daMo = true;
