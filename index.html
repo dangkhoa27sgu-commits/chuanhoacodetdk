@@ -983,6 +983,26 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 .vdNutIco { position: absolute; right: 4px; top: 4px; width: 30px; height: 30px; border: 0; border-radius: 8px; background: none; color: var(--vt-phu); cursor: pointer; display: grid; place-items: center; }
 .vdNutIco svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2; } .vdNutIco:hover, .vdNutIco.bat { color: var(--vt-ac); background: var(--vt-acNhat); }
 .vdKhoaNut { display: flex; gap: 8px; flex-wrap: wrap; }
+/* v16.6 — giọng trên máy (TDK Giọng) */
+.vdNguonMay { display: grid; gap: 14px; } .vdNguonMay[hidden] { display: none; }
+.vdMayCai { border: 1px dashed var(--vt-vien); border-radius: 14px; padding: 10px 14px; }
+.vdMayCai summary { cursor: pointer; font-size: 13.5px; font-weight: 700; color: var(--vt-chu); }
+.vdMayCai[open] summary { margin-bottom: 10px; }
+.vdGiongThe.toi { border-style: solid; background: linear-gradient(135deg, rgba(124,92,250,.10), transparent 70%); }
+.vdGiongThe.toi span { color: #7c5cfa; font-weight: 600; } .vdGiongThe span a { color: var(--vt-phu); font-weight: 500; }
+.vdTaoGiong { border: 1px solid rgba(124,92,250,.45); border-radius: 16px; padding: 14px; display: grid; gap: 12px; background: linear-gradient(180deg, rgba(124,92,250,.07), transparent); } .vdTaoGiong[hidden] { display: none; }
+.vdTaoDau { display: flex; align-items: center; justify-content: space-between; } .vdTaoDau b { font-size: 15px; color: var(--vt-chu); }
+.vdCauThu { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.vdCauThu li { display: grid; grid-template-columns: 44px minmax(0, 1fr) 54px 34px; gap: 10px; align-items: center; padding: 8px 10px; border-radius: 12px; background: var(--vt-mat); border: 1px solid var(--vt-vien); }
+.vdCauThu li.co { border-color: rgba(34,197,94,.5); }
+.vdCauChu { font-size: 13px; color: var(--vt-chu); line-height: 1.45; } .vdCauGio { font: 600 12px var(--f-code, monospace); color: var(--vt-phu); text-align: right; }
+.vdGhiAm { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #e5484d; background: var(--vt-mat); cursor: pointer; display: grid; place-items: center; padding: 0; }
+.vdGhiAm i { width: 16px; height: 16px; border-radius: 50%; background: #e5484d; transition: border-radius .15s, width .15s, height .15s; }
+.vdGhiAm.dang { background: rgba(229,72,77,.12); animation: vdNhip 1s ease-in-out infinite; } .vdGhiAm.dang i { border-radius: 3px; width: 14px; height: 14px; }
+@keyframes vdNhip { 50% { box-shadow: 0 0 0 6px rgba(229,72,77,.18); } }
+.vdCauThu .vdNghe:disabled { opacity: .35; cursor: default; }
+.vdTaoChan { display: flex; align-items: end; gap: 8px; flex-wrap: wrap; } .vdTenGiong { display: grid; gap: 4px; flex: 1; min-width: 160px; font-size: 12px; font-weight: 600; color: var(--vt-phu); }
+.vdCauThu .vdNghe { grid-row: auto; width: 32px; height: 32px; }
 
 </style>
 </head>
@@ -1567,7 +1587,50 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 
 				<!-- 2. GIỌNG ĐỌC -->
 				<div class="vdPanel" data-panel="giong" hidden>
-					<div class="vdMucDau vdNguonDau"><b>Nguồn giọng</b><div class="vdSeg" data-cho="vdNguon"><button type="button" data-v="ai">Giọng AI (Gemini)</button><button type="button" data-v="file">File lời đọc / thu âm</button></div><input type="hidden" id="vdNguon" value="ai"></div>
+					<div class="vdMucDau vdNguonDau"><b>Nguồn giọng</b><div class="vdSeg" data-cho="vdNguon"><button type="button" data-v="ai">Giọng AI (Gemini)</button><button type="button" data-v="may">Giọng trên máy</button><button type="button" data-v="file">File lời đọc</button></div><input type="hidden" id="vdNguon" value="ai"></div>
+					<div class="vdNguonMay" id="vdNguonMay" hidden>
+						<div class="vdKhoa" id="vdMayHop">
+							<div class="vdKhoaDau">
+								<span class="vdKhoaIco" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></span>
+								<div class="vdKhoaTen"><b>Trạm giọng TDK trên máy</b><span id="vdMayTT">Chưa kết nối</span></div>
+								<button class="vdNutNho" type="button" id="vdMayKiem">Kết nối</button>
+							</div>
+						</div>
+						<details class="vdMayCai" id="vdMayCai">
+							<summary>Cài đặt lần đầu — 3 bước, làm 1 lần</summary>
+							<ol class="vdBuocNho">
+								<li><span><b>Tải bộ cài:</b> <button class="vdNutNho" type="button" id="vdMayTai">⬇ Tải bộ cài TDK Giọng (.zip)</button> rồi giải nén ra một thư mục.</span></li>
+								<li><span><b>Cài đặt:</b> bấm đúp <code>CaiDat_Windows.bat</code> (Mac: chuột phải <code>CaiDat_Mac.command</code> → Open). Máy chưa có Python thì trang tải tự mở.</span></li>
+								<li><span><b>Mỗi lần làm video:</b> bấm đúp <code>ChayGiong_Windows.bat</code>, chờ dòng “✅ sẵn sàng”, giữ cửa sổ mở → bấm <b>Kết nối</b>. Trình duyệt hỏi quyền mạng cục bộ thì bấm <b>Cho phép</b>.</span></li>
+							</ol>
+						</details>
+						<div class="vdMuc" id="vdMayGiongHop" hidden>
+							<div class="vdMucDau"><b>Giọng</b><button class="vdNutAI" type="button" id="vdMayTao"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8z"/></svg>Tạo giọng của tôi</button></div>
+							<div class="vdGiongDs" id="vdMayDs"></div>
+							<input type="hidden" id="vdMayGiong" value="">
+							<div class="vdMucDau"><b>Tốc độ đọc</b><div class="vdSeg" data-cho="vdMayToc"><button type="button" data-v="0.95">Chậm</button><button type="button" data-v="1">Gốc</button><button type="button" data-v="1.08">Hơi nhanh</button><button type="button" data-v="1.15">Nhanh</button><button type="button" data-v="1.25">Rất nhanh</button></div><input type="hidden" id="vdMayToc" value="1.08"></div>
+							<label class="vdCong"><input type="checkbox" id="vdMayDep" checked><i aria-hidden="true"></i>Làm đẹp giọng đầu ra (ấm, rõ, đều âm lượng)</label>
+						</div>
+						<div class="vdTaoGiong" id="vdTaoGiong" hidden>
+							<div class="vdTaoDau"><b>Tạo giọng của tôi</b><button class="tuyIco" type="button" id="vdTaoDong" aria-label="Đóng"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+							<p class="vdGhi">Bấm <b>●</b> và đọc từng câu tự nhiên như đang giảng bài (mỗi câu 2–4 giây). Phòng yên tĩnh, điện thoại/micro cách miệng một gang tay. Chỉ nhân bản giọng của chính mình.</p>
+							<ol class="vdCauThu" id="vdCauThu"></ol>
+							<div class="vdMuc">
+								<b>Sửa giọng trước khi nhân bản</b>
+								<div class="vdBat">
+									<label class="vdCong"><input type="checkbox" id="vdTaoOn" checked><i aria-hidden="true"></i>Lọc tiếng ồn</label>
+									<label class="vdCong"><input type="checkbox" id="vdTaoAm" checked><i aria-hidden="true"></i>Ấm & rõ chữ</label>
+								</div>
+								<div class="vdMucDau"><b>Độ trầm của giọng</b><div class="vdSeg" data-cho="vdTaoTram"><button type="button" data-v="-2">Trầm hơn nhiều</button><button type="button" data-v="-1">Trầm hơn</button><button type="button" data-v="0">Giữ nguyên</button><button type="button" data-v="1">Sáng hơn</button></div><input type="hidden" id="vdTaoTram" value="-1"></div>
+							</div>
+							<div class="vdTaoChan">
+								<label class="vdTenGiong"><span>Tên giọng</span><input class="vdO" type="text" id="vdTaoTen" value="Thầy Khoa" maxlength="40"></label>
+								<button class="vdNutNho" type="button" id="vdTaoNghe" disabled>▶ Nghe bản đã sửa</button>
+								<button class="vt3NutChinh nho" type="button" id="vdTaoLuu" disabled>Lưu & tạo giọng</button>
+							</div>
+							<p class="vdGhi" id="vdTaoTT"></p>
+						</div>
+					</div>
 					<div class="vdNguonFile" id="vdNguonFile" hidden>
 						<ol class="vdBuocNho">
 							<li><span><b>Copy lời đọc:</b> bấm <button class="vdNutNho" type="button" id="vdChepLoi">📋 Copy lời đọc</button> (hoặc nút cùng tên ở thẻ Kịch bản).</span></li>
@@ -5525,7 +5588,7 @@ Trả về DUY NHẤT JSON: {"mau":{…},"hinh":[…]} (nhân đôi mọi dấu 
 		const NEN = "#0e131b", VIEN = "#c9a24a", CHU = "#F2F4F8", FPS = 30, SR = 48000;
 		const FONT = '"Be Vietnam Pro", "Segoe UI", Roboto, system-ui, sans-serif';
 		const MAU_LOGO = { do: "#E0332F", vang: "#E8B54A", trang: "#F5F5F5" };
-		const S = { tl: null, chay: false, t: 0, actx: null, nguon: null, tGoc: 0, amMix: null, giong: new Map(), amCau: new Map(), toan: new Map(), nhac: null, hen: 0, lan: 0, xuatDang: false };
+		const S = { tl: null, chay: false, t: 0, actx: null, nguon: null, tGoc: 0, amMix: null, giong: new Map(), amCau: new Map(), mayTho: new Map(), mayXL: new Map(), toan: new Map(), nhac: null, hen: 0, lan: 0, xuatDang: false };
 		const kep = (v, a, b) => Math.max(a, Math.min(b, v)), em = p => 1 - Math.pow(1 - kep(p, 0, 1), 3), emIO = p => { p = kep(p, 0, 1); return p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; };
 		const hoa = s => String(s).split(/(\$[^$]*\$)/).map((p, i) => i % 2 ? p : p.toUpperCase().replace(/\[([A-Z]+|\/)\]/g, x => x.toLowerCase())).join("");
 		const gio = t => { t = Math.max(0, t); return Math.floor(t / 60) + ":" + String(Math.floor(t % 60)).padStart(2, "0"); };
@@ -5926,7 +5989,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			}
 			if (lech) for (let i = 0; i < cat.length; i++) cat[i] = kep(cat[i] + (lech[i] || 0) * 100, (i ? cat[i - 1] : a) + 5, b - 5);
 			const bien = [a].concat(cat, [b + 1]), ra = []; ra.cat = cat.map(f => f / 100); ra.dau = a / 100; ra.cuoi = (b + 1) / 100; ra.yeu = lang.length >= N - 1 ? (typeof yeu === "number" ? yeu : 0) : N - 1;
-			for (let i = 0; i < N; i++) { let s0 = Math.floor(bien[i]), s1 = Math.ceil(bien[i + 1]); while (s0 < s1 && im(s0)) s0++; while (s1 > s0 && im(s1 - 1)) s1--; s0 = Math.max(0, s0 - 4); s1 = Math.min(nF, s1 + 6); const p = pcm.slice(s0 * F, Math.max(s0 + 1, s1) * F); ra.push({ pcm: p, sr, dai: p.length / sr }); }
+			for (let i = 0; i < N; i++) { let s0 = Math.floor(bien[i]), s1 = Math.ceil(bien[i + 1]); while (s0 < s1 && im(s0)) s0++; while (s1 > s0 && im(s1 - 1)) s1--; s0 = Math.max(Math.ceil(bien[i]), s0 - 3); s1 = Math.min(Math.floor(bien[i + 1]), s1 + 4); const p = pcm.slice(s0 * F, Math.max(s0 + 1, s1) * F); ra.push({ pcm: p, sr, dai: p.length / sr }); }
 			return ra;
 		}
 		// ---------- giọng từ file: lọc ồn, EQ + nén, cắt câu, rút ngập ngừng, đổi tốc độ giữ cao độ ----------
@@ -5978,6 +6041,40 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			S.loiDs = ds.map(d => { let p = d.pcm; if (lang) p = rutLang(p, SRV); p = doiToc(p, toc); return { pcm: p, sr: SRV, dai: p.length / SRV }; });
 			S.loiKey = key; return S.loiDs;
 		}
+		// ---------- trạm giọng trên máy (TDK Giọng / VieNeu-TTS) ----------
+		const MAY = "http://127.0.0.1:8765";
+		function docWav(buf) {
+			const v = new DataView(buf); if (v.getUint32(0, false) !== 0x52494646) throw new Error("tệp âm thanh không đúng dạng WAV");
+			let p = 12, sr = 24000, bit = 16, kenh = 1, fmt = 1, dau = -1, dai = 0;
+			while (p + 8 <= v.byteLength) { const id = v.getUint32(p, false), n = v.getUint32(p + 4, true); if (id === 0x666d7420) { fmt = v.getUint16(p + 8, true); kenh = v.getUint16(p + 10, true); sr = v.getUint32(p + 12, true); bit = v.getUint16(p + 22, true); } else if (id === 0x64617461) { dau = p + 8; dai = Math.min(n, v.byteLength - dau); break; } p += 8 + n + (n & 1); }
+			if (dau < 0) throw new Error("WAV không có dữ liệu"); const b = bit >> 3, nM = Math.floor(dai / (b * kenh)), f = new Float32Array(nM);
+			for (let i = 0; i < nM; i++) { const o = dau + i * b * kenh; f[i] = fmt === 3 && bit === 32 ? v.getFloat32(o, true) : bit === 16 ? v.getInt16(o, true) / 32768 : bit === 24 ? ((v.getUint8(o) | (v.getUint8(o + 1) << 8) | (v.getInt8(o + 2) << 16)) / 8388608) : bit === 32 ? v.getInt32(o, true) / 2147483648 : (v.getUint8(o) - 128) / 128; }
+			return { pcm: f, sr, dai: nM / sr };
+		}
+		function taoWav(pcm, sr) { const n = pcm.length, b = new ArrayBuffer(44 + n * 2), v = new DataView(b), ghi = (o, t) => { for (let i = 0; i < t.length; i++) v.setUint8(o + i, t.charCodeAt(i)); };
+			ghi(0, "RIFF"); v.setUint32(4, 36 + n * 2, true); ghi(8, "WAVEfmt "); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, sr, true); v.setUint32(28, sr * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); ghi(36, "data"); v.setUint32(40, n * 2, true);
+			for (let i = 0; i < n; i++) v.setInt16(44 + i * 2, Math.max(-32768, Math.min(32767, Math.round(pcm[i] * 32767))), true); return new Uint8Array(b); }
+		async function goiMay(duong, body, ms) { const ac = new AbortController(), hen = setTimeout(() => ac.abort(), ms || 120000);
+			try { const r = await fetch(MAY + duong, body ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), signal: ac.signal } : { signal: ac.signal }); if (!r.ok) { const j = await r.json().catch(() => null); throw new Error((j && j.loi) || "trạm giọng báo lỗi " + r.status); } return r; }
+			catch (e) { if (e.name === "AbortError") throw new Error("trạm giọng không phản hồi"); if (e instanceof TypeError) throw new Error("chưa kết nối được trạm giọng trên máy — hãy bật ChayGiong rồi bấm Kết nối"); throw e; } finally { clearTimeout(hen); } }
+		// lọc âm sắc + nén (dùng chung cho giọng trên máy và mẫu nhân bản)
+		async function eqNen(x, srVao, srRa, am, nen) {
+			const n = Math.ceil(x.length * srRa / srVao), o = new OfflineAudioContext(1, n, srRa), b = o.createBuffer(1, x.length, srVao); b.copyToChannel(x, 0); const src = o.createBufferSource(); src.buffer = b; let nut = src; const noi = z => { nut.connect(z); nut = z; };
+			if (am) { const hp = o.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 80; noi(hp); const bun = o.createBiquadFilter(); bun.type = "peaking"; bun.frequency.value = 260; bun.Q.value = 1; bun.gain.value = -2; noi(bun); const ro = o.createBiquadFilter(); ro.type = "peaking"; ro.frequency.value = 3200; ro.Q.value = 0.9; ro.gain.value = 2.5; noi(ro); const ap = o.createBiquadFilter(); ap.type = "lowshelf"; ap.frequency.value = 160; ap.gain.value = 1.5; noi(ap); }
+			if (nen) { const c = o.createDynamicsCompressor(); c.threshold.value = -26; c.knee.value = 10; c.ratio.value = 3; c.attack.value = 0.004; c.release.value = 0.18; noi(c); }
+			nut.connect(o.destination); src.start(); const y = (await o.startRendering()).getChannelData(0).slice();
+			let e = 0, m = 0, pk = 0; for (let i = 0; i < y.length; i++) { const a = Math.abs(y[i]); if (a > pk) pk = a; if (a > 0.02) { e += a * a; m++; } } let k = 0.13 / (Math.sqrt(e / Math.max(1, m)) || 1e-3); if (pk * k > 0.97) k = 0.97 / pk; for (let i = 0; i < y.length; i++) y[i] *= k; return y;
+		}
+		function doiCao(x, ban) { if (!ban) return x; const p = Math.pow(2, ban / 12), y1 = doiToc(x, 1 / p), L = Math.round(y1.length / p), y = new Float32Array(L); for (let i = 0; i < L; i++) { const s = i * p, i0 = Math.floor(s), f = s - i0; y[i] = (y1[i0] || 0) * (1 - f) + (y1[i0 + 1] || 0) * f; } return y; }
+		async function docMayTho(text, voice) {
+			const key = "m" + bam(voice + "|" + text); if (S.mayTho.has(key)) return S.mayTho.get(key);
+			let a = await layKho(key); if (!a) { const r = await goiMay("/tts", { text, voice }); a = docWav(await r.arrayBuffer()); catKho(key, a); }
+			S.mayTho.set(key, a); return a;
+		}
+		async function docMay(text, voice) {
+			const dep = $v("vdMayDep").checked, toc = +$v("vdMayToc").value || 1, key = voice + "|" + dep + "|" + toc + "|" + text; if (S.mayXL.has(key)) return S.mayXL.get(key);
+			const a = await docMayTho(text, voice); let y = await eqNen(a.pcm, a.sr, SRV, dep, dep); y = doiToc(y, toc); const kq = { pcm: y, sr: SRV, dai: y.length / SRV }; S.mayXL.set(key, kq); return kq;
+		}
 		async function longTieng(cau, voice, bao) {
 			const nhac = ghiChuDoc(), ra = new Array(cau.length).fill(null), nhom = []; let cur = [], dai = 0;
 			cau.forEach((c, i) => { if (cur.length && (cur.length >= 8 || dai + c.length > 900)) { nhom.push(cur); cur = []; dai = 0; } cur.push(i); dai += c.length; }); if (cur.length) nhom.push(cur);
@@ -6006,9 +6103,13 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			const coPhan = kb.phan.length > 0, hPhan = coPhan ? 64 * u : 0;
 			// lồng tiếng
 			const doanDs = []; kb.canh.forEach(c => c.doan.forEach(d => doanDs.push(d)));
-			let soLoi = 0; const tuFile = $v("vdNguon").value === "file", canGiong = (tuFile ? !!S.loiXL : giong) ? doanDs.filter(d => d.loi) : [];
+			let soLoi = 0; const nguon = $v("vdNguon").value, tuFile = nguon === "file", tuMay = nguon === "may", gMay = $v("vdMayGiong").value, canGiong = (tuFile ? !!S.loiXL : tuMay ? !!gMay : giong) ? doanDs.filter(d => d.loi) : [];
 			if (!opt.khongGiong) { S.tienLan = 0; S.dungLai = 0; }
-			if (canGiong.length && tuFile) { const ds = catLoiFile(canGiong.map(d => d.loi)); canGiong.forEach((d, i) => { d.am = ds[i] || null; }); S.loiCauDs = canGiong.map(d => d.loi); }
+			if (canGiong.length && tuMay) { for (let i = 0; i < canGiong.length; i++) { const d = canGiong[i];
+					if (opt.khongGiong) { const dep = $v("vdMayDep").checked, toc = +$v("vdMayToc").value || 1; d.am = S.mayXL.get(gMay + "|" + dep + "|" + toc + "|" + d.loi) || null; if (!d.am && S.mayTho.has("m" + bam(gMay + "|" + d.loi))) try { d.am = await docMay(d.loi, gMay); } catch (e) { } continue; }
+					bao("Đang đọc câu " + (i + 1) + "/" + canGiong.length + " bằng giọng " + gMay + "…", i / canGiong.length * 0.6);
+					try { d.am = await docMay(d.loi, gMay); } catch (e) { soLoi++; d.am = null; S.loiGiong = e.message || String(e); if (/kết nối|phản hồi/.test(S.loiGiong)) { soLoi = canGiong.length - i; break; } } } }
+			else if (canGiong.length && tuFile) { const ds = catLoiFile(canGiong.map(d => d.loi)); canGiong.forEach((d, i) => { d.am = ds[i] || null; }); S.loiCauDs = canGiong.map(d => d.loi); }
 			else if (canGiong.length) { if (opt.khongGiong) { const nh = ghiChuDoc(); canGiong.forEach(d => { d.am = S.amCau.get(giong + "|" + nh + "|" + d.loi) || null; }); } else { const kq = await longTieng(canGiong.map(d => d.loi), giong, bao); canGiong.forEach((d, i) => { d.am = kq.ra[i]; }); soLoi = kq.soLoi; } }
 			// phần tử
 			const tl = { W, H, u, khung, doc, dan: [], td: [], moc: [], phan: kb.phan, muc: [], pt: [], trang: [], phu: [], giong: [], canh: [], moDau, tong: 0, mauLogo: MAU_LOGO[$v("vdMauLogo").value] || MAU_LOGO.do, kenh: $v("vdKenh").value.trim() || "TOÁN THẦY KHOA" };
@@ -6050,7 +6151,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			tl.trang.forEach(tr => { if (!tr.pt || !tr.pt.length) return; const a = tr.pt[0].y, b = Math.max(...tr.pt.map(e => e.y + e.h)), du = yDay - a - (b - a); if (du > 0) tr.pt.forEach(e => { e.y += du * 0.38; }); }); tl.tong = T + (moDau ? 2.8 : 0.6); tl.soLoiGiong = soLoi; tl.canhBao = S.canhBao.slice();
 			// âm thanh: giọng + nhạc nền
 			const n = Math.ceil(tl.tong * SR), mix = new Float32Array(n);
-			tl.giong.forEach(g => { const a = g.am, k = a.sr / SR, b0 = Math.round(g.t * SR), len = Math.floor(a.pcm.length / k); for (let i = 0; i < len && b0 + i < n; i++) { const s = i * k, i0 = Math.floor(s), f = s - i0; mix[b0 + i] += (a.pcm[i0] * (1 - f) + (a.pcm[i0 + 1] || 0) * f) * 0.95; } });
+			tl.giong.forEach(g => { const a = g.am, k = a.sr / SR, b0 = Math.round(g.t * SR), len = Math.floor(a.pcm.length / k), fv = Math.min(len >> 3, Math.round(SR * 0.012)), fr = Math.min(len >> 2, Math.round(SR * 0.04)); for (let i = 0; i < len && b0 + i < n; i++) { const s = i * k, i0 = Math.floor(s), f = s - i0, g2 = Math.min(1, i / Math.max(1, fv), (len - 1 - i) / Math.max(1, fr)); mix[b0 + i] += (a.pcm[i0] * (1 - f) + (a.pcm[i0 + 1] || 0) * f) * 0.95 * g2; } });
 			if (S.nhac) { const vol = (+$v("vdAmNhac").value || 0) / 100, nh = S.nhac, bd = Math.round(kep(+$v("vdNhacBD").value || 0, 0, Math.max(0, nh.length / SR - 2)) * SR), L = nh.length - bd, XF = Math.min(SR * 2, L >> 2), P = Math.max(1, L - XF);
 				let duck = null; if ($v("vdNhacGiam").checked && tl.giong.length) { duck = new Float32Array(n).fill(1); tl.giong.forEach(g => { const a = Math.max(0, Math.round((g.t - 0.2) * SR)), b = Math.min(n, Math.round((g.t + g.am.dai + 0.3) * SR)); for (let i = a; i < b; i++) duck[i] = 0.4; }); const k = 1 / (SR * 0.25); let v = 1; for (let i = 0; i < n; i++) { v += (duck[i] - v) * k * 4; duck[i] = v; } }
 				for (let i = 0; i < n; i++) { const fade = Math.min(1, i / SR / 1.5, (n - i) / SR / 2), q = i % P; let x = nh[bd + q]; if (i >= P && q < XF) { const f = q / XF; x = x * f + nh[bd + P + q] * (1 - f); } mix[i] += x * vol * fade * (duck ? duck[i] : 1); } }
@@ -6166,8 +6267,8 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 				if (lan !== S.lan) return; S.tl = tl; capCanvas(tl); $v("vdXuat").disabled = false;
 				$v("vdCanhDs").innerHTML = tl.canh.map((c, i) => '<button type="button" data-i="' + i + '">' + (i + 1) + "</button>").join("");
 				veTai(Math.min(S.t, tl.tong)); if (!S.t) veTai(tl.moDau ? 2.2 : 0.5);
-				const gg = $v("vdGiong").value, tf = $v("vdNguon").value === "file"; $v("vdTomTat").innerHTML = ['<span title="Độ dài">⏱ ' + gio(tl.tong) + "</span>", '<span title="Giọng đọc">🎙 ' + (tf ? (S.loiXL ? "file lời đọc ✓" : "chưa có file lời đọc") : gg ? esc(gg) + " · " + ({ nam: "miền Nam", bac: "miền Bắc", trung: "miền Trung" }[$v("vdVung").value] || "") + (tl.giong.length ? " ✓" : "") : "không lồng tiếng") + "</span>", '<span title="Nhạc nền">🎵 ' + (S.nhac ? "có nhạc" : "không nhạc") + "</span>", '<span title="Chuyển trang">✦ ' + esc((CHUYEN.find(c => c[0] === $v("vdChuyen").value) || ["", "Mờ dần"])[1]) + "</span>"].join(""); if (!$v("vdSongHop").hidden) veSong(); if ($v("vdNguon").value === "file") veLoi();
-				const g = $v("vdNguon").value === "file" ? (S.loiXL ? "file" : "") : $v("vdGiong").value; tt("Video dài " + gio(tl.tong) + " · " + tl.canh.length + " cảnh" + (g ? (tl.giong.length ? " · đã lồng tiếng " + tl.giong.length + " câu" + (g === "file" ? " từ file" : "") : coGiong ? "" : " · chưa lồng tiếng (bấm Dựng & lồng tiếng)") : $v("vdNguon").value === "file" ? " · chưa có file lời đọc" : "") + (tl.soLoiGiong ? " · " + tl.soLoiGiong + " câu chưa lồng tiếng được (" + (S.loiGiong || "lỗi") + ")" : "") + "." + (tl.soLoiGiong && !tl.am ? " Video đang chưa có tiếng." : "") + (coGiong && $v("vdNguon").value !== "file" && $v("vdGiong").value && tl.giong.length ? " Chi phí lần này: " + (S.tienLan ? tienVN(S.tienLan) : "0 đ (dùng lại giọng đã lưu trên máy)") + "." : "") + (tl.canhBao.length ? " Đã tự xử lý " + tl.canhBao.length + " chỗ: " + tl.canhBao.slice(0, 3).join("; ") + (tl.canhBao.length > 3 ? "; …" : "") : ""), false);
+				const gg = $v("vdGiong").value, tf = $v("vdNguon").value === "file"; $v("vdTomTat").innerHTML = ['<span title="Độ dài">⏱ ' + gio(tl.tong) + "</span>", '<span title="Giọng đọc">🎙 ' + (tf ? (S.loiXL ? "file lời đọc ✓" : "chưa có file lời đọc") : $v("vdNguon").value === "may" ? ($v("vdMayGiong").value ? esc($v("vdMayGiong").value) + " · trên máy" + (tl.giong.length ? " ✓" : "") : "chưa chọn giọng trên máy") : gg ? esc(gg) + " · " + ({ nam: "miền Nam", bac: "miền Bắc", trung: "miền Trung" }[$v("vdVung").value] || "") + (tl.giong.length ? " ✓" : "") : "không lồng tiếng") + "</span>", '<span title="Nhạc nền">🎵 ' + (S.nhac ? "có nhạc" : "không nhạc") + "</span>", '<span title="Chuyển trang">✦ ' + esc((CHUYEN.find(c => c[0] === $v("vdChuyen").value) || ["", "Mờ dần"])[1]) + "</span>"].join(""); if (!$v("vdSongHop").hidden) veSong(); if ($v("vdNguon").value === "file") veLoi();
+				const g = $v("vdNguon").value === "file" ? (S.loiXL ? "file" : "") : $v("vdNguon").value === "may" ? $v("vdMayGiong").value : $v("vdGiong").value; tt("Video dài " + gio(tl.tong) + " · " + tl.canh.length + " cảnh" + (g ? (tl.giong.length ? " · đã lồng tiếng " + tl.giong.length + " câu" + (g === "file" ? " từ file" : "") : coGiong ? "" : " · chưa lồng tiếng (bấm Dựng & lồng tiếng)") : $v("vdNguon").value === "file" ? " · chưa có file lời đọc" : $v("vdNguon").value === "may" ? " · chưa chọn giọng trên máy" : "") + (tl.soLoiGiong ? " · " + tl.soLoiGiong + " câu chưa lồng tiếng được (" + (S.loiGiong || "lỗi") + ")" : "") + "." + (tl.soLoiGiong && !tl.am ? " Video đang chưa có tiếng." : "") + (coGiong && $v("vdNguon").value === "ai" && $v("vdGiong").value && tl.giong.length ? " Chi phí lần này: " + (S.tienLan ? tienVN(S.tienLan) : "0 đ (dùng lại giọng đã lưu trên máy)") + "." : "") + (tl.canhBao.length ? " Đã tự xử lý " + tl.canhBao.length + " chỗ: " + tl.canhBao.slice(0, 3).join("; ") + (tl.canhBao.length > 3 ? "; …" : "") : ""), false);
 			} catch (e) { if (lan === S.lan) tt("Chưa dựng được: " + ((e && e.message) || e), true); }
 			finally { if (coGiong) { $v("vdDung").disabled = false; tien(null); } }
 		}
@@ -6252,7 +6353,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		$v("vdKhoa").addEventListener("keydown", e => { if (e.key === "Enter") $v("vdKhoaLuu").click(); });
 		$v("vdKhoaXoa").addEventListener("click", () => { try { localStorage.removeItem("tdk_video_khoa"); } catch (e) { } $v("vdKhoa").value = ""; S.dsTTS = null; S.mhTTS = ""; $v("vdKhoaThan").hidden = true; capKhoa(); toast("Đã bỏ khoá riêng — lồng tiếng dùng lại khoá chung"); });
 		// ----- nguồn giọng: file lời đọc
-		const capNguon = () => { const f = $v("vdNguon").value === "file"; $v("vdNguonFile").hidden = !f; $v("vdNguonAI").hidden = f; $v("vdNhanGiong").textContent = f ? (S.loiXL ? "file" : "") : $v("vdGioi").value === "tat" ? "tắt" : $v("vdGiong").value; };
+		const capNguon = () => { const ng = $v("vdNguon").value, f = ng === "file", m = ng === "may"; $v("vdNguonFile").hidden = !f; $v("vdNguonMay").hidden = !m; $v("vdNguonAI").hidden = f || m; $v("vdNhanGiong").textContent = f ? (S.loiXL ? "file" : "") : m ? ($v("vdMayGiong").value || "") : $v("vdGioi").value === "tat" ? "tắt" : $v("vdGiong").value; if (m && !S.mayDaKiem) { S.mayDaKiem = true; ketNoiMay(true); } };
 		$v("vdNguon").addEventListener("change", capNguon);
 		const layLoiDoc = () => { const kb = docKB(chuanKB($v("vdKB").value).kb), ds = []; kb.canh.forEach(c => c.doan.forEach(d => { if (d.loi) ds.push(d.loi); })); return ds; };
 		const chepLoi = async () => { const ds = layLoiDoc(); if (!ds.length) { toast("Kịch bản chưa có dòng >> nào"); return; } try { await navigator.clipboard.writeText(ds.join("\n\n")); toast("Đã copy " + ds.length + " câu lời đọc — dán vào CapCut → Văn bản thành giọng nói → xuất âm thanh, rồi kéo file vào khung xem thử"); } catch (e) { toast("Trình duyệt không cho copy"); } };
@@ -6285,10 +6386,64 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		["vdLoiLang", "vdLoiToc"].forEach(id => $v(id).addEventListener("change", () => dungLai(false)));
 		$v("vdLoiNgheGoc").addEventListener("click", () => { if (S.loiGoc) phatNhanh(S.loiGoc, SRV, 10); });
 		$v("vdLoiNgheDep").addEventListener("click", () => { if (S.loiXL) phatNhanh(S.loiXL, SRV, 10); });
+		// ----- giọng trên máy: kết nối, danh sách giọng, bộ cài, tạo giọng của tôi
+		function capMay(tt2, trangThai) { const h = $v("vdMayHop"); h.classList.toggle("rieng", trangThai === "ok"); h.classList.toggle("loi", trangThai === "loi"); $v("vdMayTT").textContent = tt2; $v("vdMayKiem").textContent = trangThai === "ok" ? "Làm mới" : "Kết nối"; }
+		async function ketNoiMay(im) {
+			capMay("Đang kết nối trạm giọng…");
+			try { const j = await (await goiMay("/health", null, 4000)).json(); S.may = j; capMay("Đã kết nối · " + (j.giongToi || []).length + " giọng của tôi · " + (j.giongMau || []).length + " giọng mẫu", "ok"); $v("vdMayGiongHop").hidden = false; $v("vdMayCai").open = false;
+				const ds = (j.giongToi || []).concat((j.giongMau || []).map(g => g.ten)); if (!ds.includes($v("vdMayGiong").value)) { $v("vdMayGiong").value = ds[0] || ""; luuCai(); } veMayDs(); capNguon(); dungLai(false); }
+			catch (e) { S.may = null; $v("vdMayGiongHop").hidden = true; capMay("Chưa kết nối — bật ChayGiong trên máy rồi bấm Kết nối" + (im ? "" : " (" + e.message + ")"), "loi"); $v("vdMayCai").open = true; }
+		}
+		function veMayDs() {
+			const j = S.may || {}, chon = $v("vdMayGiong").value, the = (ten, mt, toi) => '<div class="vdGiongThe' + (toi ? " toi" : "") + '" role="radio" tabindex="0" data-mg="' + esc(ten) + '" aria-checked="' + (ten === chon) + '"><button type="button" class="vdNghe" data-mnghe="' + esc(ten) + '" aria-label="Nghe thử ' + esc(ten) + '">' + SONG_TRANG + "</button><b>" + esc(ten) + "</b><span>" + esc(mt) + (toi ? ' · <a href="#" data-mxoa="' + esc(ten) + '">xoá</a>' : "") + "</span></div>";
+			$v("vdMayDs").innerHTML = (j.giongToi || []).map(t => the(t, "Giọng của tôi", true)).join("") + (j.giongMau || []).map(g => the(g.ten, "Giọng mẫu", false)).join("") || '<p class="vdGhi">Chưa có giọng nào.</p>'; $v("vdNhanGiong").textContent = chon;
+		}
+		$v("vdMayKiem").addEventListener("click", () => ketNoiMay(false));
+		$v("vdMayDs").addEventListener("click", async e => {
+			const x = e.target.closest("[data-mxoa]"); if (x) { e.preventDefault(); e.stopPropagation(); if (!confirm("Xoá giọng “" + x.dataset.mxoa + "” khỏi máy?")) return; try { await goiMay("/xoa", { ten: x.dataset.mxoa }); await ketNoiMay(true); } catch (z) { toast(z.message); } return; }
+			const n = e.target.closest("[data-mnghe]"); if (n) { e.stopPropagation(); n.innerHTML = '<i class="vdXoay"></i>'; try { const a = await docMay("Xin chào các em, hôm nay chúng ta cùng giải một bài toán thật hay nhé!", n.dataset.mnghe); n.innerHTML = SONG_DUNG; const src = await phatNhanh(a.pcm, a.sr); src.onended = () => { n.innerHTML = SONG_TRANG; }; } catch (z) { n.innerHTML = SONG_TRANG; tt("Chưa nghe thử được: " + z.message, true); } return; }
+			const c = e.target.closest("[data-mg]"); if (c) { $v("vdMayGiong").value = c.dataset.mg; luuCai(); veMayDs(); dungLai(false); } });
+		$v("vdMayDs").addEventListener("keydown", e => { const c = e.target.closest("[data-mg]"); if (c && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); c.click(); } });
+		["vdMayDep", "vdMayToc"].forEach(id => $v(id).addEventListener("change", () => dungLai(false)));
+		$v("vdMayTai").addEventListener("click", async () => { try { await napZip(); const z = new window.JSZip(), f = {"CaiDat_Mac.command": "#!/bin/bash\ncd \"$(dirname \"$0\")\"\necho \"==== CÀI ĐẶT TDK GIỌNG (VieNeu-TTS) ====\"\nPY=$(command -v python3 || true)\nif [ -z \"$PY\" ] || ! \"$PY\" -c 'import sys; sys.exit(0 if sys.version_info>=(3,10) else 1)'; then\n  echo \"Cần Python 3.10 trở lên — trình duyệt sẽ mở trang tải Python.\"; open \"https://www.python.org/downloads/macos/\"; read -p \"Nhấn Enter để thoát…\"; exit 1\nfi\n[ -d .venv ] || \"$PY\" -m venv .venv || { echo \"Không tạo được môi trường Python\"; read -p \"Enter…\"; exit 1; }\n.venv/bin/python -m pip install --upgrade pip\n.venv/bin/python -m pip install --upgrade vieneu || { echo \"Cài VieNeu lỗi — kiểm tra mạng rồi chạy lại\"; read -p \"Enter…\"; exit 1; }\necho \"==== XONG! Bấm đúp ChayGiong_Mac.command để bật trạm giọng. ====\"\nread -p \"Nhấn Enter để đóng…\"\n", "CaiDat_Windows.bat": "@echo off\r\nchcp 65001 >nul\r\ncd /d \"%~dp0\"\r\ntitle Cai dat TDK Giong\r\necho ==== CAI DAT TDK GIONG (VieNeu-TTS) ====\r\nset \"PY=\"\r\nwhere py >nul 2>nul && set \"PY=py -3\"\r\nif not defined PY (where python >nul 2>nul && set \"PY=python\")\r\nif not defined PY (\r\n  echo Chua co Python. Trinh duyet se mo trang tai Python 3.11 - khi cai NHO TICH \"Add python.exe to PATH\".\r\n  start https://www.python.org/downloads/windows/\r\n  pause\r\n  exit /b 1\r\n)\r\n%PY% -c \"import sys; sys.exit(0 if sys.version_info>=(3,10) else 1)\" || (echo Can Python 3.10 tro len. & start https://www.python.org/downloads/windows/ & pause & exit /b 1)\r\nif not exist .venv (%PY% -m venv .venv || (echo Khong tao duoc moi truong Python. & pause & exit /b 1))\r\n.venv\\Scripts\\python -m pip install --upgrade pip\r\n.venv\\Scripts\\python -m pip install --upgrade vieneu || (echo Cai VieNeu loi - kiem tra mang roi chay lai. & pause & exit /b 1)\r\necho.\r\necho ==== XONG! Bay gio bam dup ChayGiong_Windows.bat de bat tram giong. ====\r\npause\r\n", "ChayGiong_Mac.command": "#!/bin/bash\ncd \"$(dirname \"$0\")\"\n[ -x .venv/bin/python ] || { echo \"Chưa cài đặt — bấm đúp CaiDat_Mac.command trước.\"; read -p \"Enter…\"; exit 1; }\n.venv/bin/python tdk_giong.py\n", "ChayGiong_Windows.bat": "@echo off\r\nchcp 65001 >nul\r\ncd /d \"%~dp0\"\r\ntitle TDK Giong - giu cua so nay mo\r\nif not exist .venv\\Scripts\\python.exe (echo Chua cai dat. Hay bam dup CaiDat_Windows.bat truoc. & pause & exit /b 1)\r\nset PYTHONIOENCODING=utf-8\r\n.venv\\Scripts\\python tdk_giong.py\r\npause\r\n", "HUONG_DAN.txt": "TDK GIỌNG — giọng đọc AI tiếng Việt chạy trên máy, miễn phí, không giới hạn\n(dùng mô hình mã nguồn mở VieNeu-TTS, giấy phép Apache 2.0 — https://github.com/pnnbao97/VieNeu-TTS)\n\n1. CÀI ĐẶT (làm 1 lần)\n   - Windows: bấm đúp CaiDat_Windows.bat\n     (nếu máy chưa có Python, trang tải sẽ tự mở — cài Python 3.11, NHỚ TÍCH \"Add python.exe to PATH\", rồi bấm lại CaiDat)\n   - Mac: chuột phải CaiDat_Mac.command → Open\n   Cần mạng Internet; lần cài đầu mất vài phút.\n\n2. MỖI LẦN LÀM VIDEO\n   - Windows: bấm đúp ChayGiong_Windows.bat — Mac: chuột phải ChayGiong_Mac.command → Open\n   - Lần chạy đầu sẽ tải mô hình (vài trăm MB). Khi thấy dòng \"✅ TDK Giọng đã sẵn sàng\" là dùng được.\n   - GIỮ CỬA SỔ ĐEN NÀY MỞ trong lúc làm video.\n   - Trên web: Tạo video → Giọng đọc → Nguồn giọng: \"Giọng trên máy\". Nếu trình duyệt hỏi\n     \"cho phép trang truy cập thiết bị trong mạng cục bộ\" → bấm CHO PHÉP.\n\n3. TẠO GIỌNG CỦA TÔI (nhân bản giọng)\n   Trong web bấm \"Tạo giọng của tôi\", đọc 3 câu ngắn (khoảng 8 giây tổng). Web lọc ồn, làm ấm giọng rồi gửi cho trạm.\n   Chỉ nhân bản giọng của chính mình hoặc người đã đồng ý.\n\nGiọng đã tạo nằm trong thư mục giong_cua_toi (mỗi giọng là một tệp .wav) — có thể sao lưu sang máy khác.\nMáy yếu: đặt biến môi trường TDK_GIONG_CHE_DO=v3nano để dùng bản nhẹ (nhanh hơn, giọng kém hơn, không nhân bản giọng).\n", "tdk_giong.py": "# -*- coding: utf-8 -*-\n\"\"\"TDK Giọng — trạm giọng đọc AI tiếng Việt chạy trên máy (dùng VieNeu-TTS, giấy phép Apache 2.0).\nWeb chuanhoacodeTDK (tab Tạo video) gọi trạm này để lồng tiếng từng câu, khớp chữ trong video.\nTác giả web: ThS. Trương Đăng Khoa.\nVieNeu-TTS © Phạm Nguyễn Ngọc Bảo — https://github.com/pnnbao97/VieNeu-TTS (Apache License 2.0).\"\"\"\nimport base64, io, json, os, re, sys, tempfile, threading, time, wave\nfrom http.server import BaseHTTPRequestHandler, ThreadingHTTPServer\nfrom urllib.parse import urlparse\n\nPHIEN_BAN = \"1.0\"\nCONG = int(os.environ.get(\"TDK_GIONG_CONG\", \"8765\"))\nTHU_MUC = os.path.dirname(os.path.abspath(__file__))\nTHU_MUC_GIONG = os.path.join(THU_MUC, \"giong_cua_toi\")\nos.makedirs(THU_MUC_GIONG, exist_ok=True)\n\n# Các trang được phép gọi trạm (thêm tên miền khác vào tệp nguon_cho_phep.txt, mỗi dòng một tên miền)\nNGUON_MAC_DINH = [r\"^https://[\\w.-]+\\.github\\.io$\", r\"^https?://(localhost|127\\.0\\.0\\.1)(:\\d+)?$\", r\"^null$\"]\ndef nguon_cho_phep():\n    ds = list(NGUON_MAC_DINH)\n    p = os.path.join(THU_MUC, \"nguon_cho_phep.txt\")\n    if os.path.exists(p):\n        for d in open(p, encoding=\"utf-8\"):\n            d = d.strip()\n            if d and not d.startswith(\"#\"):\n                ds.append(\"^\" + re.escape(d.rstrip(\"/\")) + \"$\")\n    return ds\n\ndef in_ra(*a):\n    print(time.strftime(\"[%H:%M:%S]\"), *a, flush=True)\n\nin_ra(\"Đang nạp mô hình giọng đọc VieNeu-TTS (lần đầu sẽ tải mô hình, vui lòng chờ)…\")\ntry:\n    from vieneu import Vieneu\nexcept ImportError:\n    in_ra(\"CHƯA CÀI VieNeu. Hãy chạy tệp CaiDat trước.\")\n    input(\"Nhấn Enter để thoát…\"); sys.exit(1)\n\nCHE_DO = os.environ.get(\"TDK_GIONG_CHE_DO\", \"\")  # \"\" = Turbo (mặc định), \"v3nano\" = nhẹ nhất\ntry:\n    tts = Vieneu(mode=CHE_DO) if CHE_DO else Vieneu()\nexcept Exception as e:\n    in_ra(\"Không nạp được mô hình:\", e); input(\"Nhấn Enter để thoát…\"); sys.exit(1)\nkhoa = threading.Lock()\n\ndef ds_giong_mau():\n    try:\n        return [{\"ten\": str(nhan), \"id\": str(vid)} for nhan, vid in tts.list_preset_voices()]\n    except Exception:\n        return []\n\ndef ds_giong_toi():\n    return sorted(os.path.splitext(f)[0] for f in os.listdir(THU_MUC_GIONG) if f.lower().endswith(\".wav\"))\n\ndef nap_giong_toi():\n    for ten in ds_giong_toi():\n        try:\n            tts.add_voice(ten, os.path.join(THU_MUC_GIONG, ten + \".wav\"))\n        except Exception as e:\n            in_ra(\"Không nạp được giọng\", ten, \":\", e)\nnap_giong_toi()\n\ndef cac_ten(voice):\n    \"\"\"Thử lần lượt: đúng tên gửi lên, rồi tên/ mã tương ứng của giọng mẫu.\"\"\"\n    ds = [voice]\n    for g in ds_giong_mau():\n        if voice in (g[\"ten\"], g[\"id\"]):\n            ds += [g[\"ten\"], g[\"id\"]]\n    return [v for i, v in enumerate(ds) if v and v not in ds[:i]]\n\ndef doc(text, voice):\n    with khoa:\n        audio, loi = None, None\n        for v in (cac_ten(voice) if voice else [None]):\n            try:\n                audio = tts.infer(text, voice=v) if v else tts.infer(text)\n                break\n            except Exception as e:\n                loi = e\n        if audio is None:\n            raise loi or RuntimeError(\"không đọc được\")\n        fd, p = tempfile.mkstemp(suffix=\".wav\"); os.close(fd)\n        try:\n            tts.save(audio, p)\n            with open(p, \"rb\") as f:\n                return f.read()\n        finally:\n            try: os.remove(p)\n            except OSError: pass\n\ndef ten_an_toan(t):\n    t = re.sub(r\"[\\\\/:*?\\\"<>|\\r\\n\\t]\", \"\", (t or \"\").strip())[:40]\n    return t or \"Giọng của tôi\"\n\nclass XuLy(BaseHTTPRequestHandler):\n    server_version = \"TDKGiong/\" + PHIEN_BAN\n    def log_message(self, *a):\n        pass\n    def _cors(self):\n        o = self.headers.get(\"Origin\", \"\")\n        if o and any(re.match(r, o) for r in nguon_cho_phep()):\n            self.send_header(\"Access-Control-Allow-Origin\", o)\n            self.send_header(\"Vary\", \"Origin\")\n        self.send_header(\"Access-Control-Allow-Methods\", \"GET, POST, OPTIONS\")\n        self.send_header(\"Access-Control-Allow-Headers\", \"Content-Type\")\n        self.send_header(\"Access-Control-Allow-Private-Network\", \"true\")\n        self.send_header(\"Access-Control-Expose-Headers\", \"X-Ten-Giong\")\n    def _json(self, ma, obj):\n        b = json.dumps(obj, ensure_ascii=False).encode(\"utf-8\")\n        self.send_response(ma); self._cors()\n        self.send_header(\"Content-Type\", \"application/json; charset=utf-8\"); self.send_header(\"Content-Length\", str(len(b))); self.end_headers(); self.wfile.write(b)\n    def _doc_json(self):\n        n = int(self.headers.get(\"Content-Length\", \"0\") or 0)\n        if n > 30 * 1024 * 1024: raise ValueError(\"dữ liệu quá lớn\")\n        return json.loads(self.rfile.read(n).decode(\"utf-8\") or \"{}\")\n    def _nguon_hop_le(self):\n        o = self.headers.get(\"Origin\", \"\")\n        return (not o) or any(re.match(r, o) for r in nguon_cho_phep())\n    def do_OPTIONS(self):\n        self.send_response(204); self._cors(); self.end_headers()\n    def do_GET(self):\n        if not self._nguon_hop_le(): return self._json(403, {\"loi\": \"trang này không được phép dùng trạm giọng\"})\n        if urlparse(self.path).path in (\"/\", \"/health\"):\n            return self._json(200, {\"ok\": True, \"ten\": \"TDK Giọng\", \"phienBan\": PHIEN_BAN, \"cheDo\": CHE_DO or \"v3-turbo\", \"giongMau\": ds_giong_mau(), \"giongToi\": ds_giong_toi()})\n        self._json(404, {\"loi\": \"không có đường dẫn này\"})\n    def do_POST(self):\n        if not self._nguon_hop_le(): return self._json(403, {\"loi\": \"trang này không được phép dùng trạm giọng\"})\n        duong = urlparse(self.path).path\n        try:\n            d = self._doc_json()\n            if duong == \"/tts\":\n                text = (d.get(\"text\") or \"\").strip()\n                if not text: return self._json(400, {\"loi\": \"thiếu câu cần đọc\"})\n                t0 = time.time(); wav = doc(text[:2000], d.get(\"voice\") or \"\")\n                in_ra(\"Đã đọc %d ký tự trong %.1fs\" % (len(text), time.time() - t0))\n                self.send_response(200); self._cors(); self.send_header(\"Content-Type\", \"audio/wav\"); self.send_header(\"Content-Length\", str(len(wav))); self.end_headers(); self.wfile.write(wav); return\n            if duong == \"/clone\":\n                ten = ten_an_toan(d.get(\"ten\")); du_lieu = base64.b64decode(d.get(\"wav\") or \"\")\n                if len(du_lieu) < 2000: return self._json(400, {\"loi\": \"đoạn ghi âm quá ngắn\"})\n                p = os.path.join(THU_MUC_GIONG, ten + \".wav\")\n                with open(p, \"wb\") as f: f.write(du_lieu)\n                if d.get(\"denoise\", True):\n                    try:\n                        p2 = p[:-4] + \"_sach.wav\"\n                        with khoa: tts.denoise(p, out_path=p2)\n                        if os.path.exists(p2) and os.path.getsize(p2) > 2000: os.replace(p2, p)\n                    except Exception as e: in_ra(\"Bỏ qua bước lọc ồn:\", e)\n                with khoa: tts.add_voice(ten, p)\n                in_ra(\"Đã tạo giọng:\", ten)\n                return self._json(200, {\"ok\": True, \"ten\": ten, \"giongToi\": ds_giong_toi()})\n            if duong == \"/xoa\":\n                ten = ten_an_toan(d.get(\"ten\")); p = os.path.join(THU_MUC_GIONG, ten + \".wav\")\n                if os.path.exists(p): os.remove(p)\n                return self._json(200, {\"ok\": True, \"giongToi\": ds_giong_toi()})\n            self._json(404, {\"loi\": \"không có đường dẫn này\"})\n        except Exception as e:\n            in_ra(\"Lỗi:\", e); self._json(500, {\"loi\": str(e)})\n\nif __name__ == \"__main__\":\n    try:\n        may = ThreadingHTTPServer((\"127.0.0.1\", CONG), XuLy)\n    except OSError:\n        in_ra(\"Cổng %d đang bận — có thể trạm giọng đã chạy ở cửa sổ khác.\" % CONG); input(\"Nhấn Enter để thoát…\"); sys.exit(1)\n    in_ra(\"✅ TDK Giọng đã sẵn sàng tại http://127.0.0.1:%d — giữ cửa sổ này mở trong lúc làm video.\" % CONG)\n    in_ra(\"Giọng có sẵn:\", \", \".join(g[\"ten\"] for g in ds_giong_mau()) or \"(không đọc được danh sách)\")\n    in_ra(\"Giọng của tôi:\", \", \".join(ds_giong_toi()) or \"(chưa có — tạo trong web: Tạo video → Giọng đọc → Giọng trên máy)\")\n    try:\n        may.serve_forever()\n    except KeyboardInterrupt:\n        pass\n"}, d = z.folder("TDK-Giong"); Object.keys(f).forEach(k => d.file(k, f[k], k.endsWith(".command") ? { unixPermissions: "755" } : {})); d.file("nguon_cho_phep.txt", "# Các trang web được phép dùng trạm giọng (mỗi dòng một trang)\n" + location.origin + "\n");
+			await taiVe(await z.generateAsync({ type: "blob", platform: "UNIX" }), "TDK-Giong.zip"); toast("Đã tải bộ cài — giải nén rồi bấm đúp CaiDat"); } catch (e) { toast("Không tạo được bộ cài: " + e.message); } });
+		// tạo giọng của tôi: thu 3 câu, sửa giọng, gửi trạm nhân bản
+		const CAU_MAU = ["Xin chào các em, hôm nay chúng ta cùng giải một bài toán thật hay.", "Đầu tiên, ta tính đạo hàm rồi tìm nghiệm của phương trình.", "Vậy đáp án đúng là câu C, các em nhớ kỹ phương pháp này nhé!"];
+		S.mau = [null, null, null];
+		const veCauThu = () => { $v("vdCauThu").innerHTML = CAU_MAU.map((c, i) => '<li class="' + (S.mau[i] ? "co" : "") + '"><button type="button" class="vdGhiAm" data-ghi="' + i + '" aria-label="Thu câu ' + (i + 1) + '"><i></i></button><span class="vdCauChu">“' + esc(c) + '”</span><span class="vdCauGio">' + (S.mau[i] ? (S.mau[i].length / 48000).toFixed(1) + "s" : "") + '</span><button type="button" class="vdNghe" data-ngmau="' + i + '" aria-label="Nghe câu ' + (i + 1) + '"' + (S.mau[i] ? "" : " disabled") + ">" + SONG_TRANG + "</button></li>").join(""); const du = S.mau.filter(Boolean).length; $v("vdTaoNghe").disabled = $v("vdTaoLuu").disabled = du < 2; $v("vdTaoTT").textContent = du < 2 ? "Thu ít nhất 2 câu (nên đủ 3) để tạo giọng." : ""; };
+		$v("vdMayTao").addEventListener("click", () => { $v("vdTaoGiong").hidden = false; veCauThu(); $v("vdTaoGiong").scrollIntoView({ behavior: "smooth", block: "nearest" }); });
+		$v("vdTaoDong").addEventListener("click", () => { $v("vdTaoGiong").hidden = true; if (S.ghi) S.ghi.stop(); });
+		async function batDauGhi(i, nut) {
+			if (S.ghi) { S.ghi.stop(); return; }
+			let st; try { st = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true, channelCount: 1 } }); } catch (e) { toast("Chưa có quyền dùng micro — cho phép micro trên trình duyệt rồi thử lại"); return; }
+			const mr = new MediaRecorder(st), ph = []; S.ghi = mr; nut.classList.add("dang"); const t0 = Date.now(), hen = setInterval(() => { const g = (Date.now() - t0) / 1000; nut.parentElement.querySelector(".vdCauGio").textContent = "● " + g.toFixed(1) + "s"; if (g > 9) mr.stop(); }, 100);
+			mr.ondataavailable = e => ph.push(e.data);
+			mr.onstop = async () => { clearInterval(hen); st.getTracks().forEach(t => t.stop()); S.ghi = null; nut.classList.remove("dang");
+				try { const ac = new OfflineAudioContext(1, 48000, 48000), b = await ac.decodeAudioData(await new Blob(ph).arrayBuffer()), o = new OfflineAudioContext(1, Math.ceil(b.duration * 48000), 48000), s2 = o.createBufferSource(); s2.buffer = b; s2.connect(o.destination); s2.start(); S.mau[i] = (await o.startRendering()).getChannelData(0).slice(); S.mauXL = null; } catch (e) { toast("Không đọc được bản thu, thử lại"); }
+				veCauThu(); };
+			mr.start();
+		}
+		$v("vdCauThu").addEventListener("click", e => { const g = e.target.closest("[data-ghi]"); if (g) { batDauGhi(+g.dataset.ghi, g); return; } const n = e.target.closest("[data-ngmau]"); if (n && S.mau[+n.dataset.ngmau]) phatNhanh(S.mau[+n.dataset.ngmau], 48000); });
+		function catLang(x, sr) { let pk = 0; for (let i = 0; i < x.length; i++) pk = Math.max(pk, Math.abs(x[i])); const ng = pk * 0.06, F = Math.round(sr * 0.01); let a = 0, b = x.length; const im = k => { let m = 0; for (let j = k; j < Math.min(x.length, k + F); j++) m = Math.max(m, Math.abs(x[j])); return m < ng; }; while (a < b && im(a)) a += F; while (b > a && im(b - F)) b -= F; return x.slice(Math.max(0, a - F * 5), Math.min(x.length, b + F * 8)); }
+		async function xuLyMau() {
+			const sr = 48000, ds = S.mau.filter(Boolean).map(x => catLang(x, sr)), gap = new Float32Array(Math.round(sr * 0.25)); let tong = []; let dai = 0;
+			for (const x of ds) { if (dai + x.length > sr * 9) break; tong.push(x, gap); dai += x.length + gap.length; }
+			let y = new Float32Array(dai), p = 0; tong.forEach(z => { y.set(z, p); p += z.length; });
+			if ($v("vdTaoOn").checked) y = locOn(y); y = doiCao(y, +$v("vdTaoTram").value || 0); y = await eqNen(y, sr, sr, $v("vdTaoAm").checked, true); S.mauXL = y; return y;
+		}
+		$v("vdTaoNghe").addEventListener("click", async () => { const y = S.mauXL || await xuLyMau(); phatNhanh(y, 48000); });
+		["vdTaoOn", "vdTaoAm", "vdTaoTram"].forEach(id => $v(id).addEventListener("change", () => { S.mauXL = null; }));
+		$v("vdTaoLuu").addEventListener("click", async () => {
+			const nut = $v("vdTaoLuu"); nut.disabled = true; $v("vdTaoTT").textContent = "Đang sửa giọng và gửi cho trạm nhân bản…";
+			try { const y = S.mauXL || await xuLyMau(), w = taoWav(y, 48000); let bin = ""; for (let i = 0; i < w.length; i += 0x8000) bin += String.fromCharCode.apply(null, w.subarray(i, i + 0x8000));
+				const ten = $v("vdTaoTen").value.trim() || "Giọng của tôi", j = await (await goiMay("/clone", { ten, wav: btoa(bin), denoise: false }, 180000)).json();
+				$v("vdMayGiong").value = j.ten || ten; luuCai(); await ketNoiMay(true); $v("vdTaoGiong").hidden = true; toast("Đã tạo giọng “" + (j.ten || ten) + "” — bấm ▶ trên thẻ giọng để nghe thử"); dungLai(false); }
+			catch (e) { $v("vdTaoTT").textContent = "Chưa tạo được: " + e.message; }
+			nut.disabled = false; });
 		// ----- chuyển trang (thẻ có hoạt hình nhỏ)
 		$v("vdChuyenDs").innerHTML = CHUYEN.map(([k, ten]) => '<button type="button" data-v="' + k + '"><span class="vdMini c-' + k + '"><i></i><i></i></span><b>' + ten + "</b><code>" + k + "</code></button>").join("");
 		// ----- lưu thiết lập
-		const CAI = ["vdNguon", "vdLoiOn", "vdLoiNen", "vdLoiAm", "vdLoiLang", "vdLoiToc", "vdGioi", "vdGiong", "vdVung", "vdTocDoc", "vdCachDoc", "vdAmNhac", "vdNhacGiam", "vdKho", "vdChuyen", "vdToc", "vdKenh", "vdMauLogo", "vdPhuDe", "vdDam", "vdMoDau"];
+		const CAI = ["vdMayGiong", "vdMayToc", "vdMayDep", "vdTaoTram", "vdNguon", "vdLoiOn", "vdLoiNen", "vdLoiAm", "vdLoiLang", "vdLoiToc", "vdGioi", "vdGiong", "vdVung", "vdTocDoc", "vdCachDoc", "vdAmNhac", "vdNhacGiam", "vdKho", "vdChuyen", "vdToc", "vdKenh", "vdMauLogo", "vdPhuDe", "vdDam", "vdMoDau"];
 		function luuCai() { const o = {}; CAI.forEach(id => { const e = $v(id); o[id] = e.type === "checkbox" ? e.checked : e.value; }); try { localStorage.setItem("tdk_video_cai", JSON.stringify(o)); } catch (e) { } }
 		function napCai() { let o = {}; try { o = JSON.parse(localStorage.getItem("tdk_video_cai") || "{}") || {}; } catch (e) { } CAI.forEach(id => { if (!(id in o)) return; const e = $v(id); if (e.type === "checkbox") e.checked = !!o[id]; else e.value = o[id]; });
 			if (o.vdGiong && o.vdGioi && o.vdGioi !== "tat") S["giong_" + o.vdGioi] = o.vdGiong; document.querySelectorAll("#tabVideo [data-cho]").forEach(n => chonNhom(n.dataset.cho, $v(n.dataset.cho).value, true)); $v("vdAmNhacSo").textContent = $v("vdAmNhac").value; veGiongDs(); capNguon(); veChiPhi(); capKhoa(); }
