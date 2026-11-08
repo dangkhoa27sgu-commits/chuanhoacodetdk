@@ -967,6 +967,22 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 #vdLoiBao.loi { color: #d97706; font-weight: 600; }
 .vdNutLoi { border-color: var(--vt-ac); }
 .vdLoiDs li.nghi { box-shadow: inset 3px 0 0 #d97706; } .vdLoiDs li.nghi .vdLoiChu::before { content: "⚠ "; color: #d97706; }
+/* v16.4 — khoá riêng cho giọng đọc */
+.vdKhoa { border: 1px solid var(--vt-vien); border-radius: 14px; padding: 10px 12px; display: grid; gap: 10px; background: var(--vt-mat); }
+.vdKhoa.rieng { border-color: rgba(34,197,94,.55); background: linear-gradient(180deg, rgba(34,197,94,.07), transparent); }
+.vdKhoa.loi { border-color: rgba(217,119,6,.6); }
+.vdKhoaDau { display: flex; align-items: center; gap: 10px; }
+.vdKhoaIco { width: 34px; height: 34px; border-radius: 10px; flex: none; display: grid; place-items: center; background: var(--vt-nen2); }
+.vdKhoaIco svg { width: 18px; height: 18px; fill: none; stroke: var(--vt-phu); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.vdKhoa.rieng .vdKhoaIco { background: rgba(34,197,94,.15); } .vdKhoa.rieng .vdKhoaIco svg { stroke: #16a34a; }
+.vdKhoaTen { display: grid; gap: 1px; min-width: 0; flex: 1; } .vdKhoaTen b { font-size: 13.5px; color: var(--vt-chu); }
+.vdKhoaTen span { font-size: 12px; color: var(--vt-phu); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vdKhoa.rieng .vdKhoaTen span { color: #16a34a; font-weight: 600; } .vdKhoa.loi .vdKhoaTen span { color: #d97706; font-weight: 600; white-space: normal; }
+.vdKhoaThan { display: grid; gap: 8px; } .vdKhoaThan[hidden] { display: none; }
+.vdKhoaO { position: relative; } .vdKhoaO .vdO { padding-right: 44px; font-family: var(--f-code, monospace); font-size: 12.5px; }
+.vdNutIco { position: absolute; right: 4px; top: 4px; width: 30px; height: 30px; border: 0; border-radius: 8px; background: none; color: var(--vt-phu); cursor: pointer; display: grid; place-items: center; }
+.vdNutIco svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2; } .vdNutIco:hover, .vdNutIco.bat { color: var(--vt-ac); background: var(--vt-acNhat); }
+.vdKhoaNut { display: flex; gap: 8px; flex-wrap: wrap; }
 
 </style>
 </head>
@@ -1582,6 +1598,24 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 						</div>
 					</div>
 					<div class="vdNguonAI" id="vdNguonAI">
+					<div class="vdKhoa" id="vdKhoaHop">
+						<div class="vdKhoaDau">
+							<span class="vdKhoaIco" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M10.8 12.2 20 3M16 7l3 3M14 9l2 2"/></svg></span>
+							<div class="vdKhoaTen"><b>Khoá Gemini cho giọng đọc</b><span id="vdKhoaTT">Đang dùng khoá chung trong Cấu hình AI</span></div>
+							<button class="vdNutNho" type="button" id="vdKhoaMo" aria-expanded="false">Đặt khoá riêng</button>
+						</div>
+						<div class="vdKhoaThan" id="vdKhoaThan" hidden>
+							<div class="vdKhoaO">
+								<input class="vdO" type="password" id="vdKhoa" placeholder="Dán khoá API của dự án đã bật thanh toán (AIza…)" autocomplete="off" spellcheck="false" aria-label="Khoá Gemini riêng cho giọng đọc">
+								<button class="vdNutIco" type="button" id="vdKhoaHien" aria-label="Hiện khoá" title="Hiện/ẩn khoá"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+							</div>
+							<div class="vdKhoaNut">
+								<button class="vt3NutChinh nho" type="button" id="vdKhoaLuu">Lưu & kiểm tra</button>
+								<button class="vdNutNho" type="button" id="vdKhoaXoa">Bỏ khoá riêng</button>
+							</div>
+							<p class="vdGhi">Chỉ phần lồng tiếng dùng khoá này (nên là dự án <b>đã bật thanh toán</b>). Các chức năng khác của web vẫn dùng khoá chung miễn phí. Khoá chỉ lưu trên trình duyệt của máy này.</p>
+						</div>
+					</div>
 					<div class="vdMuc">
 						<div class="vdMucDau"><b>Giọng</b><div class="vdSeg" data-cho="vdGioi"><button type="button" data-v="nam">Nam</button><button type="button" data-v="nu">Nữ</button><button type="button" data-v="tat">Không lồng tiếng</button></div><input type="hidden" id="vdGioi" value="nam"></div>
 						<div class="vdGiongDs" id="vdGiongDs"></div>
@@ -5825,6 +5859,8 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 				ctx.fillStyle = "#1b2433"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(d.chu, bx + bw / 2, by + bh / 2 + 2 * u, d.wMax); ctx.restore(); }
 		}
 		// ---------- lồng tiếng Gemini ----------
+		const docKhoaRieng = () => { try { return localStorage.getItem("tdk_video_khoa") || ""; } catch (e) { return ""; } };
+		const khoaGiong = () => docKhoaRieng() || (typeof AI !== "undefined" && AI.khoaGemini) || "";
 		async function dsMoHinhTTS(khoa) {
 			if (S.dsTTS) return S.mhTTS ? [S.mhTTS].concat(S.dsTTS.filter(x => x !== S.mhTTS)) : S.dsTTS;
 			let ds = []; try { const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000", { headers: { "x-goog-api-key": khoa } }); const j = await r.json(); ds = ((j && j.models) || []).filter(m => /tts/i.test(m.name || "") && (!m.supportedGenerationMethods || m.supportedGenerationMethods.includes("generateContent"))).map(m => m.name.replace(/^models\//, "")); } catch (e) { }
@@ -5850,7 +5886,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		async function goiTTS(loiNhac, voice, bao) {
 			const key = voice + "|" + loiNhac; if (S.giong.has(key)) return S.giong.get(key);
 			const kk = "g" + bam(key), cu = await layKho(kk); if (cu) { S.giong.set(key, cu); S.dungLai = (S.dungLai || 0) + 1; return cu; }
-			const khoa = (typeof AI !== "undefined" && AI.khoaGemini) || ""; if (!khoa) throw new Error("cần khoá Gemini để lồng tiếng — mở Cấu hình AI và dán khoá (hoặc chọn Không lồng tiếng)");
+			const khoa = khoaGiong(); if (!khoa) throw new Error("cần khoá Gemini để lồng tiếng — mở Cấu hình AI và dán khoá (hoặc chọn Không lồng tiếng)");
 			const MH = S.mhTTS ? [S.mhTTS] : await dsMoHinhTTS(khoa); let loiCuoi = null;
 			for (const mh of MH) { for (let lan = 0; lan < 7; lan++) {
 				const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + mh + ":generateContent", { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": khoa }, body: JSON.stringify({ contents: [{ parts: [{ text: loiNhac }] }], generationConfig: { responseModalities: ["AUDIO"], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } } } }) });
@@ -6149,7 +6185,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		const chonNhom = (id, v, im) => { const o = $v(id); if (!o) return; o.value = v; document.querySelectorAll('[data-cho="' + id + '"] [data-v]').forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === v))); if (!im) o.dispatchEvent(new Event("change")); };
 		document.querySelectorAll("#tabVideo [data-cho]").forEach(n => n.addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (b) chonNhom(n.dataset.cho, b.dataset.v); }));
 		// ----- thẻ bước
-		const moThe = k => { document.querySelectorAll(".vdThe4 [data-the]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.the === k))); document.querySelectorAll(".vdPanel").forEach(p => { p.hidden = p.dataset.panel !== k; }); if (k === "nhac") veSong(); try { localStorage.setItem("tdk_video_the", k); } catch (e) { } };
+		const moThe = k => { document.querySelectorAll(".vdThe4 [data-the]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.the === k))); document.querySelectorAll(".vdPanel").forEach(p => { p.hidden = p.dataset.panel !== k; }); if (k === "nhac") veSong(); if (k === "giong") capKhoa(); try { localStorage.setItem("tdk_video_the", k); } catch (e) { } };
 		document.querySelector(".vdThe4").addEventListener("click", e => { const b = e.target.closest("[data-the]"); if (b) moThe(b.dataset.the); });
 		// ----- giọng đọc
 		const SONG_TRANG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>', SONG_DUNG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>';
@@ -6196,6 +6232,25 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		$v("vdNhacBD").addEventListener("input", () => { $v("vdNhacBDSo").textContent = gio(+$v("vdNhacBD").value); veSong(); });
 		$v("vdAmNhac").addEventListener("input", () => { $v("vdAmNhacSo").textContent = $v("vdAmNhac").value; });
 		$v("vdNgheNhac").addEventListener("click", async () => { if (!S.nhac) { toast("Chọn tệp nhạc nền trước"); return; } const vol = (+$v("vdAmNhac").value || 0) / 100, bd = Math.round((+$v("vdNhacBD").value || 0) * SR), n = Math.min(S.nhac.length - bd, SR * 8), p = new Float32Array(n); for (let i = 0; i < n; i++) p[i] = S.nhac[bd + i] * vol * Math.min(1, (n - i) / SR); await phatNhanh(p, SR); tt("Đang phát thử 8 giây nhạc nền ở âm lượng đã chọn."); });
+		// ----- khoá riêng cho giọng đọc
+		const duoiKhoa = k => "…" + k.slice(-4);
+		function capKhoa(tt2, loi) { const k = docKhoaRieng(), h = $v("vdKhoaHop"); h.classList.toggle("rieng", !!k); h.classList.toggle("loi", !!loi);
+			$v("vdKhoaTT").textContent = tt2 || (k ? "Đang dùng khoá riêng " + duoiKhoa(k) + " — chỉ cho lồng tiếng" : (typeof AI !== "undefined" && AI.khoaGemini) ? "Đang dùng khoá chung " + duoiKhoa(AI.khoaGemini) + " (Cấu hình AI)" : "Chưa có khoá — đặt khoá riêng hoặc dán khoá trong Cấu hình AI");
+			$v("vdKhoaMo").textContent = k ? "Đổi khoá" : "Đặt khoá riêng"; }
+		$v("vdKhoaMo").addEventListener("click", () => { const t = $v("vdKhoaThan"); t.hidden = !t.hidden; $v("vdKhoaMo").setAttribute("aria-expanded", String(!t.hidden)); if (!t.hidden) { $v("vdKhoa").value = docKhoaRieng(); $v("vdKhoa").focus(); } });
+		$v("vdKhoaHien").addEventListener("click", () => { const o = $v("vdKhoa"); o.type = o.type === "password" ? "text" : "password"; $v("vdKhoaHien").classList.toggle("bat", o.type === "text"); });
+		$v("vdKhoaLuu").addEventListener("click", async () => {
+			const k = $v("vdKhoa").value.trim(); if (!k) { toast("Dán khoá vào ô trước"); return; } if (!/^AIza[\w-]{30,}$/.test(k)) { capKhoa("Khoá không đúng dạng (khoá Gemini bắt đầu bằng AIza…)", true); return; }
+			const nut = $v("vdKhoaLuu"); nut.disabled = true; capKhoa("Đang kiểm tra khoá…");
+			try { const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000", { headers: { "x-goog-api-key": k } }), j = await r.json().catch(() => null);
+				if (!r.ok) { capKhoa("Khoá không dùng được: " + ((j && j.error && j.error.message) || r.status), true); nut.disabled = false; return; }
+				const coTTS = ((j && j.models) || []).some(m => /tts/i.test(m.name || ""));
+				try { localStorage.setItem("tdk_video_khoa", k); } catch (e) { } S.dsTTS = null; S.mhTTS = ""; capKhoa(); $v("vdKhoaThan").hidden = true; $v("vdKhoaMo").setAttribute("aria-expanded", "false");
+				toast("Đã lưu khoá riêng " + duoiKhoa(k) + (coTTS ? " — khoá hợp lệ, có mô hình giọng đọc" : " — khoá hợp lệ")); }
+			catch (e) { capKhoa("Không kiểm tra được (mất mạng?) — thử lại", true); }
+			nut.disabled = false; });
+		$v("vdKhoa").addEventListener("keydown", e => { if (e.key === "Enter") $v("vdKhoaLuu").click(); });
+		$v("vdKhoaXoa").addEventListener("click", () => { try { localStorage.removeItem("tdk_video_khoa"); } catch (e) { } $v("vdKhoa").value = ""; S.dsTTS = null; S.mhTTS = ""; $v("vdKhoaThan").hidden = true; capKhoa(); toast("Đã bỏ khoá riêng — lồng tiếng dùng lại khoá chung"); });
 		// ----- nguồn giọng: file lời đọc
 		const capNguon = () => { const f = $v("vdNguon").value === "file"; $v("vdNguonFile").hidden = !f; $v("vdNguonAI").hidden = f; $v("vdNhanGiong").textContent = f ? (S.loiXL ? "file" : "") : $v("vdGioi").value === "tat" ? "tắt" : $v("vdGiong").value; };
 		$v("vdNguon").addEventListener("change", capNguon);
@@ -6236,7 +6291,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		const CAI = ["vdNguon", "vdLoiOn", "vdLoiNen", "vdLoiAm", "vdLoiLang", "vdLoiToc", "vdGioi", "vdGiong", "vdVung", "vdTocDoc", "vdCachDoc", "vdAmNhac", "vdNhacGiam", "vdKho", "vdChuyen", "vdToc", "vdKenh", "vdMauLogo", "vdPhuDe", "vdDam", "vdMoDau"];
 		function luuCai() { const o = {}; CAI.forEach(id => { const e = $v(id); o[id] = e.type === "checkbox" ? e.checked : e.value; }); try { localStorage.setItem("tdk_video_cai", JSON.stringify(o)); } catch (e) { } }
 		function napCai() { let o = {}; try { o = JSON.parse(localStorage.getItem("tdk_video_cai") || "{}") || {}; } catch (e) { } CAI.forEach(id => { if (!(id in o)) return; const e = $v(id); if (e.type === "checkbox") e.checked = !!o[id]; else e.value = o[id]; });
-			if (o.vdGiong && o.vdGioi && o.vdGioi !== "tat") S["giong_" + o.vdGioi] = o.vdGiong; document.querySelectorAll("#tabVideo [data-cho]").forEach(n => chonNhom(n.dataset.cho, $v(n.dataset.cho).value, true)); $v("vdAmNhacSo").textContent = $v("vdAmNhac").value; veGiongDs(); capNguon(); veChiPhi(); }
+			if (o.vdGiong && o.vdGioi && o.vdGioi !== "tat") S["giong_" + o.vdGioi] = o.vdGiong; document.querySelectorAll("#tabVideo [data-cho]").forEach(n => chonNhom(n.dataset.cho, $v(n.dataset.cho).value, true)); $v("vdAmNhacSo").textContent = $v("vdAmNhac").value; veGiongDs(); capNguon(); veChiPhi(); capKhoa(); }
 		CAI.forEach(id => $v(id).addEventListener("change", () => { luuCai(); if (id !== "vdGioi") dungLai(false); }));
 		$v("vdNhacBD").addEventListener("change", () => dungLai(false));
 		// ----- soạn kịch bản: tô màu cú pháp + nhảy tới hiệu ứng theo con trỏ
