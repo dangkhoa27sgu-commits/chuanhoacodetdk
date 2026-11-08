@@ -1734,8 +1734,10 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 						<input type="hidden" id="vdChuyen" value="truot">
 					</div>
 					<div class="vdMuc">
+						<div class="vdMucDau"><b>Nhịp video</b><div class="vdSeg" data-cho="vdNhip"><button type="button" data-v="gon">Gọn, liền mạch</button><button type="button" data-v="vua">Vừa</button><button type="button" data-v="thong">Thong thả</button></div><input type="hidden" id="vdNhip" value="gon"></div>
+						<p class="vdGhi">Gọn: logo mở đầu ngắn, câu nối câu gần như liền, hiệu ứng hiện sớm — hợp TikTok/Reels. Thong thả: nghỉ lâu hơn giữa các câu, hợp bài giảng.</p>
 						<div class="vdMucDau"><b>Tốc độ xuất hiện</b><div class="vdSeg" data-cho="vdToc"><button type="button" data-v="cham">Chậm</button><button type="button" data-v="vua">Vừa</button><button type="button" data-v="nhanh">Nhanh</button></div><input type="hidden" id="vdToc" value="vua"></div>
-						<p class="vdGhi">Chỉnh riêng một dòng: <code>dong(nhanh): …</code>, <code>khung(cham): …</code>, <code>ct(ngay): …</code> — có thể kèm cỡ chữ: <code>dong(1.3 nhanh): …</code></p>
+						<p class="vdGhi">Chỉnh riêng một dòng: <code>dong(nhanh): …</code>, <code>khung(cham): …</code>, <code>ct(ngay): …</code> — kèm cỡ chữ: <code>dong(1.3 nhanh): …</code> — <b>hẹn giờ hiện</b>: <code>dong(@0): …</code> hiện ngay khi bắt đầu đọc câu, <code>khung(@2.5): …</code> hiện sau 2,5 giây.</p>
 					</div>
 					<div class="vdMuc vdLuoi2">
 						<label><span>Tên kênh</span><input class="vdO" type="text" id="vdKenh" value="TOÁN THẦY KHOA"></label>
@@ -5696,6 +5698,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			["Hiệu ứng: <b>de</b> đề bài · <b>dong</b> dòng chữ + công thức · <b>ct</b> công thức lớn · <b>khung</b> đóng khung kết quả · <b>hoi</b> câu hỏi gợi mở · <b>meo</b> giấy nhớ (tiêu đề | dòng | dòng) · <b>sai</b> / <b>dung</b> · <b>nhan</b> nhãn · <b>chu</b> chữ thường · <b>cho</b> dừng n giây · <b>muc</b> sáng mục n.", "khung: $OM=4$\nhoi: Bước tiếp theo là gì?\ncho: 1.5"],
 			["Công thức viết LaTeX trong <code>$…$</code> (tự chuẩn hoá khi dán). Tô màu: <code>[vang]…[/]</code> — vang, do, xanh, luc, hong, cam, tim.", "dong: TỔNG: [xanh]$S=5$[/]"],
 			["Cỡ chữ và tốc độ từng dòng: thêm trong ngoặc sau tên hiệu ứng — số 0.4 – 2.5 để phóng to/thu nhỏ; <b>nhanh</b>, <b>cham</b>, <b>ngay</b> để chỉnh tốc độ hiện.", "dong(1.4): $x=2$\nkhung(0.8 cham): $OM=4$\nct(ngay): S=\\pi r^2"],
+			["Hẹn giờ hiện: thêm <code>@giây</code> trong ngoặc — tính từ lúc bắt đầu đọc câu <code>&gt;&gt;</code> ngay trên. Bỏ trống thì web tự rải đều theo lời đọc. Có khoảng trống lâu, web báo giây và dòng để thầy chỉnh (thêm hiệu ứng, bớt <code>cho:</code>, hoặc chọn Nhịp video: Gọn).", ">> Thay số ta được I không, trừ bốn, bảy.\nkhung(@0): $I(0;-4;7)$\nsticker(@1.5): gioi | Chuẩn!"],
 			["Kiểu chuyển trang: viết sau <code>===</code> — mo, truot, day, phong, lat, quet, xoay, ngaunhien. Không ghi thì dùng kiểu chọn ở thẻ Hiệu ứng.", "=== xoay\n>> Sang phần lời giải."],
 			["Sticker: bấm nút <b>Sticker</b> để chọn. Nhiều sticker liền nhau sẽ hiện lần lượt; số cuối là số giây hiện.", "sticker: wow | Ơ kìa! | 2"],
 			["Đồ thị: <code>dothi: y=… ; x=a..b ; y=c..d</code>, thêm <code>diem=</code> điểm tô, <code>lo=</code> điểm thủng, <code>tc=</code> tiệm cận, <code>chu=</code> chú thích. Hình học: <code>hinh:</code> rồi dán code tikzpicture ở các dòng sau.", "dothi: y=x^2-4 ; x=-3..3 ; y=-5..5 ; diem=-2,2"],
@@ -5735,12 +5738,12 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 					moiCanh(l[0] === "=" || !kb.canh.length, so ? +so[1].replace(",", ".") : 0, ck); continue; }
 				if (l.startsWith(">>")) { const t = l.slice(2).trim(); if (doan && !doan.viec.length && doan.loi) doan.loi += " " + t; else moiDoan(t, i + 1); continue; }
 				if ((m = l.match(/^([a-zA-Z]+)\s*(?:\(\s*([^)]*)\))?\s*:\s*([\s\S]*)$/)) && KHOA.includes(m[1].toLowerCase())) {
-					const k = m[1].toLowerCase(), thamSo = m[2] || "", so = thamSo.match(/\d+(?:[.,]\d+)?/), tuToc = boDauVD(thamSo.replace(/[\d.,\s]+/g, " ")), tile = so ? kep(+so[0].replace(",", ".") || 1, 0.4, 2.5) : 1, toc = tuToc ? TOC_AL[tuToc] : 0; let v = m[3].trim();
-					if (tuToc && !toc) kb.canhBao.push("dòng " + (i + 1) + ": chưa hiểu “" + thamSo.trim() + "” — dùng: nhanh, cham, ngay hoặc một số như 1.3");
+					const k = m[1].toLowerCase(), thamSo = m[2] || "", so = thamSo.replace(/@\s*\d+(?:[.,]\d+)?/, " ").match(/\d+(?:[.,]\d+)?/), luc = (thamSo.match(/@\s*(\d+(?:[.,]\d+)?)/) || [])[1], thamSo2 = thamSo.replace(/@\s*\d+(?:[.,]\d+)?/, " "), tuToc = boDauVD(thamSo2.replace(/[\d.,\s]+/g, " ")), tile = so ? kep(+so[0].replace(",", ".") || 1, 0.4, 2.5) : 1, toc = tuToc ? TOC_AL[tuToc] : 0; let v = m[3].trim();
+					if (tuToc && !toc) kb.canhBao.push("dòng " + (i + 1) + ": chưa hiểu “" + thamSo.trim() + "” — dùng: nhanh, cham, ngay, @1.5 (hiện sau 1,5 giây) hoặc cỡ chữ như 1.3");
 					if (k === "hinh" && !/\\end\{tikzpicture\}/.test(v)) { const ds = [v]; while (++i < L.length) { ds.push(L[i]); if (/\\end\{tikzpicture\}/.test(L[i])) break; } v = ds.join("\n").trim(); }
 					if (!canh && (k === "tieude" || k === "phan")) { if (k === "tieude") kb.tieude = v; else kb.phan = v.split("|").map(x => x.trim()).filter(Boolean); continue; }
 					if (!doan) moiDoan("");
-					doan.viec.push({ k, v, dong: i + 1, tile, toc }); continue;
+					doan.viec.push({ k, v, dong: i + 1, tile, toc, luc: luc != null ? +luc.replace(",", ".") : null }); continue;
 				}
 				// dòng không đúng cú pháp: nối vào lời đọc ngay trước, hoặc hiện thành chữ thường
 				const mk = l.match(/^([^\s:$]{1,20})\s*:\s*/);
@@ -5994,6 +5997,9 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		}
 		// ---------- giọng từ file: lọc ồn, EQ + nén, cắt câu, rút ngập ngừng, đổi tốc độ giữ cao độ ----------
 		const SRV = 24000;
+		const daCat = new WeakMap();
+		function catLangCau(a) { if (!a || !a.pcm) return a; if (daCat.has(a)) return daCat.get(a); const p = a.pcm, F = Math.max(1, Math.round(a.sr * 0.01)); let pk = 0; for (let i = 0; i < p.length; i++) pk = Math.max(pk, Math.abs(p[i])); const ng = Math.max(0.003, pk * 0.03), im = k => { let m = 0; for (let j = k; j < Math.min(p.length, k + F); j++) m = Math.max(m, Math.abs(p[j])); return m < ng; };
+			let s0 = 0, s1 = p.length; while (s0 < s1 && im(s0)) s0 += F; while (s1 > s0 && im(s1 - F)) s1 -= F; s0 = Math.max(0, s0 - Math.round(a.sr * 0.04)); s1 = Math.min(p.length, s1 + Math.round(a.sr * 0.12)); const kq = s1 - s0 < p.length * 0.98 ? { pcm: p.subarray(s0, s1), sr: a.sr, dai: (s1 - s0) / a.sr } : a; daCat.set(a, kq); return kq; }
 		function fft(re, im) { const n = re.length; for (let i = 1, j = 0; i < n; i++) { let b = n >> 1; for (; j & b; b >>= 1) j ^= b; j ^= b; if (i < j) { let t = re[i]; re[i] = re[j]; re[j] = t; t = im[i]; im[i] = im[j]; im[j] = t; } }
 			for (let len = 2; len <= n; len <<= 1) { const a = -2 * Math.PI / len, wr = Math.cos(a), wi = Math.sin(a); for (let i = 0; i < n; i += len) { let cr = 1, ci = 0; for (let k = 0; k < len / 2; k++) { const p = i + k, q = p + len / 2, xr = re[q] * cr - im[q] * ci, xi = re[q] * ci + im[q] * cr; re[q] = re[p] - xr; im[q] = im[p] - xi; re[p] += xr; im[p] += xi; const t = cr * wr - ci * wi; ci = cr * wi + ci * wr; cr = t; } } } }
 		function locOn(x) {
@@ -6112,8 +6118,9 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			else if (canGiong.length && tuFile) { const ds = catLoiFile(canGiong.map(d => d.loi)); canGiong.forEach((d, i) => { d.am = ds[i] || null; }); S.loiCauDs = canGiong.map(d => d.loi); }
 			else if (canGiong.length) { if (opt.khongGiong) { const nh = ghiChuDoc(); canGiong.forEach(d => { d.am = S.amCau.get(giong + "|" + nh + "|" + d.loi) || null; }); } else { const kq = await longTieng(canGiong.map(d => d.loi), giong, bao); canGiong.forEach((d, i) => { d.am = kq.ra[i]; }); soLoi = kq.soLoi; } }
 			// phần tử
-			const tl = { W, H, u, khung, doc, dan: [], td: [], moc: [], phan: kb.phan, muc: [], pt: [], trang: [], phu: [], giong: [], canh: [], moDau, tong: 0, mauLogo: MAU_LOGO[$v("vdMauLogo").value] || MAU_LOGO.do, kenh: $v("vdKenh").value.trim() || "TOÁN THẦY KHOA" };
-			let T = moDau ? 2.1 : 0.3; if (td0) tl.td.push({ t: moDau ? 1.7 : 0, dd: td0 });
+			const tl = { W, H, u, khung, doc, dan: [], td: [], moc: [], choVung: [], hoat: [], phan: kb.phan, muc: [], pt: [], trang: [], phu: [], giong: [], canh: [], moDau, tong: 0, mauLogo: MAU_LOGO[$v("vdMauLogo").value] || MAU_LOGO.do, kenh: $v("vdKenh").value.trim() || "TOÁN THẦY KHOA" };
+			const NHIP = { gon: { dau: 1.5, nghi: 0.15, cho: 0.25, gianMax: 1.6 }, vua: { dau: 2.1, nghi: 0.35, cho: 0.4, gianMax: 3 }, thong: { dau: 2.4, nghi: 0.6, cho: 0.6, gianMax: 9 } }[$v("vdNhip").value] || { dau: 1.5, nghi: 0.15, cho: 0.25, gianMax: 1.6 };
+			let T = moDau ? NHIP.dau : 0.3; if (td0) tl.td.push({ t: moDau ? Math.max(0.9, NHIP.dau - 0.4) : 0, dd: td0 });
 			let tdHien = td0; const yDau = () => yTD + (tdHien ? tdHien.h + 34 * u : 0) + (coPhan ? hPhan + 28 * u : 0), yDay = khung.y + khung.h - (coPhu ? 230 : 70) * u;
 			let trang = { t0: T, t1: Infinity, vao: "" }, y = yDau(); tl.trang.push(trang);
 			const chuyenMD = $v("vdChuyen").value || "mo", tocMD = TOC_AL[$v("vdToc").value] || 1;
@@ -6125,28 +6132,32 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 				if (c.trang && ci) T += sangTrang(T, c.chuyen); else if (c.trang && c.chuyen) trang.vao = c.chuyen;
 				const t0c = T; tl.canh.push({ t: T, ten: "Cảnh " + (ci + 1) });
 				for (const d of c.doan) {
-					const V = d.am ? d.am.dai : (d.loi ? uocLuong(d.loi) : 0), S0 = T; if (d.dong) tl.moc.push({ dong: d.dong, t: S0 + 0.05 });
+					if (d.am) d.am = catLangCau(d.am); const V = d.am ? d.am.dai : (d.loi ? uocLuong(d.loi) : 0), S0 = T; if (d.dong) tl.moc.push({ dong: d.dong, t: S0 + 0.05 });
 					if (d.loi) { tl.phu.push({ t0: S0, t1: S0 + V + 0.2, chu: d.loi }); if (d.am) tl.giong.push({ t: S0, am: d.am }); }
-					const hd = d.viec.filter(v => !["muc", "tieude", "cho", "trang", "sticker"].includes(v.k)), gian = hd.length ? Math.max(0.75 * tocMD, V * 0.92 / hd.length) : 0; let i = 0, tCuoi = S0, them = 0;
+					const hd = d.viec.filter(v => !["muc", "tieude", "cho", "trang", "sticker"].includes(v.k)), gian = hd.length ? Math.max(0.6 * tocMD, Math.min(NHIP.gianMax, V * 0.92 / hd.length)) : 0; let i = 0, tCuoi = S0, them = 0;
 					for (const v of d.viec) {
 						bao("Đang dựng hiệu ứng " + (++xong) + "/" + tongViec + "…", 0.6 + 0.4 * xong / tongViec);
-						const tA = S0 + 0.12 + i * gian; tl.moc.push({ dong: v.dong, t: tA + 0.6 });
+						const tA = v.luc != null ? S0 + v.luc : S0 + 0.08 + i * gian; tl.moc.push({ dong: v.dong, t: tA + 0.6 });
 						if (v.k === "muc") { tl.muc.push({ t: tA, i: Math.max(1, parseInt(v.v) || 1) - 1 }); continue; }
 						if (v.k === "tieude") { tdHien = await veTD(v.v); tl.td.push({ t: tA, dd: tdHien }); if (!trang.pt || !trang.pt.length) y = yDau(); continue; }
-						if (v.k === "sticker") { const ph = v.v.split("|").map(z => z.trim()); let loai = STK[boDauVD(ph[0])]; if (!loai) { loai = "vui"; S.canhBao.push("dòng " + v.dong + ": chưa có sticker “" + ph[0] + "” — dùng sticker vui"); } const phai = (tl.dan.length % 2) === 0, r = (doc ? 92 : 80) * u, truoc = tl.dan[tl.dan.length - 1], t0s = truoc ? Math.max(tA, truoc.t0 + truoc.dai + 0.15) : tA; tCuoi = Math.max(tCuoi, t0s + 1.4); tl.dan.push({ t0: t0s, dai: Math.max(1.5, parseFloat(String(ph[2] || "").replace(",", ".")) || 3.4), loai, chu: ph[1] || "", phai, r, x: phai ? khung.x + khung.w - r - 46 * u : khung.x + r + 46 * u, y: yDay - r - 10 * u, wMax: khung.w - 2 * r - 160 * u }); continue; }
+						if (v.k === "sticker") { const ph = v.v.split("|").map(z => z.trim()); let loai = STK[boDauVD(ph[0])]; if (!loai) { loai = "vui"; S.canhBao.push("dòng " + v.dong + ": chưa có sticker “" + ph[0] + "” — dùng sticker vui"); } const phai = (tl.dan.length % 2) === 0, r = (doc ? 92 : 80) * u, truoc = tl.dan[tl.dan.length - 1], t0s = truoc ? Math.max(tA, truoc.t0 + truoc.dai + 0.15) : tA; tCuoi = Math.max(tCuoi, Math.min(t0s, tA + 1.2) + 0.6); tl.dan.push({ t0: t0s, dai: Math.max(1.5, parseFloat(String(ph[2] || "").replace(",", ".")) || 3.4), loai, chu: ph[1] || "", phai, r, x: phai ? khung.x + khung.w - r - 46 * u : khung.x + r + 46 * u, y: yDay - r - 10 * u, wMax: khung.w - 2 * r - 160 * u }); continue; }
 						if (v.k === "cho") { them += Math.max(0, parseFloat(String(v.v).replace(",", ".")) || 1); continue; }
 						if (v.k === "trang") { T = Math.max(T, tA); sangTrang(tA, CHUYEN_AL[boDauVD(v.v)] || ""); continue; }
 						let e;
 						try { e = await taoPhanTu(v, { cw, u, doc }); } catch (err) { S.canhBao.push("dòng " + v.dong + ": " + (err.message || err) + " — đã bỏ qua"); continue; }
 						e.d *= v.toc || tocMD; e.dong = v.dong;
 						if (y + e.h > yDay && trang.pt.length) { const lui = sangTrang(tA); e.t0 = tA + lui; } else e.t0 = tA;
-						e.x = cx0; e.y = y; e.w = cw; y += e.h + 30 * u; trang.pt.push(e); tl.pt.push(e); tCuoi = Math.max(tCuoi, e.t0 + e.d); i++;
+						e.x = cx0; e.y = y; e.w = cw; y += e.h + 30 * u; trang.pt.push(e); tl.pt.push(e); tCuoi = Math.max(tCuoi, e.t0 + Math.min(e.d, 0.7)); i++;
 					}
-					T = Math.max(S0 + V + 0.45, tCuoi + 0.5) + them;
+					T = Math.max(S0 + V + NHIP.nghi, tCuoi + NHIP.cho) + them; if (them) tl.choVung.push([T - them - 0.1, T]); tl.hoat.push([S0, S0 + V, d.dong]);
 				}
 				if (c.toiThieu) T = Math.max(T, t0c + c.toiThieu);
 			}
 			trang.t1 = T + 0.1; tl.ketThuc = T + 0.1;
+			// tìm khoảng "chết": không lời đọc, không hiệu ứng mới, không sticker, không chuyển trang
+			{ const vung = tl.hoat.slice(); tl.pt.forEach(e => vung.push([e.t0, e.t0 + e.d, e.dong])); tl.dan.forEach(z => vung.push([z.t0, z.t0 + z.dai])); tl.trang.forEach(z => vung.push([z.t0 - CT, z.t0 + CT])); tl.choVung.forEach(z => vung.push(z)); tl.td.forEach(z => vung.push([z.t, z.t + 0.8]));
+				vung.sort((a, b) => a[0] - b[0]); let den = moDau ? NHIP.dau : 0.3; tl.chet = [];
+				for (const z of vung) { if (z[0] - den > 1.0) tl.chet.push({ a: den, b: z[0], dong: z[2] || 0 }); den = Math.max(den, z[1]); } if (tl.ketThuc - den > 1.0) tl.chet.push({ a: den, b: tl.ketThuc, dong: 0 }); }
 			// căn giữa theo chiều dọc nội dung mỗi trang (dồn lên trên một chút)
 			tl.trang.forEach(tr => { if (!tr.pt || !tr.pt.length) return; const a = tr.pt[0].y, b = Math.max(...tr.pt.map(e => e.y + e.h)), du = yDay - a - (b - a); if (du > 0) tr.pt.forEach(e => { e.y += du * 0.38; }); }); tl.tong = T + (moDau ? 2.8 : 0.6); tl.soLoiGiong = soLoi; tl.canhBao = S.canhBao.slice();
 			// âm thanh: giọng + nhạc nền
@@ -6268,7 +6279,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 				$v("vdCanhDs").innerHTML = tl.canh.map((c, i) => '<button type="button" data-i="' + i + '">' + (i + 1) + "</button>").join("");
 				veTai(Math.min(S.t, tl.tong)); if (!S.t) veTai(tl.moDau ? 2.2 : 0.5);
 				const gg = $v("vdGiong").value, tf = $v("vdNguon").value === "file"; $v("vdTomTat").innerHTML = ['<span title="Độ dài">⏱ ' + gio(tl.tong) + "</span>", '<span title="Giọng đọc">🎙 ' + (tf ? (S.loiXL ? "file lời đọc ✓" : "chưa có file lời đọc") : $v("vdNguon").value === "may" ? ($v("vdMayGiong").value ? esc($v("vdMayGiong").value) + " · trên máy" + (tl.giong.length ? " ✓" : "") : "chưa chọn giọng trên máy") : gg ? esc(gg) + " · " + ({ nam: "miền Nam", bac: "miền Bắc", trung: "miền Trung" }[$v("vdVung").value] || "") + (tl.giong.length ? " ✓" : "") : "không lồng tiếng") + "</span>", '<span title="Nhạc nền">🎵 ' + (S.nhac ? "có nhạc" : "không nhạc") + "</span>", '<span title="Chuyển trang">✦ ' + esc((CHUYEN.find(c => c[0] === $v("vdChuyen").value) || ["", "Mờ dần"])[1]) + "</span>"].join(""); if (!$v("vdSongHop").hidden) veSong(); if ($v("vdNguon").value === "file") veLoi();
-				const g = $v("vdNguon").value === "file" ? (S.loiXL ? "file" : "") : $v("vdNguon").value === "may" ? $v("vdMayGiong").value : $v("vdGiong").value; tt("Video dài " + gio(tl.tong) + " · " + tl.canh.length + " cảnh" + (g ? (tl.giong.length ? " · đã lồng tiếng " + tl.giong.length + " câu" + (g === "file" ? " từ file" : "") : coGiong ? "" : " · chưa lồng tiếng (bấm Dựng & lồng tiếng)") : $v("vdNguon").value === "file" ? " · chưa có file lời đọc" : $v("vdNguon").value === "may" ? " · chưa chọn giọng trên máy" : "") + (tl.soLoiGiong ? " · " + tl.soLoiGiong + " câu chưa lồng tiếng được (" + (S.loiGiong || "lỗi") + ")" : "") + "." + (tl.soLoiGiong && !tl.am ? " Video đang chưa có tiếng." : "") + (coGiong && $v("vdNguon").value === "ai" && $v("vdGiong").value && tl.giong.length ? " Chi phí lần này: " + (S.tienLan ? tienVN(S.tienLan) : "0 đ (dùng lại giọng đã lưu trên máy)") + "." : "") + (tl.canhBao.length ? " Đã tự xử lý " + tl.canhBao.length + " chỗ: " + tl.canhBao.slice(0, 3).join("; ") + (tl.canhBao.length > 3 ? "; …" : "") : ""), false);
+				const g = $v("vdNguon").value === "file" ? (S.loiXL ? "file" : "") : $v("vdNguon").value === "may" ? $v("vdMayGiong").value : $v("vdGiong").value; tt("Video dài " + gio(tl.tong) + " · " + tl.canh.length + " cảnh" + (g ? (tl.giong.length ? " · đã lồng tiếng " + tl.giong.length + " câu" + (g === "file" ? " từ file" : "") : coGiong ? "" : " · chưa lồng tiếng (bấm Dựng & lồng tiếng)") : $v("vdNguon").value === "file" ? " · chưa có file lời đọc" : $v("vdNguon").value === "may" ? " · chưa chọn giọng trên máy" : "") + (tl.soLoiGiong ? " · " + tl.soLoiGiong + " câu chưa lồng tiếng được (" + (S.loiGiong || "lỗi") + ")" : "") + "." + (tl.soLoiGiong && !tl.am ? " Video đang chưa có tiếng." : "") + (coGiong && $v("vdNguon").value === "ai" && $v("vdGiong").value && tl.giong.length ? " Chi phí lần này: " + (S.tienLan ? tienVN(S.tienLan) : "0 đ (dùng lại giọng đã lưu trên máy)") + "." : "") + (tl.chet && tl.chet.length ? " ⚠ Có " + tl.chet.length + " khoảng trống > 1 giây: " + tl.chet.slice(0, 4).map(z => gio(z.a) + (z.dong ? " (trước dòng " + z.dong + ")" : "")).join(", ") + " — xem gợi ý trong HDSD." : "") + (tl.canhBao.length ? " Đã tự xử lý " + tl.canhBao.length + " chỗ: " + tl.canhBao.slice(0, 3).join("; ") + (tl.canhBao.length > 3 ? "; …" : "") : ""), false);
 			} catch (e) { if (lan === S.lan) tt("Chưa dựng được: " + ((e && e.message) || e), true); }
 			finally { if (coGiong) { $v("vdDung").disabled = false; tien(null); } }
 		}
@@ -6443,7 +6454,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		// ----- chuyển trang (thẻ có hoạt hình nhỏ)
 		$v("vdChuyenDs").innerHTML = CHUYEN.map(([k, ten]) => '<button type="button" data-v="' + k + '"><span class="vdMini c-' + k + '"><i></i><i></i></span><b>' + ten + "</b><code>" + k + "</code></button>").join("");
 		// ----- lưu thiết lập
-		const CAI = ["vdMayGiong", "vdMayToc", "vdMayDep", "vdTaoTram", "vdNguon", "vdLoiOn", "vdLoiNen", "vdLoiAm", "vdLoiLang", "vdLoiToc", "vdGioi", "vdGiong", "vdVung", "vdTocDoc", "vdCachDoc", "vdAmNhac", "vdNhacGiam", "vdKho", "vdChuyen", "vdToc", "vdKenh", "vdMauLogo", "vdPhuDe", "vdDam", "vdMoDau"];
+		const CAI = ["vdNhip", "vdMayGiong", "vdMayToc", "vdMayDep", "vdTaoTram", "vdNguon", "vdLoiOn", "vdLoiNen", "vdLoiAm", "vdLoiLang", "vdLoiToc", "vdGioi", "vdGiong", "vdVung", "vdTocDoc", "vdCachDoc", "vdAmNhac", "vdNhacGiam", "vdKho", "vdChuyen", "vdToc", "vdKenh", "vdMauLogo", "vdPhuDe", "vdDam", "vdMoDau"];
 		function luuCai() { const o = {}; CAI.forEach(id => { const e = $v(id); o[id] = e.type === "checkbox" ? e.checked : e.value; }); try { localStorage.setItem("tdk_video_cai", JSON.stringify(o)); } catch (e) { } }
 		function napCai() { let o = {}; try { o = JSON.parse(localStorage.getItem("tdk_video_cai") || "{}") || {}; } catch (e) { } CAI.forEach(id => { if (!(id in o)) return; const e = $v(id); if (e.type === "checkbox") e.checked = !!o[id]; else e.value = o[id]; });
 			if (o.vdGiong && o.vdGioi && o.vdGioi !== "tat") S["giong_" + o.vdGioi] = o.vdGiong; document.querySelectorAll("#tabVideo [data-cho]").forEach(n => chonNhom(n.dataset.cho, $v(n.dataset.cho).value, true)); $v("vdAmNhacSo").textContent = $v("vdAmNhac").value; veGiongDs(); capNguon(); veChiPhi(); capKhoa(); }
