@@ -1606,7 +1606,7 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 						</div>
 						<div class="vdKhoaThan" id="vdKhoaThan" hidden>
 							<div class="vdKhoaO">
-								<input class="vdO" type="password" id="vdKhoa" placeholder="Dán khoá API của dự án đã bật thanh toán (AIza…)" autocomplete="off" spellcheck="false" aria-label="Khoá Gemini riêng cho giọng đọc">
+								<input class="vdO" type="password" id="vdKhoa" placeholder="Dán khoá API của dự án đã bật thanh toán" autocomplete="off" spellcheck="false" aria-label="Khoá Gemini riêng cho giọng đọc">
 								<button class="vdNutIco" type="button" id="vdKhoaHien" aria-label="Hiện khoá" title="Hiện/ẩn khoá"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
 							</div>
 							<div class="vdKhoaNut">
@@ -6240,7 +6240,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		$v("vdKhoaMo").addEventListener("click", () => { const t = $v("vdKhoaThan"); t.hidden = !t.hidden; $v("vdKhoaMo").setAttribute("aria-expanded", String(!t.hidden)); if (!t.hidden) { $v("vdKhoa").value = docKhoaRieng(); $v("vdKhoa").focus(); } });
 		$v("vdKhoaHien").addEventListener("click", () => { const o = $v("vdKhoa"); o.type = o.type === "password" ? "text" : "password"; $v("vdKhoaHien").classList.toggle("bat", o.type === "text"); });
 		$v("vdKhoaLuu").addEventListener("click", async () => {
-			const k = $v("vdKhoa").value.trim(); if (!k) { toast("Dán khoá vào ô trước"); return; } if (!/^AIza[\w-]{30,}$/.test(k)) { capKhoa("Khoá không đúng dạng (khoá Gemini bắt đầu bằng AIza…)", true); return; }
+			const k = $v("vdKhoa").value.replace(/[\s"'“”‘’]/g, ""); $v("vdKhoa").value = k; if (!k) { toast("Dán khoá vào ô trước"); return; } if (k.length < 20) { capKhoa("Khoá quá ngắn — hãy copy đủ cả khoá bằng nút 📋 trong AI Studio", true); return; }
 			const nut = $v("vdKhoaLuu"); nut.disabled = true; capKhoa("Đang kiểm tra khoá…");
 			try { const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000", { headers: { "x-goog-api-key": k } }), j = await r.json().catch(() => null);
 				if (!r.ok) { capKhoa("Khoá không dùng được: " + ((j && j.error && j.error.message) || r.status), true); nut.disabled = false; return; }
