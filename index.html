@@ -2281,6 +2281,7 @@ dialog.nhHop { border: 1px solid var(--vien); border-radius: 18px; padding: 16px
 					<button class="vdNutNho giNutTo" type="button" id="giTuKhoa" title="Nhận dấu hiệu Toán + so khớp tên bài, dạng trong bộ ID — không dùng AI">⚡ Gán tự động (không AI)</button>
 					<button class="vdNutAI giNutTo" type="button" id="giAI"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8z"/></svg>Gán ID bằng AI</button>
 				</div>
+				<button class="vdNutNho giNutMuc giChiTu" type="button" id="giAIMuc" title="Giữ nguyên dạng do web đã gán, chỉ nhờ AI dò lại mức độ N/H/V/C cho mọi câu">⟳ AI dò lại mức độ (giữ nguyên dạng)</button>
 				<div class="vdTien" id="giTien" hidden><i></i></div>
 				<p class="vdGhi" id="giTT"></p>
 			</section>
@@ -8734,7 +8735,7 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 		// ghi ID thẳng vào code (giữ vị trí cuộn)
 		function ghiCode() { const ta = $g("giMa"), moi = maRa(); if (moi === ta.value) { ve(); return; } hoan.push(ta.value); if (hoan.length > 40) hoan.shift(); $g("giHoan").disabled = false; const st = ta.scrollTop, a = ta.selectionStart, b = ta.selectionEnd, dl = moi.length - ta.value.length; dangGhi = true; ta.value = moi; ta.scrollTop = st; if (document.activeElement === ta) { try { ta.setSelectionRange(a + (a > (ds[sel] || {}).a ? dl : 0), b + (b > (ds[sel] || {}).a ? dl : 0)); } catch (e) { } } dangGhi = false; MD.ghiLS("tdk_gi_ma", moi); docMa(); }
 		function datP(c, p, nguon) { c.p = p; c.nguon = nguon || "tay"; c.tin = 1; ghiCode(); }
-		const NHAN = c => ({ cu: ["Có sẵn", "cu"], tukhoa: ["Tự động", "tk"], ai: ["AI " + Math.round((c.tin || 0) * 100) + "%", c.tin >= 0.75 ? "ai" : "aiYeu"], tay: ["Đã chọn", "tay"] }[c.nguon] || ["Chưa có", "chua"]);
+		const NHAN = c => { const n = ({ cu: ["Có sẵn", "cu"], tukhoa: ["Tự động", "tk"], ai: ["AI " + Math.round((c.tin || 0) * 100) + "%", c.tin >= 0.75 ? "ai" : "aiYeu"], tay: ["Đã chọn", "tay"] }[c.nguon] || ["Chưa có", "chua"]); return c.mucAI ? [n[0] + " ✦mức", n[1]] : n; };
 		function ve() { const cay = cayNow(), ct = ctNow(), du = ds.filter(duID).length;
 			$g("giDem").textContent = ds.length ? du + "/" + ds.length + " câu có ID" + (ds.filter(canXem).length ? " · " + ds.filter(canXem).length + " cần xem" : "") : "Chưa có câu nào";
 			$g("giTienDo").style.width = (ds.length ? du / ds.length * 100 : 0) + "%";
@@ -8823,6 +8824,23 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 				ghiCode(); }
 			$g("giTien").hidden = true; nut.disabled = false; tt("AI đã gán " + xong + "/" + can.length + " câu" + (loi ? " (" + loi + " lô lỗi — bấm lại để thử tiếp)" : "") + ". Câu viền vàng là AI chưa chắc — bấm vào câu để kiểm tra.", !!loi);
 		}
+		function nhacMucAI(lo, cay, ct) { const tenMuc = Object.entries(ct.muc).map(([k, v]) => k + "=" + v).join("; ");
+			return "Bạn là giáo viên Toán THPT Việt Nam, chấm MỨC ĐỘ nhận thức của câu hỏi theo chương trình GDPT 2018.\nMỗi câu đã được phân loại DẠNG sẵn (ghi trong [Dạng]). Nhiệm vụ của bạn: CHỈ chọn mức độ phù hợp nhất cho từng câu, KHÔNG đổi dạng.\n\nMỨC ĐỘ: " + tenMuc +
+				".\nTiêu chí: Nhận biết = nhớ/nhận ra công thức, khái niệm, đọc trực tiếp từ bảng/đồ thị, không tính hoặc một bước hiển nhiên. Thông hiểu = áp dụng 1–2 bước quen thuộc, biến đổi đơn giản. Vận dụng = nhiều bước, kết hợp kiến thức, có tham số, bài toán thực tế, biện luận vừa phải. Vận dụng cao = phức tạp, nhiều kỹ thuật, biện luận sâu, ít gặp.\n\nCÁC CÂU HỎI:\n" +
+				lo.map(c => { const p = c.p || {}, mc = QB.maChuong(p), md = p.dang ? QB.maDang(p) : p.bai ? QB.maBai(p) : mc, ten = cay.ten(md) || ""; return "### Câu " + (c.i + 1) + " (" + QB.TEN_LOAI_DAI[c.loai] + ") [Dạng: " + (md || "?") + (ten ? " · " + ten : "") + "]\n" + QB.boLG(c.than).replace(/%[^\n]*/g, "").replace(/\\begin\{tikzpicture\}[\s\S]*?\\end\{tikzpicture\}/g, "[hình vẽ]").replace(/\s+/g, " ").slice(0, 900); }).join("\n\n") +
+				'\n\nCHỈ TRẢ VỀ JSON, không giải thích: [{"cau": số câu, "muc": "mã mức độ"}]';
+		}
+		async function doMucAI() { let ai; try { ai = vtAI(null).ai; } catch (e) { tt(e.message, true); return; }
+			const cay = cayNow(), ct = ctNow(), can = ds.filter(c => c.p && c.p.lop && c.p.mon && c.p.chuong); if (!can.length) { tt("Chưa có câu nào được gán dạng — hãy Gán tự động trước.", true); return; }
+			if (!confirm("AI sẽ dò lại MỨC ĐỘ cho " + can.length + " câu (giữ nguyên dạng). Dùng lượt Gemini đã cấu hình. Tiếp tục?")) return;
+			const nut = $g("giAIMuc"); nut.disabled = true; $g("giAI").disabled = true; $g("giTien").hidden = false; let xong = 0, doi = 0, loi = 0;
+			for (let k = 0; k < can.length; k += 20) { const lo = can.slice(k, k + 20); tt("AI đang dò mức câu " + (k + 1) + "–" + (k + lo.length) + "/" + can.length + "…"); $g("giTien").firstElementChild.style.width = (k / can.length * 100) + "%";
+				try { const kq = docJSON(await bo()._w2t.goiHinh(ai, nhacMucAI(lo, cay, ct), [], { loai: "ganmuc" }));
+					kq.forEach(r => { const c = ds[(+r.cau || 0) - 1]; if (!c || !lo.includes(c) || !c.p) return; const m = String(r.muc || "").toUpperCase().trim(); if (!ct.muc[m]) return; xong++; if (c.p.muc !== m) { c.p.muc = m; c.mucAI = true; doi++; } }); }
+				catch (e) { loi++; tt("Lô câu " + (k + 1) + " lỗi: " + (e.message || e), true); }
+				ghiCode(); }
+			$g("giTien").hidden = true; nut.disabled = false; $g("giAI").disabled = false; tt("AI đã dò mức " + xong + "/" + can.length + " câu, đổi mức " + doi + " câu" + (loi ? " (" + loi + " lô lỗi — bấm lại để thử tiếp)" : "") + ". Câu đổi mức có dấu ✦ để thầy soát lại.", !!loi);
+		}
 		// ---------- cấu trúc ID ----------
 		function moCT() { const ct = ctNow(); $g("giMau").value = ct.mau; $g("giLop").value = noiMa(ct.lop); $g("giMon").value = noiMa(ct.mon); $g("giMuc").value = noiMa(ct.muc); $g("giCay").value = QB.docCay(); demCay(); $g("giCT").hidden = false; }
 		function demCay() { const c = QB.phanCay($g("giCay").value); $g("giCayTT").textContent = c.ds.length + " mục: " + c.ds.filter(x => !x.ma.includes("-")).length + " chương · " + c.ds.filter(x => x.ma.split("-").length === 2).length + " bài · " + c.ds.filter(x => x.ma.split("-").length === 3).length + " dạng."; }
@@ -8842,7 +8860,7 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 			$g("giCheDo").addEventListener("click", e => { const b = e.target.closest("[data-gcd]"); if (b) datChe(b.dataset.gcd); }); datChe(cheDo);
 			const datXem = k => { xem = k; MD.ghiLS("tdk_gi_xem", k); $g("giTrang").hidden = k !== "de"; $g("giDs").hidden = k !== "ds"; document.querySelectorAll("#giXemChe [data-xem]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.xem === k))); ve(); };
 			$g("giXemChe").addEventListener("click", e => { const b = e.target.closest("[data-xem]"); if (b) datXem(b.dataset.xem); }); datXem(xem);
-			$g("giTuKhoa").addEventListener("click", () => { hoan.push($g("giMa").value); $g("giHoan").disabled = false; tuKhoa(); }); $g("giAI").addEventListener("click", () => { hoan.push($g("giMa").value); $g("giHoan").disabled = false; ganAI(); });
+			$g("giTuKhoa").addEventListener("click", () => { hoan.push($g("giMa").value); $g("giHoan").disabled = false; tuKhoa(); }); $g("giAIMuc").addEventListener("click", () => { hoan.push($g("giMa").value); $g("giHoan").disabled = false; doMucAI(); }); $g("giAI").addEventListener("click", () => { hoan.push($g("giMa").value); $g("giHoan").disabled = false; ganAI(); });
 			$g("giLoc").addEventListener("click", e => { const b = e.target.closest("[data-loc]"); if (b) { loc = b.dataset.loc; ve(); const dau = ds.find(hienLoc); if (dau && !hienLoc(ds[sel] || {})) chon(dau.i); } });
 			// chọn câu: trên trang đề / danh sách
 			$g("giTrang").addEventListener("click", e => { const x = e.target.closest("[data-gi]"); if (x) chon(+x.dataset.gi, false); });
