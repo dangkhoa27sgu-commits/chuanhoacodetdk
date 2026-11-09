@@ -1096,6 +1096,10 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 #gtThoiLuongTu { width: 64px; height: 32px; margin-left: 4px; border-radius: 8px; border: 1px solid var(--vien, #d9dee7); padding: 0 6px; background: transparent; color: inherit; } #gtThoiLuongTu[hidden] { display: none; }
 .gtTLHop { display: flex; align-items: center; }
 
+.gtHopLop { position: absolute; z-index: 50; pointer-events: none; }
+.gtHopNut { position: absolute; pointer-events: auto; background: transparent; border: 0; border-radius: 18px; cursor: pointer; padding: 0; margin: 0; -webkit-tap-highlight-color: transparent; }
+.gtHopNut:focus-visible { outline: 3px solid rgba(255,224,138,.8); outline-offset: 2px; }
+
 /* ===== Gán ID ===== */
 .giThan { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 16px; align-items: start; } @media (max-width: 1000px) { .giThan { grid-template-columns: 1fr; } }
 .giVao { display: grid; gap: 10px; position: sticky; top: 12px; }
@@ -8375,13 +8379,15 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 						await choChay(Math.max(260, 460 - r * 25), (q, t) => { const e = em(q); cap.forEach(([a, b], k) => { const [A, B] = goc[k]; h[a].x = A.x + (B.x - A.x) * e; h[a].y = A.y + (B.y - A.y) * e - Math.sin(q * Math.PI) * s * 0.5; h[b].x = B.x + (A.x - B.x) * e; h[b].y = B.y + (A.y - B.y) * e + Math.sin(q * Math.PI) * s * 0.5; }); this.ve(h, t); });
 						cap.forEach(([a, b], k) => { const [A, B] = goc[k]; h[a].x = B.x; h[a].y = B.y; h[b].x = A.x; h[b].y = A.y; }); }
 					h.sort((u, v) => u.y - v.y || u.x - v.x);
-					const cv = $g("gtCanvas"), san = $g("gtSanKhau"), diem = e => { const q = e.touches && e.touches[0] ? e.touches[0] : e.changedTouches && e.changedTouches[0] ? e.changedTouches[0] : e; return toaDo(q); }, trung = (e, rong) => { const p = diem(e); if (p.x < 0 || p.y < 0 || p.x > W || p.y > H) return -1; let k = -1, d0 = Infinity; h.forEach((o, i) => { const dx = Math.abs(o.x - p.x) / s, dy = Math.abs(o.y - p.y) / s, d = Math.hypot(dx, dy * 0.8); if (d < d0) { d0 = d; k = i; } }); return d0 < (rong ? 1.1 : 0.85) ? k : -1; };
-					h.choChon = true; const chon = await new Promise(ok => { let xong = false; const trong = e => san.contains(e.target) && !e.target.closest(".gtKetQua,.gtChieuChan");
-						const di = e => { if (!trong(e)) return; const i = trung(e); cv.style.cursor = i >= 0 ? "pointer" : ""; h.forEach((o, j) => { o.dich = j === i ? 1 : 0; }); };
-						const bam = e => { if (xong || !trong(e)) return; const i = trung(e, true); if (i < 0) return; e.preventDefault(); e.stopPropagation(); ket(); ok(i); };
-						const phim = e => { const v = parseInt(e.key, 10); if (v >= 1 && v <= Math.min(9, n)) { ket(); ok(v - 1); } };
-						const SK = ["pointerdown", "mousedown", "touchstart", "click"], ket = () => { xong = true; document.removeEventListener("pointermove", di, true); document.removeEventListener("mousemove", di, true); SK.forEach(k => document.removeEventListener(k, bam, true)); document.removeEventListener("keydown", phim); cv.style.cursor = ""; };
-						document.addEventListener("pointermove", di, true); document.addEventListener("mousemove", di, true); SK.forEach(k => document.addEventListener(k, bam, { capture: true, passive: false })); document.addEventListener("keydown", phim); canhVe = t => { h.forEach(o => { o.nang = (o.nang || 0) + ((o.dich || 0) - (o.nang || 0)) * 0.3; }); this.ve(h, t); }; batLap(); });
+					const cv = $g("gtCanvas"), san = $g("gtSanKhau"), lop2 = document.createElement("div"); lop2.className = "gtHopLop"; san.appendChild(lop2);
+					const khop = () => { const r = cv.getBoundingClientRect(), R = san.getBoundingClientRect(), k = Math.min(r.width / W, r.height / H), w = W * k, hh = H * k; Object.assign(lop2.style, { left: (r.left - R.left + (r.width - w) / 2) + "px", top: (r.top - R.top + (r.height - hh) / 2) + "px", width: w + "px", height: hh + "px" }); };
+					h.forEach((o, i) => { const b = document.createElement("button"); b.type = "button"; b.className = "gtHopNut"; b.setAttribute("aria-label", "Mở hộp quà số " + (i + 1)); Object.assign(b.style, { left: (o.x - s * 0.6) / W * 100 + "%", top: (o.y - s * 0.85) / H * 100 + "%", width: s * 1.2 / W * 100 + "%", height: s * 1.45 / H * 100 + "%" }); b.addEventListener("pointerenter", () => { o.dich = 1; }); b.addEventListener("pointerleave", () => { o.dich = 0; }); b.addEventListener("focus", () => { o.dich = 1; }); b.addEventListener("blur", () => { o.dich = 0; }); b.dataset.i = i; lop2.appendChild(b); });
+					h.choChon = true; const chon = await new Promise(ok => { let xong = false, so = "", hen = 0;
+						const chot = i => { if (xong || i < 0 || i >= n) return; xong = true; clearTimeout(hen); lop2.remove(); document.removeEventListener("keydown", phim); window.removeEventListener("resize", khop); ok(i); };
+						lop2.addEventListener("pointerdown", e => { const b = e.target.closest(".gtHopNut"); if (b) { e.preventDefault(); chot(+b.dataset.i); } });
+						lop2.addEventListener("click", e => { const b = e.target.closest(".gtHopNut"); if (b) chot(+b.dataset.i); });
+						const phim = e => { if (/INPUT|TEXTAREA|SELECT/.test(e.target.tagName || "")) return; if (/^\d$/.test(e.key)) { e.preventDefault(); so += e.key; clearTimeout(hen); const v = +so; h.forEach((o, j) => { o.dich = j === v - 1 ? 1 : 0; }); if (v * 10 > n || so.length >= 2) hen = setTimeout(() => chot(v - 1), 350); else hen = setTimeout(() => chot(v - 1), 1100); } else if (e.key === "Enter" && so) { e.preventDefault(); chot(+so - 1); } };
+						document.addEventListener("keydown", phim); window.addEventListener("resize", khop); khop(); canhVe = t => { khop(); h.forEach(o => { o.nang = (o.nang || 0) + ((o.dich || 0) - (o.nang || 0)) * 0.3; }); this.ve(h, t); }; batLap(); });
 					h.choChon = false; canhVe = null; h.forEach((o, j) => { o.nang = j === chon ? 1 : 0; }); MD.tieng("pop");
 					await choChay(1100, (q, t) => { h[chon].mo = Math.min(1, q * 2.2); this.ve(h, t, chon); const e2 = em(q); ctx.fillStyle = "rgba(7,9,18," + 0.62 * e2 + ")"; ctx.fillRect(0, 0, W, H); ctx.save(); ctx.globalAlpha = e2; ctx.shadowColor = "#ffe08a"; ctx.shadowBlur = 40; chuVua(thang, W / 2, H / 2, 30 + 80 * e2, W - 240, "#fff", 900); ctx.restore(); }); } },
 			phaohoa: { dai: 15.1, ten: "Pháo hoa", ico: "🎆",
