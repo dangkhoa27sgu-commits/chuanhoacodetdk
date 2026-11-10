@@ -1248,6 +1248,20 @@ dialog.nhHop { border: 1px solid var(--vien); border-radius: 18px; padding: 16px
 .nhMauNhan { font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 99px; background: rgba(201,162,74,.16); color: #8a6a1f; }
 .nhGanNut { border-color: rgba(217,45,32,.4) !important; color: #d92d20 !important; background: rgba(217,45,32,.05) !important; } .nhGanNut b { font-weight: 800; } .nhGanNut[hidden] { display: none !important; }
 
+/* ===== Nạp thư mục · tiến trình · nhắc sao lưu (18.4) ===== */
+.nhNapTM input, .nhSaoLuu input { display: none; }
+.nhLuuNut { border-color: rgba(34,197,94,.5) !important; color: #15803d !important; }
+.nhCanhLuu { display: flex; align-items: center; gap: 12px; margin: 12px 0 0; padding: 11px 14px; border-radius: 12px; font-size: 13.5px; }
+.nhCanhLuu[hidden] { display: none; }
+.nhCanhLuu span { flex: 1; min-width: 0; line-height: 1.5; }
+.nhCanhLuu.nguy { border: 1px solid rgba(217,45,32,.4); background: rgba(217,45,32,.07); color: var(--chu); }
+.nhCanhLuu.nhac { border: 1px solid rgba(245,179,1,.45); background: rgba(245,179,1,.08); color: var(--chu); }
+.nhTienNap { display: flex; align-items: center; gap: 12px; margin: 12px 0 0; padding: 10px 14px; border: 1px solid var(--vien); border-radius: 12px; background: var(--mat); }
+.nhTienNap[hidden] { display: none; }
+.nhTienThanh { flex: 1; height: 8px; border-radius: 99px; background: var(--vien); overflow: hidden; }
+.nhTienThanh i { display: block; height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, #4dabf7, #22c55e); transition: width .2s ease; }
+.nhTienNap span { font-size: 12.5px; color: var(--phu); white-space: nowrap; font-variant-numeric: tabular-nums; }
+
 /* ===== Tạo đề thi ===== */
 .tdIco { background: linear-gradient(135deg, #b9f6ca, #20c997); } .tdIco svg { stroke: #053d2c; }
 .tdThan { display: grid; grid-template-columns: minmax(360px, 5fr) minmax(0, 7fr); gap: 16px; align-items: start; } @media (max-width: 1050px) { .tdThan { grid-template-columns: 1fr; } }
@@ -2316,6 +2330,8 @@ dialog.nhHop { border: 1px solid var(--vien); border-radius: 18px; padding: 16px
 			</div>
 			<div class="mdDauNut">
 				<label class="gtNutTep nhNap"><input type="file" id="nhTep" accept=".tex,.txt" multiple>⬆ Nạp file .tex</label>
+				<label class="gtNutTep nhNapTM" title="Chọn cả thư mục — web tự quét mọi file .tex bên trong, kể cả thư mục con"><input type="file" id="nhTepTM" webkitdirectory directory multiple>📁 Nạp cả thư mục</label>
+				<button class="vdNutNho nhLuuNut" type="button" id="nhSaoLuu" title="Tải toàn bộ ngân hàng ra một file để cất giữ — phòng khi trình duyệt xoá dữ liệu">💾 Sao lưu</button>
 				<button class="vdNutNho nhGanNut" type="button" id="nhGanID" hidden title="Đưa các câu chưa có ID sang tab Gán ID để gán, rồi cập nhật lại vào Ngân hàng">🏷 Gán ID · <b id="nhGanSo">0</b> câu chưa có ID</button>
 				<button class="vdNutNho" type="button" id="nhTrung">⧉ Lọc câu trùng</button>
 				<button class="gtIcoNut" type="button" id="nhMenu" aria-label="Tuỳ chọn" aria-expanded="false">⋯</button>
@@ -2328,6 +2344,8 @@ dialog.nhHop { border: 1px solid var(--vien); border-radius: 18px; padding: 16px
 				</div>
 			</div>
 		</header>
+		<div class="nhCanhLuu" id="nhCanhLuu" hidden></div>
+		<div class="nhTienNap" id="nhTienNap" hidden><div class="nhTienThanh"><i id="nhTienDo"></i></div><span id="nhTienChu"></span></div>
 		<div class="nhTK" id="nhTK"></div>
 		<div class="nhThan">
 			<aside class="mdThe nhCay" aria-label="Cây chương trình"><div class="nhCayDau"><b>Chương trình</b><button class="vdNutNho" type="button" id="nhBoLoc">Bỏ lọc</button></div><div id="nhCay"></div></aside>
@@ -8909,7 +8927,10 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 		const ct = () => QB.docCT(), cay = () => QB.phanCay(QB.docCay());
 		const tenLop = l => ct().lop[l] || (l ? "Lớp " + l : "Chưa phân loại");
 		const nutCua = c => c.lop ? [c.lop, QB.maChuong(c), c.bai ? QB.maBai(c) : "", c.bai && c.dang ? QB.maDang(c) : ""] : ["?"];
-		async function napLai() { ALL = await QB.dbTatCa(); const sua = []; ALL.forEach(r => { if (r.id && QB.docID(r.id)) return; const x = QB.tachEx(r.raw)[0]; if (x && x.id) { const n = QB.taoBanGhi(r.raw, x.than, x.ids, r.nguon); ["id", "lop", "mon", "chuong", "muc", "bai", "dang"].forEach(k => { r[k] = n[k]; }); sua.push(r); } }); if (sua.length) await QB.dbGhi(sua); ALL.sort((a, b) => (a.id || "~").localeCompare(b.id || "~") || a.ngay - b.ngay); veTatCa(); }
+		async function napLai() { try { ALL = (await QB.dbTatCa()) || []; } catch (e) { toast("Lỗi đọc ngân hàng: " + (e.message || e)); if (!Array.isArray(ALL)) ALL = []; veTatCa(); return; }
+			ALL.sort((a, b) => (a.id || "~").localeCompare(b.id || "~") || a.ngay - b.ngay); veTatCa();
+			const sua = []; ALL.forEach(r => { try { if (r.id && QB.docID(r.id)) return; const x = QB.tachEx(r.raw)[0]; if (x && x.id) { const n = QB.taoBanGhi(r.raw, x.than, x.ids, r.nguon); ["id", "lop", "mon", "chuong", "muc", "bai", "dang"].forEach(k => { r[k] = n[k]; }); sua.push(r); } } catch (e) { } });
+			if (sua.length) { try { for (let k = 0; k < sua.length; k += 500) await QB.dbGhi(sua.slice(k, k + 500)); ALL.sort((a, b) => (a.id || "~").localeCompare(b.id || "~") || a.ngay - b.ngay); veTatCa(); } catch (e) { } } }
 		function locDs() { const q = QB.boDau(loc.q.trim()); return ALL.filter(c => (!loc.nut || nutCua(c).includes(loc.nut)) && (!loc.loai || c.loai === loc.loai) && (!loc.muc || c.muc === loc.muc) && (!loc.hinh || c.coHinh) && (!loc.mau || c.mau) && (!q || QB.boDau(c.tom + " " + c.id + " " + c.nguon).includes(q))); }
 		// ---------- thống kê ----------
 		function veTK() { const theoLop = {}; ALL.forEach(c => { const k = c.lop || "?"; theoLop[k] = (theoLop[k] || 0) + 1; }); const lopDs = Object.keys(ct().lop).concat(Object.keys(theoLop).filter(k => !(k in ct().lop))), max = Math.max(1, ...Object.values(theoLop));
@@ -8937,11 +8958,39 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 			$g("nhXemTen").textContent = (c.id ? c.id + " · " : "") + QB.TEN_LOAI_DAI[c.loai]; $g("nhXemNut").hidden = false; $g("nhSuaHop").hidden = true; $g("nhGiay").hidden = false;
 			const C = cay(), duong = c.lop ? [tenLop(c.lop), C.ten(QB.maChuong(c)), c.bai && C.ten(QB.maBai(c)), c.dang && C.ten(QB.maDang(c))].filter(Boolean).join(" › ") : "";
 			await QB.xemTruoc($g("nhGiay"), c.raw, { lg: $g("nhLG").checked }); if (duong || c.nguon) $g("nhGiay").insertAdjacentHTML("afterbegin", '<p class="nhDuong">' + esc(duong) + (c.nguon ? ' <span>· nguồn: ' + esc(c.nguon) + "</span>" : "") + "</p>"); }
-		// ---------- nạp ----------
-		async function nap(files) { const cu = new Set(ALL.map(c => c.k)); let moi = [], trung = 0, chuaID = 0, tong = 0;
-			for (const f of files) { const t = await f.text(); QB.tachEx(t).forEach(x => { tong++; const r = QB.taoBanGhi(x.raw, x.than, x.ids, f.name); if (cu.has(r.k)) { trung++; return; } cu.add(r.k); if (!r.lop) chuaID++; moi.push(r); }); }
-			if (!tong) { toast("Không thấy câu \\begin{ex} nào trong tệp"); return; } await QB.dbGhi(moi); await napLai();
-			toast("Đã thêm " + moi.length + " câu" + (trung ? " · bỏ " + trung + " câu trùng" : "") + (chuaID ? " · " + chuaID + " câu chưa có ID (xem mục Chưa phân loại)" : "")); }
+		// ---------- nạp (theo từng đợt, không đơ, lưu chắc từng mẻ) ----------
+		const nghi = () => new Promise(r => setTimeout(r, 0));
+		function tien(pct, chu) { const h = $g("nhTienNap"); if (pct == null) { h.hidden = true; return; } h.hidden = false; $g("nhTienDo").style.width = Math.max(0, Math.min(100, pct)) + "%"; $g("nhTienChu").textContent = chu || ""; }
+		let dangNap = false;
+		async function nap(files) { if (dangNap) { toast("Đang nạp, thầy chờ xong mẻ này đã."); return; }
+			files = [...files].filter(f => /\.(tex|txt)$/i.test(f.name)); if (!files.length) { toast("Không thấy file .tex nào"); return; }
+			dangNap = true; $g("nhTep").disabled = $g("nhTepTM").disabled = true;
+			try { const cu = new Set(ALL.map(c => c.k)); let moi = [], trung = 0, chuaID = 0, tong = 0, loiTep = 0;
+				for (let i = 0; i < files.length; i++) { const f = files[i]; tien(i / files.length * 50, "Đang đọc " + (i + 1) + "/" + files.length + " file… (" + f.name + ")");
+					let t; try { t = await f.text(); } catch (e) { loiTep++; continue; }
+					try { QB.tachEx(t).forEach(x => { tong++; const r = QB.taoBanGhi(x.raw, x.than, x.ids, f.name); if (cu.has(r.k)) { trung++; return; } cu.add(r.k); if (!r.lop) chuaID++; moi.push(r); }); } catch (e) { loiTep++; }
+					if (i % 20 === 0) await nghi(); }
+				if (!tong) { tien(null); toast("Không thấy câu \\begin{ex} nào trong " + files.length + " file"); return; }
+				// ghi vào máy theo mẻ 500 câu — mỗi mẻ lưu xong là chắc chắn còn, không mất cả lô nếu gián đoạn
+				let daGhi = 0; for (let k = 0; k < moi.length; k += 500) { const me = moi.slice(k, k + 500);
+					try { await QB.dbGhi(me); daGhi += me.length; } catch (e) { tien(null); await napLai(); toast("Lưu được " + daGhi + "/" + moi.length + " câu thì máy báo đầy bộ nhớ: " + (e.message || e) + ". Hãy Sao lưu rồi xoá bớt dữ liệu cũ.", true); return; }
+					tien(50 + daGhi / moi.length * 50, "Đang lưu vào máy… " + daGhi.toLocaleString("vi-VN") + "/" + moi.length.toLocaleString("vi-VN") + " câu"); await nghi(); }
+				tien(null); await napLai();
+				toast("Đã thêm " + moi.length.toLocaleString("vi-VN") + " câu" + (trung ? " · bỏ " + trung + " câu trùng" : "") + (chuaID ? " · " + chuaID + " câu chưa có ID" : "") + (loiTep ? " · " + loiTep + " file lỗi, bỏ qua" : ""));
+				await kiemLuu(); if (moi.length >= 1000) goiSaoLuu(moi.length);
+			} finally { dangNap = false; $g("nhTep").disabled = $g("nhTepTM").disabled = false; } }
+		// ---------- sao lưu / nhắc giữ dữ liệu ----------
+		function saoLuu() { if (!ALL.length) { toast("Ngân hàng đang trống, chưa có gì để sao lưu"); return; }
+			taiVe(new Blob([JSON.stringify({ loai: "tdk-nganhang", phienBan: 1, ngay: new Date().toISOString(), soCau: ALL.length, cau: ALL })], { type: "application/json" }), "nganhang-" + ALL.length + "cau-" + new Date().toISOString().slice(0, 10) + ".json");
+			try { MD.ghiLS("tdk_nh_saoluu", String(Date.now())); } catch (e) { } toast("Đã tải file sao lưu " + ALL.length.toLocaleString("vi-VN") + " câu — thầy cất vào Drive/USB nhé"); kiemLuu(); }
+		function goiSaoLuu(n) { const b = $g("nhCanhLuu"); b.hidden = false; b.className = "nhCanhLuu nhac"; b.innerHTML = '<span>✅ Vừa thêm ' + n.toLocaleString("vi-VN") + ' câu. Nên <b>Sao lưu ra file</b> ngay để giữ an toàn — mất lúc nào nạp lại lúc đó.</span><button type="button" class="vt3NutChinh nho" id="nhLuuNgay">💾 Sao lưu ngay</button>'; $g("nhLuuNgay").addEventListener("click", saoLuu); }
+		async function kiemLuu() { const b = $g("nhCanhLuu"); let giu = false; try { giu = navigator.storage && navigator.storage.persisted && await navigator.storage.persisted(); } catch (e) { }
+			if (!giu) { try { if (navigator.storage && navigator.storage.persist) giu = await navigator.storage.persist(); } catch (e) { } }
+			const cu = +(MD.docLS("tdk_nh_saoluu", "0")) || 0, ngayCu = cu ? Math.floor((Date.now() - cu) / 86400000) : 999;
+			if (!ALL.length) { b.hidden = true; return; }
+			if (!giu) { b.hidden = false; b.className = "nhCanhLuu nguy"; b.innerHTML = '<span>⚠️ Trình duyệt <b>chưa cam kết giữ vĩnh viễn</b> dữ liệu này — khi máy đầy, nó có thể tự xoá ngân hàng. Hãy <b>Sao lưu ra file</b> định kỳ để chắc chắn không mất.</span><button type="button" class="vt3NutChinh nho" id="nhLuuNgay">💾 Sao lưu ngay</button>'; $g("nhLuuNgay").addEventListener("click", saoLuu); }
+			else if (ALL.length >= 200 && ngayCu >= 7) { b.hidden = false; b.className = "nhCanhLuu nhac"; b.innerHTML = '<span>💡 Dữ liệu đang được trình duyệt giữ, nhưng đã <b>' + (cu ? ngayCu + " ngày" : "lâu") + ' chưa sao lưu</b>. Nên tải một bản phòng khi đổi máy/trình duyệt.</span><button type="button" class="vdNutNho" id="nhLuuNgay">💾 Sao lưu</button>'; $g("nhLuuNgay").addEventListener("click", saoLuu); }
+			else b.hidden = true; }
 		// ---------- trùng ----------
 		function nhomTrung() { const m = new Map(), khoa = c => kieuTrung === "so" ? c.so : QB.bam(QB.vanTay(QB.boLG(c.raw).split(/\\choice|\\shortans/)[0])); ALL.forEach(c => { const k = khoa(c); if (!m.has(k)) m.set(k, []); m.get(k).push(c); }); return [...m.values()].filter(g => g.length > 1); }
 		function veTrung() { const g = nhomTrung(); $g("nhTrungTT").textContent = g.length ? g.length + " nhóm, " + g.reduce((s, x) => s + x.length - 1, 0) + " câu có thể xoá. Câu đầu mỗi nhóm được giữ lại; bỏ chọn câu nào muốn giữ thêm." : (kieuTrung === "so" ? "Không có câu nào chỉ khác số liệu." : "Không có câu nào trùng đề bài.") + " (Câu trùng y hệt đã tự bị bỏ qua khi nạp.)";
@@ -8950,6 +8999,8 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 		function khoiDong() {
 			if (!daMo) { daMo = true;
 				$g("nhTep").addEventListener("change", async () => { const fs = [...$g("nhTep").files]; $g("nhTep").value = ""; if (fs.length) await nap(fs); });
+				$g("nhTepTM").addEventListener("change", async () => { const fs = [...$g("nhTepTM").files]; $g("nhTepTM").value = ""; if (fs.length) await nap(fs); });
+				$g("nhSaoLuu").addEventListener("click", saoLuu);
 				$g("nhTim").addEventListener("input", () => { loc.q = $g("nhTim").value; soHien = TRANG; veDs(); });
 				$g("nhHinh").addEventListener("change", () => { loc.hinh = $g("nhHinh").checked; veDs(); }); $g("nhMau").addEventListener("change", () => { loc.mau = $g("nhMau").checked; veDs(); });
 				$g("nhLoai").addEventListener("click", e => { const b = e.target.closest("[data-loai]"); if (b) { loc.loai = b.dataset.loai; soHien = TRANG; veDs(); } });
@@ -8974,17 +9025,17 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 				$g("nhMenu").addEventListener("click", e => { e.stopPropagation(); const m = $g("nhMenuDs"); m.hidden = !m.hidden; });
 				document.addEventListener("click", e => { if (!e.target.closest("#nhMenuDs")) $g("nhMenuDs").hidden = true; });
 				$g("nhMenuDs").addEventListener("click", async e => { const b = e.target.closest("[data-nh]"); if (!b) return; $g("nhMenuDs").hidden = true; const k = b.dataset.nh;
-					if (k === "saoluu") taiVe(new Blob([JSON.stringify({ loai: "tdk-nganhang", phienBan: 1, ngay: new Date().toISOString(), cau: ALL })], { type: "application/json" }), "nganhang-" + new Date().toISOString().slice(0, 10) + ".json");
+					if (k === "saoluu") saoLuu();
 					if (k === "xuat") { const d = locDs(); if (!d.length) return; taiVe(new Blob([xuatTex(d)], { type: "text/plain" }), "cau-hoi-" + d.length + ".tex"); }
 					if (k === "gan") { const d = ALL.filter(c => !c.lop); if (!d.length) { toast("Mọi câu đều đã có ID"); return; } localStorage.setItem("tdk_gi_ma", JSON.stringify(d.map(c => c.raw).join("\n\n"))); toast("Đã chuyển " + d.length + " câu sang tab Gán ID — gán xong bấm “Đưa vào Ngân hàng”"); if (typeof chonTab === "function") { $("nhomDeThi").click(); setTimeout(() => $("nutTabGanID").click(), 50); } }
 					if (k === "xoahet") { if (!confirm("XOÁ TOÀN BỘ " + ALL.length + " câu trong ngân hàng? Nên Sao lưu trước. Không thể hoàn tác.")) return; await QB.dbXoaHet(); chon.clear(); await napLai(); } });
-				$g("nhKhoiPhuc").addEventListener("change", async () => { const f = $g("nhKhoiPhuc").files[0]; $g("nhKhoiPhuc").value = ""; $g("nhMenuDs").hidden = true; if (!f) return; try { const o = JSON.parse(await f.text()); if (o.loai !== "tdk-nganhang" || !Array.isArray(o.cau)) throw new Error("không phải bản sao lưu ngân hàng"); const cu = new Set(ALL.map(c => c.k)), moi = o.cau.filter(c => c && c.k && c.raw && !cu.has(c.k)); await QB.dbGhi(moi); await napLai(); toast("Đã khôi phục " + moi.length + " câu"); } catch (e) { toast("Không khôi phục được: " + e.message); } });
+				$g("nhKhoiPhuc").addEventListener("change", async () => { const f = $g("nhKhoiPhuc").files[0]; $g("nhKhoiPhuc").value = ""; $g("nhMenuDs").hidden = true; if (!f) return; try { const o = JSON.parse(await f.text()); if (o.loai !== "tdk-nganhang" || !Array.isArray(o.cau)) throw new Error("không phải bản sao lưu ngân hàng"); const cu = new Set(ALL.map(c => c.k)), moi = o.cau.filter(c => c && c.k && c.raw && !cu.has(c.k)); if (!moi.length) { toast("Bản sao lưu không có câu nào mới"); return; } let daGhi = 0; for (let k = 0; k < moi.length; k += 500) { await QB.dbGhi(moi.slice(k, k + 500)); daGhi += Math.min(500, moi.length - k); tien(daGhi / moi.length * 100, "Đang khôi phục… " + daGhi + "/" + moi.length); await nghi(); } tien(null); await napLai(); toast("Đã khôi phục " + moi.length.toLocaleString("vi-VN") + " câu"); await kiemLuu(); } catch (e) { tien(null); toast("Không khôi phục được: " + e.message); } });
 				$g("nhTrung").addEventListener("click", () => { veTrung(); $g("nhHopTrung").showModal(); });
 				$g("nhHopTrung").addEventListener("click", e => { if (e.target.closest("[data-dong]") || e.target === $g("nhHopTrung")) $g("nhHopTrung").close(); const b = e.target.closest("[data-tk]"); if (b) { kieuTrung = b.dataset.tk; document.querySelectorAll("#nhTrungKieu [data-tk]").forEach(x => x.setAttribute("aria-pressed", String(x === b))); veTrung(); } });
 				$g("nhTrungXoa").addEventListener("click", async () => { const ks = [...document.querySelectorAll("#nhTrungDs [data-xk]:checked")].map(x => x.dataset.xk); if (!ks.length || !confirm("Xoá " + ks.length + " câu trùng?")) return; await QB.dbXoa(ks); await napLai(); veTrung(); toast("Đã xoá " + ks.length + " câu trùng"); });
-				try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch (e) { }
+				setTimeout(() => { kiemLuu().catch(() => {}); }, 1500);
 			}
-			napLai();
+			try { napLai(); } catch (e) { }
 		}
 		return { khoiDong, _all: () => ALL };
 	})();
