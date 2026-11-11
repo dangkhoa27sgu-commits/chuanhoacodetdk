@@ -250,6 +250,9 @@ h2{margin:.2em 0;font-size:26px;font-weight:900}
 "use strict";
 const $=id=>document.getElementById(id), el=(t,c)=>{const e=document.createElement(t);if(c)e.className=c;return e;};
 const IMG='game/img/';
+/* ẢNH DỰ PHÒNG: nếu thư mục game/img chưa lên server, thay icon vỡ bằng hình bóng nhân vật */
+const ANH_DP="data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 150"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a4660"/><stop offset="1" stop-color="#232e42"/></linearGradient></defs><rect width="120" height="150" rx="14" fill="#1b2436"/><circle cx="60" cy="52" r="24" fill="url(#g)"/><path d="M26 140c0-24 15-40 34-40s34 16 34 40z" fill="url(#g)"/><path d="M60 30l4 9 9 1-6.5 6 1.5 9L60 60l-8 5 1.5-9L47 40l9-1z" fill="#f5b301" opacity=".85"/></svg>');
+document.addEventListener('error',function(e){const t=e.target;if(t&&t.tagName==='IMG'&&t.dataset.dp!=='1'&&t.src.indexOf('data:')!==0){t.dataset.dp='1';t.src=ANH_DP;}},true);
 function manToi(id){document.querySelectorAll('.man').forEach(m=>m.classList.remove('hien'));$(id).classList.add('hien');}
 function toa(){try{return JSON.parse(localStorage.getItem('kmath_cp')||'null')}catch(e){return null}}
 function luu(){try{localStorage.setItem('kmath_cp',JSON.stringify(G))}catch(e){}}
