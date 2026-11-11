@@ -1100,6 +1100,63 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 .gtHopNut { position: absolute; pointer-events: auto; background: transparent; border: 0; border-radius: 18px; cursor: pointer; padding: 0; margin: 0; -webkit-tap-highlight-color: transparent; }
 .gtHopNut:focus-visible { outline: 3px solid rgba(255,224,138,.8); outline-offset: 2px; }
 
+/* ===== Tab Game Chinh phục ===== */
+.cpIco svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.cpThan{display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start;margin-top:14px}
+@media(max-width:820px){.cpThan{grid-template-columns:1fr}}
+.cpO{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.cpO>span{font-size:12.5px;font-weight:600;color:var(--phu)}
+.cpO input,.cpO textarea,.cpAi select,.cpNHLoc input,.cpNHLoc select{font:inherit;font-size:14px;border:1px solid var(--vien);border-radius:8px;background:var(--mat,#fff);color:var(--chu);padding:9px 11px;width:100%}
+.cpO textarea{resize:vertical;font-family:var(--f-code,monospace);font-size:12.5px;line-height:1.5;white-space:pre;tab-size:4}
+.cpO input:focus,.cpO textarea:focus{outline:none;border-color:var(--vang)}
+.cpAiDau{display:flex;align-items:center;justify-content:space-between;margin:6px 0 8px}
+.cpGhi{font-size:12px;color:var(--phu)}
+/* thẻ ải */
+.cpAi{border:1px solid var(--vien);border-radius:12px;background:var(--mat,#fff);padding:12px 13px;margin-bottom:12px}
+.cpAiTop{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:9px}
+.cpAiSo{width:26px;height:26px;flex:none;border-radius:8px;background:var(--vang);color:#1b1408;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:13px}
+.cpAiTen{flex:1;min-width:120px}
+.cpAiTop select{width:auto;min-width:92px}
+.cpAiBoss{display:inline-flex;align-items:center;gap:5px;font-size:13px;color:var(--chu);white-space:nowrap}
+.cpAiBoss select{min-width:64px}
+.cpXoaAi{margin-left:auto;border:0;background:none;color:var(--do,#e03131);font-size:20px;line-height:1;cursor:pointer;padding:2px 6px;border-radius:6px}
+.cpXoaAi:hover{background:rgba(224,49,49,.12)}
+.cpAiNap{display:flex;gap:8px;align-items:center;margin:8px 0 6px;flex-wrap:wrap}
+.cpAiNap .vdNutNho{flex:none}
+.cpAiTrangThai{font-size:12px;font-weight:600}
+.cpAiTrangThai.ok{color:var(--luc,#2f9e44)}
+.cpAiTrangThai.loi{color:var(--do,#e03131)}
+.cpThemAi{width:100%;border:1.5px dashed var(--vien);background:none;color:var(--phu);border-radius:12px;padding:12px;font:inherit;font-weight:700;cursor:pointer}
+.cpThemAi:hover{border-color:var(--vang);color:var(--chu)}
+/* panel phải */
+.cpHop{border:1px solid var(--vien);border-radius:14px;background:var(--mat,#fff);padding:14px;position:sticky;top:12px}
+.cpHop b{display:block;margin-bottom:4px}
+.cpHop .vt3NutChinh{width:100%;margin-top:8px}
+.cpKetQua{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.cpKqNut{display:flex;gap:8px}
+.cpKqNut .vdNutNho{flex:1}
+.cpQR{display:flex;justify-content:center;padding:6px 0 2px}
+.cpQR img{width:180px;height:180px;border-radius:10px;border:1px solid var(--vien);background:#fff}
+/* modal ngân hàng */
+.cpModal{position:fixed;inset:0;z-index:200;background:rgba(10,15,25,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.cpModal[hidden]{display:none}
+.cpModalHop{width:100%;max-width:640px;max-height:86vh;display:flex;flex-direction:column;background:var(--nen2,#161d2e);border:1px solid var(--vien);border-radius:16px;overflow:hidden}
+.cpModalDau,.cpModalChan{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--the,#1b2436)}
+.cpModalDau{justify-content:space-between;border-bottom:1px solid var(--vien)}
+.cpModalChan{justify-content:space-between;border-top:1px solid var(--vien)}
+.cpNHLoc{display:flex;gap:8px;align-items:center;padding:10px 16px;flex-wrap:wrap}
+.cpNHLoc input[type=search]{flex:1;min-width:120px}
+.cpNHDs{flex:1;overflow:auto;padding:4px 16px 8px}
+.cpNHCau{display:flex;gap:10px;align-items:flex-start;padding:9px 4px;border-bottom:1px solid var(--vien);cursor:pointer}
+.cpNHCau:hover{background:rgba(255,255,255,.03)}
+.cpNHCau input{margin-top:3px;flex:none}
+.cpNHCau .tt{font-size:13px;color:var(--chu);line-height:1.45}
+.cpNHCau .nh{font-size:11px;color:var(--phu);margin-top:2px}
+.cpNHCau .nh b{color:var(--vang)}
+.cpNHTrong{padding:24px;text-align:center;color:var(--phu)}
+.gtXoa{border:0;background:none;color:var(--phu);font-size:22px;line-height:1;cursor:pointer}
+.gtXoa:hover{color:var(--do,#e03131)}
+
 /* ===== Gán ID ===== */
 .giThan { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 16px; align-items: start; } @media (max-width: 1000px) { .giThan { grid-template-columns: 1fr; } }
 .giVao { display: grid; gap: 10px; position: sticky; top: 12px; }
@@ -1451,6 +1508,7 @@ dialog.nhHop { border: 1px solid var(--vien); border-radius: 18px; padding: 16px
 	</div>
 	<div class="tabMenu" id="conLopHoc" role="tablist" aria-label="Lớp học" hidden>
 		<button type="button" role="tab" id="nutTabGoiTen" aria-selected="false" aria-controls="tabGoiTen" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/><path d="M19 3l1 2 2 .5-1.5 1.5.3 2.2L19 8.2 17.2 9.2l.3-2.2L16 5.5l2-.5z"/></svg><span>Gọi tên học sinh</span></button>
+		<button type="button" role="tab" id="nutTabChinhPhuc" aria-selected="false" aria-controls="tabChinhPhuc" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 17.5 3 6V3h3l11.5 11.5"/><path d="m13 19 6-6M16 16l4 4M19 21l2-2"/></svg><span>Game Chinh phục</span></button>
 	</div>
 	<div class="tabMenu" id="conDeThi" role="tablist" aria-label="Đề thi" hidden>
 		<button type="button" role="tab" id="nutTabGanID" aria-selected="false" aria-controls="tabGanID" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg><span>Gán ID</span></button>
@@ -2242,6 +2300,69 @@ dialog.nhHop { border: 1px solid var(--vien); border-radius: 18px; padding: 16px
 		</div>
 	</div>
 </section>
+<section class="manTab" id="tabChinhPhuc" role="tabpanel" aria-labelledby="nutTabChinhPhuc" hidden>
+	<div class="cp">
+		<header class="mdDau">
+			<div class="mdDauTen">
+				<span class="mdDauIco cpIco" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14.5 17.5 3 6V3h3l11.5 11.5"/><path d="m13 19 6-6M16 16l4 4M19 21l2-2"/></svg></span>
+				<div><h2>Game Chinh phục</h2><p>Soạn câu hỏi cho từng ải (dán code LaTeX hoặc lấy từ Ngân hàng), chọn số ải và trùm, rồi tạo <b>link + mã QR</b> cho học sinh chơi: trả lời đúng để hạ quái, lên cấp, tiến hóa nhân vật.</p></div>
+			</div>
+			<div class="mdDauNut">
+				<button class="vdNutNho" type="button" id="cpChoiThu" title="Mở thử game bản đang soạn">▶ Chơi thử</button>
+			</div>
+		</header>
+
+		<div class="cpThan">
+			<div class="cpTrai">
+				<label class="cpO"><span>Tên thử thách</span><input type="text" id="cpTen" placeholder="VD: Ôn tập chương 1 — Hàm số" maxlength="80"></label>
+				<label class="cpO"><span>Mã phòng (để học sinh nhập, tuỳ chọn)</span><input type="text" id="cpMa" placeholder="VD: TOAN12A1" maxlength="10" autocapitalize="characters"></label>
+
+				<div class="cpAiDau">
+					<b>Các ải</b>
+					<span class="cpGhi" id="cpTongCau">0 câu</span>
+				</div>
+				<div id="cpDsAi"></div>
+				<button class="cpThemAi" type="button" id="cpThemAi">＋ Thêm ải</button>
+			</div>
+
+			<aside class="cpPhai">
+				<div class="cpHop">
+					<b>Tạo link cho học sinh</b>
+					<p class="cpGhi">Sau khi soạn xong, bấm nút dưới để sinh link &amp; mã QR. Gửi link hoặc chiếu QR cho học sinh.</p>
+					<button class="vt3NutChinh" type="button" id="cpTao">⚙ Tạo link game</button>
+					<div class="cpKetQua" id="cpKetQua" hidden>
+						<label class="cpO"><span>Link game</span><textarea id="cpLink" rows="3" readonly></textarea></label>
+						<div class="cpKqNut">
+							<button class="vdNutNho" type="button" id="cpChep">📋 Sao chép link</button>
+							<button class="vdNutNho" type="button" id="cpMoLink">↗ Mở link</button>
+						</div>
+						<div class="cpQR" id="cpQR"></div>
+					</div>
+				</div>
+			</aside>
+		</div>
+	</div>
+
+	<!-- Bộ chọn câu từ Ngân hàng -->
+	<div class="cpModal" id="cpNHModal" hidden>
+		<div class="cpModalHop">
+			<header class="cpModalDau">
+				<b>Lấy câu từ Ngân hàng — Ải <span id="cpNHaiSo">1</span></b>
+				<button class="gtXoa" type="button" id="cpNHDong" aria-label="Đóng">×</button>
+			</header>
+			<div class="cpNHLoc">
+				<input type="search" id="cpNHTim" placeholder="Tìm trong câu hỏi…">
+				<select id="cpNHLoai"><option value="">Mọi loại hợp lệ</option><option value="tn">Trắc nghiệm</option><option value="tln">Trả lời ngắn</option></select>
+				<label class="vdCong"><input type="checkbox" id="cpNHChon"><i aria-hidden="true"></i>Chọn tất cả đang hiện</label>
+			</div>
+			<div class="cpNHDs" id="cpNHDs"></div>
+			<footer class="cpModalChan">
+				<span class="cpGhi" id="cpNHDem">Đã chọn 0 câu</span>
+				<button class="vt3NutChinh nho" type="button" id="cpNHThem">Thêm vào ải</button>
+			</footer>
+		</div>
+	</div>
+</section>
 <section class="manTab" id="tabGanID" role="tabpanel" aria-labelledby="nutTabGanID" hidden>
 	<div class="gi">
 		<header class="mdDau">
@@ -2929,8 +3050,8 @@ $("vao").addEventListener("keydown", e => {
 	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 12.3.";
 
 	/* ---------- tab ngang ---------- */
-	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"], ["nutTabVeHinh", "tabVeHinh"], ["nutTabVeThucTe", "tabVeThucTe"], ["nutTabVeTuY", "tabVeTuY"], ["nutTabKhoAnh", "tabKhoAnh"], ["nutTabVideo", "tabVideo"], ["nutTabGoiTen", "tabGoiTen"], ["nutTabGanID", "tabGanID"], ["nutTabNganHang", "tabNganHang"], ["nutTabTaoDe", "tabTaoDe"], ["nutTabDeTuongTu", "tabDeTuongTu"]];
-	const NHOM_TAB = { CongCu: ["nutTabPdfTex", "nutTabPdfWord", "nutTabTexWord", "nutTabWordTex"], VeHinh: ["nutTabVeHinh", "nutTabVeThucTe", "nutTabVeTuY", "nutTabKhoAnh"], LopHoc: ["nutTabGoiTen"], DeThi: ["nutTabGanID", "nutTabNganHang", "nutTabTaoDe", "nutTabDeTuongTu"] };
+	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"], ["nutTabVeHinh", "tabVeHinh"], ["nutTabVeThucTe", "tabVeThucTe"], ["nutTabVeTuY", "tabVeTuY"], ["nutTabKhoAnh", "tabKhoAnh"], ["nutTabVideo", "tabVideo"], ["nutTabGoiTen", "tabGoiTen"], ["nutTabChinhPhuc", "tabChinhPhuc"], ["nutTabGanID", "tabGanID"], ["nutTabNganHang", "tabNganHang"], ["nutTabTaoDe", "tabTaoDe"], ["nutTabDeTuongTu", "tabDeTuongTu"]];
+	const NHOM_TAB = { CongCu: ["nutTabPdfTex", "nutTabPdfWord", "nutTabTexWord", "nutTabWordTex"], VeHinh: ["nutTabVeHinh", "nutTabVeThucTe", "nutTabVeTuY", "nutTabKhoAnh"], LopHoc: ["nutTabGoiTen", "nutTabChinhPhuc"], DeThi: ["nutTabGanID", "nutTabNganHang", "nutTabTaoDe", "nutTabDeTuongTu"] };
 	const dongMenuTab = () => Object.keys(NHOM_TAB).forEach(k => { $("con" + k).hidden = true; $("nhom" + k).setAttribute("aria-expanded", "false"); });
 	function capNhatNhom(nut) { dongMenuTab(); Object.entries(NHOM_TAB).forEach(([k, ds]) => { const on = ds.includes(nut), b = $("nhom" + k); b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1; $("nhom" + k + "Con").textContent = on ? $(nut).textContent.replace(/^Vẽ hình TikZ\s*/, "").trim() : ""; }); }
 	function moMenuTab(k) { const m = $("con" + k), b = $("nhom" + k), mo = m.hidden; dongMenuTab(); if (!mo) return; const kh = b.closest(".tabKhung").getBoundingClientRect(), r = b.getBoundingClientRect(); m.style.left = Math.max(0, Math.min(r.left - kh.left, kh.width - 300)) + "px"; m.hidden = false; b.setAttribute("aria-expanded", "true"); }
@@ -2950,6 +3071,7 @@ $("vao").addEventListener("keydown", e => {
 		if (nut === "nutTabVeTuY") khoiDongTuY();
 		if (nut === "nutTabVideo") khoiDongVideo();
 		if (nut === "nutTabGoiTen") khoiDongGoiTen();
+		if (nut === "nutTabChinhPhuc") khoiDongChinhPhuc();
 		if (nut === "nutTabGanID") khoiDongGanID();
 		if (nut === "nutTabNganHang") khoiDongNganHang();
 		if (nut === "nutTabTaoDe") khoiDongTaoDe();
@@ -8734,6 +8856,182 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 		return { khoiDong, _D: () => D, _do: () => DO };
 	})();
 	function khoiDongGoiTen() { GT_API.khoiDong(); window.TDKMod = Object.assign(window.TDKMod || {}, { GT: GT_API }); }
+	// ===== Tab Game Chinh phục (trình tạo cho giáo viên) =====
+	const CP_API = (() => {
+		const $c = id => document.getElementById(id);
+		const KHO = "tdk_chinhphuc";
+		const esc = s => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+		const TEN_MUC = { 1: "Nhận biết", 2: "Thông hiểu", 3: "Vận dụng", 4: "Vận dụng cao" };
+		const TEN_BOSS = { 1: "Quỷ 1", 2: "Quỷ 2", 3: "Quỷ 3", 4: "Băng golem", 5: "Tử thần", 6: "Rồng lửa" };
+		let AI = [], daMo = false, nhAi = 0, qrURL = null;
+
+		/* ---------- phân tích code LaTeX ---------- */
+		function layNhom(s, b) { let d = 0; for (let k = b; k < s.length; k++) { const ch = s[k]; if (ch === "\\") { k++; continue; } if (ch === "{") d++; else if (ch === "}" && --d === 0) return { noi: s.slice(b + 1, k), het: k + 1 }; } return { noi: s.slice(b + 1), het: s.length }; }
+		function donDe(s) {
+			return String(s || "")
+				.replace(/%[^\n]*/g, "")
+				.replace(/\\(begin|end)\{(center|flushleft|flushright|minipage|tabular|itemize|enumerate|array)\}(\{[^}]*\}|\[[^\]]*\])?/g, " ")
+				.replace(/\\(immini|impicinpar|centering|noindent|par|medskip|smallskip|bigskip|hfill|vfill|item)\b/g, " ")
+				.replace(/\\(vspace|hspace)\*?\s*\{[^}]*\}/g, " ")
+				.replace(/\\(textbf|textit|emph|text|mathrm|mbox|underline)\s*\{([^{}]*)\}/g, "$2")
+				.replace(/\\\\/g, " ")
+				.replace(/[ \t]+/g, " ").replace(/\s*\n\s*/g, " ").trim();
+		}
+		function donDap(o) {
+			return String(o || "").replace(/\\True\b/g, "").replace(/%[^\n]*/g, "")
+				.replace(/\\(textbf|textit|emph|text|mathrm|mbox)\s*\{([^{}]*)\}/g, "$2")
+				.replace(/\\\\/g, " ").replace(/[ \t]+/g, " ").trim();
+		}
+		function parseEx(than) {
+			const lo = QB.loai(than);
+			if (lo !== "tn" && lo !== "tln") return null;
+			if (/\\begin\{tikzpicture\}|includegraphics|\\tikz\b/.test(than)) return null; // có hình: game không vẽ được
+			let lg = ""; const im = than.search(/\\loigiai\s*\{/);
+			if (im >= 0) { const b = than.indexOf("{", im); lg = donDe(layNhom(than, b).noi).slice(0, 320); }
+			const body = QB.boLG(than);
+			if (lo === "tn") {
+				const cm = body.search(/\\choice(TF)?\b/); if (cm < 0) return null;
+				const mt = body.slice(cm).match(/^\\choice(TF)?(\s*\[[^\]]*\])?/); let q = cm + mt[0].length;
+				const opts = [];
+				while (opts.length < 6) { while (q < body.length && /\s/.test(body[q])) q++; if (body[q] !== "{") break; const g = layNhom(body, q); opts.push(g.noi); q = g.het; }
+				if (opts.length < 2) return null;
+				let dung = opts.findIndex(o => /\\True\b/.test(o)); if (dung < 0) dung = 0;
+				const de = donDe(body.slice(0, cm)); if (!de) return null;
+				return { de, loai: "tn", pa: opts.map(donDap), dung, lg };
+			}
+			const sm = body.search(/\\shortans\b/);
+			const de = donDe(sm < 0 ? body : body.slice(0, sm)); if (!de) return null;
+			let dap = "";
+			if (sm >= 0) { const mt = body.slice(sm).match(/^\\shortans(\s*\[[^\]]*\])?/); let q = sm + mt[0].length; while (q < body.length && /\s/.test(body[q])) q++; if (body[q] === "{") dap = layNhom(body, q).noi; }
+			return { de, loai: "tln", dapAn: donDap(dap).replace(/^\$|\$$/g, ""), lg };
+		}
+		function parseLatex(src) {
+			let ds = []; try { ds = QB.tachEx(src || ""); } catch (e) { ds = []; }
+			if (!ds.length && /\\choice|\\shortans/.test(src || "")) ds = [{ than: src }]; // dán 1 câu không có \begin{ex}
+			const ra = []; ds.forEach(x => { const c = parseEx(x.than != null ? x.than : x.raw || ""); if (c) ra.push(c); });
+			return ra;
+		}
+		function demLatex(src) { let n = 0; try { n = QB.tachEx(src || "").length; } catch (e) { } if (!n && /\\choice|\\shortans/.test(src || "")) n = 1; return n; }
+
+		/* ---------- dữ liệu ải ---------- */
+		function aiMoi() { return { ten: "", muc: 1, boss: false, bossIco: 1, latex: "", cauNH: [] }; }
+		function cauCua(a) { return parseLatex(a.latex).concat(a.cauNH || []); }
+		function luu() { MD.ghiLS(KHO, { ten: $c("cpTen").value, ma: $c("cpMa").value, ai: AI }); }
+		function nap() { const d = MD.docLS(KHO, null); if (d && d.ai && d.ai.length) { AI = d.ai; $c("cpTen").value = d.ten || ""; $c("cpMa").value = d.ma || ""; } else { AI = [aiMoi(), aiMoi(), aiMoi()]; AI[2].boss = true; } }
+
+		/* ---------- vẽ danh sách ải ---------- */
+		function veAi() {
+			const h = $c("cpDsAi"); h.innerHTML = "";
+			let tong = 0;
+			AI.forEach((a, i) => {
+				const cau = cauCua(a), nTex = parseLatex(a.latex).length, nNH = (a.cauNH || []).length; tong += cau.length;
+				const d = document.createElement("div"); d.className = "cpAi"; d.dataset.i = i;
+				const bossOpt = Object.entries(TEN_BOSS).map(([v, t]) => `<option value="${v}"${+a.bossIco === +v ? " selected" : ""}>${t}</option>`).join("");
+				const mucOpt = Object.entries(TEN_MUC).map(([v, t]) => `<option value="${v}"${+a.muc === +v ? " selected" : ""}>${t}</option>`).join("");
+				d.innerHTML =
+					`<div class="cpAiTop">
+						<span class="cpAiSo">${i + 1}</span>
+						<input class="cpAiTen" type="text" placeholder="Tên ải ${i + 1}" value="${esc(a.ten)}" data-k="ten" maxlength="40">
+						<select data-k="muc" title="Mức độ (ảnh hưởng kinh nghiệm thưởng)">${mucOpt}</select>
+						<label class="cpAiBoss"><input type="checkbox" data-k="boss"${a.boss ? " checked" : ""}> Trùm <select data-k="bossIco"${a.boss ? "" : " disabled"}>${bossOpt}</select></label>
+						<button class="cpXoaAi" type="button" data-xoa="${i}" aria-label="Xoá ải" title="Xoá ải">×</button>
+					</div>
+					<textarea class="cpAiTex" data-k="latex" rows="4" placeholder="Dán code LaTeX — mỗi câu trong \\begin{ex}…\\end{ex} (trắc nghiệm \\choice hoặc trả lời ngắn \\shortans). Câu có hình vẽ sẽ bị bỏ qua.">${esc(a.latex)}</textarea>
+					<div class="cpAiNap">
+						<button class="vdNutNho" type="button" data-nh="${i}">＋ Lấy từ Ngân hàng</button>
+						<span class="cpAiTrangThai ${cau.length ? "ok" : "loi"}">${cau.length ? "✓ " + cau.length + " câu (" + nTex + " từ code, " + nNH + " từ ngân hàng)" : "Chưa có câu hợp lệ"}</span>
+					</div>`;
+				h.appendChild(d);
+			});
+			$c("cpTongCau").textContent = AI.length + " ải · " + tong + " câu";
+			luu();
+		}
+
+		/* ---------- ngân hàng ---------- */
+		let NH_DS = [], NH_chon = new Set();
+		async function moNH(i) {
+			nhAi = i; NH_chon = new Set(); $c("cpNHaiSo").textContent = i + 1;
+			$c("cpNHDs").innerHTML = '<p class="cpNHTrong">Đang tải ngân hàng…</p>'; $c("cpNHModal").hidden = false;
+			let all = []; try { all = await QB.dbTatCa(); } catch (e) { }
+			NH_DS = (all || []).filter(r => (r.loai === "tn" || r.loai === "tln") && !r.coHinh);
+			veNH();
+		}
+		function veNH() {
+			const q = ($c("cpNHTim").value || "").toLowerCase().trim(), lo = $c("cpNHLoai").value;
+			const ds = NH_DS.filter(r => (!lo || r.loai === lo) && (!q || (r.tom || "").toLowerCase().includes(q)));
+			const h = $c("cpNHDs");
+			h.innerHTML = ds.length ? ds.map(r => `<label class="cpNHCau"><input type="checkbox" data-k="${esc(r.k)}"${NH_chon.has(r.k) ? " checked" : ""}><span><span class="tt">${esc((r.tom || "(câu hỏi)").slice(0, 160))}</span><span class="nh"><b>${r.loai === "tn" ? "Trắc nghiệm" : "Trả lời ngắn"}</b>${r.id ? " · " + esc(r.id) : ""}${r.muc ? " · " + esc({ N: "NB", H: "TH", V: "VD", C: "VDC" }[r.muc] || r.muc) : ""}</span></span></label>`).join("")
+				: '<p class="cpNHTrong">Không có câu phù hợp. Hãy nạp câu vào Ngân hàng trước, hoặc dán code LaTeX trực tiếp.</p>';
+			$c("cpNHDem").textContent = "Đã chọn " + NH_chon.size + " câu";
+		}
+		function themNH() {
+			const ds = []; NH_DS.forEach(r => { if (NH_chon.has(r.k)) parseLatex(r.raw || "").forEach(c => ds.push(c)); });
+			AI[nhAi].cauNH = (AI[nhAi].cauNH || []).concat(ds);
+			$c("cpNHModal").hidden = true; veAi();
+			toastCP(ds.length ? "Đã thêm " + ds.length + " câu vào ải " + (nhAi + 1) : "Không thêm được câu nào (có thể là câu đúng/sai hoặc có hình).");
+		}
+
+		/* ---------- tạo link ---------- */
+		function b64(j) { return btoa(unescape(encodeURIComponent(j))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); }
+		function buildTT() {
+			const man = AI.map((a, i) => ({ ten: a.ten || ("Ải " + (i + 1)), muc: +a.muc || 1, boss: !!a.boss, bossIco: +a.bossIco || 1, pool: cauCua(a) }));
+			return { ten: $c("cpTen").value.trim() || "Chinh phục Toán", ma: $c("cpMa").value.trim().toUpperCase(), man };
+		}
+		function kiemTra(tt) { if (!tt.man.length) return "Chưa có ải nào."; for (let i = 0; i < tt.man.length; i++) if (!tt.man[i].pool.length) return "Ải " + (i + 1) + " chưa có câu hỏi hợp lệ."; return ""; }
+		function linkGame(b) { try { return new URL("choi.html", location.href).href + "?tt=" + b; } catch (e) { return "choi.html?tt=" + b; } }
+		async function taoLink() {
+			const tt = buildTT(), loi = kiemTra(tt);
+			if (loi) { toastCP("⚠ " + loi); return; }
+			const b = b64(JSON.stringify(tt)), link = linkGame(b);
+			$c("cpLink").value = link; $c("cpKetQua").hidden = false;
+			const qbox = $c("cpQR"); qbox.innerHTML = "";
+			try { if (qrURL) URL.revokeObjectURL(qrURL); const blob = await XL.qrPng(link, { o: 6, muc: "L" }); qrURL = URL.createObjectURL(blob); const im = new Image(); im.src = qrURL; im.alt = "QR link game"; qbox.appendChild(im); }
+			catch (e) { qbox.innerHTML = '<p class="cpGhi">Link quá dài để tạo mã QR — hãy gửi link trực tiếp cho học sinh.</p>'; }
+			toastCP("Đã tạo link! Gửi hoặc chiếu QR cho học sinh.");
+		}
+		function choiThu() {
+			const tt = buildTT(), loi = kiemTra(tt);
+			if (loi) { toastCP("⚠ " + loi); return; }
+			try { localStorage.setItem("kmath_tt", JSON.stringify(tt)); } catch (e) { }
+			window.open("choi.html", "_blank");
+		}
+		function toastCP(t) { if (window.toast) return window.toast(t); const n = $c("toast"); if (n) { n.textContent = t; n.classList.add("hien"); clearTimeout(toastCP._t); toastCP._t = setTimeout(() => n.classList.remove("hien"), 2600); } }
+
+		/* ---------- sự kiện ---------- */
+		function khoiDong() {
+			nap(); veAi();
+			if (daMo) return; daMo = true;
+			$c("cpTen").addEventListener("input", luu);
+			$c("cpMa").addEventListener("input", luu);
+			$c("cpThemAi").addEventListener("click", () => { AI.push(aiMoi()); veAi(); });
+			$c("cpDsAi").addEventListener("input", e => {
+				const card = e.target.closest(".cpAi"); if (!card) return; const i = +card.dataset.i, k = e.target.dataset.k; if (k == null) return;
+				if (k === "boss") { AI[i].boss = e.target.checked; const sel = card.querySelector('[data-k="bossIco"]'); if (sel) sel.disabled = !e.target.checked; }
+				else if (k === "muc" || k === "bossIco") AI[i][k] = +e.target.value;
+				else AI[i][k] = e.target.value;
+				if (k === "latex" || k === "boss") { clearTimeout(khoiDong._t); khoiDong._t = setTimeout(veAi, 400); } else luu();
+			});
+			$c("cpDsAi").addEventListener("click", e => {
+				const xo = e.target.closest("[data-xoa]"); if (xo) { if (AI.length <= 1) { toastCP("Cần ít nhất 1 ải."); return; } AI.splice(+xo.dataset.xoa, 1); veAi(); return; }
+				const nh = e.target.closest("[data-nh]"); if (nh) moNH(+nh.dataset.nh);
+			});
+			// modal ngân hàng
+			$c("cpNHDong").addEventListener("click", () => $c("cpNHModal").hidden = true);
+			$c("cpNHModal").addEventListener("click", e => { if (e.target === $c("cpNHModal")) $c("cpNHModal").hidden = true; });
+			$c("cpNHTim").addEventListener("input", veNH);
+			$c("cpNHLoai").addEventListener("change", veNH);
+			$c("cpNHChon").addEventListener("change", e => { const q = ($c("cpNHTim").value || "").toLowerCase().trim(), lo = $c("cpNHLoai").value; NH_DS.filter(r => (!lo || r.loai === lo) && (!q || (r.tom || "").toLowerCase().includes(q))).forEach(r => { if (e.target.checked) NH_chon.add(r.k); else NH_chon.delete(r.k); }); veNH(); });
+			$c("cpNHDs").addEventListener("change", e => { const cb = e.target.closest("input[data-k]"); if (!cb) return; if (cb.checked) NH_chon.add(cb.dataset.k); else NH_chon.delete(cb.dataset.k); $c("cpNHDem").textContent = "Đã chọn " + NH_chon.size + " câu"; });
+			$c("cpNHThem").addEventListener("click", themNH);
+			// tạo link
+			$c("cpTao").addEventListener("click", taoLink);
+			$c("cpChoiThu").addEventListener("click", choiThu);
+			$c("cpChep").addEventListener("click", () => { const t = $c("cpLink"); t.select(); try { navigator.clipboard.writeText(t.value); } catch (e) { document.execCommand("copy"); } toastCP("Đã sao chép link."); });
+			$c("cpMoLink").addEventListener("click", () => { const v = $c("cpLink").value; if (v) window.open(v, "_blank"); });
+		}
+		return { khoiDong };
+	})();
+	function khoiDongChinhPhuc() { CP_API.khoiDong(); window.TDKMod = Object.assign(window.TDKMod || {}, { CP: CP_API }); }
 	// ===== Tab Gán ID (gán tay + gán tự động) =====
 	const GI_API = (() => {
 		const $g = id => document.getElementById(id);
