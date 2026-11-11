@@ -8929,14 +8929,17 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 		/* ---------- phân tích code LaTeX ---------- */
 		function layNhom(s, b) { let d = 0; for (let k = b; k < s.length; k++) { const ch = s[k]; if (ch === "\\") { k++; continue; } if (ch === "{") d++; else if (ch === "}" && --d === 0) return { noi: s.slice(b + 1, k), het: k + 1 }; } return { noi: s.slice(b + 1), het: s.length }; }
 		function donDe(s) {
-			return String(s || "")
-				.replace(/%[^\n]*/g, "")
-				.replace(/\\(begin|end)\{(center|flushleft|flushright|minipage|tabular|itemize|enumerate|array)\}(\{[^}]*\}|\[[^\]]*\])?/g, " ")
+			let s2 = String(s || "");
+			const bangs = []; // bảo vệ bảng tabular/array khỏi bị dọn (giữ \\ & \hline cho game render)
+			s2 = s2.replace(/\\begin\{(tabular|array)\}[\s\S]*?\\end\{\1\}/g, m => { bangs.push(m); return "\u0000" + (bangs.length - 1) + "\u0000"; });
+			s2 = s2.replace(/%[^\n]*/g, "")
+				.replace(/\\(begin|end)\{(center|flushleft|flushright|minipage|itemize|enumerate)\}(\{[^}]*\}|\[[^\]]*\])?/g, " ")
 				.replace(/\\(immini|impicinpar|centering|noindent|par|medskip|smallskip|bigskip|hfill|vfill|item)\b/g, " ")
 				.replace(/\\(vspace|hspace)\*?\s*\{[^}]*\}/g, " ")
 				.replace(/\\(textbf|textit|emph|text|mathrm|mbox|underline)\s*\{([^{}]*)\}/g, "$2")
 				.replace(/\\\\/g, " ")
 				.replace(/[ \t]+/g, " ").replace(/\s*\n\s*/g, " ").trim();
+			return s2.replace(/\u0000(\d+)\u0000/g, (m, i) => bangs[+i]);
 		}
 		function donDap(o) {
 			return String(o || "").replace(/\\True\b/g, "").replace(/%[^\n]*/g, "")
@@ -8948,7 +8951,7 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 			if (lo !== "tn" && lo !== "tln") return null;
 			if (/\\begin\{tikzpicture\}|includegraphics|\\tikz\b/.test(than)) return null; // có hình: game không vẽ được
 			let lg = ""; const im = than.search(/\\loigiai\s*\{/);
-			if (im >= 0) { const b = than.indexOf("{", im); lg = donDe(layNhom(than, b).noi).slice(0, 320); }
+			if (im >= 0) { const b = than.indexOf("{", im); lg = donDe(layNhom(than, b).noi); } // giữ trọn lời giải, không cắt ngắn
 			const body = QB.boLG(than);
 			if (lo === "tn") {
 				const cm = body.search(/\\choice(TF)?\b/); if (cm < 0) return null;
