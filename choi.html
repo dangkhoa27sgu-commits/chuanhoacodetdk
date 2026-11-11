@@ -104,7 +104,12 @@ h2{margin:.2em 0;font-size:26px;font-weight:900}
 .mauTen{font-size:12px;font-weight:800;margin:0 0 3px;display:flex;justify-content:space-between;gap:6px;text-shadow:0 1px 3px #000}
 .mauTen small{color:#cfd8ea;font-weight:700}
 .khuCau{flex:1;width:100%;max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:10px;padding:12px 14px 16px;overflow:auto}
-.deBai{font-size:18px;line-height:1.5;font-weight:600;background:var(--the);border:1px solid var(--vien);border-radius:16px;padding:14px 16px;min-height:52px}
+.deBai{font-size:18px;line-height:1.5;font-weight:600;background:var(--the);border:1px solid var(--vien);border-radius:16px;padding:14px 16px;min-height:52px;max-height:34vh;overflow:auto}
+.deBai .katex,.lgCau .katex{font-size:1.02em}
+table.bang{border-collapse:collapse;margin:10px auto;font-size:14px;font-weight:600}
+table.bang th,table.bang td{border:1px solid var(--vien);padding:5px 10px;text-align:center;white-space:nowrap}
+table.bang th{background:rgba(255,255,255,.05);color:var(--vang2)}
+.bangBoc{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .pa{display:grid;gap:9px}
 .paNut{text-align:left;padding:13px 15px;border-radius:14px;border:1.5px solid var(--vien);background:var(--the2);
   color:var(--chu);font-size:16px;font-weight:600;cursor:pointer;display:flex;gap:10px;align-items:flex-start;transition:transform .07s}
@@ -116,6 +121,7 @@ h2{margin:.2em 0;font-size:26px;font-weight:900}
 .tlnHang{display:flex;gap:8px}
 .thanhGio{height:7px;border-radius:99px;background:#0b1220;overflow:hidden;border:1px solid var(--vien)}
 .thanhGio i{display:block;height:100%;background:linear-gradient(90deg,var(--vang),var(--cam));width:100%;transition:width .1s linear}
+.thanhGio i.het{background:var(--vien)}
 .combo{position:absolute;top:28%;left:50%;transform:translateX(-50%);font-size:32px;font-weight:900;color:var(--vang);z-index:4;
   text-shadow:0 2px 0 #b9850a,0 0 18px rgba(245,179,1,.6);opacity:0;pointer-events:none}
 .combo.hien{animation:comboA .7s ease}
@@ -137,10 +143,15 @@ h2{margin:.2em 0;font-size:26px;font-weight:900}
 .saoTo{font-size:40px;letter-spacing:4px}
 .okSai{display:flex;gap:16px;justify-content:center;margin:6px 0}
 .okSai div{font-weight:900;font-size:22px}
-.lgHop{text-align:left;max-height:30vh;overflow:auto;width:100%;display:flex;flex-direction:column;gap:8px}
-.lgCau{border:1px solid var(--vien);border-radius:12px;padding:10px 12px;background:var(--the);font-size:14px}
-.lgCau .tl{font-weight:800;margin-bottom:3px}
+.lgHop{text-align:left;max-height:46vh;overflow:auto;width:100%;display:flex;flex-direction:column;gap:10px;padding-right:2px}
+.lgCau{border:1px solid var(--vien);border-left:4px solid var(--vien);border-radius:12px;padding:11px 13px;background:var(--the);font-size:14.5px;line-height:1.55}
+.lgCau.sai{border-left-color:var(--do)}.lgCau.ok{border-left-color:var(--luc)}
+.lgCau .tl{font-weight:800;margin-bottom:5px;font-size:13px}
 .lgCau.sai .tl{color:var(--do)}.lgCau.ok .tl{color:var(--luc)}
+.lgCau .lgDe{font-weight:600;margin-bottom:6px}
+.lgCau .lgDap{color:var(--vang2);margin-bottom:5px}
+.lgCau .lgLoi{color:var(--phu);background:rgba(255,255,255,.03);border-radius:8px;padding:8px 10px;margin-top:4px}
+.lgCau .lgLoi b{color:var(--chu)}
 .doclg{color:var(--lam);font-weight:800;cursor:pointer;font-size:13px}
 /* tiến hóa */
 .evoHop{display:flex;align-items:center;justify-content:center;gap:10px;margin:4px 0}
@@ -249,9 +260,16 @@ h2{margin:.2em 0;font-size:26px;font-weight:900}
 <script>
 "use strict";
 const $=id=>document.getElementById(id), el=(t,c)=>{const e=document.createElement(t);if(c)e.className=c;return e;};
-const IMG='game/img/';
-/* ẢNH DỰ PHÒNG: nếu thư mục game/img chưa lên server, thay icon vỡ bằng hình bóng nhân vật */
+let IMG='game/img/';
+/* ẢNH DỰ PHÒNG: nếu thiếu ảnh, thay icon vỡ bằng hình bóng nhân vật */
 const ANH_DP="data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 150"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a4660"/><stop offset="1" stop-color="#232e42"/></linearGradient></defs><rect width="120" height="150" rx="14" fill="#1b2436"/><circle cx="60" cy="52" r="24" fill="url(#g)"/><path d="M26 140c0-24 15-40 34-40s34 16 34 40z" fill="url(#g)"/><path d="M60 30l4 9 9 1-6.5 6 1.5 9L60 60l-8 5 1.5-9L47 40l9-1z" fill="#f5b301" opacity=".85"/></svg>');
+/* Dò 1 lần: ảnh ở game/img/ hay ở gốc? */
+(function(){var t=new Image();t.onerror=function(){IMG='';try{batDau();}catch(e){}};t.src='game/img/quai.png?v=1';})();
+/* Fallback KHÔNG trạng thái (không dùng dataset dính): game/img/ -> gốc -> hình bóng. Nhờ vậy ảnh dùng lại qua nhiều ải không bị kẹt. */
+document.addEventListener('error',function(e){var t=e.target;if(!t||t.tagName!=='IMG')return;var s=t.getAttribute('src')||'';if(s.indexOf('data:')===0)return;
+  if(s.indexOf('game/img/')>-1){t.setAttribute('src', s.substring(s.lastIndexOf('/')+1));return;}   // thử ở gốc
+  if(s.indexOf('/')>-1){t.setAttribute('src', s.substring(s.lastIndexOf('/')+1));return;}             // còn thư mục -> thử tên file
+  t.setAttribute('src', ANH_DP);},true);                                                               // cuối cùng: hình bóng
 /* Tìm ảnh linh hoạt: thử game/img/ trước, không có thì thử ở gốc, cuối cùng mới dùng hình bóng */
 document.addEventListener('error',function(e){var t=e.target;if(!t||t.tagName!=='IMG'||t.src.indexOf('data:')===0)return;
   if(t.dataset.dp==='2')return;
@@ -386,7 +404,8 @@ function vaoMan(idx){
   // thứ tự câu: xáo trộn, lặp lại (dự trữ) nếu chưa hạ được địch
   const thutu=pool.map((c,i)=>i).sort(()=>Math.random()-.5);
   D={idx,man,pool,dich,thutu,buoc:0,dung:0,sai:0,xuMan:0,xpMan:0,combo:0,maxCombo:0,nhatKi:[],daRa:new Set()};
-  $('keDichImg').src=anhDich(dich); $('keDich').style.filter=dich.hue?`drop-shadow(0 10px 10px rgba(0,0,0,.5)) hue-rotate(${dich.hue}deg)`:'';
+  $('keDichImg').src=anhDich(dich);
+  const kd=$('keDich'); kd.style.filter=dich.hue?`drop-shadow(0 10px 10px rgba(0,0,0,.5)) hue-rotate(${dich.hue}deg)`:''; kd.style.transition='none'; kd.style.transform='none'; kd.style.opacity='1'; // reset hiệu ứng "chết" của ải trước
   $('dichTen').textContent=dich.ten;
   $('keTaImg').src=anhNV(G.gioi,G.cap);
   manToi('manDanh'); capMauTa(); capMauDich(); cauTiep();
@@ -398,7 +417,7 @@ function cauTiep(){
   if(D.dich.hp<=0) return ketThucMan();
   const c=cauHienTai(); D.cauNow=c; D.daRa.add(c);
   veVatPham();
-  $('deBai').innerHTML=''; $('deBai').appendChild(document.createTextNode(c.de)); rend($('deBai'));
+  veLatex($('deBai'), c.de);
   const pa=$('pa'); pa.innerHTML='';
   if(c.loai==='tln'){
     const wrap=el('div','tlnHang');
@@ -410,19 +429,21 @@ function cauTiep(){
     (c.pa||[]).forEach((p,i)=>{
       const b=el('button','paNut'); b.dataset.i=i;
       b.innerHTML=`<span class="kyh">${'ABCD'[i]||'•'}</span><span></span>`;
-      b.lastChild.textContent=p; rend(b.lastChild);
+      veLatex(b.lastChild, p);
       b.onclick=()=>chon(i,b);
       pa.appendChild(b);
     });
   }
   datGio(c);
 }
+/* Thời gian theo độ khó — chỉ là "thưởng tốc độ", HẾT GIỜ KHÔNG tự đánh sai, học sinh cứ làm tiếp */
+const GIO_MUC={1:22,2:32,3:48,4:65};
 function datGio(c){
-  clearInterval(gioHan); const T= c.loai==='tln'?26:16; gioConLai=T;
-  $('gio').style.width='100%'; const t0=Date.now();
-  gioHan=setInterval(()=>{ const con=T-(Date.now()-t0)/1000; gioConLai=con;
-    $('gio').style.width=Math.max(0,con/T*100)+'%';
-    if(con<=0){ clearInterval(gioHan); if(c.loai==='tln')chonTLN('');else chon(-1,null); }
+  clearInterval(gioHan); const T=(GIO_MUC[c.muc||1]||32)+(c.loai==='tln'?12:0); gioConLai=T;
+  const g=$('gio'); g.style.width='100%'; g.classList.remove('het'); const t0=Date.now();
+  gioHan=setInterval(()=>{ const con=T-(Date.now()-t0)/1000; gioConLai=Math.max(0,con);
+    g.style.width=Math.max(0,con/T*100)+'%';
+    if(con<=0){ clearInterval(gioHan); g.classList.add('het'); } // hết thưởng tốc độ, không phạt
   },100);
 }
 function chuanChuoi(s){return (s==null?'':''+s).replace(/\$/g,'').replace(/\s+/g,'').replace(',','.').toLowerCase();}
@@ -501,10 +522,18 @@ function ketThucMan(){
     evo.innerHTML=`<div class="evoHop"><img src="${anhNV(G.gioi,mocCu)}" alt=""><span class="evoMui">➜</span><img class="moi" src="${anhNV(G.gioi,mocMoi)}" alt=""></div>
       <p style="color:var(--vang);font-weight:900;margin:2px 0">⭐ TIẾN HÓA: ${TEN_CAP[mocCu][G.gioi]} → ${TEN_CAP[mocMoi][G.gioi]}!</p>`;
   } else evo.hidden=true;
-  const lg=$('lgHop'); lg.hidden=true; $('btXemLG').textContent='▾ Xem lại các câu';
-  lg.innerHTML=D.nhatKi.map((k,i)=>{ const dapTxt= k.loai==='tln'? ('Đáp án: '+(k.dapAn||'')) : ('Đáp án đúng: '+('ABCD'[k.dung]||'')+'. '+((k.pa&&k.pa[k.dung])||''));
-    return `<div class="lgCau ${k.ok?'ok':'sai'}"><div class="tl">${k.ok?'✓':'✕'} Câu ${i+1}</div><div class="de">${k.de}</div><div style="color:var(--phu);margin-top:3px">${dapTxt}</div>${k.lg?`<div style="color:var(--phu);margin-top:4px">Lời giải: ${k.lg}</div>`:''}</div>`;}).join('');
-  rend(lg);
+  const lg=$('lgHop'); lg.hidden=true; $('btXemLG').textContent='▾ Xem lại lời giải';
+  lg.innerHTML='';
+  D.nhatKi.forEach((k,i)=>{
+    const card=el('div','lgCau '+(k.ok?'ok':'sai'));
+    card.innerHTML=`<div class="tl">${k.ok?'✓ Trả lời đúng':'✕ Trả lời sai'} · Câu ${i+1}</div><div class="lgDe"></div><div class="lgDap"></div>${k.lg?'<div class="lgLoi"><b>Lời giải.</b> <span class="lgLoiND"></span></div>':''}`;
+    lg.appendChild(card);
+    veLatex(card.querySelector('.lgDe'), k.de);
+    const dapEl=card.querySelector('.lgDap');
+    if(k.loai==='tln'){ dapEl.innerHTML='Đáp án: <b class="lgDapND"></b>'; veLatex(dapEl.querySelector('.lgDapND'), k.dapAn||''); }
+    else { dapEl.innerHTML='Đáp án đúng: <b>'+('ABCD'[k.dung]||'')+'.</b> <span class="lgDapND"></span>'; veLatex(dapEl.querySelector('.lgDapND'), (k.pa&&k.pa[k.dung])||''); }
+    if(k.lg) veLatex(card.querySelector('.lgLoiND'), k.lg);
+  });
   const con=TT.man[D.idx+1];
   if(!thang){ $('btTiepMan').textContent='Thử lại ải ↻'; $('btTiepMan').onclick=()=>vaoMan(D.idx); }
   else if(con){ $('btTiepMan').textContent='Ải tiếp theo →'; $('btTiepMan').onclick=()=>vaoMan(D.idx+1); }
@@ -527,7 +556,31 @@ function veShop(){
 }
 
 /* KaTeX render */
-function rend(node){ if(window.renderMathInElement){ try{renderMathInElement(node,{delimiters:[{left:'$',right:'$',display:false},{left:'$$',right:'$$',display:true}],throwOnError:false});}catch(e){} } }
+/* ===== RENDER LaTeX: bảng + macro ex_test + KaTeX ===== */
+const KMACRO={ "\\True":"", "\\hoac":"", "\\heva":"", "\\dmath":"", "\\Problem":"", "\\loigiai":"" };
+function escHTML(s){return (''+s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function layNhom(s,b){let d=0;for(let k=b;k<s.length;k++){const ch=s[k];if(ch==='\\'){k++;continue;}if(ch==='{')d++;else if(ch==='}'&&--d===0)return{noi:s.slice(b+1,k),het:k+1};}return{noi:s.slice(b+1),het:s.length};}
+/* \hoac{A & B} / \heva{A & B} -> dấu ngoặc [ hoặc { với các nhánh */
+function thayNgoac(s,ten,mo){ const re=new RegExp('\\\\'+ten+'\\s*\\{'); let idx;
+  while((idx=s.search(re))>=0){ const b=s.indexOf('{',idx); const g=layNhom(s,b);
+    const nh=g.noi.split(/&|\\\\/).map(x=>x.trim()).filter(x=>x);
+    const open=mo==='[' ? '\\left[' : '\\left\\{';
+    s=s.slice(0,idx)+open+'\\begin{array}{l}'+nh.join(' \\\\ ')+'\\end{array}\\right.'+s.slice(g.het);
+  } return s; }
+function chuanToan(s){ s=thayNgoac(s,'hoac','['); s=thayNgoac(s,'heva','{'); return s; }
+/* \begin{tabular}/{array} ngoài math -> <table> */
+function bangHTML(body){ const rows=body.replace(/\\hline/g,'').split(/\\\\/).map(r=>r.trim()).filter(r=>r.length);
+  let h='<div class="bangBoc"><table class="bang"><tbody>';
+  rows.forEach((r,ri)=>{ const cells=r.split('&').map(c=>c.trim()); const tag=ri===0?'th':'td';
+    h+='<tr>'+cells.map(c=>'<'+tag+'>'+escHTML(c)+'</'+tag+'>').join('')+'</tr>'; });
+  return h+'</tbody></table></div>'; }
+function veLatex(elm, src){ if(!elm) return; src=chuanToan(''+(src||''));
+  const bangs=[];
+  let s=src.replace(/\\begin\{tabular\}\s*(\{[^}]*\}|\[[^\]]*\])?([\s\S]*?)\\end\{tabular\}/g,function(m,spec,b){ bangs.push(bangHTML(b)); return ''+(bangs.length-1)+''; });
+  s=escHTML(s).replace(/(\d+)/g,function(m,i){return bangs[+i];});
+  elm.innerHTML=s; rend(elm);
+}
+function rend(node){ if(window.renderMathInElement){ try{renderMathInElement(node,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false,macros:KMACRO});}catch(e){} } }
 
 /* ===== SỰ KIỆN ===== */
 $('btBatDau').onclick=()=>{ const cu=toa(); if(cu){NV.gioi=cu.gioi;} manToi('manPhong'); };
