@@ -1117,6 +1117,7 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 @media(max-width:820px){.cpThan{grid-template-columns:1fr}}
 .cpO{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
 .cpO>span{font-size:12.5px;font-weight:600;color:var(--phu)}
+.cpHang2{display:flex;gap:12px}.cpHang2 .cpO{flex:1}@media(max-width:560px){.cpHang2{flex-direction:column;gap:0}}
 .cpO input,.cpO textarea,.cpAi select,.cpNHLoc input,.cpNHLoc select{font:inherit;font-size:14px;border:1px solid var(--vien);border-radius:8px;background:var(--mat,#fff);color:var(--chu);padding:9px 11px;width:100%}
 .cpO textarea{resize:vertical;font-family:var(--f-code,monospace);font-size:12.5px;line-height:1.5;white-space:pre;tab-size:4}
 .cpO input:focus,.cpO textarea:focus{outline:none;border-color:var(--vang)}
@@ -2335,7 +2336,10 @@ dialog.nhHop { border: 1px solid var(--vien); border-radius: 18px; padding: 16px
 		<div class="cpThan">
 			<div class="cpTrai">
 				<label class="cpO"><span>Tên thử thách</span><input type="text" id="cpTen" placeholder="VD: Ôn tập chương 1 — Hàm số" maxlength="80"></label>
-				<label class="cpO"><span>Mã phòng (để học sinh nhập, tuỳ chọn)</span><input type="text" id="cpMa" placeholder="VD: TOAN12A1" maxlength="10" autocapitalize="characters"></label>
+				<div class="cpHang2">
+					<label class="cpO"><span>Mã phòng (tuỳ chọn)</span><input type="text" id="cpMa" placeholder="VD: TOAN12A1" maxlength="10" autocapitalize="characters"></label>
+					<label class="cpO"><span>Thời gian làm bài (phút, 0 = không giới hạn)</span><input type="number" id="cpPhut" min="0" max="180" placeholder="0" value="0"></label>
+				</div>
 
 				<div class="cpNapDe">
 					<div class="cpNapDau"><b>⚡ Nạp cả đề từ file <code>.tex</code></b><span class="cpGhi">tự nhận diện gói <code>ex</code> và tách mỗi câu thành 1 ải</span></div>
@@ -8980,8 +8984,8 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 		/* ---------- dữ liệu ải ---------- */
 		function aiMoi() { return { ten: "", muc: 1, boss: false, bossIco: 1, latex: "", cauNH: [] }; }
 		function cauCua(a) { return parseLatex(a.latex).concat(a.cauNH || []); }
-		function luu() { MD.ghiLS(KHO, { ten: $c("cpTen").value, ma: $c("cpMa").value, ai: AI }); }
-		function nap() { const d = MD.docLS(KHO, null); if (d && d.ai && d.ai.length) { AI = d.ai; $c("cpTen").value = d.ten || ""; $c("cpMa").value = d.ma || ""; } else { AI = [aiMoi(), aiMoi(), aiMoi()]; AI[2].boss = true; } }
+		function luu() { MD.ghiLS(KHO, { ten: $c("cpTen").value, ma: $c("cpMa").value, phut: $c("cpPhut").value, ai: AI }); }
+		function nap() { const d = MD.docLS(KHO, null); if (d && d.ai && d.ai.length) { AI = d.ai; $c("cpTen").value = d.ten || ""; $c("cpMa").value = d.ma || ""; $c("cpPhut").value = d.phut || 0; } else { AI = [aiMoi(), aiMoi(), aiMoi()]; AI[2].boss = true; } }
 
 		/* ---------- nạp cả đề từ file .tex ---------- */
 		function docFile(inp) { return new Promise(res => { const f = inp && inp.files && inp.files[0]; if (!f) { res(""); return; } const r = new FileReader(); r.onload = () => res(r.result || ""); r.onerror = () => res(""); r.readAsText(f, "utf-8"); }); }
@@ -9058,7 +9062,7 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 		function b64(j) { return btoa(unescape(encodeURIComponent(j))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); }
 		function buildTT() {
 			const man = AI.map((a, i) => ({ ten: a.ten || ("Ải " + (i + 1)), muc: +a.muc || 1, boss: !!a.boss, bossIco: +a.bossIco || 1, pool: cauCua(a) }));
-			return { ten: $c("cpTen").value.trim() || "Chinh phục Toán", ma: $c("cpMa").value.trim().toUpperCase(), man };
+			return { ten: $c("cpTen").value.trim() || "Chinh phục Toán", ma: $c("cpMa").value.trim().toUpperCase(), phut: +$c("cpPhut").value || 0, man };
 		}
 		function kiemTra(tt) { if (!tt.man.length) return "Chưa có ải nào."; for (let i = 0; i < tt.man.length; i++) if (!tt.man[i].pool.length) return "Ải " + (i + 1) + " chưa có câu hỏi hợp lệ."; return ""; }
 		function linkGame(b) { try { return new URL("choi.html", location.href).href + "?tt=" + b; } catch (e) { return "choi.html?tt=" + b; } }
@@ -9086,6 +9090,7 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 			if (daMo) return; daMo = true;
 			$c("cpTen").addEventListener("input", luu);
 			$c("cpMa").addEventListener("input", luu);
+			$c("cpPhut").addEventListener("input", luu);
 			$c("cpThemAi").addEventListener("click", () => { AI.push(aiMoi()); veAi(); });
 			$c("cpFileChinh").addEventListener("change", () => tenTep($c("cpFileChinh"), "cpTenChinh"));
 			$c("cpFileDP").addEventListener("change", () => tenTep($c("cpFileDP"), "cpTenDP"));
