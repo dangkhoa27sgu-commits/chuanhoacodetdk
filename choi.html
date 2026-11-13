@@ -507,26 +507,29 @@ function veBando(){
 }
 
 /* ===== CHIẾN ĐẤU ===== */
-let D=null, gioTongHan=null, hanChot=0;
+let D=null, gioHan=null, hanChot=0, tongGio=0, gioAi=false, hanTong=0;
 function chuanChuoi(s){return (s==null?'':''+s).replace(/\$/g,'').replace(/\s+/g,'').replace(',','.').toLowerCase();}
 
-/* ===== TIMER TOÀN ĐỀ ===== */
+/* ===== ĐỒNG HỒ: theo ẢI (man.giay, reset mỗi ải) hoặc TOÀN ĐỀ (TT.phut) ===== */
 function fmtGio(s){s=Math.max(0,Math.ceil(s));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
-function batDauGioTong(){
-  const phut=+((TT&&TT.phut)||0); const box=$('dGioTong');
-  if(phut<=0){ box.hidden=true; return; }
+function batDauGio(man){
+  const box=$('dGioTong'), lbl=box.querySelector('span');
+  const giayAi=Math.max(0,+((man&&man.giay)||0)), phut=+((TT&&TT.phut)||0);
+  clearInterval(gioHan); gioHan=null;
+  if(giayAi>0){ gioAi=true; tongGio=giayAi*1000; hanChot=Date.now()+tongGio; if(lbl)lbl.textContent='Thời gian ải'; }
+  else if(phut>0){ gioAi=false; tongGio=phut*60000; if(!hanTong) hanTong=Date.now()+tongGio; hanChot=hanTong; if(lbl)lbl.textContent='Thời gian làm bài'; }
+  else { box.hidden=true; return; }
   box.hidden=false;
-  if(gioTongHan) return;
-  if(!hanChot) hanChot=Date.now()+phut*60000;
-  const tong=phut*60000;
-  gioTongHan=setInterval(()=>{ const con=(hanChot-Date.now())/1000;
+  gioHan=setInterval(()=>{ if(D&&D.ketThuc){ clearInterval(gioHan); gioHan=null; return; }
+    const con=(hanChot-Date.now())/1000;
     $('dGioSo').textContent=fmtGio(con);
-    const bar=$('dGioBar'); bar.style.width=Math.max(0,Math.min(100,(hanChot-Date.now())/tong*100))+'%';
-    bar.classList.toggle('canh',con<=30);
-    if(con<=0){ clearInterval(gioTongHan); gioTongHan=null; gameOver('⏰ Hết giờ làm bài!'); }
-  },500);
+    const bar=$('dGioBar'); bar.style.width=Math.max(0,Math.min(100,(hanChot-Date.now())/tongGio*100))+'%';
+    bar.classList.toggle('canh',con<=(gioAi?10:30));
+    if(con<=0){ clearInterval(gioHan); gioHan=null; if(D)D.ketThuc=true; gameOver(gioAi?'⏰ Hết giờ ải — quái hạ gục bạn!':'⏰ Hết giờ làm bài!'); }
+  },400);
 }
-function dungGioTong(){ clearInterval(gioTongHan); gioTongHan=null; hanChot=0; }
+function dungGio(){ clearInterval(gioHan); gioHan=null; }                         // dừng đồng hồ ải hiện tại
+function dungGioTong(){ clearInterval(gioHan); gioHan=null; hanChot=0; hanTong=0; } // kết thúc hẳn (về bản đồ / game over)
 
 /* ===== VÀO ẢI ===== */
 function vaoMan(idx){
@@ -541,7 +544,7 @@ function vaoMan(idx){
   const kt=$('keTa'); kt.style.cssText=''; $('keTaImg').src=anhNV(G.gioi,G.cap);
   $('dichTen').textContent=dich.ten;
   $('aiNhan').textContent=(man.ten||('Ải '+(idx+1)))+(man.boss?' 👑':'');
-  manToi('manDanh'); $('khuCau').scrollTop=0; capMauTa(); capMauDich(); batDauGioTong(); hoiCau();
+  manToi('manDanh'); $('khuCau').scrollTop=0; capMauTa(); capMauDich(); batDauGio(man); hoiCau();
 }
 function capMauDich(){ $('dichMau').style.width=(D.dich.chet?0:100)+'%'; $('dichMauSo').textContent=D.dich.chet?'Hạ gục':''; }
 function capMauTa(){ const con=Math.max(0,soTim()-D.soSai); $('taMau').style.width=(con/soTim()*100)+'%'; $('taMauSo').textContent='❤'.repeat(con)||'✕'; $('taTen').textContent=G.ten||'Em'; }
@@ -577,7 +580,7 @@ function traLoiTLN(val){ if(D.ketThuc)return;
   else { if(inp){inp.style.borderColor='var(--do)';inp.value='';setTimeout(()=>inp.focus(),30);} saiRoi(-1,null); }
 }
 function dungRoi(){
-  D.ketThuc=true;
+  D.ketThuc=true; dungGio();
   document.querySelectorAll('#pa .paNut').forEach(x=>x.style.pointerEvents='none');
   danhChetDich(); thangAi();
 }
