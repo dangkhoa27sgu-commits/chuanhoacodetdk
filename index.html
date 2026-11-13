@@ -6777,7 +6777,13 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			const key = "H|" + wMax + "|" + hMax + "|" + code; if (S.toan.has(key)) return S.toan.get(key);
 			const p = (async () => {
 				const v = await xepHang(() => bo().veTikz(code, { doPhanGiai: 1 })); if (v.loi || !v.svg) throw new Error("hình TikZ lỗi: " + String(v.loi || "").slice(0, 100));
-				const im = await svgAnh(v.svg), k = Math.min(wMax / v.wPt, hMax / v.hPt, 5.5), w = Math.ceil(v.wPt * k), h = Math.ceil(v.hPt * k), c = document.createElement("canvas"); c.width = w; c.height = h; const x = c.getContext("2d"); x.filter = "invert(1) hue-rotate(180deg) brightness(1.05)"; x.drawImage(im, 0, 0, w, h); return { c, w, h };
+				const im = await svgAnh(v.svg), k = Math.min(wMax / v.wPt, hMax / v.hPt, 5.5), w = Math.ceil(v.wPt * k), h = Math.ceil(v.hPt * k), c = document.createElement("canvas"); c.width = w; c.height = h; const x = c.getContext("2d"); x.drawImage(im, 0, 0, w, h);
+				// Tô lại cho nền tối: nét xám/đen (không màu) → trắng; màu bão hoà (vàng, đỏ, xanh…) GIỮ NGUYÊN và sáng nhẹ
+				try { const id = x.getImageData(0, 0, w, h), D = id.data; for (let i = 0; i < D.length; i += 4) { const a = D[i + 3]; if (!a) continue; const r = D[i], g = D[i + 1], b = D[i + 2], mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+					if (mx - mn < 42) { const v2 = 255 - (r + g + b) / 3; D[i] = D[i + 1] = D[i + 2] = v2; } // xám → đảo sáng (đen→trắng)
+					else { const f = 1.12; D[i] = Math.min(255, r * f); D[i + 1] = Math.min(255, g * f); D[i + 2] = Math.min(255, b * f); } } // có màu → giữ, sáng nhẹ
+					x.putImageData(id, 0, 0); } catch (e) { x.save(); x.globalCompositeOperation = "difference"; x.fillStyle = "#fff"; x.fillRect(0, 0, w, h); x.restore(); }
+				return { c, w, h };
 			})();
 			S.toan.set(key, p); p.catch(() => S.toan.delete(key)); return p;
 		}
