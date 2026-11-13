@@ -720,7 +720,7 @@ function veShop(){
 
 /* KaTeX render */
 /* ===== RENDER LaTeX: bảng + macro ex_test + KaTeX ===== */
-const KMACRO={ "\\True":"", "\\hoac":"", "\\heva":"", "\\dmath":"", "\\Problem":"", "\\loigiai":"" };
+const KMACRO={ "\\True":"", "\\hoac":"", "\\heva":"", "\\dmath":"", "\\Problem":"", "\\loigiai":"", "\\vv":"\\overrightarrow", "\\break":"", "\\protect":"", "\\allowdisplaybreaks":"", "\\inte":"\\int e", "\\lne":"\\ln e" };
 function escHTML(s){return (''+s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function layNhom(s,b){let d=0;for(let k=b;k<s.length;k++){const ch=s[k];if(ch==='\\'){k++;continue;}if(ch==='{')d++;else if(ch==='}'&&--d===0)return{noi:s.slice(b+1,k),het:k+1};}return{noi:s.slice(b+1),het:s.length};}
 /* \hoac{A & B} / \heva{A & B} -> dấu ngoặc [ hoặc { với các nhánh */
@@ -730,7 +730,10 @@ function thayNgoac(s,ten,mo){ const re=new RegExp('\\\\'+ten+'\\s*\\{'); let idx
     const open=mo==='[' ? '\\left[' : '\\left\\{';
     s=s.slice(0,idx)+open+'\\begin{array}{l}'+nh.join(' \\\\ ')+'\\end{array}\\right.'+s.slice(g.het);
   } return s; }
-function chuanToan(s){ s=thayNgoac(s,'hoac','['); s=thayNgoac(s,'heva','{'); return s; }
+function chuanToan(s){ s=thayNgoac(s,'hoac','['); s=thayNgoac(s,'heva','{');
+  /* chèn dấu cách khi lệnh dính liền chữ cái (vd \cdotC_6^4 -> \cdot C_6^4) — chỉ các lệnh an toàn, không đụng \int \left \in... */
+  s=s.replace(/\\(cdot|circ|Rightarrow|Leftrightarrow|rightarrow|leftrightarrow)([A-Za-z])/g,'\\$1 $2');
+  return s; }
 /* \begin{tabular}/{array} ngoài math -> <table> */
 function bangHTML(body){ const rows=body.replace(/\\hline/g,'').split(/\\\\/).map(r=>r.trim()).filter(r=>r.length);
   let h='<div class="bangBoc"><table class="bang"><tbody>';
@@ -743,7 +746,7 @@ function veLatex(elm, src){ if(!elm) return; src=''+(src||''); try{src=src.norma
   s=escHTML(s).replace(/(\d+)/g,function(m,i){return bangs[+i];});
   elm.innerHTML=s; rend(elm);
 }
-function rend(node){ if(window.renderMathInElement){ try{renderMathInElement(node,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false,macros:KMACRO});}catch(e){} } }
+function rend(node){ if(window.renderMathInElement){ try{renderMathInElement(node,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\[',right:'\\]',display:true},{left:'$',right:'$',display:false},{left:'\\(',right:'\\)',display:false}],throwOnError:false,macros:KMACRO});}catch(e){} } }
 
 /* ===== CĂN CỨ / CHIẾN TRƯỜNG (chế độ Cày) ===== */
 let mode='cay', KHO=null, khuLop='10', cayKey='';
