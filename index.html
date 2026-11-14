@@ -1312,20 +1312,30 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 /* ===== Tab Ngân hàng — 2 cột ===== */
 .nh{--nhR:14px}
 /* Tổng quát */
-.nhTongQuat{display:grid;grid-template-columns:1.3fr repeat(3,1fr) auto;gap:12px;margin:6px 0 14px}
-@media(max-width:860px){.nhTongQuat{grid-template-columns:1fr 1fr}}
-.nhTQThe{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:14px 18px;border:1px solid var(--vien,#2c3850);border-radius:var(--nhR);background:var(--mat,#fff);text-align:left;font:inherit;color:var(--chu);cursor:pointer;position:relative;overflow:hidden;transition:border-color .15s,transform .1s}
-.nhTQThe:hover{border-color:var(--vang,#f5b301)}
-.nhTQThe:active{transform:translateY(1px)}
-.nhTQThe span{font-size:12px;font-weight:600;color:var(--phu,#9aa7c2);letter-spacing:.01em}
-.nhTQThe b{font-size:30px;font-weight:800;line-height:1.05;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-.nhTQThe i{font-style:normal;font-size:11px;color:var(--phu,#9aa7c2)}
-.nhTQThe em{position:absolute;left:0;bottom:0;height:3px;width:var(--w,0);background:linear-gradient(90deg,var(--vang,#f5b301),#ff8a5b);border-radius:0 3px 0 0}
-.nhTQThe.on{border-color:var(--vang,#f5b301);box-shadow:inset 0 0 0 1px var(--vang,#f5b301)}
-.nhTQThe.tong{background:linear-gradient(135deg,rgba(245,179,1,.14),rgba(245,179,1,.03));border-color:rgba(245,179,1,.4);cursor:default}
-.nhTQThe.tong b{background:linear-gradient(135deg,#f5b301,#ff8a5b);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-size:34px}
-.nhTQThe.tong .nhTQIco{position:absolute;right:14px;top:12px;font-size:22px;opacity:.5}
-.nhTQThe.lop .nhTQCham{position:absolute;right:14px;top:14px;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-weight:800;font-size:12px;background:linear-gradient(135deg,#f5b301,#ff8a5b);color:#1b1408}
+.nhTongQuat{display:grid;grid-template-columns:1.5fr repeat(3,1fr) auto;gap:11px;margin:4px 0 16px}
+@media(max-width:980px){.nhTongQuat{grid-template-columns:1fr 1fr}}
+.nhTQThe{position:relative;display:flex;align-items:center;gap:13px;padding:13px 16px;border:1px solid var(--vien,#2c3850);border-radius:15px;background:var(--mat,#fff);text-align:left;font:inherit;color:var(--chu);cursor:pointer;overflow:hidden;transition:border-color .14s,box-shadow .14s,transform .1s}
+.nhTQThe:hover{transform:translateY(-1px)}
+.nhTQThe:active{transform:translateY(0)}
+.nhTQThe em{position:absolute;left:0;bottom:0;height:3px;width:var(--w,0);background:var(--lc,#f5b301);border-radius:0 3px 0 0;opacity:.85}
+/* thẻ Tổng */
+.nhTQThe.tong{flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;cursor:default;background:linear-gradient(135deg,rgba(245,179,1,.16),rgba(245,179,1,.02));border-color:rgba(245,179,1,.42)}
+.nhTQThe.tong .nhTQIco{position:absolute;right:14px;top:12px;font-size:20px;opacity:.45}
+.nhTQThe.tong .nhTQT{font-size:12px;font-weight:700;color:var(--phu,#9aa7c2)}
+.nhTQThe.tong b{font-size:34px;font-weight:800;line-height:1.05;letter-spacing:-.02em;font-variant-numeric:tabular-nums;background:linear-gradient(135deg,#f5b301,#ff8a5b);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.nhTQThe.tong i{font-style:normal;font-size:11px;color:var(--phu,#9aa7c2)}
+/* thẻ Lớp — badge màu riêng */
+.nhTQHuy{flex:none;width:52px;height:52px;border-radius:13px;display:grid;place-items:center;font:800 23px/1 inherit;color:#fff;background:linear-gradient(145deg,var(--lc),var(--lc2));box-shadow:0 6px 14px -5px var(--lc)}
+.nhTQLT{display:flex;flex-direction:column;gap:0;min-width:0}
+.nhTQNhan{font-size:12px;font-weight:700;color:var(--phu,#9aa7c2)}
+.nhTQThe.lop b{font-size:25px;font-weight:800;line-height:1.15;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.nhTQThe.lop i{font-style:normal;font-size:11px;color:var(--phu,#9aa7c2)}
+.nhTQThe.l10{--lc:#4f9dff;--lc2:#2f6fd0;--lcbg:rgba(79,157,255,.13)}
+.nhTQThe.l11{--lc:#35c08a;--lc2:#1f9e6e;--lcbg:rgba(53,192,138,.13)}
+.nhTQThe.l12{--lc:#f6a723;--lc2:#d7860a;--lcbg:rgba(246,167,35,.13)}
+.nhTQThe.lop:hover{border-color:var(--lc)}
+.nhTQThe.lop.on{border-color:var(--lc);box-shadow:inset 0 0 0 1.5px var(--lc),0 8px 20px -10px var(--lc);background:var(--lcbg)}
+.nhTQTick{position:absolute;right:11px;top:11px;width:20px;height:20px;border-radius:50%;background:var(--lc);color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center}
 .nhTQNut{display:flex;align-items:center;justify-content:center}
 
 /* Thanh lọc */
@@ -1333,11 +1343,9 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 .nhLocBar2{padding-top:11px;border-top:1px solid var(--vien,#2c3850);margin-bottom:14px}
 .nhLocNhan{font-size:10.5px;font-weight:700;color:var(--phu,#9aa7c2);text-transform:uppercase;letter-spacing:.05em}
 .nhLocDay{flex:1}
-.nhLop{display:inline-flex;gap:5px}
-.nhLop button{min-width:40px;height:38px;padding:0 10px;border-radius:11px;border:1px solid var(--vien,#2c3850);background:var(--mat,#fff);color:var(--chu);font:800 14px/1 inherit;cursor:pointer;transition:all .13s}
-.nhLop button:hover{border-color:var(--vien,#2c3850);filter:brightness(1.06)}
-.nhLop button.on{background:linear-gradient(135deg,#f5b301,#ff8a5b);color:#1b1408;border-color:#e0a800}
-.nhLop button i{font-style:normal;font-size:10.5px;font-weight:700;opacity:.7;margin-left:4px}
+/* nút Đồng bộ Game ở thanh trên */
+.nhDongBoNut{background:linear-gradient(135deg,#8ec5ff,#4f7cff)!important;border-color:#3f6fe0!important;color:#06173f!important;font-weight:800}
+.nhDongBoNut:hover{filter:brightness(1.05)}
 /* dropdown */
 .nhDD{position:relative}
 .nhDDNut{height:38px;padding:0 12px;border-radius:11px;border:1px solid var(--vien,#2c3850);background:var(--mat,#fff);color:var(--chu);font:inherit;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;max-width:300px}
@@ -2590,12 +2598,12 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 			<div class="mdDauNut">
 				<label class="gtNutTep nhNap"><input type="file" id="nhTep" accept=".tex,.txt" multiple>⬆ Nạp file .tex</label>
 				<label class="gtNutTep nhNapTM" title="Chọn cả thư mục — web tự quét mọi file .tex bên trong, kể cả thư mục con"><input type="file" id="nhTepTM" webkitdirectory directory multiple>📁 Nạp cả thư mục</label>
+				<button class="gtNutTep nhDongBoNut" type="button" id="nhDongBo" title="Xuất toàn bộ ngân hàng thành kho_game.json để nạp vào Game Chinh phục">🎮 Đồng bộ Game</button>
 				<button class="vdNutNho nhLuuNut" type="button" id="nhSaoLuu" title="Tải toàn bộ ngân hàng ra một file để cất giữ — phòng khi trình duyệt xoá dữ liệu">💾 Sao lưu</button>
 				<button class="vdNutNho nhGanNut" type="button" id="nhGanID" hidden title="Đưa các câu chưa có ID sang tab Gán ID để gán, rồi cập nhật lại vào Ngân hàng">🏷 Gán ID · <b id="nhGanSo">0</b> câu chưa có ID</button>
 				<button class="vdNutNho" type="button" id="nhTrung">⧉ Lọc câu trùng</button>
 				<button class="gtIcoNut" type="button" id="nhMenu" aria-label="Tuỳ chọn" aria-expanded="false">⋯</button>
 				<div class="gtMenu nhMenuDs" id="nhMenuDs" hidden>
-					<button type="button" data-nh="game">🎮 Đồng bộ vào Game Chinh phục (kho_game.json)</button>
 					<button type="button" data-nh="saoluu">Sao lưu ngân hàng (.json)</button>
 					<label class="nhMenuTep"><input type="file" id="nhKhoiPhuc" accept=".json">Khôi phục từ bản sao lưu</label>
 					<button type="button" data-nh="xuat">Xuất các câu đang lọc (.tex)</button>
@@ -2612,7 +2620,6 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 
 		<!-- Thanh lọc ngang -->
 		<div class="nhLocBar">
-			<div class="nhLop" id="nhLop" aria-label="Chọn lớp"></div>
 			<div class="nhDD" id="nhDDChuong"></div>
 			<div class="nhDD" id="nhDDBai"></div>
 			<div class="nhDD" id="nhDDDang"></div>
@@ -2622,7 +2629,6 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 			<span class="nhLocNhan">Loại</span><div class="giLoc" id="nhLoai"></div>
 			<span class="nhLocNhan">Mức</span><div class="giLoc" id="nhMuc"></div>
 			<label class="vdCong nhCoHinh"><input type="checkbox" id="nhHinh"><i aria-hidden="true"></i>Có hình</label>
-			<label class="vdCong nhCoHinh"><input type="checkbox" id="nhMau"><i aria-hidden="true"></i>Có mẫu đổi số</label>
 			<span class="nhLocDay"></span>
 			<button class="vdNutNho nhBoLocNut" type="button" id="nhBoLoc">✕ Bỏ lọc</button>
 		</div>
@@ -9640,9 +9646,9 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 			const loai = { tn: 0, ds: 0, tln: 0, tl: 0 }; ALL.forEach(c => loai[c.loai]++);
 			const max = Math.max(1, ...["0", "1", "2"].map(k => theoLop[k] || 0));
 			const loaiTxt = Object.entries(loai).filter(([, v]) => v).map(([k, v]) => QB.TEN_LOAI[k] + " " + v.toLocaleString("vi-VN")).join(" · ");
-			const theLop = l => { const n = theoLop[l] || 0, on = loc.nut === l; return '<button type="button" class="nhTQThe lop' + (on ? " on" : "") + '" data-nut="' + l + '"><span class="nhTQCham">' + (10 + +l) + '</span><span>Lớp ' + (10 + +l) + '</span><b>' + n.toLocaleString("vi-VN") + '</b><i>câu hỏi</i><em style="--w:' + (n / max * 100).toFixed(0) + '%"></em></button>'; };
+			const theLop = l => { const n = theoLop[l] || 0, on = loc.nut === l; return '<button type="button" class="nhTQThe lop l' + (10 + +l) + (on ? " on" : "") + '" data-nut="' + l + '"><span class="nhTQHuy">' + (10 + +l) + '</span><span class="nhTQLT"><span class="nhTQNhan">Lớp ' + (10 + +l) + '</span><b>' + n.toLocaleString("vi-VN") + '</b><i>câu hỏi</i></span>' + (on ? '<span class="nhTQTick">✓</span>' : '') + '<em style="--w:' + (n / max * 100).toFixed(0) + '%"></em></button>'; };
 			const chua = theoLop["?"] || 0;
-			$g("nhTK").innerHTML = '<div class="nhTQThe tong"><span class="nhTQIco">🗄️</span><span>Tổng quát — toàn ngân hàng</span><b>' + ALL.length.toLocaleString("vi-VN") + '</b><i>' + (loaiTxt || "chưa có câu nào") + (chua ? " · " + chua + " câu chưa phân loại" : "") + '</i></div>' + ["0", "1", "2"].map(theLop).join("") + '<div class="nhTQNut"><button type="button" class="vdNutNho nhBoLocNut' + (loc.nut ? "" : " on") + '" id="nhTQTatCa">Tất cả lớp</button></div>'; }
+			$g("nhTK").innerHTML = '<div class="nhTQThe tong"><span class="nhTQIco">🗄️</span><span class="nhTQT">Tổng quát — toàn ngân hàng</span><b>' + ALL.length.toLocaleString("vi-VN") + '</b><i>' + (loaiTxt || "chưa có câu nào") + (chua ? " · " + chua + " câu chưa phân loại" : "") + '</i></div>' + ["0", "1", "2"].map(theLop).join("") + '<div class="nhTQNut"><button type="button" class="vdNutNho nhBoLocNut' + (loc.nut ? "" : " on") + '" id="nhTQTatCa">Tất cả lớp</button></div>'; }
 		// ---------- thanh lọc: Lớp + 3 dropdown (thay cây) ----------
 		function tinhNhom() { const C = cay(); DEM = new Map(); ALL.forEach(c => nutCua(c).filter(Boolean).forEach(n => DEM.set(n, (DEM.get(n) || 0) + 1)));
 			NHOM = {}; ALL.forEach(c => { if (!c.lop) return; const L = (NHOM[c.lop] = NHOM[c.lop] || {}), mc = QB.maChuong(c), C2 = (L[mc] = L[mc] || {}); if (c.bai) { const mb = QB.maBai(c), B = (C2[mb] = C2[mb] || {}); if (c.dang) B[QB.maDang(c)] = 1; } });
@@ -9657,8 +9663,6 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 		function veCay() { tinhNhom(); const C = cay(), p = phanTich();
 			const coLop = ["0", "1", "2"].filter(l => NHOM[l]); if (!lopDD || !NHOM[lopDD]) lopDD = p.lop && NHOM[p.lop] ? p.lop : (coLop[0] || "0");
 			if (p.lop && NHOM[p.lop]) lopDD = p.lop;
-			// Lớp
-			$g("nhLop").innerHTML = ["0", "1", "2"].map(l => '<button type="button" class="' + (lopDD === l ? "on" : "") + '" data-lop="' + l + '">' + (10 + +l) + '<i>' + (DEM.get(l) || 0) + '</i></button>').join("");
 			// Chương (của lopDD) — Chương thường trước, Chuyên đề sau
 			const chs = NHOM[lopDD] || {}, dsCh = [{ ma: "", ten: "Tất cả chương", n: DEM.get(lopDD) || 0 }].concat(sapMa(chs).map(mc => ({ ma: mc, ten: (C.ten(mc) || "Chương " + mc.slice(2)), n: DEM.get(mc) || 0 })));
 			veDD("nhDDChuong", "Chương", dsCh, p.mc);
@@ -9766,11 +9770,10 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 				$g("nhTepTM").addEventListener("change", async () => { const fs = [...$g("nhTepTM").files]; $g("nhTepTM").value = ""; if (fs.length) await nap(fs); });
 				$g("nhSaoLuu").addEventListener("click", saoLuu);
 				$g("nhTim").addEventListener("input", () => { loc.q = $g("nhTim").value; soHien = TRANG; veDs(); });
-				$g("nhHinh").addEventListener("change", () => { loc.hinh = $g("nhHinh").checked; veDs(); }); $g("nhMau").addEventListener("change", () => { loc.mau = $g("nhMau").checked; veDs(); });
+				$g("nhHinh").addEventListener("change", () => { loc.hinh = $g("nhHinh").checked; veDs(); });
 				$g("nhLoai").addEventListener("click", e => { const b = e.target.closest("[data-loai]"); if (b) { loc.loai = b.dataset.loai; soHien = TRANG; veDs(); } });
 				$g("nhMuc").addEventListener("click", e => { const b = e.target.closest("[data-muc]"); if (b) { loc.muc = b.dataset.muc; soHien = TRANG; veDs(); } });
 				const locLai = () => { soHien = TRANG; veTK(); veCay(); veDs(); };
-				$g("nhLop").addEventListener("click", e => { const b = e.target.closest("[data-lop]"); if (!b) return; const l = b.dataset.lop; loc.nut = loc.nut === l ? "" : l; lopDD = l; locLai(); });
 				$g("nhTK").addEventListener("click", e => { if (e.target.closest("#nhTQTatCa")) { loc.nut = ""; locLai(); return; } const s = e.target.closest("[data-nut]"); if (!s) return; loc.nut = loc.nut === s.dataset.nut ? "" : s.dataset.nut; locLai(); });
 				const ddClick = e => { const nut = e.target.closest(".nhDDNut"); if (nut) { e.stopPropagation(); const dd = nut.closest(".nhDD"), dangMo = dd.classList.contains("mo"); document.querySelectorAll(".nhDD.mo").forEach(x => x.classList.remove("mo")); if (!dangMo) dd.classList.add("mo"); return; }
 					const it = e.target.closest(".nhDDItem"); if (!it) return; e.stopPropagation(); const ma = it.dataset.ma, dd = it.closest(".nhDD"), p = phanTich();
@@ -9778,7 +9781,7 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 					document.querySelectorAll(".nhDD.mo").forEach(x => x.classList.remove("mo")); locLai(); };
 				["nhDDChuong", "nhDDBai", "nhDDDang"].forEach(id => $g(id).addEventListener("click", ddClick));
 				document.addEventListener("click", () => document.querySelectorAll(".nhDD.mo").forEach(x => x.classList.remove("mo")));
-				$g("nhBoLoc").addEventListener("click", () => { loc = { nut: "", loai: "", muc: "", q: "", hinh: false, mau: false }; $g("nhTim").value = ""; $g("nhHinh").checked = false; $g("nhMau").checked = false; locLai(); });
+				$g("nhBoLoc").addEventListener("click", () => { loc = { nut: "", loai: "", muc: "", q: "", hinh: false, mau: false }; $g("nhTim").value = ""; $g("nhHinh").checked = false; locLai(); });
 				$g("nhDs").addEventListener("click", e => { const cb = e.target.closest("[data-chon]"); if (cb) { cb.checked ? chon.add(cb.dataset.chon) : chon.delete(cb.dataset.chon); $g("nhSoChon").textContent = chon.size; $g("nhGio").disabled = $g("nhXoaChon").disabled = !chon.size; return; } const li = e.target.closest("[data-k]"); if (li) xem(li.dataset.k); });
 				$g("nhThem").addEventListener("click", () => { soHien += TRANG * 2; veDs(); });
 				$g("nhChonHet").addEventListener("click", () => { const d = locDs(), het = d.every(c => chon.has(c.k)); d.forEach(c => het ? chon.delete(c.k) : chon.add(c.k)); veDs(); });
@@ -9794,6 +9797,7 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 				$g("nhXoa1").addEventListener("click", async () => { if (!dangXem || !confirm("Xoá câu này khỏi ngân hàng?")) return; await QB.dbXoa([dangXem]); dangXem = null; cheXem = "in"; $g("nhGiay").hidden = false; $g("nhMa").hidden = true; $g("nhSuaHop").hidden = true; $g("nhGiay").innerHTML = '<p class="mdTrong">Đã xoá.</p>'; $g("nhXemNut").hidden = true; await napLai(); });
 				$g("nhSuaHuy").addEventListener("click", () => { cheXem = "in"; $g("nhSuaHop").dataset.k = ""; apChe(); });
 				$g("nhSuaLuu").addEventListener("click", async () => { const x = QB.tachEx($g("nhSuaMa").value)[0]; if (!x) { toast("Code phải là một khối \\begin{ex}…\\end{ex}"); return; } const cu = ALL.find(c => c.k === dangXem), r = QB.taoBanGhi(x.raw, x.than, x.ids, cu ? cu.nguon : ""); if (cu) r.ngay = cu.ngay; if (cu && r.k !== cu.k) await QB.dbXoa([cu.k]); await QB.dbGhi([r]); dangXem = r.k; cheXem = "in"; $g("nhSuaHop").dataset.k = ""; await napLai(); xem(r.k); toast("Đã lưu câu hỏi"); });
+				$g("nhDongBo").addEventListener("click", () => dongBoGame());
 				$g("nhMenu").addEventListener("click", e => { e.stopPropagation(); const m = $g("nhMenuDs"); m.hidden = !m.hidden; });
 				document.addEventListener("click", e => { if (!e.target.closest("#nhMenuDs")) $g("nhMenuDs").hidden = true; });
 				$g("nhMenuDs").addEventListener("click", async e => { const b = e.target.closest("[data-nh]"); if (!b) return; $g("nhMenuDs").hidden = true; const k = b.dataset.nh;
