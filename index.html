@@ -1539,6 +1539,77 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 .ttKhoDong .gtXoa, .ttAnhDe .gtXoa { opacity: 1; }
 @media (max-width: 760px) { .ttCheDo { grid-template-columns: 1fr; } .ttKhoDong { grid-template-columns: 26px 1fr auto; } .ttKhoDong p, .ttKhoDong i, .ttKhoDong .mdChip { display: none; } .ttYDs label { grid-template-columns: 22px 1fr; } .ttYDs label span { display: none; } }
 
+/* ===== Tab Văn Phòng — K-Word ===== */
+.kwIco{background:linear-gradient(135deg,#8ec5ff,#4f7cff)!important}
+.kwIco svg{stroke:#07163a!important}
+.kw .kwCham{color:var(--vang,#f5b301)}
+.kwVer{margin-left:auto;font-size:11.5px;color:var(--phu,#9aa7c2);border:1px solid var(--vien,#2c3850);padding:5px 11px;border-radius:99px}
+/* nạp file */
+.kwFileZone{display:flex;align-items:center;gap:13px;padding:16px;border:1.5px dashed var(--vien2,#3a465c);border-radius:16px;background:var(--mat,#fff);margin:4px 0 16px;transition:border-color .15s,background .15s}
+.kwFileZone.keo{border-color:var(--vang,#f5b301);background:var(--vangnhat,rgba(245,179,1,.08))}
+.kwFIco{width:44px;height:44px;border-radius:12px;background:rgba(79,157,255,.13);display:grid;place-items:center;flex:none}
+.kwFIco svg{width:23px;height:23px;fill:none;stroke:var(--xanh,#4f9dff);stroke-width:1.8}
+.kwFTx{flex:1;min-width:0}
+.kwFTx b{font-size:14px}.kwFTx>span{display:block;color:var(--phu,#9aa7c2);font-size:12px;margin-top:1px}
+.kwFTep{color:var(--luc,#35c08a)!important;font-weight:600;margin-top:6px!important}
+.kwNapNut{flex:none}
+/* chips */
+.kwChips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+.kwChip{height:40px;padding:0 15px;border-radius:12px;border:1px solid var(--vien,#2c3850);background:var(--mat,#fff);color:var(--phu,#9aa7c2);font:inherit;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.kwChip:hover{border-color:var(--vien2,#3a465c);color:var(--chu)}
+.kwChip.on{background:var(--vang,#f5b301);border-color:#e0a800;color:#1b1408;font-weight:800}
+.kwChip .ic{font-size:15px}
+/* bố cục */
+.kwThan{display:grid;grid-template-columns:minmax(0,1fr) 336px;gap:16px;align-items:start}
+@media(max-width:1000px){.kwThan{grid-template-columns:1fr}}
+.kwCot{min-width:0}
+.kwPanel{background:var(--mat,#fff);border:1px solid var(--vien,#2c3850);border-radius:16px;padding:18px}
+.kwPanel[hidden]{display:none}
+.kwNhom{margin-bottom:18px}.kwNhom:last-child{margin-bottom:0}
+.kwNhomDau{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:var(--vang,#f5b301);margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid var(--vien,#2c3850)}
+.kwRow{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px 14px}
+.kwF{display:flex;flex-direction:column;gap:5px;min-width:0}
+.kwF label{font-size:11.5px;font-weight:600;color:var(--phu,#9aa7c2)}
+.kwF input,.kwF select,.kwF textarea{border:1px solid var(--vien,#2c3850);border-radius:10px;background:var(--code,rgba(128,128,128,.08));color:var(--chu);font:inherit;font-size:13.5px;padding:9px 11px;outline:0;width:100%}
+.kwF input[type=color]{padding:3px;height:40px;cursor:pointer}
+.kwF input:focus,.kwF select:focus,.kwF textarea:focus{border-color:var(--vang,#f5b301)}
+.kwF textarea{resize:vertical;font-size:13px;line-height:1.5}
+.kwF.kwFull{grid-column:1/-1}
+.kwTog{display:inline-flex;align-items:center;gap:9px;font-size:13px;cursor:pointer;color:var(--chu)}
+.kwTog input{appearance:none;width:38px;height:22px;border-radius:99px;background:var(--vien,#2c3850);position:relative;cursor:pointer;flex:none;transition:background .15s}
+.kwTog input:checked{background:var(--vang,#f5b301)}
+.kwTog input::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .15s}
+.kwTog input:checked::after{transform:translateX(16px)}
+.kwTog i{display:none}
+.kwTog .kwEg{color:var(--phu,#9aa7c2)}
+.kwTogHead{font-weight:700;margin-bottom:4px}
+.kwTogHang{display:flex;flex-wrap:wrap;gap:16px;margin-top:6px}
+.kwHint{font-size:11.5px;color:var(--phu,#9aa7c2);margin-top:11px;line-height:1.5}
+.kwCanh{padding:11px 13px;border-radius:11px;background:var(--vangnhat,rgba(245,179,1,.09));border:1px solid rgba(245,179,1,.28);font-size:12px;color:var(--vang,#f5b301);margin-top:12px}
+/* quốc hiệu preview */
+.kwQh{padding:14px;border:1px dashed var(--vien2,#3a465c);border-radius:12px;background:var(--code,rgba(128,128,128,.06));text-align:center;font-family:"Times New Roman",serif;margin-top:6px}
+.kwQh .q1{font-weight:700;font-size:14px}.kwQh .q2{font-weight:700;font-size:15px;margin:3px 0 2px}.kwQh .q3{width:150px;border-bottom:1px solid var(--chu);margin:4px auto 0}
+.kwHd{display:flex;flex-direction:column;gap:7px}.kwHd div{font-size:12.5px}.kwHd b{color:var(--vang,#f5b301);margin-right:6px}
+/* xem trước A4 */
+.kwXem{position:sticky;top:12px}
+.kwXemDau{font-size:12px;font-weight:700;color:var(--phu,#9aa7c2);margin-bottom:10px;text-align:center;letter-spacing:.04em}
+.kwA4{aspect-ratio:1/1.414;background:#f7f5ef;border-radius:8px;box-shadow:0 14px 34px -14px rgba(0,0,0,.6);color:#222;font-family:"Times New Roman",Georgia,serif;position:relative;overflow:hidden;font-size:9px;line-height:1.5}
+.kwA4 .mg{position:absolute;inset:9% 8%;border:1px dashed #c9bfa3}
+.kwA4 .pg{position:absolute;left:0;right:0;bottom:4.5%;text-align:center;font-size:9px;color:#333}
+.kwA4 .bd{position:absolute;inset:0;padding:13% 12% 9%}
+.kwA4 h5{margin:0 0 5px;font-size:11px;text-align:center;text-transform:uppercase;font-weight:800}
+.kwA4 p{margin:0 0 5px;text-align:justify}
+.kwCov{text-align:center;height:100%;display:flex;flex-direction:column;align-items:center;padding:9% 10%;position:relative}
+.kwCovKhung{position:absolute;inset:6%;pointer-events:none}
+.kwCov .cq{font-weight:700;font-size:9px}.kwCov .cu{font-size:8.5px;margin-bottom:auto}
+.kwCov .big{font-size:14px;font-weight:800;text-transform:uppercase;margin:10% 0 6%;line-height:1.3}
+.kwCov .sub{font-size:9px}.kwCov .ft{margin-top:auto;font-size:8.5px;line-height:1.6}
+.kwBtns{margin-top:14px}
+.kwBtns .vt3NutChinh{width:100%;height:44px;justify-content:center}
+.kwBtnCot{display:flex;flex-direction:column;gap:9px}
+.kwBtnCot button{width:100%;justify-content:center;height:42px}
+#kwTrangThai{text-align:center;margin-top:9px}
+
 </style>
 </head>
 <body>
@@ -1588,6 +1659,7 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 		<button type="button" role="tab" class="nutNhom" id="nhomVeHinh" data-nhom="VeHinh" aria-selected="false" aria-haspopup="true" aria-expanded="false" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19 7-7 3 3-7 7z"/><path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18z"/><circle cx="11" cy="11" r="2"/></svg><span>Vẽ hình TikZ</span><em id="nhomVeHinhCon"></em><i aria-hidden="true"></i></button>
 		<button type="button" role="tab" class="nutNhom" id="nhomLopHoc" data-nhom="LopHoc" aria-selected="false" aria-haspopup="true" aria-expanded="false" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg><span>Lớp học</span><em id="nhomLopHocCon"></em><i aria-hidden="true"></i></button>
 		<button type="button" role="tab" class="nutNhom" id="nhomDeThi" data-nhom="DeThi" aria-selected="false" aria-haspopup="true" aria-expanded="false" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6l1 3H8z"/><rect x="4" y="5" width="16" height="16" rx="2"/><path d="m8 13 2.5 2.5L16 10"/></svg><span>Đề thi</span><em id="nhomDeThiCon"></em><i aria-hidden="true"></i></button>
+		<button type="button" role="tab" id="nutTabVanPhong" aria-selected="false" aria-controls="tabVanPhong" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 12h18"/></svg><span>Văn Phòng</span></button>
 		<button type="button" role="tab" id="nutTabVideo" aria-selected="false" aria-controls="tabVideo" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="15" height="14" rx="2.5"/><path d="m17.5 10 4-2.5v9l-4-2.5"/><path d="m8.5 9.5 4 2.5-4 2.5z"/></svg><span>Tạo video</span></button>
 	</nav>
 	<div class="tabMenu" id="conCongCu" role="tablist" aria-label="Công cụ chuyển đổi" hidden>
@@ -2826,6 +2898,199 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 		</div>
 	</div>
 </section>
+<section class="manTab" id="tabVanPhong" role="tabpanel" aria-labelledby="nutTabVanPhong" hidden>
+	<div class="kw">
+		<header class="mdDau">
+			<div class="mdDauTen">
+				<span class="mdDauIco kwIco" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><path d="M14 2v6h6"/><path d="M8.5 13l1.5 4 2-5 2 5 1.5-4"/></svg></span>
+				<div><h2>K-Word <span class="kwCham">·</span> chỉnh nhanh file Word</h2><p>Tải file Word lên → tùy chỉnh → tải về file Word mới. Chạy ngay trên web, không cần cài đặt.</p></div>
+			</div>
+			<span class="kwVer">phiên bản web</span>
+		</header>
+
+		<!-- nạp file -->
+		<div class="kwFileZone" id="kwDrop">
+			<span class="kwFIco" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0 4 4m-4-4-4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></span>
+			<div class="kwFTx">
+				<b>Kéo thả hoặc chọn file <code>.docx</code> để bắt đầu</b>
+				<span>Có thể chọn nhiều file để xử lý hàng loạt. File xử lý ngay trên máy anh, không gửi lên đâu cả.</span>
+				<span class="kwFTep" id="kwTenFile" hidden></span>
+			</div>
+			<label class="gtNutTep kwNapNut"><input type="file" id="kwFile" accept=".docx" multiple>📄 Chọn file Word</label>
+		</div>
+
+		<!-- chip chức năng -->
+		<div class="kwChips" id="kwChips" role="tablist">
+			<button class="kwChip on" type="button" data-p="font"><span class="ic">🅰️</span>Font &amp; Đoạn</button>
+			<button class="kwChip" type="button" data-p="bia"><span class="ic">🪪</span>Trang bìa</button>
+			<button class="kwChip" type="button" data-p="sotrang"><span class="ic">#️⃣</span>Số trang</button>
+			<button class="kwChip" type="button" data-p="huong"><span class="ic">🔄</span>Hướng giấy</button>
+			<button class="kwChip" type="button" data-p="mucluc"><span class="ic">📑</span>Mục lục</button>
+			<button class="kwChip" type="button" data-p="quochieu"><span class="ic">⚑</span>Quốc hiệu</button>
+			<button class="kwChip" type="button" data-p="baomat"><span class="ic">🔒</span>Bảo mật</button>
+			<button class="kwChip" type="button" data-p="xuat"><span class="ic">⤓</span>Xuất</button>
+		</div>
+
+		<div class="kwThan">
+			<section class="kwCot">
+				<!-- FONT -->
+				<div class="kwPanel" data-pan="font">
+					<div class="kwNhom"><div class="kwNhomDau">🅰️ Font &amp; đoạn văn</div>
+						<label class="kwTog kwTogHead"><input type="checkbox" id="kwFontBat" checked><i></i>Chuẩn hoá font &amp; đoạn văn</label>
+						<div class="kwRow">
+							<div class="kwF"><label>Font chữ</label><select id="kwFont"><option>Times New Roman</option><option>Arial</option><option>Calibri</option><option>Tahoma</option><option>Cambria</option></select></div>
+							<div class="kwF"><label>Cỡ chữ</label><select id="kwCo"><option>12</option><option>13</option><option selected>14</option><option>15</option><option>16</option></select></div>
+							<div class="kwF"><label>Giãn dòng</label><select id="kwGian"><option value="1">1.0</option><option value="1.15" selected>1.15</option><option value="1.3">1.3</option><option value="1.5">1.5</option><option value="2">2.0</option></select></div>
+							<div class="kwF"><label>Cách đoạn — trước (pt)</label><input id="kwTruoc" type="number" value="0" min="0" step="1"></div>
+							<div class="kwF"><label>Cách đoạn — sau (pt)</label><input id="kwSau" type="number" value="6" min="0" step="1"></div>
+							<div class="kwF"><label>Thụt lề đầu dòng</label><select id="kwThut"><option value="0">(Không)</option><option value="1" selected>Dòng đầu</option></select></div>
+							<div class="kwF"><label>Giá trị thụt (cm)</label><input id="kwThutVal" type="number" value="1" min="0" step="0.1"></div>
+						</div>
+						<label class="kwTog"><input type="checkbox" id="kwFontMoiDoan"><i></i>Ép áp dụng cho mọi đoạn (ghi đè định dạng cũ)</label>
+					</div>
+					<div class="kwNhom"><div class="kwNhomDau">📐 Khổ giấy &amp; lề</div>
+						<div class="kwRow">
+							<div class="kwF"><label>Khổ giấy</label><select id="kwKho"><option value="a4" selected>A4 (21 × 29.7 cm)</option><option value="a5">A5 (14.8 × 21 cm)</option><option value="letter">Letter (21.6 × 27.9 cm)</option></select></div>
+							<div class="kwF"><label>Lề trên (cm)</label><input id="kwLeTren" type="number" value="2" step="0.1"></div>
+							<div class="kwF"><label>Lề dưới (cm)</label><input id="kwLeDuoi" type="number" value="2" step="0.1"></div>
+							<div class="kwF"><label>Lề trái (cm)</label><input id="kwLeTrai" type="number" value="3" step="0.1"></div>
+							<div class="kwF"><label>Lề phải (cm)</label><input id="kwLePhai" type="number" value="2" step="0.1"></div>
+						</div>
+						<div class="kwHint">💡 Giữ nguyên nội dung, hình ảnh và bảng biểu của tài liệu.</div>
+					</div>
+				</div>
+
+				<!-- TRANG BÌA -->
+				<div class="kwPanel" data-pan="bia" hidden>
+					<div class="kwNhom"><div class="kwNhomDau">🪪 Trang bìa chính (trang 1)</div>
+						<label class="kwTog kwTogHead"><input type="checkbox" id="kwBiaBat"><i></i>Thêm trang bìa vào đầu tài liệu</label>
+						<div class="kwRow" style="margin-top:12px">
+							<div class="kwF"><label>Mẫu bìa</label><select id="kwBiaMau"><option value="trangtrong" selected>Trang trọng</option><option value="toigian">Tối giản</option><option value="hocduong">Học đường</option></select></div>
+							<div class="kwF"><label>Cơ quan chủ quản</label><input id="kwBiaCoQuan" value="SỞ GIÁO DỤC VÀ ĐÀO TẠO"></div>
+							<div class="kwF"><label>Đơn vị</label><input id="kwBiaDonVi" value="TRƯỜNG THPT ..."></div>
+							<div class="kwF kwFull"><label>Tiêu đề tài liệu</label><input id="kwBiaTieuDe" value="BÁO CÁO TỔNG KẾT"></div>
+							<div class="kwF"><label>Thông tin phụ</label><input id="kwBiaPhuTT" value="Môn: ... — Khối: ..."></div>
+							<div class="kwF"><label>Tác giả</label><input id="kwBiaTacGia" value="Họ và tên"></div>
+							<div class="kwF"><label>Địa điểm</label><input id="kwBiaDiaDiem" value="..."></div>
+							<div class="kwF"><label>Thời gian</label><input id="kwBiaThoiGian" value="Tháng ... năm ..."></div>
+						</div>
+					</div>
+					<div class="kwNhom"><div class="kwNhomDau">🖼️ Khung viền trang bìa</div>
+						<label class="kwTog"><input type="checkbox" id="kwKhungBat" checked><i></i>Đóng khung trang bìa</label>
+						<div class="kwRow" style="margin-top:12px">
+							<div class="kwF"><label>Kiểu nét</label><select id="kwKhungKieu"><option value="single" selected>Nét đơn</option><option value="double">Nét đôi</option><option value="thick">Nét đậm</option><option value="dashed">Nét đứt</option><option value="dotted">Nét chấm</option><option value="triple">Ba nét</option><option value="wave">Lượn sóng</option></select></div>
+							<div class="kwF"><label>Độ dày</label><select id="kwKhungDay"><option value="12">Mảnh</option><option value="18" selected>Vừa</option><option value="28">Dày</option></select></div>
+							<div class="kwF"><label>Màu nét</label><input id="kwKhungMau" type="color" value="#1a3a7a"></div>
+							<div class="kwF"><label>Cách mép (pt)</label><input id="kwKhungCach" type="number" value="24" step="1"></div>
+						</div>
+					</div>
+					<div class="kwNhom"><div class="kwNhomDau">📄 Bìa phụ (trang 2)</div>
+						<label class="kwTog"><input type="checkbox" id="kwBiaPhuBat"><i></i>Thêm bìa phụ ngay sau bìa chính</label>
+						<div class="kwRow" style="margin-top:12px">
+							<div class="kwF kwFull"><label>Tiêu đề bìa phụ</label><input id="kwBiaPhuTieuDe" value="BÁO CÁO TỔNG KẾT"></div>
+							<div class="kwF kwFull"><label>Nội dung phụ (mỗi dòng một mục)</label><textarea id="kwBiaPhuND" rows="3">Giáo viên hướng dẫn: ...
+Người thực hiện: ...
+Lớp: ...</textarea></div>
+						</div>
+						<div class="kwHint">💡 Bìa phụ dùng chung kiểu khung với bìa chính. Khung chỉ áp dụng cho trang bìa, không ảnh hưởng nội dung.</div>
+					</div>
+				</div>
+
+				<!-- SỐ TRANG -->
+				<div class="kwPanel" data-pan="sotrang" hidden>
+					<div class="kwNhom"><div class="kwNhomDau">#️⃣ Đánh số trang</div>
+						<label class="kwTog kwTogHead"><input type="checkbox" id="kwStBat" checked><i></i>Chèn số trang</label>
+						<div class="kwRow" style="margin-top:12px">
+							<div class="kwF"><label>Vị trí</label><select id="kwStViTri"><option value="duoi-giua" selected>Cuối trang — Giữa</option><option value="duoi-phai">Cuối trang — Phải</option><option value="duoi-trai">Cuối trang — Trái</option><option value="tren-giua">Đầu trang — Giữa</option><option value="tren-phai">Đầu trang — Phải</option></select></div>
+							<div class="kwF"><label>Định dạng</label><select id="kwStDinhDang"><option value="decimal" selected>1, 2, 3…</option><option value="lowerRoman">i, ii, iii…</option><option value="upperRoman">I, II, III…</option><option value="lowerLetter">a, b, c…</option></select></div>
+							<div class="kwF"><label>Bắt đầu từ số</label><input id="kwStBatDau" type="number" value="1" min="1"></div>
+							<div class="kwF"><label>Bỏ qua (trang đầu)</label><input id="kwStBoQua" type="number" value="0" min="0"></div>
+							<div class="kwF"><label>Font số trang</label><select id="kwStFont"><option selected>Times New Roman</option><option>Arial</option><option>Calibri</option></select></div>
+							<div class="kwF"><label>Cỡ</label><select id="kwStCo"><option>11</option><option>12</option><option selected>13</option><option>14</option></select></div>
+						</div>
+						<div class="kwTogHang">
+							<label class="kwTog"><input type="checkbox" id="kwStChuTrang"><i></i>Thêm chữ “Trang” phía trước <span class="kwEg">(Trang 1)</span></label>
+						</div>
+						<div class="kwHint">💡 Bỏ tick “Trang” → chỉ hiện số (1, 2, 3…). “Bỏ qua N trang đầu” sẽ không đánh số N trang đầu.</div>
+					</div>
+				</div>
+
+				<!-- HƯỚNG GIẤY -->
+				<div class="kwPanel" data-pan="huong" hidden>
+					<div class="kwNhom"><div class="kwNhomDau">🔄 Hướng giấy toàn bộ</div>
+						<div class="kwRow"><div class="kwF"><label>Hướng toàn bộ tài liệu</label><select id="kwHuong"><option value="">— Giữ nguyên —</option><option value="portrait">Đứng (Portrait)</option><option value="landscape">Ngang (Landscape)</option></select></div></div>
+						<div class="kwHint">💡 Lề giữ nguyên giá trị khi đổi hướng.</div>
+					</div>
+					<div class="kwCanh">⚠️ Xoay riêng từng trang (tạo Section Break) sẽ bổ sung ở bản cập nhật sau.</div>
+				</div>
+
+				<!-- MỤC LỤC -->
+				<div class="kwPanel" data-pan="mucluc" hidden>
+					<div class="kwNhom"><div class="kwNhomDau">📑 Mục lục tự động</div>
+						<label class="kwTog kwTogHead"><input type="checkbox" id="kwMlBat"><i></i>Tạo mục lục ở đầu tài liệu</label>
+						<div class="kwTogHang" style="margin-top:12px">
+							<label class="kwTog"><input type="checkbox" id="kwMlLink" checked><i></i>Liên kết (hyperlink) tới đề mục</label>
+							<label class="kwTog"><input type="checkbox" id="kwMlNgat" checked><i></i>Ngắt trang sau mục lục</label>
+						</div>
+						<div class="kwRow" style="margin-top:12px"><div class="kwF"><label>Số cấp độ (Level)</label><select id="kwMlCap"><option>2</option><option selected>3</option><option>4</option></select></div></div>
+						<div class="kwHint">💡 Mục lục dùng Heading của Word. Mở file trong Word, mục lục tự cập nhật số trang (hoặc bấm phải → Update Field).</div>
+					</div>
+					<div class="kwNhom"><div class="kwNhomDau">✒️ Heading chuẩn NĐ30</div>
+						<div class="kwHd"><div><b>Heading 1</b> IN HOA, ĐẬM, ĐỨNG (Phần/Chương)</div><div><b>Heading 2</b> chữ thường, ĐẬM, ĐỨNG (Mục 1, 2…)</div><div><b>Heading 3</b> <i>chữ thường, ĐẬM, NGHIÊNG (a, b…)</i></div><div><b>Heading 4</b> <i>chữ thường, nghiêng (aa, bb…)</i></div></div>
+						<label class="kwTog" style="margin-top:10px"><input type="checkbox" id="kwHeadingBat" checked><i></i>Áp style Heading NĐ30 khi áp dụng</label>
+					</div>
+				</div>
+
+				<!-- QUỐC HIỆU -->
+				<div class="kwPanel" data-pan="quochieu" hidden>
+					<div class="kwNhom"><div class="kwNhomDau">⚑ Quốc hiệu – Tiêu ngữ</div>
+						<label class="kwTog kwTogHead"><input type="checkbox" id="kwQhBat"><i></i>Chèn Quốc hiệu – Tiêu ngữ ở đầu tài liệu</label>
+						<div class="kwQh"><div class="q1">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div><div class="q2">Độc lập – Tự do – Hạnh phúc</div><div class="q3"></div></div>
+						<div class="kwTogHang" style="margin-top:14px">
+							<label class="kwTog"><input type="checkbox" id="kwQhDam" checked><i></i>In đậm</label>
+						</div>
+						<div class="kwHint">💡 Chèn đúng chuẩn trình bày văn bản hành chính (căn giữa, 2 dòng, gạch chân tiêu ngữ).</div>
+					</div>
+				</div>
+
+				<!-- BẢO MẬT -->
+				<div class="kwPanel" data-pan="baomat" hidden>
+					<div class="kwNhom"><div class="kwNhomDau">🔒 Đặt mật khẩu mở file</div>
+						<label class="kwTog kwTogHead"><input type="checkbox" id="kwPassBat"><i></i>Đặt mật khẩu cho file xuất ra</label>
+						<div class="kwRow" style="margin-top:12px">
+							<div class="kwF"><label>Mật khẩu</label><input id="kwPass" type="password" autocomplete="new-password"></div>
+							<div class="kwF"><label>Nhập lại mật khẩu</label><input id="kwPass2" type="password" autocomplete="new-password"></div>
+						</div>
+						<div class="kwCanh">⚠️ Quên mật khẩu sẽ KHÔNG mở lại được file. Hãy lưu lại cẩn thận.</div>
+						<div class="kwHint" id="kwPassNote">💡 Mã hoá chuẩn Office (AES-256). Đang hoàn thiện ở bản cập nhật sắp tới.</div>
+					</div>
+				</div>
+
+				<!-- XUẤT -->
+				<div class="kwPanel" data-pan="xuat" hidden>
+					<div class="kwNhom"><div class="kwNhomDau">⤓ Xuất kết quả</div>
+						<label class="kwTog"><input type="checkbox" id="kwGiuTen" checked><i></i>Giữ tên gốc, thêm hậu tố “_K-Word”</label>
+						<div class="kwBtnCot" style="margin-top:14px">
+							<button class="vt3NutChinh" type="button" id="kwXuatDocx">📄 Áp dụng &amp; tải file Word (.docx)</button>
+							<button class="vdNutNho" type="button" id="kwXuatPdf2">📕 Xuất PDF (đang phát triển)</button>
+						</div>
+						<div class="kwHint">💡 PDF xuất từ web gần đúng bản Word. Cần bản in chuẩn tuyệt đối thì mở file Word rồi “Lưu dạng PDF”.</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- cột xem trước -->
+			<aside class="kwXem">
+				<div class="kwXemDau">XEM TRƯỚC (A4)</div>
+				<div class="kwA4" id="kwA4"></div>
+				<div class="kwBtns">
+					<button class="vt3NutChinh" type="button" id="kwApDung">✓ Áp dụng &amp; tải file Word</button>
+					<p class="vdGhi" id="kwTrangThai">Chưa nạp file.</p>
+				</div>
+			</aside>
+		</div>
+	</div>
+</section>
 
 
 
@@ -3221,7 +3486,7 @@ $("vao").addEventListener("keydown", e => {
 	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 12.3.";
 
 	/* ---------- tab ngang ---------- */
-	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"], ["nutTabVeHinh", "tabVeHinh"], ["nutTabVeThucTe", "tabVeThucTe"], ["nutTabVeTuY", "tabVeTuY"], ["nutTabKhoAnh", "tabKhoAnh"], ["nutTabVideo", "tabVideo"], ["nutTabGoiTen", "tabGoiTen"], ["nutTabChinhPhuc", "tabChinhPhuc"], ["nutTabGanID", "tabGanID"], ["nutTabNganHang", "tabNganHang"], ["nutTabTaoDe", "tabTaoDe"], ["nutTabDeTuongTu", "tabDeTuongTu"]];
+	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"], ["nutTabVeHinh", "tabVeHinh"], ["nutTabVeThucTe", "tabVeThucTe"], ["nutTabVeTuY", "tabVeTuY"], ["nutTabKhoAnh", "tabKhoAnh"], ["nutTabVideo", "tabVideo"], ["nutTabGoiTen", "tabGoiTen"], ["nutTabChinhPhuc", "tabChinhPhuc"], ["nutTabGanID", "tabGanID"], ["nutTabNganHang", "tabNganHang"], ["nutTabTaoDe", "tabTaoDe"], ["nutTabDeTuongTu", "tabDeTuongTu"], ["nutTabVanPhong", "tabVanPhong"]];
 	const NHOM_TAB = { CongCu: ["nutTabPdfTex", "nutTabPdfWord", "nutTabTexWord", "nutTabWordTex"], VeHinh: ["nutTabVeHinh", "nutTabVeThucTe", "nutTabVeTuY", "nutTabKhoAnh"], LopHoc: ["nutTabGoiTen", "nutTabChinhPhuc"], DeThi: ["nutTabGanID", "nutTabNganHang", "nutTabTaoDe", "nutTabDeTuongTu"] };
 	const dongMenuTab = () => Object.keys(NHOM_TAB).forEach(k => { $("con" + k).hidden = true; $("nhom" + k).setAttribute("aria-expanded", "false"); });
 	function capNhatNhom(nut) { dongMenuTab(); Object.entries(NHOM_TAB).forEach(([k, ds]) => { const on = ds.includes(nut), b = $("nhom" + k); b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1; $("nhom" + k + "Con").textContent = on ? $(nut).textContent.replace(/^Vẽ hình TikZ\s*/, "").trim() : ""; }); }
@@ -3247,6 +3512,7 @@ $("vao").addEventListener("keydown", e => {
 		if (nut === "nutTabNganHang") khoiDongNganHang();
 		if (nut === "nutTabTaoDe") khoiDongTaoDe();
 		if (nut === "nutTabDeTuongTu") khoiDongDeTuongTu();
+		if (nut === "nutTabVanPhong") khoiDongVanPhong();
 	}
 	TAB.forEach(([n], i) => {
 		$(n).addEventListener("click", () => chonTab(n, true));
@@ -10286,6 +10552,428 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 		return { khoiDong, sinhMau, kiemMau, motMau, phanTich, demKho, _tinh: tinh, _thay: thay, _dinhDang: dinhDang, _texBT: texBT, _S: S, _nhanGem: nhanGem, _nhacGem: nhacGem };
 	})();
 	function khoiDongDeTuongTu() { TT_API.khoiDong(); window.TDKMod = Object.assign(window.TDKMod || {}, { TT: TT_API }); }
+function khoiDongVanPhong() { KW_API.khoiDong(); }
+const KW_API = (() => {
+	"use strict";
+	const $k = id => document.getElementById(id);
+	const gv = id => { const e = $k(id); return e ? e.value : ""; };
+	const gc = id => { const e = $k(id); return !!(e && e.checked); };
+	const CM = 567;                       // twips / cm
+	const cm = v => Math.round((+v || 0) * CM);
+	const pt20 = v => Math.round((+v || 0) * 20);  // pt -> 1/20 pt (before/after, border space is pt too)
+	const esc = s => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+	const KHO = { a4: [11906, 16838], a5: [8391, 11906], letter: [12240, 15840] };
+
+	/* ========================================================= *
+	 *  LÕI: các hàm biến đổi XML (chuỗi) — test được độc lập
+	 * ========================================================= */
+
+	// ---- tiện ích chuỗi XML ----
+	// đặt (thêm/thay) 1 phần tử con tự đóng vào trong phần tử cha, theo thứ tự schema
+	function datSectPrCon(inner, tag, xmlEl) {
+		const re = new RegExp("<w:" + tag + "\\b[^>]*/>|<w:" + tag + "\\b[^>]*>[\\s\\S]*?</w:" + tag + ">");
+		if (re.test(inner)) return inner.replace(re, xmlEl);
+		return xmlEl + inner;   // chèn đầu (thứ tự sectPr không bắt buộc nghiêm ngặt với các phần tử này)
+	}
+	// duyệt mọi sectPr trong document.xml, áp hàm fn(innerXml, laCuoi)->innerXml
+	function duyetSectPr(docXml, fn) {
+		const secs = [...docXml.matchAll(/<w:sectPr\b[^>]*>[\s\S]*?<\/w:sectPr>/g)];
+		let out = docXml;
+		secs.forEach((m, idx) => {
+			const whole = m[0], inner = whole.replace(/^<w:sectPr\b[^>]*>/, "").replace(/<\/w:sectPr>$/, "");
+			const open = whole.match(/^<w:sectPr\b[^>]*>/)[0];
+			const moi = "<w:sectPr>" + fn(inner, idx === secs.length - 1, idx, secs.length) + "</w:sectPr>";
+			out = out.replace(whole, moi.replace("<w:sectPr>", open));
+		});
+		return out;
+	}
+
+	// ---- Khổ giấy / lề / hướng ----
+	function suaTrang(docXml, cfg) {
+		return duyetSectPr(docXml, inner => {
+			if (cfg.kho || cfg.huong) {
+				// lấy kích thước hiện tại
+				let w = 11906, h = 16838;
+				const mo = inner.match(/<w:pgSz\b[^>]*w:w="(\d+)"[^>]*w:h="(\d+)"/);
+				if (mo) { w = +mo[1]; h = +mo[2]; }
+				if (cfg.kho && KHO[cfg.kho]) { [w, h] = KHO[cfg.kho]; }
+				let orient = "";
+				const dangNgang = w > h;
+				if (cfg.huong === "landscape" || (cfg.huong === "" && dangNgang)) { if (w < h) [w, h] = [h, w]; if (cfg.huong === "landscape") orient = ' w:orient="landscape"'; }
+				if (cfg.huong === "portrait") { if (w > h) [w, h] = [h, w]; }
+				if (cfg.huong === "landscape") { if (w < h) [w, h] = [h, w]; orient = ' w:orient="landscape"'; }
+				inner = datSectPrCon(inner, "pgSz", '<w:pgSz w:w="' + w + '" w:h="' + h + '"' + orient + "/>");
+			}
+			if (cfg.le) {
+				const L = cfg.le;
+				inner = datSectPrCon(inner, "pgMar", '<w:pgMar w:top="' + cm(L.tren) + '" w:right="' + cm(L.phai) + '" w:bottom="' + cm(L.duoi) + '" w:left="' + cm(L.trai) + '" w:header="720" w:footer="720" w:gutter="0"/>');
+			}
+			return inner;
+		});
+	}
+
+	// ---- Font & đoạn (styles.xml) ----
+	function suaFont(stylesXml, cfg) {
+		const sz = Math.round(cfg.co * 2), fonts = '<w:rFonts w:ascii="' + esc(cfg.font) + '" w:hAnsi="' + esc(cfg.font) + '" w:cs="' + esc(cfg.font) + '"/>';
+		const rpr = fonts + '<w:sz w:val="' + sz + '"/><w:szCs w:val="' + sz + '"/>';
+		let line = Math.round(cfg.gian * 240);
+		const spacing = '<w:spacing w:before="' + pt20(cfg.truoc) + '" w:after="' + pt20(cfg.sau) + '" w:line="' + line + '" w:lineRule="auto"/>';
+		const ind = cfg.thut ? '<w:ind w:firstLine="' + cm(cfg.thutVal) + '"/>' : "";
+		let x = stylesXml;
+		// docDefaults
+		if (/<w:docDefaults>/.test(x)) {
+			if (/<w:rPrDefault>/.test(x)) {
+				if (/<w:rPrDefault>\s*<w:rPr>/.test(x)) x = x.replace(/(<w:rPrDefault>\s*<w:rPr>)([\s\S]*?)(<\/w:rPr>)/, "$1" + rpr + "$3");
+				else x = x.replace(/<w:rPrDefault>/, "<w:rPrDefault><w:rPr>" + rpr + "</w:rPr>");
+			} else x = x.replace(/<w:docDefaults>/, "<w:docDefaults><w:rPrDefault><w:rPr>" + rpr + "</w:rPr></w:rPrDefault>");
+			if (/<w:pPrDefault>\s*<w:pPr>/.test(x)) x = x.replace(/(<w:pPrDefault>\s*<w:pPr>)([\s\S]*?)(<\/w:pPr>)/, "$1" + spacing + ind + "$3");
+			else if (/<w:pPrDefault>/.test(x)) x = x.replace(/<w:pPrDefault>/, "<w:pPrDefault><w:pPr>" + spacing + ind + "</w:pPr>");
+			else x = x.replace(/<\/w:docDefaults>/, "<w:pPrDefault><w:pPr>" + spacing + ind + "</w:pPr></w:pPrDefault></w:docDefaults>");
+		} else {
+			x = x.replace(/(<w:styles\b[^>]*>)/, "$1<w:docDefaults><w:rPrDefault><w:rPr>" + rpr + "</w:rPr></w:rPrDefault><w:pPrDefault><w:pPr>" + spacing + ind + "</w:pPr></w:pPrDefault></w:docDefaults>");
+		}
+		// style Normal
+		x = suaStyle(x, "Normal", pprInner => datPpr(pprInner, spacing, ind), rprInner => rpr, true);
+		return x;
+	}
+	// sửa 1 style theo styleId: cập nhật pPr/rPr bằng callback. taoNeuThieu: tạo nếu chưa có (chỉ Normal)
+	function suaStyle(stylesXml, id, fnPpr, fnRpr, taoNeuThieu) {
+		const re = new RegExp('(<w:style\\b[^>]*w:styleId="' + id + '"[^>]*>)([\\s\\S]*?)(</w:style>)');
+		const m = stylesXml.match(re);
+		if (!m) {
+			if (!taoNeuThieu) return stylesXml;
+			const body = '<w:pPr>' + fnPpr("") + '</w:pPr><w:rPr>' + fnRpr("") + '</w:rPr>';
+			const st = '<w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/>' + body + '</w:style>';
+			return stylesXml.replace(/(<w:docDefaults>[\s\S]*?<\/w:docDefaults>)/, "$1" + st) || stylesXml.replace(/(<w:styles\b[^>]*>)/, "$1" + st);
+		}
+		let inner = m[2];
+		if (fnPpr) {
+			if (/<w:pPr>/.test(inner)) inner = inner.replace(/(<w:pPr>)([\s\S]*?)(<\/w:pPr>)/, (a, o, c, e) => o + fnPpr(c) + e);
+			else inner = "<w:pPr>" + fnPpr("") + "</w:pPr>" + inner;
+		}
+		if (fnRpr) {
+			if (/<w:rPr>/.test(inner)) inner = inner.replace(/(<w:rPr>)([\s\S]*?)(<\/w:rPr>)/, (a, o, c, e) => o + fnRpr(c) + e);
+			else inner = (/<\/w:pPr>/.test(inner) ? inner.replace(/(<\/w:pPr>)/, "$1<w:rPr>" + fnRpr("") + "</w:rPr>") : "<w:rPr>" + fnRpr("") + "</w:rPr>" + inner);
+		}
+		return stylesXml.replace(re, "$1" + inner + "$3");
+	}
+	function datPpr(inner, spacing, ind) {
+		inner = inner.replace(/<w:spacing\b[^>]*\/>/, "").replace(/<w:ind\b[^>]*\/>/, "");
+		return spacing + ind + inner;
+	}
+
+	// ---- Heading NĐ30 ----
+	const HEADING = {
+		1: { b: 1, i: 0, caps: 1, sz: 28 }, 2: { b: 1, i: 0, caps: 0, sz: 28 },
+		3: { b: 1, i: 1, caps: 0, sz: 28 }, 4: { b: 0, i: 1, caps: 0, sz: 28 }
+	};
+	function suaHeading(stylesXml, font) {
+		let x = stylesXml;
+		for (let n = 1; n <= 4; n++) {
+			const h = HEADING[n], id = "Heading" + n;
+			const rpr = '<w:rFonts w:ascii="' + esc(font) + '" w:hAnsi="' + esc(font) + '" w:cs="' + esc(font) + '"/>' + (h.b ? "<w:b/><w:bCs/>" : "") + (h.i ? "<w:i/><w:iCs/>" : "") + (h.caps ? "<w:caps/>" : "") + '<w:sz w:val="' + h.sz + '"/><w:szCs w:val="' + h.sz + '"/><w:color w:val="000000"/>';
+			if (new RegExp('w:styleId="' + id + '"').test(x)) x = suaStyle(x, id, null, () => rpr, false);
+			else x = x.replace(/(<\/w:docDefaults>)/, '$1<w:style w:type="paragraph" w:styleId="' + id + '"><w:name w:val="heading ' + n + '"/><w:basedOn w:val="Normal"/><w:pPr><w:keepNext/><w:outlineLvl w:val="' + (n - 1) + '"/><w:spacing w:before="120" w:after="60"/></w:pPr><w:rPr>' + rpr + '</w:rPr></w:style>');
+		}
+		return x;
+	}
+
+	// ---- chèn đầu body (quốc hiệu, mục lục, bìa) ----
+	const para = (runs, jcInner) => '<w:p>' + (jcInner || "") + runs + '</w:p>';
+	function run(text, o) { o = o || {}; const rpr = '<w:rPr>' + (o.font ? '<w:rFonts w:ascii="' + esc(o.font) + '" w:hAnsi="' + esc(o.font) + '" w:cs="' + esc(o.font) + '"/>' : "") + (o.b ? "<w:b/><w:bCs/>" : "") + (o.i ? "<w:i/>" : "") + (o.caps ? "<w:caps/>" : "") + (o.sz ? '<w:sz w:val="' + o.sz + '"/><w:szCs w:val="' + o.sz + '"/>' : "") + "</w:rPr>"; return "<w:r>" + rpr + '<w:t xml:space="preserve">' + esc(text) + "</w:t></w:r>"; }
+	const ppr = inner => "<w:pPr>" + inner + "</w:pPr>";
+	const jc = v => '<w:jc w:val="' + v + '"/>';
+
+	function xmlQuocHieu(cfg) {
+		const f = cfg.font || "Times New Roman";
+		const p1 = "<w:p>" + ppr(jc("center")) + run("CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM", { font: f, b: cfg.dam, sz: 26 }) + "</w:p>";
+		const p2 = "<w:p>" + ppr(jc("center") + '<w:pBdr><w:bottom w:val="single" w:sz="6" w:space="1" w:color="000000"/></w:pBdr>') + run("Độc lập - Tự do - Hạnh phúc", { font: f, b: cfg.dam, sz: 28 }) + "</w:p>";
+		const p3 = "<w:p>" + ppr(jc("center")) + run("", { sz: 10 }) + "</w:p>";
+		return p1 + p2 + p3;
+	}
+
+	function xmlMucLuc(cfg) {
+		const lv = '1-' + (cfg.capDo || 3);
+		const instr = ' TOC \\o "' + lv + '" ' + (cfg.link ? "\\h \\z " : "") + "\\u ";
+		const tieu = "<w:p>" + ppr(jc("center")) + run("MỤC LỤC", { b: 1, sz: 28 }) + "</w:p>";
+		const toc = '<w:p><w:pPr><w:pStyle w:val="TOC1"/></w:pPr>'
+			+ '<w:r><w:fldChar w:fldCharType="begin" w:dirty="true"/></w:r>'
+			+ '<w:r><w:instrText xml:space="preserve">' + instr + '</w:instrText></w:r>'
+			+ '<w:r><w:fldChar w:fldCharType="separate"/></w:r>'
+			+ '<w:r><w:t>Nhấn phải chuột → Update Field để hiện mục lục.</w:t></w:r>'
+			+ '<w:r><w:fldChar w:fldCharType="end"/></w:r></w:p>';
+		const ngat = cfg.ngat ? '<w:p><w:r><w:br w:type="page"/></w:r></w:p>' : "";
+		return tieu + toc + ngat;
+	}
+
+	// khung viền trang (pgBorders)
+	function xmlPgBorders(cfg) {
+		if (!cfg.bat) return "";
+		const mau = (cfg.mau || "#000000").replace("#", "").toUpperCase();
+		const kieu = cfg.kieu === "wave" ? "wave" : cfg.kieu;   // val hợp lệ: single/double/thick/dashed/dotted/triple/wave
+		const sz = +cfg.day || 18, sp = Math.max(0, Math.min(31, Math.round(+cfg.cach || 24)));
+		const cnh = d => '<w:' + d + ' w:val="' + kieu + '" w:sz="' + sz + '" w:space="' + sp + '" w:color="' + mau + '"/>';
+		return '<w:pgBorders w:offsetFrom="page">' + cnh("top") + cnh("left") + cnh("bottom") + cnh("right") + "</w:pgBorders>";
+	}
+
+	// nội dung bìa (các đoạn căn giữa)
+	function xmlTrangBia(cfg, pgSz, pgMar, khung) {
+		const f = cfg.font || "Times New Roman";
+		const L = [];
+		const sp = h => '<w:p>' + ppr('<w:spacing w:before="' + h + '" w:after="0"/>') + run("", { sz: 2 }) + '</w:p>';
+		if (cfg.coQuan) L.push(para(run(cfg.coQuan, { font: f, b: 1, sz: 26 }), ppr(jc("center"))));
+		if (cfg.donVi) L.push(para(run(cfg.donVi, { font: f, b: 1, sz: 28 }), ppr(jc("center"))));
+		L.push(sp(1600));
+		if (cfg.tieuDe) L.push(para(run(cfg.tieuDe, { font: f, b: 1, caps: 1, sz: 48 }), ppr(jc("center") + '<w:spacing w:before="240" w:after="240"/>')));
+		if (cfg.phuTT) L.push(para(run(cfg.phuTT, { font: f, sz: 28 }), ppr(jc("center"))));
+		L.push(sp(2400));
+		if (cfg.tacGia) L.push(para(run("Người thực hiện: " + cfg.tacGia, { font: f, b: 1, sz: 28 }), ppr(jc("center"))));
+		L.push(sp(600));
+		const dd = [cfg.diaDiem, cfg.thoiGian].filter(Boolean).join(", ");
+		if (dd) L.push(para(run(dd, { font: f, i: 1, sz: 26 }), ppr(jc("center"))));
+		// sectPr kết thúc section bìa (mang pgSz/pgMar + khung)
+		const sect = '<w:p>' + ppr('<w:sectPr>' + pgSz + pgMar + khung + '<w:type w:val="nextPage"/></w:sectPr>') + '</w:p>';
+		return L.join("") + sect;
+	}
+	function xmlBiaPhu(cfg, pgSz, pgMar, khung) {
+		const f = cfg.font || "Times New Roman";
+		const L = [];
+		L.push('<w:p>' + ppr('<w:spacing w:before="2000" w:after="0"/>' + jc("center")) + run(cfg.tieuDe || "", { font: f, b: 1, caps: 1, sz: 40 }) + '</w:p>');
+		(cfg.noiDung || "").split(/\r?\n/).filter(x => x.trim()).forEach(d => L.push(para(run(d.trim(), { font: f, sz: 28 }), ppr(jc("center") + '<w:spacing w:before="160" w:after="0"/>'))));
+		const sect = '<w:p>' + ppr('<w:sectPr>' + pgSz + pgMar + khung + '<w:type w:val="nextPage"/></w:sectPr>') + '</w:p>';
+		return L.join("") + sect;
+	}
+
+	// lấy pgSz/pgMar từ sectPr cuối (body) để tái dùng cho section bìa
+	function layTrang(docXml) {
+		const secs = [...docXml.matchAll(/<w:sectPr\b[^>]*>[\s\S]*?<\/w:sectPr>/g)];
+		const last = secs.length ? secs[secs.length - 1][0] : "";
+		const pgSz = (last.match(/<w:pgSz\b[^>]*\/>/) || ['<w:pgSz w:w="11906" w:h="16838"/>'])[0];
+		const pgMar = (last.match(/<w:pgMar\b[^>]*\/>/) || ['<w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1701" w:header="720" w:footer="720" w:gutter="0"/>'])[0];
+		return { pgSz, pgMar };
+	}
+
+	function chenDauBody(docXml, xml) {
+		return docXml.replace(/(<w:body[^>]*>)/, "$1" + xml);
+	}
+
+	// ---- Số trang: tạo footer/header + tham chiếu ----
+	function xmlFldPage(cfg) {
+		const sz = Math.round((cfg.co || 13) * 2), f = cfg.font || "Times New Roman";
+		const rpr = '<w:rPr><w:rFonts w:ascii="' + esc(f) + '" w:hAnsi="' + esc(f) + '" w:cs="' + esc(f) + '"/><w:sz w:val="' + sz + '"/><w:szCs w:val="' + sz + '"/></w:rPr>';
+		const chuTrang = cfg.chuTrang ? '<w:r>' + rpr + '<w:t xml:space="preserve">Trang </w:t></w:r>' : "";
+		return '<w:p>' + ppr(jc(cfg.jc)) + chuTrang
+			+ '<w:r>' + rpr + '<w:fldChar w:fldCharType="begin"/></w:r>'
+			+ '<w:r>' + rpr + '<w:instrText xml:space="preserve"> PAGE </w:instrText></w:r>'
+			+ '<w:r>' + rpr + '<w:fldChar w:fldCharType="end"/></w:r></w:p>';
+	}
+	const NS_FTR = 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"';
+	function partFooter(cfg) { return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<w:ftr ' + NS_FTR + ">" + xmlFldPage(cfg) + "</w:ftr>"; }
+	function partHeader(cfg) { return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<w:hdr ' + NS_FTR + ">" + xmlFldPage(cfg) + "</w:hdr>"; }
+
+	// áp số trang vào document.xml: thêm reference + pgNumType + (titlePg nếu bỏ qua)
+	function suaSoTrang(docXml, cfg, rid, tren, skip) {
+		skip = skip || 0;
+		const refTag = tren ? 'headerReference' : 'footerReference';
+		return duyetSectPr(docXml, (inner, laCuoi, idx) => {
+			inner = inner.replace(new RegExp('<w:' + refTag + '\\b[^>]*/>', "g"), "");
+			if (idx < skip) return inner;                 // trang bìa: không đánh số
+			inner = '<w:' + refTag + ' w:type="default" r:id="' + rid + '"/>' + inner;
+			// section nội dung đầu tiên: khởi động lại số trang theo "Bắt đầu từ số"
+			const pgNum = (idx === skip)
+				? '<w:pgNumType w:fmt="' + cfg.dinhDang + '" w:start="' + (cfg.batDau || 1) + '"/>'
+				: '<w:pgNumType w:fmt="' + cfg.dinhDang + '"/>';
+			inner = datSectPrCon(inner, "pgNumType", pgNum);
+			if (cfg.boQua >= 1 && idx === skip) { if (!/<w:titlePg\/>/.test(inner)) inner += "<w:titlePg/>"; inner = '<w:' + refTag + ' w:type="first" r:id="' + rid + 'E"/>' + inner; }
+			return inner;
+		});
+	}
+
+	/* ===== orchestrator thuần (test được): nhận & trả các "part" chuỗi ===== */
+	function apDungParts(P, cfg) {
+		const extra = {}; // file phụ cần thêm: {path: content}
+		let doc = P.document, styles = P.styles || "", ct = P.contentTypes || "", rels = P.rels || "";
+		const fontMacDinh = cfg.font && cfg.font.font || "Times New Roman";
+
+		if (cfg.font) styles = suaFont(styles, cfg.font);
+		if (cfg.heading) styles = suaHeading(styles, (cfg.font && cfg.font.font) || "Times New Roman");
+		if (cfg.trang) doc = suaTrang(doc, cfg.trang);
+
+		// chèn đầu body theo thứ tự: bìa → bìa phụ → quốc hiệu → mục lục
+		const { pgSz, pgMar } = layTrang(doc);
+		let dau = "";
+		if (cfg.bia && cfg.bia.bat) {
+			const khung = xmlPgBorders(cfg.khung || {});
+			dau += xmlTrangBia(Object.assign({ font: fontMacDinh }, cfg.bia), pgSz, pgMar, khung);
+			if (cfg.biaPhu && cfg.biaPhu.bat) dau += xmlBiaPhu(Object.assign({ font: fontMacDinh }, cfg.biaPhu), pgSz, pgMar, khung);
+		}
+		if (cfg.quocHieu && cfg.quocHieu.bat) dau += xmlQuocHieu(Object.assign({ font: fontMacDinh }, cfg.quocHieu));
+		if (cfg.mucLuc && cfg.mucLuc.bat) dau += xmlMucLuc(cfg.mucLuc);
+		if (dau) doc = chenDauBody(doc, dau);
+
+		// số trang (sau khi có thể đã thêm section bìa)
+		if (cfg.soTrang && cfg.soTrang.bat) {
+			const st = cfg.soTrang, tren = /^tren/.test(st.viTri), jcv = /phai/.test(st.viTri) ? "right" : /trai/.test(st.viTri) ? "left" : "center";
+			const scfg = { font: st.font, co: st.co, chuTrang: st.chuTrang, jc: jcv, dinhDang: st.dinhDang, batDau: +st.batDau || 1, boQua: +st.boQua || 0 };
+			const rid = "rIdKWPG";
+			const part = (tren ? partHeader : partFooter)(scfg);
+			const path = tren ? "word/headerKW.xml" : "word/footerKW.xml";
+			extra[path] = part;
+			ct = themContentType(ct, "/" + path, tren ? "header" : "footer");
+			rels = themRel(rels, rid, tren ? "header" : "footer", path.replace("word/", ""));
+			if (scfg.boQua >= 1) { // footer rỗng cho trang đầu bị bỏ qua
+				const pathE = tren ? "word/headerKWE.xml" : "word/footerKWE.xml";
+				extra[pathE] = (tren ? '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<w:hdr ' + NS_FTR + "><w:p/></w:hdr>" : '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<w:ftr ' + NS_FTR + "><w:p/></w:ftr>");
+				ct = themContentType(ct, "/" + pathE, tren ? "header" : "footer");
+				rels = themRel(rels, rid + "E", tren ? "header" : "footer", pathE.replace("word/", ""));
+			}
+			const soBia = (cfg.bia && cfg.bia.bat ? 1 : 0) + (cfg.bia && cfg.bia.bat && cfg.biaPhu && cfg.biaPhu.bat ? 1 : 0);
+			doc = suaSoTrang(doc, scfg, rid, tren, soBia);
+			// bật cập nhật field khi mở
+		}
+
+		if (cfg.mucLuc && cfg.mucLuc.bat && P.settings) P.settings = batUpdateFields(P.settings);
+
+		return { document: doc, styles, contentTypes: ct, rels, settings: P.settings, extra };
+	}
+
+	function themContentType(ct, partName, loai) {
+		if (!ct) return ct;
+		if (ct.indexOf('PartName="' + partName + '"') >= 0) return ct;
+		const type = "application/vnd.openxmlformats-officedocument.wordprocessingml." + loai + "+xml";
+		return ct.replace(/(<\/Types>)/, '<Override PartName="' + partName + '" ContentType="' + type + '"/>$1');
+	}
+	function themRel(rels, id, loai, target) {
+		if (!rels) return rels;
+		if (rels.indexOf('Id="' + id + '"') >= 0) return rels;
+		const type = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/" + loai;
+		return rels.replace(/(<\/Relationships>)/, '<Relationship Id="' + id + '" Type="' + type + '" Target="' + target + '"/>$1');
+	}
+	function batUpdateFields(settings) {
+		if (!settings) return settings;
+		if (/<w:updateFields/.test(settings)) return settings.replace(/<w:updateFields\b[^>]*\/>/, '<w:updateFields w:val="true"/>');
+		return settings.replace(/(<w:settings\b[^>]*>)/, '$1<w:updateFields w:val="true"/>');
+	}
+
+	/* ========================================================= *
+	 *  LỚP TRÌNH DUYỆT: JSZip + UI
+	 * ========================================================= */
+	let FILES = [];      // [{name, buf(ArrayBuffer)}]
+	let cheXem = "font";
+
+	function docCfg() {
+		return {
+			font: gc("kwFontBat") ? { font: gv("kwFont"), co: +gv("kwCo"), gian: +gv("kwGian"), truoc: gv("kwTruoc"), sau: gv("kwSau"), thut: gv("kwThut") === "1", thutVal: gv("kwThutVal"), moiDoan: gc("kwFontMoiDoan") } : null,
+			trang: (gc("kwFontBat")) ? { kho: gv("kwKho"), huong: "", le: { tren: gv("kwLeTren"), duoi: gv("kwLeDuoi"), trai: gv("kwLeTrai"), phai: gv("kwLePhai") } } : null,
+			huongRieng: gv("kwHuong"),
+			soTrang: gc("kwStBat") ? { bat: 1, viTri: gv("kwStViTri"), dinhDang: gv("kwStDinhDang"), batDau: gv("kwStBatDau"), boQua: gv("kwStBoQua"), font: gv("kwStFont"), co: +gv("kwStCo"), chuTrang: gc("kwStChuTrang") } : null,
+			mucLuc: gc("kwMlBat") ? { bat: 1, link: gc("kwMlLink"), ngat: gc("kwMlNgat"), capDo: +gv("kwMlCap") } : null,
+			heading: gc("kwMlBat") && gc("kwHeadingBat"),
+			quocHieu: gc("kwQhBat") ? { bat: 1, dam: gc("kwQhDam") } : null,
+			bia: gc("kwBiaBat") ? { bat: 1, coQuan: gv("kwBiaCoQuan"), donVi: gv("kwBiaDonVi"), tieuDe: gv("kwBiaTieuDe"), phuTT: gv("kwBiaPhuTT"), tacGia: gv("kwBiaTacGia"), diaDiem: gv("kwBiaDiaDiem"), thoiGian: gv("kwBiaThoiGian") } : null,
+			khung: { bat: gc("kwKhungBat"), kieu: gv("kwKhungKieu"), day: gv("kwKhungDay"), mau: gv("kwKhungMau"), cach: gv("kwKhungCach") },
+			biaPhu: gc("kwBiaPhuBat") ? { bat: 1, tieuDe: gv("kwBiaPhuTieuDe"), noiDung: gv("kwBiaPhuND") } : null
+		};
+	}
+	// gộp hướng riêng (tab Hướng giấy) vào cfg.trang
+	function hopCfg() {
+		const c = docCfg();
+		if (c.huongRieng) { c.trang = c.trang || { le: null }; c.trang.huong = c.huongRieng; }
+		return c;
+	}
+
+	async function docDocx(buf) {
+		const zip = await JSZip.loadAsync(buf);
+		const g = async p => { const f = zip.file(p); return f ? await f.async("string") : ""; };
+		return {
+			zip,
+			P: { document: await g("word/document.xml"), styles: await g("word/styles.xml"), settings: await g("word/settings.xml"), contentTypes: await g("[Content_Types].xml"), rels: await g("word/_rels/document.xml.rels") }
+		};
+	}
+	async function xuLyMot(file, cfg) {
+		const { zip, P } = await docDocx(file.buf);
+		if (!P.document) throw new Error("Không đọc được nội dung Word (document.xml).");
+		if (!P.rels) { P.rels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"></Relationships>'; }
+		if (!P.settings) { P.settings = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<w:settings xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"></w:settings>'; zip.file("word/settings.xml", P.settings); P.contentTypes = themContentType(P.contentTypes, "/word/settings.xml", "settings").replace("wordprocessingml.settings+xml", "wordprocessingml.settings+xml"); }
+		const R = apDungParts(P, cfg);
+		zip.file("word/document.xml", R.document);
+		if (R.styles) zip.file("word/styles.xml", R.styles);
+		if (R.settings) zip.file("word/settings.xml", R.settings);
+		if (R.contentTypes) zip.file("[Content_Types].xml", R.contentTypes);
+		if (R.rels) zip.file("word/_rels/document.xml.rels", R.rels);
+		for (const p in R.extra) zip.file(p, R.extra[p]);
+		return await zip.generateAsync({ type: "blob", mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", compression: "DEFLATE" });
+	}
+
+	function tenRa(ten) { const giu = gc("kwGiuTen"); const base = ten.replace(/\.docx$/i, ""); return giu ? base + "_K-Word.docx" : base + ".docx"; }
+	function tai(blob, ten) { const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = ten; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500); }
+
+	async function apDung() {
+		if (!FILES.length) { thongBao("Hãy chọn file Word trước.", "loi"); return; }
+		if (typeof JSZip === "undefined") { thongBao("Thiếu thư viện nén (JSZip).", "loi"); return; }
+		const cfg = hopCfg();
+		thongBao("Đang xử lý…");
+		try {
+			let n = 0;
+			for (const f of FILES) { const blob = await xuLyMot(f, cfg); tai(blob, tenRa(f.name)); n++; }
+			thongBao("Xong " + n + " file. Đã tải về.", "ok");
+		} catch (e) { thongBao("Lỗi: " + (e.message || e), "loi"); }
+	}
+
+	function thongBao(t, loai) { const e = $k("kwTrangThai"); if (e) { e.textContent = t; e.style.color = loai === "loi" ? "var(--do,#e03131)" : loai === "ok" ? "var(--luc,#2f9e44)" : "var(--phu)"; } }
+
+	/* ===== xem trước A4 ===== */
+	function veXem() {
+		const a4 = $k("kwA4"); if (!a4) return;
+		if (cheXem === "bia" && gc("kwBiaBat")) {
+			const kieu = gv("kwKhungKieu"), mau = gv("kwKhungMau"), day = ({ "12": 1, "18": 2, "28": 3 })[gv("kwKhungDay")] || 2;
+			const bd = gc("kwKhungBat") ? 'border:' + day + 'px ' + (kieu === "dashed" ? "dashed" : kieu === "dotted" ? "dotted" : kieu === "double" ? "double" : "solid") + ' ' + mau + ';' : "";
+			a4.innerHTML = '<div class="kwCov"><div class="kwCovKhung" style="' + bd + '"></div>'
+				+ '<div class="cq">' + esc(gv("kwBiaCoQuan")) + '</div><div class="cu">' + esc(gv("kwBiaDonVi")) + '</div>'
+				+ '<div class="big">' + esc(gv("kwBiaTieuDe")) + '</div><div class="sub">' + esc(gv("kwBiaPhuTT")) + '</div>'
+				+ '<div class="ft">Người thực hiện: ' + esc(gv("kwBiaTacGia")) + '<br>' + esc([gv("kwBiaDiaDiem"), gv("kwBiaThoiGian")].filter(Boolean).join(", ")) + '</div></div>';
+			return;
+		}
+		if (cheXem === "quochieu") {
+			a4.innerHTML = '<div class="bd"><div style="text-align:center"><div style="font-weight:700">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div><div style="font-weight:700;border-bottom:1px solid #333;display:inline-block;padding-bottom:2px">Độc lập - Tự do - Hạnh phúc</div></div><p style="margin-top:12px">Nội dung tài liệu…</p></div><div class="pg">' + (gc("kwStChuTrang") ? "Trang 1" : "1") + '</div>';
+			return;
+		}
+		// mặc định: tài liệu
+		const num = gc("kwStBat") ? (gc("kwStChuTrang") ? "Trang 1" : "1") : "";
+		a4.innerHTML = '<div class="bd"><h5>' + (gc("kwBiaBat") ? "Trang nội dung" : "Tài liệu") + '</h5><p>Kính gửi Ban Giám hiệu nhà trường. Trong năm học vừa qua, tổ chuyên môn đã triển khai nhiều hoạt động thiết thực.</p><p>Thứ nhất, về công tác chuyên môn, tổ đã tổ chức sinh hoạt định kỳ, dự giờ và xây dựng kho học liệu.</p></div><div class="mg"></div>' + (num ? '<div class="pg">' + num + '</div>' : "");
+	}
+
+	function chonFile(list) {
+		FILES = [];
+		const arr = [...list].filter(f => /\.docx$/i.test(f.name));
+		if (!arr.length) { thongBao("Chỉ nhận file .docx.", "loi"); return; }
+		Promise.all(arr.map(f => f.arrayBuffer().then(buf => ({ name: f.name, buf })))).then(res => {
+			FILES = res;
+			const t = $k("kwTenFile"); t.hidden = false; t.textContent = "✓ " + (res.length === 1 ? res[0].name : res.length + " file đã chọn");
+			thongBao("Đã nạp " + res.length + " file. Chọn tùy chỉnh rồi bấm Áp dụng.", "ok");
+		});
+	}
+
+	/* ===== khởi động ===== */
+	let daMo = false;
+	function khoiDong() {
+		if (daMo) return; daMo = true;
+		$k("kwFile").addEventListener("change", e => chonFile(e.target.files));
+		const drop = $k("kwDrop");
+		["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("keo"); }));
+		["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("keo"); }));
+		drop.addEventListener("drop", e => { if (e.dataTransfer.files.length) chonFile(e.dataTransfer.files); });
+		$k("kwChips").addEventListener("click", e => { const b = e.target.closest(".kwChip"); if (!b) return; cheXem = b.dataset.p; document.querySelectorAll(".kwChip").forEach(c => c.classList.toggle("on", c === b)); document.querySelectorAll(".kwPanel").forEach(p => p.hidden = p.dataset.pan !== cheXem); veXem(); });
+		$k("kwApDung").addEventListener("click", apDung);
+		$k("kwXuatDocx").addEventListener("click", apDung);
+		$k("kwXuatPdf2").addEventListener("click", () => thongBao("Xuất PDF sẽ có ở bản cập nhật sau.", "loi"));
+		// cập nhật xem trước khi đổi input liên quan
+		["kwBiaCoQuan", "kwBiaDonVi", "kwBiaTieuDe", "kwBiaPhuTT", "kwBiaTacGia", "kwBiaDiaDiem", "kwBiaThoiGian", "kwKhungKieu", "kwKhungMau", "kwKhungDay", "kwKhungBat", "kwBiaBat", "kwStChuTrang", "kwStBat"].forEach(id => { const e = $k(id); if (e) e.addEventListener("input", veXem); });
+		veXem();
+	}
+
+	return { khoiDong, _loi: { apDungParts, suaFont, suaTrang, suaHeading, xmlTrangBia, suaSoTrang, apDungParts } };
+})();
 	try { const t = docO("tab"); if (t && $(t)) chonTab(t, false); } catch (e) { }
 	capNhatChip(); capNhatDem();
 })();
