@@ -10923,7 +10923,8 @@ const KW_API = (() => {
 	}
 
 	async function docDocx(buf) {
-		const zip = await JSZip.loadAsync(buf);
+		await napZip();
+		const zip = await window.JSZip.loadAsync(buf);
 		const g = async p => { const f = zip.file(p); return f ? await f.async("string") : ""; };
 		return {
 			zip,
@@ -10957,10 +10958,11 @@ const KW_API = (() => {
 
 	async function apDung() {
 		if (!FILES.length) { thongBao("Hãy chọn file Word trước.", "loi"); return; }
-		if (typeof JSZip === "undefined") { thongBao("Thiếu thư viện nén (JSZip).", "loi"); return; }
 		const cfg = hopCfg();
 		thongBao("Đang xử lý…");
 		try {
+			await napZip();
+			if (!window.JSZip) { thongBao("Không tải được thư viện nén. Kiểm tra kết nối mạng rồi thử lại.", "loi"); return; }
 			let n = 0;
 			for (const f of FILES) { const blob = await xuLyMot(f, cfg); tai(blob, tenRa(f.name)); n++; }
 			thongBao("Xong " + n + " file. Đã tải về.", "ok");
@@ -11089,7 +11091,7 @@ const KW_API = (() => {
 		FILES = res;
 		const t = $k("kwTenFile"); t.hidden = false; t.textContent = "✓ " + (res.length === 1 ? res[0].name : res.length + " file đã chọn");
 		thongBao("Đã nạp " + res.length + " file.", "ok");
-		try { if (typeof JSZip !== "undefined") { const { P } = await docDocx(res[0].buf); XEM_PARTS = P; } } catch (e) { }
+		try { const { P } = await docDocx(res[0].buf); XEM_PARTS = P; } catch (e) { }
 		veXem();
 	}
 
