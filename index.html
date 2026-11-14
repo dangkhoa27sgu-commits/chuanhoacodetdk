@@ -1604,6 +1604,27 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 .kwCov .cq{font-weight:700;font-size:9px}.kwCov .cu{font-size:8.5px;margin-bottom:auto}
 .kwCov .big{font-size:14px;font-weight:800;text-transform:uppercase;margin:10% 0 6%;line-height:1.3}
 .kwCov .sub{font-size:9px}.kwCov .ft{margin-top:auto;font-size:8.5px;line-height:1.6}
+/* xem trước THẬT: chồng các trang */
+.kwA4.that{aspect-ratio:auto;background:none;box-shadow:none;max-height:calc(100vh - 150px);overflow:auto;padding:2px;display:flex;flex-direction:column;gap:12px}
+.kwPg{position:relative;background:#f7f5ef;color:#1a1a1a;border-radius:6px;box-shadow:0 10px 26px -14px rgba(0,0,0,.6);aspect-ratio:1/1.414;padding:9% 8%;font-family:"Times New Roman",Georgia,serif;overflow:hidden;flex:none}
+.kwPgKhung{position:absolute;inset:6%;pointer-events:none;border-radius:2px}
+.kwPgND{font-size:9px;line-height:1.55;text-align:justify;height:100%;overflow:hidden}
+.kwPgSo{position:absolute;left:0;right:0;bottom:4%;text-align:center;font-size:8.5px;color:#333}
+.kwPgND .kd-p{margin:0 0 4px}
+.kwPgND .kd-h1{font-weight:700;text-transform:uppercase;font-size:10px;margin:7px 0 4px}
+.kwPgND .kd-h2{font-weight:700;font-size:10px;margin:6px 0 3px}
+.kwPgND .kd-h3{font-weight:700;font-style:italic;margin:5px 0 3px}
+.kwPgND .kd-h4{font-style:italic;margin:5px 0 3px}
+.kwPgND .kd-bdr{border-bottom:1px solid #000;display:inline-block;padding-bottom:1px}
+.kwPgND .kd-tbl{border-collapse:collapse;width:100%;margin:4px 0}
+.kwPgND .kd-tbl td{border:1px solid #666;padding:2px 3px;vertical-align:top}
+.kwLogoHang{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.kwLogoNut{flex:none}.kwLogoNut input{display:none}
+.kwLogoTen{font-size:12px;color:var(--phu,#9aa7c2)}
+.kwLogoCo{font-size:12px;color:var(--phu,#9aa7c2);display:inline-flex;align-items:center;gap:6px;margin-left:auto}
+.kwLogoCo input{width:70px;border:1px solid var(--vien,#2c3850);border-radius:8px;background:var(--code,rgba(128,128,128,.08));color:var(--chu);padding:7px 9px;font:inherit;font-size:13px}
+.kwPgND .kd-logo{display:block;max-width:40%;max-height:70px;margin:4px auto;object-fit:contain}
+.kwPgND .kd-anh{display:inline-block;color:#888;font-size:8px;border:1px dashed #bbb;padding:1px 4px;border-radius:3px}
 .kwBtns{margin-top:14px}
 .kwBtns .vt3NutChinh{width:100%;height:44px;justify-content:center}
 .kwBtnCot{display:flex;flex-direction:column;gap:9px}
@@ -2973,6 +2994,7 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 							<div class="kwF"><label>Tác giả</label><input id="kwBiaTacGia" value="Họ và tên"></div>
 							<div class="kwF"><label>Địa điểm</label><input id="kwBiaDiaDiem" value="..."></div>
 							<div class="kwF"><label>Thời gian</label><input id="kwBiaThoiGian" value="Tháng ... năm ..."></div>
+							<div class="kwF kwFull"><label>Logo (ảnh PNG/JPG, tùy chọn)</label><div class="kwLogoHang"><label class="vdNutNho kwLogoNut"><input type="file" id="kwBiaLogo" accept="image/png,image/jpeg" hidden>🖼️ Chọn logo</label><span class="kwLogoTen" id="kwBiaLogoTen">Chưa chọn</span><button type="button" class="vdNutNho kwLogoXoa" id="kwBiaLogoXoa" hidden>Bỏ</button><span class="kwLogoCo">Rộng (cm): <input id="kwBiaLogoCo" type="number" value="3" step="0.5" min="1" max="8"></span></div></div>
 						</div>
 					</div>
 					<div class="kwNhom"><div class="kwNhomDau">🖼️ Khung viền trang bìa</div>
@@ -3072,7 +3094,7 @@ Lớp: ...</textarea></div>
 						<label class="kwTog"><input type="checkbox" id="kwGiuTen" checked><i></i>Giữ tên gốc, thêm hậu tố “_K-Word”</label>
 						<div class="kwBtnCot" style="margin-top:14px">
 							<button class="vt3NutChinh" type="button" id="kwXuatDocx">📄 Áp dụng &amp; tải file Word (.docx)</button>
-							<button class="vdNutNho" type="button" id="kwXuatPdf2">📕 Xuất PDF (đang phát triển)</button>
+							<button class="vdNutNho" type="button" id="kwXuatPdf2">📕 Xuất PDF (in / lưu PDF)</button>
 						</div>
 						<div class="kwHint">💡 PDF xuất từ web gần đúng bản Word. Cần bản in chuẩn tuyệt đối thì mở file Word rồi “Lưu dạng PDF”.</div>
 					</div>
@@ -10716,6 +10738,22 @@ const KW_API = (() => {
 		return '<w:pgBorders w:offsetFrom="page">' + cnh("top") + cnh("left") + cnh("bottom") + cnh("right") + "</w:pgBorders>";
 	}
 
+	// ảnh logo (inline drawing), rId cố định rIdKWLOGO
+	function logoDrawing(logo) {
+		const cmW = +logo.cm || 3, emuW = Math.round(cmW * 360000), emuH = Math.round(emuW * ((logo.nH && logo.nW) ? logo.nH / logo.nW : 1));
+		return '<w:p>' + ppr(jc("center") + '<w:spacing w:before="120" w:after="120"/>')
+			+ '<w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing">'
+			+ '<wp:extent cx="' + emuW + '" cy="' + emuH + '"/><wp:docPr id="101" name="Logo"/>'
+			+ '<a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">'
+			+ '<pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:nvPicPr><pic:cNvPr id="101" name="Logo"/><pic:cNvPicPr/></pic:nvPicPr>'
+			+ '<pic:blipFill><a:blip r:embed="rIdKWLOGO"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill>'
+			+ '<pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="' + emuW + '" cy="' + emuH + '"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr>'
+			+ '</pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>';
+	}
+	function themDefaultExt(ct, ext) {
+		if (!ct || ct.indexOf('Extension="' + ext + '"') >= 0) return ct;
+		return ct.replace(/(<Types\b[^>]*>)/, '$1<Default Extension="' + ext + '" ContentType="image/' + (ext === "jpg" ? "jpeg" : ext) + '"/>');
+	}
 	// nội dung bìa (các đoạn căn giữa)
 	function xmlTrangBia(cfg, pgSz, pgMar, khung) {
 		const f = cfg.font || "Times New Roman";
@@ -10723,6 +10761,7 @@ const KW_API = (() => {
 		const sp = h => '<w:p>' + ppr('<w:spacing w:before="' + h + '" w:after="0"/>') + run("", { sz: 2 }) + '</w:p>';
 		if (cfg.coQuan) L.push(para(run(cfg.coQuan, { font: f, b: 1, sz: 26 }), ppr(jc("center"))));
 		if (cfg.donVi) L.push(para(run(cfg.donVi, { font: f, b: 1, sz: 28 }), ppr(jc("center"))));
+		if (cfg.logo) L.push(logoDrawing(cfg.logo));
 		L.push(sp(1600));
 		if (cfg.tieuDe) L.push(para(run(cfg.tieuDe, { font: f, b: 1, caps: 1, sz: 48 }), ppr(jc("center") + '<w:spacing w:before="240" w:after="240"/>')));
 		if (cfg.phuTT) L.push(para(run(cfg.phuTT, { font: f, sz: 28 }), ppr(jc("center"))));
@@ -10860,6 +10899,7 @@ const KW_API = (() => {
 	 * ========================================================= */
 	let FILES = [];      // [{name, buf(ArrayBuffer)}]
 	let cheXem = "font";
+	let LOGO = null;     // {dataURL, ext, nW, nH, buf}
 
 	function docCfg() {
 		return {
@@ -10870,7 +10910,7 @@ const KW_API = (() => {
 			mucLuc: gc("kwMlBat") ? { bat: 1, link: gc("kwMlLink"), ngat: gc("kwMlNgat"), capDo: +gv("kwMlCap") } : null,
 			heading: gc("kwMlBat") && gc("kwHeadingBat"),
 			quocHieu: gc("kwQhBat") ? { bat: 1, dam: gc("kwQhDam") } : null,
-			bia: gc("kwBiaBat") ? { bat: 1, coQuan: gv("kwBiaCoQuan"), donVi: gv("kwBiaDonVi"), tieuDe: gv("kwBiaTieuDe"), phuTT: gv("kwBiaPhuTT"), tacGia: gv("kwBiaTacGia"), diaDiem: gv("kwBiaDiaDiem"), thoiGian: gv("kwBiaThoiGian") } : null,
+			bia: gc("kwBiaBat") ? { bat: 1, coQuan: gv("kwBiaCoQuan"), donVi: gv("kwBiaDonVi"), tieuDe: gv("kwBiaTieuDe"), phuTT: gv("kwBiaPhuTT"), tacGia: gv("kwBiaTacGia"), diaDiem: gv("kwBiaDiaDiem"), thoiGian: gv("kwBiaThoiGian"), logo: LOGO ? { cm: +gv("kwBiaLogoCo") || 3, nW: LOGO.nW, nH: LOGO.nH } : null } : null,
 			khung: { bat: gc("kwKhungBat"), kieu: gv("kwKhungKieu"), day: gv("kwKhungDay"), mau: gv("kwKhungMau"), cach: gv("kwKhungCach") },
 			biaPhu: gc("kwBiaPhuBat") ? { bat: 1, tieuDe: gv("kwBiaPhuTieuDe"), noiDung: gv("kwBiaPhuND") } : null
 		};
@@ -10895,6 +10935,13 @@ const KW_API = (() => {
 		if (!P.document) throw new Error("Không đọc được nội dung Word (document.xml).");
 		if (!P.rels) { P.rels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"></Relationships>'; }
 		if (!P.settings) { P.settings = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<w:settings xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"></w:settings>'; zip.file("word/settings.xml", P.settings); P.contentTypes = themContentType(P.contentTypes, "/word/settings.xml", "settings").replace("wordprocessingml.settings+xml", "wordprocessingml.settings+xml"); }
+		// logo: nhúng ảnh + rel + content-type trước khi dựng drawing
+		if (LOGO && LOGO.buf && cfg.bia && cfg.bia.bat) {
+			const ext = LOGO.ext === "jpeg" ? "jpg" : LOGO.ext;
+			P.rels = themRel(P.rels, "rIdKWLOGO", "image", "media/kwlogo." + ext);
+			P.contentTypes = themDefaultExt(P.contentTypes, ext);
+			zip.file("word/media/kwlogo." + ext, LOGO.buf);
+		}
 		const R = apDungParts(P, cfg);
 		zip.file("word/document.xml", R.document);
 		if (R.styles) zip.file("word/styles.xml", R.styles);
@@ -10922,43 +10969,146 @@ const KW_API = (() => {
 
 	function thongBao(t, loai) { const e = $k("kwTrangThai"); if (e) { e.textContent = t; e.style.color = loai === "loi" ? "var(--do,#e03131)" : loai === "ok" ? "var(--luc,#2f9e44)" : "var(--phu)"; } }
 
-	/* ===== xem trước A4 ===== */
-	function veXem() {
-		const a4 = $k("kwA4"); if (!a4) return;
-		if (cheXem === "bia" && gc("kwBiaBat")) {
-			const kieu = gv("kwKhungKieu"), mau = gv("kwKhungMau"), day = ({ "12": 1, "18": 2, "28": 3 })[gv("kwKhungDay")] || 2;
-			const bd = gc("kwKhungBat") ? 'border:' + day + 'px ' + (kieu === "dashed" ? "dashed" : kieu === "dotted" ? "dotted" : kieu === "double" ? "double" : "solid") + ' ' + mau + ';' : "";
-			a4.innerHTML = '<div class="kwCov"><div class="kwCovKhung" style="' + bd + '"></div>'
-				+ '<div class="cq">' + esc(gv("kwBiaCoQuan")) + '</div><div class="cu">' + esc(gv("kwBiaDonVi")) + '</div>'
-				+ '<div class="big">' + esc(gv("kwBiaTieuDe")) + '</div><div class="sub">' + esc(gv("kwBiaPhuTT")) + '</div>'
-				+ '<div class="ft">Người thực hiện: ' + esc(gv("kwBiaTacGia")) + '<br>' + esc([gv("kwBiaDiaDiem"), gv("kwBiaThoiGian")].filter(Boolean).join(", ")) + '</div></div>';
-			return;
-		}
-		if (cheXem === "quochieu") {
-			a4.innerHTML = '<div class="bd"><div style="text-align:center"><div style="font-weight:700">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div><div style="font-weight:700;border-bottom:1px solid #333;display:inline-block;padding-bottom:2px">Độc lập - Tự do - Hạnh phúc</div></div><p style="margin-top:12px">Nội dung tài liệu…</p></div><div class="pg">' + (gc("kwStChuTrang") ? "Trang 1" : "1") + '</div>';
-			return;
-		}
-		// mặc định: tài liệu
-		const num = gc("kwStBat") ? (gc("kwStChuTrang") ? "Trang 1" : "1") : "";
-		a4.innerHTML = '<div class="bd"><h5>' + (gc("kwBiaBat") ? "Trang nội dung" : "Tài liệu") + '</h5><p>Kính gửi Ban Giám hiệu nhà trường. Trong năm học vừa qua, tổ chuyên môn đã triển khai nhiều hoạt động thiết thực.</p><p>Thứ nhất, về công tác chuyên môn, tổ đã tổ chức sinh hoạt định kỳ, dự giờ và xây dựng kho học liệu.</p></div><div class="mg"></div>' + (num ? '<div class="pg">' + num + '</div>' : "");
+	/* ========================================================= *
+	 *  RENDER docx -> HTML (tự viết, không cần thư viện ngoài)
+	 * ========================================================= */
+	function runsToHtml(pInner) {
+		let html = "";
+		[...pInner.matchAll(/<w:r\b[^>]*>[\s\S]*?<\/w:r>/g)].forEach(rm => {
+			const rc = rm[0];
+			if (/<w:drawing/.test(rc)) { html += (LOGO && /rIdKWLOGO/.test(rc)) ? '<img class="kd-logo" src="' + LOGO.dataURL + '">' : '<span class="kd-anh">▣ ảnh</span>'; return; }
+			if (/<w:br\b[^>]*w:type="page"/.test(rc)) html += "\u0001";
+			if (/<w:tab\b[^>]*\/>/.test(rc)) html += "&emsp;";
+			const txt = [...rc.matchAll(/<w:t\b[^>]*>([\s\S]*?)<\/w:t>/g)].map(m => m[1]).join("");
+			if (!txt) return;
+			let s = txt;
+			if (/<w:caps\s*\/>/.test(rc)) s = s.toUpperCase();
+			if (/<w:b\s*\/>|<w:b /.test(rc)) s = "<b>" + s + "</b>";
+			if (/<w:i\s*\/>/.test(rc)) s = "<i>" + s + "</i>";
+			if (/<w:u /.test(rc)) s = "<u>" + s + "</u>";
+			html += s;
+		});
+		return html;
+	}
+	function pToHtml(p) {
+		const pPr = (p.match(/<w:pPr>([\s\S]*?)<\/w:pPr>/) || ["", ""])[1];
+		const jcV = (pPr.match(/<w:jc w:val="(\w+)"/) || [])[1];
+		const style = (pPr.match(/<w:pStyle w:val="([^"]+)"/) || [])[1] || "";
+		const align = jcV === "center" ? "center" : jcV === "right" ? "right" : jcV === "both" ? "justify" : "";
+		let cls = "kd-p"; const hm = style.match(/^Heading([1-4])/i); if (hm) cls = "kd-h" + hm[1];
+		const under = /<w:pBdr>[\s\S]*?<w:bottom/.test(pPr) ? " kd-bdr" : "";
+		const inner = runsToHtml(p);
+		return '<p class="' + cls + under + '"' + (align ? ' style="text-align:' + align + '"' : "") + ">" + (inner || "&#8203;") + "</p>";
+	}
+	function tblToHtml(t) {
+		let h = '<table class="kd-tbl">';
+		[...t.matchAll(/<w:tr\b[^>]*>[\s\S]*?<\/w:tr>/g)].forEach(tr => {
+			h += "<tr>";
+			[...tr[0].matchAll(/<w:tc\b[^>]*>[\s\S]*?<\/w:tc>/g)].forEach(tc => { let cell = ""; [...tc[0].matchAll(/<w:p\b[^>]*>[\s\S]*?<\/w:p>/g)].forEach(p => cell += pToHtml(p[0])); h += "<td>" + cell + "</td>"; });
+			h += "</tr>";
+		});
+		return h + "</table>";
+	}
+	function borderCss(sectPr) {
+		const bm = sectPr.match(/<w:top w:val="(\w+)" w:sz="(\d+)"[^>]*w:color="([0-9A-Fa-f]{6})"/);
+		if (!bm) return "";
+		const v = bm[1], sz = +bm[2], col = "#" + bm[3];
+		const t = v === "dashed" ? "dashed" : v === "dotted" ? "dotted" : (v === "double" || v === "triple") ? "double" : "solid";
+		return "border:" + Math.max(1, Math.round(sz / 8)) + "px " + t + " " + col + ";";
+	}
+	function docToHtml(xml, cfg) {
+		const body = (xml.match(/<w:body\b[^>]*>([\s\S]*)<\/w:body>/) || ["", ""])[1];
+		const nodes = [...body.matchAll(/<w:p\b[^>]*>[\s\S]*?<\/w:p>|<w:tbl\b[^>]*>[\s\S]*?<\/w:tbl>/g)].map(m => m[0]);
+		const secs = []; let cur = [];
+		nodes.forEach(n => {
+			const sect = (/^<w:p/.test(n)) ? (n.match(/<w:pPr>[\s\S]*?<w:sectPr>([\s\S]*?)<\/w:sectPr>/) || [])[1] : undefined;
+			if (sect !== undefined) { secs.push({ nodes: cur, sectPr: sect }); cur = []; }
+			else cur.push(n);
+		});
+		const bodySect = (body.match(/<\/w:p>\s*<w:sectPr>([\s\S]*?)<\/w:sectPr>\s*$/) || body.match(/<w:sectPr>([\s\S]*?)<\/w:sectPr>\s*$/) || [])[1] || "";
+		secs.push({ nodes: cur, sectPr: bodySect });
+		let so = 0, html = "";
+		secs.forEach(sec => {
+			const khung = /<w:pgBorders/.test(sec.sectPr), coSo = /(footer|header)Reference/.test(sec.sectPr);
+			let inner = ""; sec.nodes.forEach(n => inner += /^<w:tbl/.test(n) ? tblToHtml(n) : pToHtml(n));
+			if (!inner.trim()) inner = "&#8203;";
+			// tách thêm theo page-break thủ công
+			inner.split("\u0001").forEach((pg, i) => {
+				so++;
+				const num = coSo ? ((cfg.soTrang && cfg.soTrang.chuTrang ? "Trang " : "") + so) : "";
+				html += '<div class="kwPg' + (khung ? " khung" : "") + '">' + (khung ? '<div class="kwPgKhung" style="' + borderCss(sec.sectPr) + '"></div>' : "") + '<div class="kwPgND">' + pg + "</div>" + (num ? '<div class="kwPgSo">' + num + "</div>" : "") + "</div>";
+			});
+		});
+		return html || '<div class="kwPg"><div class="kwPgND">(trống)</div></div>';
 	}
 
-	function chonFile(list) {
-		FILES = [];
+	/* ===== xem trước ===== */
+	let XEM_PARTS = null, tLive = null;
+	function veXem() {
+		const a4 = $k("kwA4"); if (!a4) return;
+		if (!XEM_PARTS) { a4.className = "kwA4"; veMinhHoa(a4); return; }
+		a4.className = "kwA4 that";
+		try {
+			const cfg = hopCfg();
+			const P = { document: XEM_PARTS.document, styles: XEM_PARTS.styles, settings: XEM_PARTS.settings, contentTypes: XEM_PARTS.contentTypes, rels: XEM_PARTS.rels };
+			const R = apDungParts(P, cfg);
+			a4.innerHTML = docToHtml(R.document, cfg);
+		} catch (e) { a4.innerHTML = '<div class="kwPg"><div class="kwPgND">Không dựng được xem trước: ' + esc(e.message) + "</div></div>"; }
+	}
+	function veXemHoan() { clearTimeout(tLive); tLive = setTimeout(veXem, 250); }
+	function veMinhHoa(a4) {
+		if (cheXem === "bia" && gc("kwBiaBat")) {
+			const kieu = gv("kwKhungKieu"), mau = gv("kwKhungMau"), day = ({ "12": 1, "18": 2, "28": 3 })[gv("kwKhungDay")] || 2;
+			const bd = gc("kwKhungBat") ? "border:" + day + "px " + (kieu === "dashed" ? "dashed" : kieu === "dotted" ? "dotted" : kieu === "double" ? "double" : "solid") + " " + mau + ";" : "";
+			a4.innerHTML = '<div class="kwCov"><div class="kwCovKhung" style="' + bd + '"></div><div class="cq">' + esc(gv("kwBiaCoQuan")) + '</div><div class="cu">' + esc(gv("kwBiaDonVi")) + '</div><div class="big">' + esc(gv("kwBiaTieuDe")) + '</div><div class="sub">' + esc(gv("kwBiaPhuTT")) + '</div><div class="ft">Người thực hiện: ' + esc(gv("kwBiaTacGia")) + "<br>" + esc([gv("kwBiaDiaDiem"), gv("kwBiaThoiGian")].filter(Boolean).join(", ")) + "</div></div>"; return;
+		}
+		a4.innerHTML = '<div class="bd"><h5>Tải file Word lên để xem trước</h5><p>Ô này sẽ hiển thị đúng nội dung file của anh và cập nhật ngay khi anh chỉnh.</p></div>';
+	}
+
+	/* ===== xuất PDF (in → lưu PDF, dùng bộ in của trình duyệt) ===== */
+	const PDF_CSS = '@page{size:A4;margin:0}body{margin:0;font-family:"Times New Roman",serif}.kwPg{position:relative;width:210mm;min-height:296mm;padding:20mm 18mm;box-sizing:border-box;page-break-after:always;overflow:hidden}.kwPg.khung .kwPgKhung{position:absolute;inset:8mm;pointer-events:none}.kwPgND{font-size:13pt;line-height:1.5;text-align:justify}.kwPgSo{position:absolute;left:0;right:0;bottom:10mm;text-align:center;font-size:12pt}.kd-p{margin:0 0 6pt}.kd-h1{font-weight:bold;text-transform:uppercase;font-size:14pt;margin:10pt 0 6pt}.kd-h2{font-weight:bold;font-size:14pt;margin:9pt 0 5pt}.kd-h3{font-weight:bold;font-style:italic;margin:8pt 0 5pt}.kd-h4{font-style:italic;margin:7pt 0 4pt}.kd-tbl{border-collapse:collapse;width:100%}.kd-tbl td{border:1px solid #333;padding:3pt 5pt;vertical-align:top}.kd-bdr{border-bottom:1px solid #000;display:inline-block}';
+	async function xuatPDF() {
+		if (!FILES.length) { thongBao("Hãy chọn file Word trước.", "loi"); return; }
+		thongBao("Đang dựng PDF…");
+		try {
+			const cfg = hopCfg(); const { P } = await docDocx(FILES[0].buf);
+			const R = apDungParts(P, cfg); const html = docToHtml(R.document, cfg);
+			const w = window.open("", "_blank");
+			if (!w) { thongBao("Trình duyệt chặn cửa sổ in. Hãy cho phép pop-up.", "loi"); return; }
+			w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>' + esc(tenRa(FILES[0].name).replace(/\.docx$/, "")) + '</title><style>' + PDF_CSS + '</style></head><body>' + html + '<' + 'script>window.onload=function(){setTimeout(function(){window.print();},200);}</' + 'script></body></html>');
+			w.document.close();
+			thongBao("Đã mở cửa sổ in — chọn “Lưu dạng PDF”.", "ok");
+		} catch (e) { thongBao("Lỗi PDF: " + (e.message || e), "loi"); }
+	}
+
+	async function chonFile(list) {
+		FILES = []; XEM_PARTS = null;
 		const arr = [...list].filter(f => /\.docx$/i.test(f.name));
 		if (!arr.length) { thongBao("Chỉ nhận file .docx.", "loi"); return; }
-		Promise.all(arr.map(f => f.arrayBuffer().then(buf => ({ name: f.name, buf })))).then(res => {
-			FILES = res;
-			const t = $k("kwTenFile"); t.hidden = false; t.textContent = "✓ " + (res.length === 1 ? res[0].name : res.length + " file đã chọn");
-			thongBao("Đã nạp " + res.length + " file. Chọn tùy chỉnh rồi bấm Áp dụng.", "ok");
-		});
+		const res = await Promise.all(arr.map(f => f.arrayBuffer().then(buf => ({ name: f.name, buf }))));
+		FILES = res;
+		const t = $k("kwTenFile"); t.hidden = false; t.textContent = "✓ " + (res.length === 1 ? res[0].name : res.length + " file đã chọn");
+		thongBao("Đã nạp " + res.length + " file.", "ok");
+		try { if (typeof JSZip !== "undefined") { const { P } = await docDocx(res[0].buf); XEM_PARTS = P; } } catch (e) { }
+		veXem();
 	}
+
+	function chonLogo(file) {
+		if (!file) return;
+		const ext = /png/i.test(file.type) ? "png" : "jpeg";
+		const r = new FileReader();
+		r.onload = () => { const dataURL = r.result; const img = new Image(); img.onload = () => { LOGO = { dataURL, ext, nW: img.naturalWidth, nH: img.naturalHeight, buf: null }; file.arrayBuffer().then(b => { LOGO.buf = b; }); $k("kwBiaLogoTen").textContent = file.name; $k("kwBiaLogoXoa").hidden = false; veXem(); }; img.src = dataURL; };
+		r.readAsDataURL(file);
+	}
+	function xoaLogo() { LOGO = null; $k("kwBiaLogo").value = ""; $k("kwBiaLogoTen").textContent = "Chưa chọn"; $k("kwBiaLogoXoa").hidden = true; veXem(); }
 
 	/* ===== khởi động ===== */
 	let daMo = false;
 	function khoiDong() {
 		if (daMo) return; daMo = true;
 		$k("kwFile").addEventListener("change", e => chonFile(e.target.files));
+		$k("kwBiaLogo").addEventListener("change", e => chonLogo(e.target.files[0]));
+		$k("kwBiaLogoXoa").addEventListener("click", xoaLogo);
 		const drop = $k("kwDrop");
 		["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("keo"); }));
 		["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("keo"); }));
@@ -10966,13 +11116,14 @@ const KW_API = (() => {
 		$k("kwChips").addEventListener("click", e => { const b = e.target.closest(".kwChip"); if (!b) return; cheXem = b.dataset.p; document.querySelectorAll(".kwChip").forEach(c => c.classList.toggle("on", c === b)); document.querySelectorAll(".kwPanel").forEach(p => p.hidden = p.dataset.pan !== cheXem); veXem(); });
 		$k("kwApDung").addEventListener("click", apDung);
 		$k("kwXuatDocx").addEventListener("click", apDung);
-		$k("kwXuatPdf2").addEventListener("click", () => thongBao("Xuất PDF sẽ có ở bản cập nhật sau.", "loi"));
-		// cập nhật xem trước khi đổi input liên quan
-		["kwBiaCoQuan", "kwBiaDonVi", "kwBiaTieuDe", "kwBiaPhuTT", "kwBiaTacGia", "kwBiaDiaDiem", "kwBiaThoiGian", "kwKhungKieu", "kwKhungMau", "kwKhungDay", "kwKhungBat", "kwBiaBat", "kwStChuTrang", "kwStBat"].forEach(id => { const e = $k(id); if (e) e.addEventListener("input", veXem); });
+		$k("kwXuatPdf2").addEventListener("click", xuatPDF);
+		// cập nhật xem trước ngay khi đổi bất kỳ tùy chỉnh nào
+		$k("tabVanPhong").addEventListener("input", veXemHoan);
+		$k("tabVanPhong").addEventListener("change", veXemHoan);
 		veXem();
 	}
 
-	return { khoiDong, _loi: { apDungParts, suaFont, suaTrang, suaHeading, xmlTrangBia, suaSoTrang, apDungParts } };
+	return { khoiDong, _loi: { apDungParts, suaFont, suaTrang, suaHeading, xmlTrangBia, suaSoTrang, docToHtml, logoDrawing, themDefaultExt } };
 })();
 	try { const t = docO("tab"); if (t && $(t)) chonTab(t, false); } catch (e) { }
 	capNhatChip(); capNhatDem();
