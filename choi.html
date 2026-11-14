@@ -103,7 +103,7 @@ h2{margin:.2em 0;font-size:26px;font-weight:900}
 .keTa{left:5%;width:33%;max-width:130px}
 .keDich{right:5%;width:38%;max-width:150px}
 .keDich img,.keTa img{width:100%;height:100%;object-fit:contain;object-position:bottom}
-.keTa img{transform:scaleX(-1)}
+.keTa img{transform:scaleX(-1)!important}
 .mau{position:absolute;width:40%;max-width:160px;z-index:3;top:8%}
 .mauTa{left:5%}.mauDich{right:5%}
 .keTa.danhTrung{animation:lungeP .42s ease}@keyframes lungeP{45%{transform:translateX(26px) translateY(-6px)}}
@@ -581,7 +581,7 @@ function vaoMan(idx){
   $('sanDanh').style.backgroundImage='url('+IMG+'nen_danh.jpg)';
   $('keDichImg').src=anhDich(dich);
   const kd=$('keDich'); kd.style.cssText=''; if(dich.hue) kd.style.filter='drop-shadow(0 8px 8px rgba(0,0,0,.5)) hue-rotate('+dich.hue+'deg)';
-  const kt=$('keTa'); kt.style.cssText=''; $('keTaImg').src=anhNV(G.gioi,G.cap);
+  const kt=$('keTa'); kt.style.cssText=''; const ktImg=$('keTaImg'); ktImg.src=anhNV(G.gioi,G.cap); ktImg.style.transform='scaleX(-1)';
   $('dichTen').textContent=dich.ten;
   $('aiNhan').textContent=(man.ten||('Ải '+(idx+1)))+(man.boss?' 👑':'');
   manToi('manDanh'); $('khuCau').scrollTop=0; capMauTa(); capMauDich(); batDauGio(man); hoiCau();
