@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>KMath</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif:ital,wght@0,400;0,700;1,400&family=Archivo+Black&display=swap">
 <link rel="stylesheet" href="style.css">
 <style>
 .tabChinh { display: flex; gap: 2px; margin-top: 16px; border-bottom: 1px solid var(--vien); overflow-x: auto; scrollbar-width: none; }
@@ -1325,10 +1325,12 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 .nhTQThe.tong b{font-size:34px;font-weight:800;line-height:1.05;letter-spacing:-.02em;font-variant-numeric:tabular-nums;background:linear-gradient(135deg,#f5b301,#ff8a5b);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .nhTQThe.tong i{font-style:normal;font-size:11px;color:var(--phu,#9aa7c2)}
 /* thẻ Lớp — badge màu riêng */
-.nhTQHuy{flex:none;width:52px;height:52px;border-radius:13px;display:grid;place-items:center;font:800 23px/1 inherit;color:#fff;background:linear-gradient(145deg,var(--lc),var(--lc2));box-shadow:0 6px 14px -5px var(--lc)}
-.nhTQLT{display:flex;flex-direction:column;gap:0;min-width:0}
+.nhTQHuy{flex:none;width:84px;height:84px;border-radius:19px;display:grid;place-items:center;position:relative;color:#fff;background:linear-gradient(150deg,var(--lc),var(--lc2));box-shadow:0 10px 22px -9px var(--lc),inset 0 1px 0 rgba(255,255,255,.25)}
+.nhTQHuy::after{content:"";position:absolute;inset:0;border-radius:19px;border:1.5px solid rgba(255,255,255,.18)}
+.nhTQHuy>span,.nhTQHuy{font-family:"Archivo Black","Be Vietnam Pro",system-ui,sans-serif;font-weight:900;font-size:48px;line-height:.9;letter-spacing:-.02em;text-shadow:0 2px 10px rgba(0,0,0,.22)}
+.nhTQLT{display:flex;flex-direction:column;gap:1px;min-width:0}
 .nhTQNhan{font-size:12px;font-weight:700;color:var(--phu,#9aa7c2)}
-.nhTQThe.lop b{font-size:25px;font-weight:800;line-height:1.15;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.nhTQThe.lop b{font-size:29px;font-weight:800;line-height:1.1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:#fff}
 .nhTQThe.lop i{font-style:normal;font-size:11px;color:var(--phu,#9aa7c2)}
 .nhTQThe.l10{--lc:#4f9dff;--lc2:#2f6fd0;--lcbg:rgba(79,157,255,.13)}
 .nhTQThe.l11{--lc:#35c08a;--lc2:#1f9e6e;--lcbg:rgba(53,192,138,.13)}
@@ -1348,13 +1350,16 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 .nhDongBoNut:hover{filter:brightness(1.05)}
 /* dropdown */
 .nhDD{position:relative}
-.nhDDNut{height:38px;padding:0 12px;border-radius:11px;border:1px solid var(--vien,#2c3850);background:var(--mat,#fff);color:var(--chu);font:inherit;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;max-width:300px}
-.nhDDNut:hover{filter:brightness(1.05)}
-.nhDDNut.on{border-color:var(--vang,#f5b301);background:var(--vangnhat,rgba(245,179,1,.12))}
-.nhDDNut .lb{font-size:10px;font-weight:700;color:var(--phu,#9aa7c2);text-transform:uppercase;letter-spacing:.05em}
+.nhDDNut{height:48px;padding:0 15px;border-radius:13px;border:1.5px solid var(--vien2,#3a465c);background:linear-gradient(180deg,var(--mat,#fff),var(--code,rgba(128,128,128,.05)));color:var(--chu);font:inherit;font-size:13.5px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:11px;white-space:nowrap;max-width:320px}
+.nhDDNut:hover{border-color:var(--vang,#f5b301);filter:brightness(1.04)}
+.nhDDNut.on{border-color:var(--vang,#f5b301);background:var(--vangnhat,rgba(245,179,1,.14))}
+.nhDDNut .lb{font-size:10px;font-weight:800;color:var(--phu,#9aa7c2);text-transform:uppercase;letter-spacing:.07em}
 .nhDDNut.on .lb{color:var(--vang,#f5b301)}
-.nhDDNut .vl{max-width:190px;overflow:hidden;text-overflow:ellipsis}
-.nhDDNut .ca{color:var(--phu,#9aa7c2);font-size:9px;transition:transform .15s;margin-left:2px}
+.nhDDNut .vl{max-width:210px;overflow:hidden;text-overflow:ellipsis;font-weight:700}
+.nhDDNut .ca{color:var(--phu,#9aa7c2);font-size:9px;transition:transform .15s;margin-left:auto;padding-left:4px}
+/* dropdown Loại/Mức */
+.nhDDPanelLoc{min-width:240px}
+.nhDDItem .nhDot{width:11px;height:11px;border-radius:50%;flex:none}
 .nhDD.mo .nhDDNut .ca{transform:rotate(180deg)}
 .nhDDPanel{position:absolute;top:calc(100% + 6px);left:0;min-width:270px;max-width:420px;max-height:380px;overflow:auto;background:var(--mat,#fff);border:1px solid var(--vien,#2c3850);border-radius:13px;box-shadow:var(--bong,0 18px 44px -14px rgba(0,0,0,.6));padding:6px;display:none;z-index:60}
 .nhDD.mo .nhDDPanel{display:block}
@@ -2738,8 +2743,8 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 			<label class="nhTim"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg><input type="search" id="nhTim" placeholder="Tìm theo nội dung, ID, tên file…" aria-label="Tìm câu hỏi"></label>
 		</div>
 		<div class="nhLocBar nhLocBar2">
-			<span class="nhLocNhan">Loại</span><div class="giLoc" id="nhLoai"></div>
-			<span class="nhLocNhan">Mức</span><div class="giLoc" id="nhMuc"></div>
+			<div class="nhDD nhDDL" id="nhDDLoai"></div>
+			<div class="nhDD nhDDL" id="nhDDMuc"></div>
 			<label class="vdCong nhCoHinh"><input type="checkbox" id="nhHinh"><i aria-hidden="true"></i>Có hình</label>
 			<span class="nhLocDay"></span>
 			<button class="vdNutNho nhBoLocNut" type="button" id="nhBoLoc">✕ Bỏ lọc</button>
@@ -9952,6 +9957,13 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 		// Sắp mã chương: Chương thường (mon D/H) trước, Chuyên đề (mon C) sau; trong mỗi nhóm theo số tăng dần. Dùng chung cho cây & đồng bộ game.
 		const monCua = ma => (ma && ma.length > 1 ? ma[1] : ""), laCD = ma => monCua(ma) === "C";
 		const sapMa = o => Object.keys(o).sort((a, b) => (laCD(a) - laCD(b)) || a.localeCompare(b, "vi", { numeric: true }));
+		// Sắp theo SỐ trong tên hiển thị (Chương 1,2,…,10 rồi Chuyên đề), không theo mã code
+		const soTen = (ten, ma) => { const m = /(?:Chương|Bài|Dạng)\s+(\d+)/.exec(ten || ""); if (m) return +m[1]; const d = /(\d+)/.exec(String(ma || "").slice(2)); return d ? +d[1] : 999; };
+		const sapTen = (o, tenFn) => Object.keys(o).sort((a, b) => (laCD(a) - laCD(b)) || (soTen(tenFn(a), a) - soTen(tenFn(b), b)) || a.localeCompare(b, "vi", { numeric: true }));
+		// dropdown Loại/Mức (bấm mới bung list)
+		function veLocDD(id, lb, items, cur, attr) { const dd = $g(id); if (!dd) return; const c = items.find(x => x.v === cur) || items[0];
+			dd.innerHTML = '<button type="button" class="nhDDNut nhDDLoc' + (cur ? " on" : "") + '"><span class="lb">' + lb + '</span><span class="vl">' + esc(c ? c.ten : "—") + '</span><span class="ca">▼</span></button><div class="nhDDPanel nhDDPanelLoc">' +
+				items.map(x => '<button type="button" class="nhDDItem' + (x.v === cur ? " chon" : "") + '" data-' + attr + '="' + esc(x.v) + '">' + (x.dot ? '<span class="nhDot" style="background:' + x.dot + '"></span>' : '<span class="tk"></span>') + '<span>' + esc(x.ten) + '</span>' + (x.n != null ? '<span class="sl">' + x.n + '</span>' : '') + '</button>').join("") + '</div>'; }
 		const tenLop = l => ct().lop[l] || (l ? "Lớp " + l : "Chưa phân loại");
 		const nutCua = c => c.lop ? [c.lop, QB.maChuong(c), c.bai ? QB.maBai(c) : "", c.bai && c.dang ? QB.maDang(c) : ""] : ["?"];
 		async function napLai() { try { ALL = (await QB.dbTatCa()) || []; } catch (e) { toast("Lỗi đọc ngân hàng: " + (e.message || e)); if (!Array.isArray(ALL)) ALL = []; veTatCa(); return; }
@@ -9982,19 +9994,21 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 			const coLop = ["0", "1", "2"].filter(l => NHOM[l]); if (!lopDD || !NHOM[lopDD]) lopDD = p.lop && NHOM[p.lop] ? p.lop : (coLop[0] || "0");
 			if (p.lop && NHOM[p.lop]) lopDD = p.lop;
 			// Chương (của lopDD) — Chương thường trước, Chuyên đề sau
-			const chs = NHOM[lopDD] || {}, dsCh = [{ ma: "", ten: "Tất cả chương", n: DEM.get(lopDD) || 0 }].concat(sapMa(chs).map(mc => ({ ma: mc, ten: (C.ten(mc) || "Chương " + mc.slice(2)), n: DEM.get(mc) || 0 })));
+			const chs = NHOM[lopDD] || {}, dsCh = [{ ma: "", ten: "Tất cả chương", n: DEM.get(lopDD) || 0 }].concat(sapTen(chs, mc => C.ten(mc)).map(mc => ({ ma: mc, ten: (C.ten(mc) || "Chương " + mc.slice(2)), n: DEM.get(mc) || 0 })));
 			veDD("nhDDChuong", "Chương", dsCh, p.mc);
 			// Bài (của chương đang chọn)
-			const bs = p.mc ? (chs[p.mc] || {}) : {}, dsBai = [{ ma: "", ten: "Tất cả bài", n: p.mc ? DEM.get(p.mc) || 0 : 0 }].concat(sapMa(bs).map(mb => ({ ma: mb, ten: (C.ten(mb) || "Bài " + (mb.split("-")[1] || "")), n: DEM.get(mb) || 0 })));
+			const bs = p.mc ? (chs[p.mc] || {}) : {}, dsBai = [{ ma: "", ten: "Tất cả bài", n: p.mc ? DEM.get(p.mc) || 0 : 0 }].concat(sapTen(bs, mb => C.ten(mb)).map(mb => ({ ma: mb, ten: (C.ten(mb) || "Bài " + (mb.split("-")[1] || "")), n: DEM.get(mb) || 0 })));
 			veDD("nhDDBai", "Bài", dsBai, p.mb);
 			// Dạng (của bài đang chọn)
-			const dgs = p.mb && bs[p.mb] ? bs[p.mb] : {}, dsDang = [{ ma: "", ten: "Tất cả dạng", n: p.mb ? DEM.get(p.mb) || 0 : 0 }].concat(sapMa(dgs).map(md => ({ ma: md, ten: (C.ten(md) || "Dạng " + (md.split("-")[2] || "")), n: DEM.get(md) || 0 })));
+			const dgs = p.mb && bs[p.mb] ? bs[p.mb] : {}, dsDang = [{ ma: "", ten: "Tất cả dạng", n: p.mb ? DEM.get(p.mb) || 0 : 0 }].concat(sapTen(dgs, md => C.ten(md)).map(md => ({ ma: md, ten: (C.ten(md) || "Dạng " + (md.split("-")[2] || "")), n: DEM.get(md) || 0 })));
 			veDD("nhDDDang", "Dạng", dsDang, p.md);
 			$g("nhDDBai").classList.toggle("nhMo", !!p.mc); $g("nhDDDang").classList.toggle("nhMo", !!p.mb); }
 		// ---------- danh sách ----------
 		function veDs() { const d = locDs(), dem = { tn: 0, ds: 0, tln: 0, tl: 0 }, demM = {}; ALL.filter(c => !loc.nut || nutCua(c).includes(loc.nut)).forEach(c => { dem[c.loai]++; if (c.muc) demM[c.muc] = (demM[c.muc] || 0) + 1; });
-			$g("nhLoai").innerHTML = '<button type="button" data-loai="" aria-pressed="' + !loc.loai + '">Mọi loại</button>' + Object.entries(dem).filter(([, v]) => v).map(([k, v]) => '<button type="button" data-loai="' + k + '" aria-pressed="' + (loc.loai === k) + '">' + QB.TEN_LOAI[k] + " <i>" + v + "</i></button>").join("");
-			$g("nhMuc").innerHTML = Object.keys(demM).length ? '<button type="button" data-muc="" aria-pressed="' + !loc.muc + '">Mọi mức</button>' + Object.entries(ct().muc).filter(([k]) => demM[k]).map(([k, v]) => '<button type="button" data-muc="' + k + '" aria-pressed="' + (loc.muc === k) + '" title="' + esc(v) + '">' + esc(v) + " <i>" + demM[k] + "</i></button>").join("") : "";
+			const tongLoai = Object.values(dem).reduce((s, v) => s + v, 0);
+			veLocDD("nhDDLoai", "Loại", [{ v: "", ten: "Mọi loại", n: tongLoai }].concat(Object.entries(dem).filter(([, v]) => v).map(([k, v]) => ({ v: k, ten: QB.TEN_LOAI_DAI[k], n: v }))), loc.loai, "loai");
+			const MAU_MUC = { N: "#4f9dff", H: "#35c08a", V: "#f6a723", C: "#ff6b6b" }, tongMuc = Object.values(demM).reduce((s, v) => s + v, 0);
+			veLocDD("nhDDMuc", "Mức", [{ v: "", ten: "Mọi mức", n: tongMuc }].concat(Object.entries(ct().muc).filter(([k]) => demM[k]).map(([k, v]) => ({ v: k, ten: v, n: demM[k], dot: MAU_MUC[k] || "#9aa7c2" }))), loc.muc, "muc");
 			$g("nhDem").textContent = d.length.toLocaleString("vi-VN") + " câu" + (d.length !== ALL.length ? " (lọc từ " + ALL.length.toLocaleString("vi-VN") + ")" : "");
 			$g("nhDs").innerHTML = d.slice(0, soHien).map(c => '<li class="nhCau' + (dangXem === c.k ? " dang" : "") + '" data-k="' + c.k + '"><input type="checkbox" data-chon="' + c.k + '"' + (chon.has(c.k) ? " checked" : "") + ' aria-label="Chọn câu"><div class="nhCauThan"><div class="nhCauDau"><span class="mdChip giLoai ' + c.loai + '">' + QB.TEN_LOAI[c.loai] + "</span>" + (c.id ? '<code class="nhID">' + esc(c.id) + "</code>" : '<span class="giNguon chua">chưa có ID</span>') + (c.muc && ct().muc[c.muc] ? '<span class="nhMucNhan">' + esc(ct().muc[c.muc]) + "</span>" : "") + (c.coHinh ? '<span class="nhHinhNhan" title="Có hình vẽ">▲ hình</span>' : "") + (c.mau ? '<span class="nhMauNhan" title="Có mẫu đổi số (tab Đề tương tự)">🔁 đổi số</span>' : "") + '</div><div class="nhTom">' + esc(c.tom) + "</div></div></li>").join("") || '<li class="mdTrong">Không có câu nào khớp bộ lọc.</li>';
 			$g("nhThem").hidden = d.length <= soHien; $g("nhSoChon").textContent = chon.size; $g("nhGanChon").disabled = !chon.size; $g("nhGio").disabled = $g("nhXoaChon").disabled = $g("nhGanChon").disabled = !chon.size; const chua = ALL.filter(c => !c.id).length; $g("nhGanID").hidden = !chua; $g("nhGanSo").textContent = chua; }
@@ -10070,8 +10084,8 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 				((cayG[L] = cayG[L] || {})[mc] = cayG[L][mc] || {})[mb] = cayG[L][mc][mb] || []; cayG[L][mc][mb].push(q); tong++; });
 			const kho = {}; let ico = 0;
 			["10", "11", "12"].forEach(L => { if (!cayG[L]) return; const lopObj = {};
-				sapMa(cayG[L]).forEach(mc => { const tenC = (C.ten(mc) || "Chương " + mc.slice(2)); const ais = [];
-					sapMa(cayG[L][mc]).forEach(mb => { const pool = cayG[L][mc][mb]; const bn = mb.split("-")[1] || ""; const tenAi = C.ten(mb) || (bn && bn !== "0" ? "Bài " + bn : "Luyện tập"); const mucAi = Math.max(1, Math.min(4, Math.round(pool.reduce((s, q) => s + q.muc, 0) / pool.length))); ais.push({ ten: tenAi, muc: mucAi, boss: false, giay: 30 + 30 * mucAi, pool }); });
+				sapTen(cayG[L], mc => C.ten(mc)).forEach(mc => { const tenC = (C.ten(mc) || "Chương " + mc.slice(2)); const ais = [];
+					sapTen(cayG[L][mc], mb => C.ten(mb)).forEach(mb => { const pool = cayG[L][mc][mb]; const bn = mb.split("-")[1] || ""; const tenAi = C.ten(mb) || (bn && bn !== "0" ? "Bài " + bn : "Luyện tập"); const mucAi = Math.max(1, Math.min(4, Math.round(pool.reduce((s, q) => s + q.muc, 0) / pool.length))); ais.push({ ten: tenAi, muc: mucAi, boss: false, giay: 30 + 30 * mucAi, pool }); });
 					if (ais.length) { const b = ais[ais.length - 1]; b.boss = true; b.ten = b.ten + " (Trùm)"; b.muc = Math.min(4, b.muc + 1); b.giay = 30 + 30 * b.muc; b.bossIco = (ico++ % 6) + 1; }
 					if (ais.length) lopObj[tenC] = ais; });
 				if (Object.keys(lopObj).length) kho[L] = lopObj; });
@@ -10089,8 +10103,11 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 				$g("nhSaoLuu").addEventListener("click", saoLuu);
 				$g("nhTim").addEventListener("input", () => { loc.q = $g("nhTim").value; soHien = TRANG; veDs(); });
 				$g("nhHinh").addEventListener("change", () => { loc.hinh = $g("nhHinh").checked; veDs(); });
-				$g("nhLoai").addEventListener("click", e => { const b = e.target.closest("[data-loai]"); if (b) { loc.loai = b.dataset.loai; soHien = TRANG; veDs(); } });
-				$g("nhMuc").addEventListener("click", e => { const b = e.target.closest("[data-muc]"); if (b) { loc.muc = b.dataset.muc; soHien = TRANG; veDs(); } });
+				const locDDClick = e => { const nut = e.target.closest(".nhDDNut"); if (nut) { e.stopPropagation(); const dd = nut.closest(".nhDD"), mo = dd.classList.contains("mo"); document.querySelectorAll(".nhDD.mo").forEach(x => x.classList.remove("mo")); if (!mo) dd.classList.add("mo"); return; }
+					const it = e.target.closest(".nhDDItem"); if (!it) return; e.stopPropagation();
+					if ("loai" in it.dataset) loc.loai = it.dataset.loai; else if ("muc" in it.dataset) loc.muc = it.dataset.muc;
+					document.querySelectorAll(".nhDD.mo").forEach(x => x.classList.remove("mo")); soHien = TRANG; veDs(); };
+				["nhDDLoai", "nhDDMuc"].forEach(id => $g(id).addEventListener("click", locDDClick));
 				const locLai = () => { soHien = TRANG; veTK(); veCay(); veDs(); };
 				$g("nhTK").addEventListener("click", e => { if (e.target.closest("#nhTQTatCa")) { loc.nut = ""; locLai(); return; } const s = e.target.closest("[data-nut]"); if (!s) return; loc.nut = loc.nut === s.dataset.nut ? "" : s.dataset.nut; locLai(); });
 				const ddClick = e => { const nut = e.target.closest(".nhDDNut"); if (nut) { e.stopPropagation(); const dd = nut.closest(".nhDD"), dangMo = dd.classList.contains("mo"); document.querySelectorAll(".nhDD.mo").forEach(x => x.classList.remove("mo")); if (!dangMo) dd.classList.add("mo"); return; }
