@@ -1543,6 +1543,20 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 .ttTang.an{background:rgba(62,207,142,.15);color:var(--luc,#2bbd7e)}
 .ttTang.khoa{background:rgba(242,177,75,.16);color:var(--cam,#d98a1a)}
 .ttTang.canh{background:rgba(240,115,138,.15);color:var(--do,#e03131)}
+/* ③ Kho mẫu — 2 cột có bộ lọc tầng */
+.ttKho2{display:grid;grid-template-columns:270px minmax(0,1fr);gap:14px;align-items:start}
+@media(max-width:820px){.ttKho2{grid-template-columns:1fr}}
+.ttKhoLoc{padding:15px;position:sticky;top:12px}
+.ttKhoRib{margin-bottom:14px}
+.ttRibBar{height:14px;border-radius:8px;background:var(--mat2,#1b2740);border:1px solid var(--vien);overflow:hidden}
+.ttRibBar i{display:block;height:100%;background:linear-gradient(90deg,#2bbd7e,#3ecf8e)}
+.ttRibTx{font-size:12px;color:var(--phu);margin-top:7px}.ttRibTx b{color:var(--chu)}
+.ttKhoLocDau{font-size:11px;font-weight:800;letter-spacing:.05em;color:var(--phu);text-transform:uppercase;margin-bottom:10px}
+.ttKhoChips{display:flex;flex-direction:column;gap:7px}
+.ttKhoChip{text-align:left;height:38px;padding:0 13px;border-radius:11px;border:1px solid var(--vien);background:var(--mat,#151e30);color:var(--chu);font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.ttKhoChip:hover{border-color:var(--vien2,#33425c)}
+.ttKhoChip.on{background:rgba(231,189,99,.14);border-color:var(--vang,#e7bd63);color:var(--vang2,#f3d389);font-weight:800}
+.ttKhoChinh{padding:14px}
 
 /* ===== Tab Văn Phòng — K-Word ===== */
 .kwIco{background:linear-gradient(135deg,#8ec5ff,#4f7cff)!important}
@@ -2916,8 +2930,19 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 		</div>
 
 		<!-- ③ KHO MẪU -->
-		<div class="ttThan ttMot" data-cdp="kho" hidden>
-			<section class="mdThe">
+		<div class="ttThan ttKho2" data-cdp="kho" hidden>
+			<aside class="mdThe ttKhoLoc">
+				<div class="ttKhoRib" id="ttKhoRib"></div>
+				<div class="ttKhoLocDau">Lọc theo tầng hình</div>
+				<div class="ttKhoChips" id="ttKhoChips">
+					<button type="button" class="ttKhoChip on" data-loc="">Tất cả</button>
+					<button type="button" class="ttKhoChip" data-loc="an">✓ Đổi số an toàn</button>
+					<button type="button" class="ttKhoChip" data-loc="khoa">🔒 Bị khoá</button>
+					<button type="button" class="ttKhoChip" data-loc="canh">⚠ Hình đổi số</button>
+				</div>
+				<p class="vdGhi" style="margin-top:12px">Câu <b>an toàn</b> (không hình / hình hình học) đổi số thoải mái. Câu <b>khoá</b> (bảng biến thiên, đồ thị, ảnh) nên giữ nguyên hình để tránh sai.</p>
+			</aside>
+			<section class="mdThe ttKhoChinh">
 				<div class="giThanh"><b>Câu đã có mẫu đổi số</b><div class="giThanhNut"><input class="mdO ttTim" id="ttKhoTim" placeholder="Tìm theo ID, nội dung…"></div></div>
 				<div class="ttKhoDs" id="ttKhoDs"></div>
 			</section>
@@ -10536,7 +10561,10 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 		async function luuMauCho(x, m) { const r = await banGhiCua(x), kq = kiemMau(m); r.mau = m; r.mauOk = kq.ok !== false; await QB.dbGhi([r]); return kq; }
 		async function demKho() { const n = (await QB.dbTatCa()).filter(r => r.mau).length; $g("ttKhoMau").textContent = "Kho mẫu: " + n.toLocaleString("vi-VN"); return n; }
 		async function veKho() { const q = QB.boDau($g("ttKhoTim").value.trim().toLowerCase()), ds = (await QB.dbTatCa()).filter(r => r.mau && (!q || QB.boDau((r.id + " " + r.tom).toLowerCase()).includes(q)));
-			$g("ttKhoDs").innerHTML = ds.length ? ds.slice(0, 200).map(r => '<div class="ttKhoDong"><span class="ttKhoTT ' + (r.mauOk === false ? "loi" : "ok") + '">' + (r.mauOk === false ? "⚠" : "✓") + '</span><code>' + esc(r.id || "—") + '</code><span class="mdChip">' + esc(QB.TEN_LOAI[r.loai] || r.loai) + '</span>' + tangBadge(tangHinh(r.raw)) + (!TANG_AN[tangHinh(r.raw)] && hinhDoiSo(r.raw) ? '<span class="ttTang canh" title="Hình nguy hiểm nhưng khuôn đổi số trong hình — dễ sai, kiểm kỹ">⚠ hình đổi số</span>' : "") + '<p>' + esc(r.tom.slice(0, 160)) + '</p><i>' + esc((r.mau.thamSo || []).map(t => t.split("=")[0].trim()).join(", ")) + '</i><button type="button" class="vdNutNho" data-mo="' + r.k + '">Mở</button><button type="button" class="vdNutNho" data-thu="' + r.k + '">Sinh thử</button><button type="button" class="gtXoa" data-bo="' + r.k + '" title="Bỏ mẫu">×</button></div>').join("") : '<p class="mdTrong">Chưa có câu nào có mẫu. Lập mẫu ở ① hoặc ②, bấm 💾 Lưu.</p>'; demKho(); }
+			$g("ttKhoDs").innerHTML = ds.length ? ds.slice(0, 200).map(r => '<div class="ttKhoDong" data-cat="' + (TANG_AN[tangHinh(r.raw)] ? "an" : (hinhDoiSo(r.raw) ? "canh" : "khoa")) + '"><span class="ttKhoTT' + (r.mauOk === false ? "loi" : "ok") + '">' + (r.mauOk === false ? "⚠" : "✓") + '</span><code>' + esc(r.id || "—") + '</code><span class="mdChip">' + esc(QB.TEN_LOAI[r.loai] || r.loai) + '</span>' + tangBadge(tangHinh(r.raw)) + (!TANG_AN[tangHinh(r.raw)] && hinhDoiSo(r.raw) ? '<span class="ttTang canh" title="Hình nguy hiểm nhưng khuôn đổi số trong hình — dễ sai, kiểm kỹ">⚠ hình đổi số</span>' : "") + '<p>' + esc(r.tom.slice(0, 160)) + '</p><i>' + esc((r.mau.thamSo || []).map(t => t.split("=")[0].trim()).join(", ")) + '</i><button type="button" class="vdNutNho" data-mo="' + r.k + '">Mở</button><button type="button" class="vdNutNho" data-thu="' + r.k + '">Sinh thử</button><button type="button" class="gtXoa" data-bo="' + r.k + '" title="Bỏ mẫu">×</button></div>').join("") : '<p class="mdTrong">Chưa có câu nào có mẫu. Lập mẫu ở ① hoặc ②, bấm 💾 Lưu.</p>'; veRib(ds); locKho(); demKho(); }
+		function veRib(ds) { const rib = $g("ttKhoRib"); if (!rib) return; const c = { an: 0, khoa: 0, canh: 0 }; ds.forEach(r => { const t = tangHinh(r.raw); c[TANG_AN[t] ? "an" : (hinhDoiSo(r.raw) ? "canh" : "khoa")]++; }); const tong = ds.length || 1; rib.innerHTML = '<div class="ttRibBar"><i style="width:' + (c.an / tong * 100) + '%"></i></div><div class="ttRibTx"><b>' + c.an + '</b> an toàn · <b>' + (c.khoa + c.canh) + '</b> khoá / ' + ds.length + ' mẫu</div>'; }
+		let locTang = "";
+		function locKho() { document.querySelectorAll("#ttKhoDs .ttKhoDong").forEach(el => { el.style.display = (!locTang || el.dataset.cat === locTang) ? "" : "none"; }); }
 		// ---------- ② CẢ ĐỀ QUA GEMINI ----------
 		function nhacGem(ds) { return "VAI TRÒ: Bạn là chuyên gia Toán THPT Việt Nam hơn 20 năm ra đề, đồng thời giỏi lập trình. Hãy biến TỪNG CÂU HỎI LaTeX dưới đây thành MẪU THAM SỐ để sinh câu tương tự (chỉ thay số liệu, giữ nguyên dạng toán; đáp án phải tính lại CHÍNH XÁC bằng công thức).\n\nQUY TRÌNH (làm nháp trong đầu, không in ra): giải từng câu → xác định số liệu nào đổi được mà bài vẫn đẹp → viết công thức đáp án theo tham số → thử lại với số gốc phải ra đúng đáp án gốc.\n\nQUY TẮC:\n- Tham số đặt tên a, b, c, m, n, p, q, k (KHÔNG dùng d, e, x, y, z, i). Khoảng giá trị là số nguyên nhỏ hợp lý: \"a = 2..9\", \"b = 1..6 bước 1\", danh sách \"c = [2, 3, 5]\", tham số phụ thuộc \"m = a*b+1\".\n- Biểu thức chỉ dùng: + - * / ^ ( ), sqrt, abs, min, max, round(x,n), C(n,k), A(n,k), fact(n), sin, cos, tan, ln, log(a,b), pi; so sánh == != < > <= >= && ||.\n- deBai: giữ nguyên LaTeX của đề (KHÔNG gồm \\choice, \\choiceTF, \\shortans, \\loigiai); chỗ số liệu thay bằng {a}; chỗ cần tính thay bằng {=biểu thức}; số có dấu đứng sau phép toán viết {+b}. XỬ LÝ HÌNH TIKZ theo loại: (a) HÌNH HÌNH HỌC (toạ độ \\\\coordinate/\\\\draw/\\\\node/\\\\fill, như tam giác, tứ giác, nhà-góc, hồ bơi): thay MỌI số liệu trong toạ độ VÀ trong nhãn ($\\\\dots$ m, góc) bằng {a} hoặc {=biểu thức}, để hình tự vẽ lại khớp số mới — số hiển thị trong hình PHẢI khớp số trong đề. (b) BẢNG BIẾN THIÊN, ĐỒ THỊ (\\\\addplot, plot, axis, \\\\matrix, tkzTab), hoặc \\\\includegraphics: TUYỆT ĐỐI GIỮ NGUYÊN, KHÔNG đặt {a} vào trong các hình này (cấu trúc dấu/mũi tên/đường cong phụ thuộc bản chất hàm, đổi số sẽ sai). Nếu số BẮT BUỘC phải đổi lại nằm trong bảng biến thiên/đồ thị/ảnh thì trả {\"cau\": số, \"khongDoi\": true}.\n- Trắc nghiệm (tn): dapAn là biểu thức đáp án đúng; nhieu là 3 biểu thức phương án sai thường gặp (khác nhau, khác đáp án).\n- Đúng/Sai (ds): nhieu là ĐÚNG 4 dòng \"nội dung ý có {a} || điều kiện để ý đó Đúng\" (dùng 1 nếu luôn đúng, 0 nếu luôn sai).\n- Trả lời ngắn (tln): dapAn là biểu thức; đáp số ghi được tối đa 4 ký tự (kể cả dấu - và dấu phẩy) — chọn khoảng tham số phù hợp hoặc đặt lamTron (0, 1, 2 chữ số thập phân).\n- dieuKien: điều kiện để bài có nghĩa/đẹp (vd a != b), để trống nếu không cần.\n- loiGiai: lời giải ngắn có {a}, {=…} (tuỳ chọn).\n- goc: giá trị các tham số trong câu gốc; dapAnGoc: đáp án số của câu gốc (tn, tln).\n- Câu không đổi số được (lý thuyết, không có số liệu): trả {\"cau\": số, \"khongDoi\": true}.\n- dapAn và nhieu (tn, tln) viết biểu thức TRẦN, KHÔNG bọc {= }. Trong nhieu được dùng biến dapAn (vd round(dapAn + 1.25, 2)). Nếu đáp án là mệnh đề/LaTeX (không phải số) thì dapAn, nhieu viết LaTeX có $…$ và {a}.\n- Rẽ nhánh dùng neu(điều kiện, giá trị nếu đúng, giá trị nếu sai), KHÔNG dùng if/else kiểu Python.\n- JSON hợp lệ: mọi dấu \\ của LaTeX phải viết đôi \\\\ (vd \\\\dfrac, \\\\Leftrightarrow).\n\nĐỊNH DẠNG TRẢ VỀ: chỉ MỘT khối ```json chứa MẢNG, mỗi phần tử một câu, không viết gì ngoài khối:\n[{\"cau\":1,\"loai\":\"tn|ds|tln|tl\",\"thamSo\":[\"a = 2..9\"],\"dieuKien\":\"\",\"deBai\":\"...\",\"dapAn\":\"...\",\"nhieu\":[\"...\"],\"lamTron\":\"\",\"loiGiai\":\"\",\"goc\":{\"a\":3},\"dapAnGoc\":\"...\"}]\n\nCÁC CÂU HỎI:\n" + ds.map((x, i) => "### Câu " + (i + 1) + "\n" + x.raw.replace(/%\[[^\]]*\]/g, "")).join("\n\n"); }
 		function suaJSON(t) { let r = "", trong = false; for (let k = 0; k < t.length; k++) { const c = t[k]; if (!trong) { if (c === '"') trong = true; if (c === "," && /^\s*[\]}]/.test(t.slice(k + 1))) continue; r += c; continue; } if (c === '"') { trong = false; r += c; continue; } if (c === "\n") { r += "\\n"; continue; } if (c === "\r") continue; if (c === "\t") { r += "\\t"; continue; } if (c !== "\\") { r += c; continue; } const n = t[k + 1] || "", n2 = t[k + 2] || ""; if (n === "\\" || n === '"' || n === "/") { r += c + n; k++; continue; } if (n === "u" && /^[0-9a-fA-F]{4}$/.test(t.substr(k + 2, 4))) { r += c; continue; } if ("bfnrt".includes(n) && !/[a-z]/.test(n2)) { r += c; continue; } r += "\\\\"; } return r; }
@@ -10585,6 +10613,7 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 			$g("ttGemTai").addEventListener("click", () => { if (S.gemRa) taiVe(new Blob([themTacGia(S.gemRa)], { type: "text/plain" }), "de-tuong-tu.tex"); });
 			// ③
 			$g("ttKhoTim").addEventListener("input", () => veKho());
+			$g("ttKhoChips").addEventListener("click", e => { const b = e.target.closest(".ttKhoChip"); if (!b) return; locTang = b.dataset.loc; document.querySelectorAll("#ttKhoChips .ttKhoChip").forEach(x => x.classList.toggle("on", x === b)); locKho(); });
 			$g("ttKhoDs").addEventListener("click", async e => { const t = e.target.closest("[data-mo],[data-thu],[data-bo]"); if (!t) return; const all = await QB.dbTatCa(), r = all.find(z => z.k === (t.dataset.mo || t.dataset.thu || t.dataset.bo)); if (!r) return;
 				if (t.dataset.bo) { delete r.mau; delete r.mauOk; await QB.dbGhi([r]); veKho(); toast("Đã bỏ mẫu của câu"); return; }
 				if (t.dataset.thu) { cheDo("bam"); $g("ttGoc").value = r.raw; napCau(); }
