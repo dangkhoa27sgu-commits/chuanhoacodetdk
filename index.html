@@ -1051,6 +1051,11 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: var(--f-code, monospace); font-size: 12.5px; line-height: 1.55; }
 .mdTrong { padding: 28px 12px; text-align: center; color: var(--phu, #667085); font-size: 13px; }
 .mdChip { display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 9px; border-radius: 99px; font-size: 12px; font-weight: 700; background: var(--code, #f6f7f9); color: var(--chu, #16202e); white-space: nowrap; }
+/* cổng kiểm render tab Chuẩn hoá */
+.kiemRa{margin-top:10px;font-size:13px;line-height:1.5}
+.kiemRa .ds.kiemDs{margin-top:8px}
+.kiemRa .ds.kiemDs li{display:flex;gap:10px;align-items:baseline}
+.kiemRa .ds.kiemDs .ma{color:var(--do,#ff6b6b);font-weight:700;flex:none}
 
 /* ===== Gọi tên học sinh ===== */
 .gt { --gt-ac: #f5b301; }
@@ -1774,7 +1779,7 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 			<div class="oCode">
 				<div class="dauO">
 					<h2>Code đã chuẩn hoá <span id="demRa"></span></h2>
-					<div class="nhom"><button class="nut" id="nutChep" type="button">Sao chép</button></div>
+					<div class="nhom"><button class="nut" id="nutKiem" type="button" title="Render thử các hình TikZ sau khi chuẩn hoá để phát hiện hình bị lỗi">🔍 Kiểm tra render</button><button class="nut" id="nutChep" type="button">Sao chép</button></div>
 				</div>
 				<textarea id="ra" spellcheck="false" aria-label="Code LaTeX đã chuẩn hoá"></textarea>
 			</div>
@@ -1782,6 +1787,7 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 
 		<div class="thanhChay">
 			<div class="tomtat" id="tomtat"></div>
+			<div class="kiemRa" id="kiemRa"></div>
 			<span class="goiy">Phím tắt <kbd>Ctrl</kbd> + <kbd>Enter</kbd> trong khung code gốc</span>
 		</div>
 
@@ -3437,8 +3443,34 @@ O_CHON.forEach(k => { const v = doc_(k); if (v !== null) $(k).checked = v === "1
 function dem(s) { const n = s ? s.split("\n").length : 0; return n ? "· " + n + " dòng" : ""; }
 $("vao").addEventListener("input", () => $("demVao").textContent = dem($("vao").value));
 
+// Tiền xử lý: bung \foreach \p in {A,B,C} \node[below left] at (\p){$\p$} thành node riêng,
+// để engine tự đổi nhãn sang vị trí theo GÓC ĐỘ (dưới-trái → -135…) thay vì giữ below left.
+function moRongForeachNhan(code) {
+	return String(code || "").replace(/\\foreach\s*\\(\w+)\s*in\s*\{([^{}]*)\}\s*\\node(\s*\[[^\]]*\])?\s*at\s*\(\s*\\\1\s*\)\s*\{([^{}]*)\}\s*;?/g,
+		(m, v, list, opt, body) => { const items = list.split(",").map(s => s.trim()).filter(Boolean);
+			if (!items.length || items.some(x => x.includes("/"))) return m;
+			const re = new RegExp("\\\\" + v + "(?![a-zA-Z])", "g");
+			return items.map(it => "\\node" + (opt || "") + " at (" + it + ") {" + body.replace(re, it) + "};").join("\n"); });
+}
+window.moRongForeachNhan = moRongForeachNhan;
+async function kiemRenderChuan() {
+	const src = $("ra").value || $("vao").value; const box = $("kiemRa");
+	if (!src.trim()) { box.innerHTML = '<span class="the">Chưa có code để kiểm.</span>'; return; }
+	if (!boMay || typeof boMay.veTikz !== "function") { box.innerHTML = '<span class="the canh">Bộ render hình chưa sẵn sàng.</span>'; return; }
+	const hinh = src.match(/\\begin\{tikzpicture\}[\s\S]*?\\end\{tikzpicture\}/g) || [];
+	if (!hinh.length) { box.innerHTML = '<span class="the on">Không có hình TikZ nào để kiểm.</span>'; return; }
+	const btn = $("nutKiem"), lab = btn.textContent; btn.disabled = true; btn.textContent = "⏳ Đang render…";
+	const loi = [];
+	for (let i = 0; i < hinh.length; i++) { box.innerHTML = '<span class="the">⏳ Render thử hình ' + (i + 1) + "/" + hinh.length + "…</span>";
+		try { const r = await boMay.veTikz(hinh[i], { doPhanGiai: 1 }); if (!r || r.loi || !(r.png || r.svg)) loi.push({ i: i + 1, txt: r && r.loiTxt ? String(r.loiTxt).slice(0, 140) : "không vẽ được" }); }
+		catch (e) { loi.push({ i: i + 1, txt: String(e.message || e).slice(0, 140) }); } }
+	btn.disabled = false; btn.textContent = lab;
+	box.innerHTML = loi.length
+		? '<span class="the canh">⚠ ' + loi.length + "/" + hinh.length + ' hình render LỖI sau chuẩn hoá — kiểm lại trước khi dùng:</span><ul class="ds kiemDs">' + loi.map(x => '<li><span class="ma">Hình #' + x.i + "</span><span>" + esc(x.txt) + "</span></li>").join("") + "</ul>"
+		: '<span class="the on">✓ ' + hinh.length + " hình TikZ render OK — chuẩn hoá không làm hỏng hình.</span>";
+}
 async function chay() {
-	const src = $("vao").value;
+	const src = moRongForeachNhan($("vao").value);
 	if (!src.trim()) { hien("Chưa có code để chuẩn hoá"); return; }
 	const tuyChon = {};
 	O_TT.forEach(k => tuyChon[k] = $(k).value.trim());
@@ -3450,6 +3482,7 @@ async function chay() {
 		$("ra").value = data.ketQua;
 		$("demRa").textContent = dem(data.ketQua);
 		veBaoCao(data);
+		$("kiemRa").innerHTML = '<span class="the">Bấm <b>🔍 Kiểm tra render</b> để render thử hình, phát hiện hình bị lỗi.</span>';
 		hien("Đã chuẩn hoá");
 	} catch (e) {
 		$("tomtat").innerHTML = '<span class="the canh">Máy gặp lỗi khi đọc đoạn code này. Gửi đoạn code cho quản trị viên để sửa luật.</span>';
@@ -3483,6 +3516,7 @@ $("dsCanh").addEventListener("click", e => {
 	ta.scrollTop = Math.max(0, (n - 4) * parseFloat(getComputedStyle(ta).lineHeight));
 });
 $("nutChay").addEventListener("click", chay);
+$("nutKiem").addEventListener("click", kiemRenderChuan);
 $("nutXoa").addEventListener("click", () => { $("vao").value = ""; $("demVao").textContent = ""; $("vao").focus(); });
 $("nutChep").addEventListener("click", () => {
 	const ta = $("ra"); if (!ta.value) return;
@@ -10031,7 +10065,7 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 		// ---------- Chuẩn hoá + cổng kiểm render ----------
 		const luatNH = () => Object.assign((typeof luatHienTai === "function" ? luatHienTai() : { bocSo: true, bocTenDiem: true, nhanForeach: true, xoaCanChinh: true, xoaCommentCode: true, thutLe: true }), { khoiDinhDanh: false, ghiChuSuaTay: false });
 		const boTDK = () => window.__TDK || window.TDK;
-		function chuanHoaCode(code) { const T = boTDK(); if (!T || typeof T.chuanHoa !== "function") return { ok: false, code, soSua: 0, loi: "Bộ luật chưa sẵn sàng" }; try { const c = T.chuanHoa(code, luatNH()); return { ok: true, code: c.ketQua, soSua: (c.canhBao || []).length }; } catch (e) { return { ok: false, code, soSua: 0, loi: e.message || e }; } }
+		function chuanHoaCode(code) { const T = boTDK(); if (!T || typeof T.chuanHoa !== "function") return { ok: false, code, soSua: 0, loi: "Bộ luật chưa sẵn sàng" }; try { const src = typeof window.moRongForeachNhan === "function" ? window.moRongForeachNhan(code) : code; const c = T.chuanHoa(src, luatNH()); return { ok: true, code: c.ketQua, soSua: (c.canhBao || []).length }; } catch (e) { return { ok: false, code, soSua: 0, loi: e.message || e }; } }
 		// render thử: trả danh sách lỗi (rỗng = ok). Bắt được công thức hỏng & hình TikZ không vẽ được.
 		async function kiemRender(code) { const loi = []; const T = boTDK();
 			try { const tmp = document.createElement("div"); await QB.xemTruoc(tmp, code, { khongHinh: true, lg: true }); const ke = tmp.querySelectorAll(".katex-error, .ctLoi, .ketQuaLoi"); if (ke.length) loi.push("Công thức lỗi (" + ke.length + " chỗ)"); } catch (e) { loi.push("Không đọc được đề: " + (e.message || e)); }
