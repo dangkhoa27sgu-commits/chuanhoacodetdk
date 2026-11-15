@@ -1415,15 +1415,20 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 .nhGiay .nhDuong{font-family:system-ui,sans-serif;font-size:11px;color:#9a7b2e;letter-spacing:.02em;margin:0 0 14px;font-weight:700}
 .nhMa{background:var(--code,#0c1320);border:1px solid var(--vien,#2c3850);border-radius:12px;padding:18px 20px;font:13px/1.65 ui-monospace,"SF Mono",monospace;color:var(--chu);white-space:pre-wrap;word-break:break-word;max-width:900px;margin:0 auto;overflow:auto}
 .nhMa .cmd{color:var(--vang,#f5b301)}.nhMa .env{color:#f28ab2}
-/* sửa: split */
-.nhSuaHop{display:grid;grid-template-columns:1fr;gap:14px;min-height:calc(100vh - 150px)}
+/* sửa: 2 cột — trái mã nguồn (cao xuống), phải xem trước trực tiếp */
+.nhSuaHop{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:stretch}
+@media(max-width:1080px){.nhSuaHop{grid-template-columns:1fr}}
 .nhSuaHop[hidden],.nhMa[hidden],.nhGiay[hidden]{display:none}
-.nhSuaMaHop{display:flex;flex-direction:column;gap:9px}
-.nhSuaMa{width:100%;flex:1;min-height:min(58vh,560px);resize:vertical;background:var(--code,#0c1320);border:1px solid var(--vien,#2c3850);border-radius:12px;padding:16px;color:var(--chu);font:13.5px/1.65 ui-monospace,monospace;outline:0}
-.nhSuaXem{min-height:220px;border:1px solid var(--vien,#2c3850);border-radius:12px;padding:14px;overflow:auto}
-.nhSuaMa:focus{border-color:var(--vang,#f5b301)}
-.nhSuaXem{overflow:auto}
-.nhSuaHop .giNut{display:flex;gap:8px}
+.nhSuaMaHop,.nhSuaCot{display:flex;flex-direction:column;gap:10px;min-width:0;height:calc(100vh - 208px);min-height:430px}
+.nhSuaDau{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 3px;flex:none}
+.nhSuaTit{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:var(--chu)}
+.nhSuaTit svg{width:15px;height:15px;fill:none;stroke:var(--vang,#f5b301);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nhSuaGhi{font-size:11px;color:var(--phu,#9aa7c2)}
+.nhSuaMa{width:100%;flex:1;min-height:0;resize:none;background:linear-gradient(180deg,var(--code,#0c1320),rgba(128,128,128,.04));border:1px solid var(--vien,#2c3850);border-radius:14px;padding:16px 18px;color:var(--chu);font:13.5px/1.75 ui-monospace,"SF Mono",monospace;outline:0;white-space:pre;overflow:auto;tab-size:2}
+.nhSuaMa:focus{border-color:var(--vang,#f5b301);box-shadow:0 0 0 3px var(--vangnhat,rgba(245,179,1,.13))}
+.nhSuaXem{flex:1;min-height:0;overflow:auto;border:1px solid var(--vien,#2c3850);border-radius:14px}
+.nhSuaHop .giNut{display:flex;gap:8px;flex-wrap:wrap;align-items:center;flex:none}
+.nhSuaHuyNut{margin-left:auto}
 /* chuẩn hoá + cổng kiểm render */
 .nhLoiNhan{font-size:10px;font-weight:800;padding:2px 7px;border-radius:99px;background:rgba(255,107,107,.16);color:#ff6b6b}
 .nhCoLoi{font-size:12px}
@@ -2784,8 +2789,8 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 					<div class="toDe nhGiay" id="nhGiay"><p class="mdTrong">Bấm vào một câu để xem trước (công thức và hình vẽ hiện như bản in).</p></div>
 					<pre class="nhMa" id="nhMa" hidden></pre>
 					<div class="nhSuaHop" id="nhSuaHop" hidden>
-						<div class="nhSuaMaHop"><textarea class="mdO" id="nhSuaMa" spellcheck="false"></textarea><div class="giNut nhSuaNut"><button class="vt3NutChinh nho" type="button" id="nhSuaLuu">Lưu</button><button class="vdNutNho" type="button" id="nhChuan" title="Chuẩn hoá code theo bộ luật (bọc $…$, thụt lề, dọn comment…)">✨ Chuẩn hoá</button><button class="vdNutNho" type="button" id="nhKiem" title="Thử render công thức &amp; hình TikZ, báo nếu code lỗi">🔍 Kiểm tra</button><button class="vdNutNho" type="button" id="nhSuaHuy">Huỷ</button><span class="nhKiemTT" id="nhKiemTT"></span></div></div>
-						<div class="toDe nhSuaXem" id="nhSuaXem"></div>
+						<div class="nhSuaMaHop"><div class="nhSuaDau"><span class="nhSuaTit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 8-4 4 4 4M15 8l4 4-4 4"/></svg>Mã nguồn LaTeX</span><span class="nhSuaGhi">Sửa trực tiếp — bên phải tự cập nhật</span></div><textarea class="mdO" id="nhSuaMa" spellcheck="false"></textarea><div class="giNut nhSuaNut"><button class="vt3NutChinh nho" type="button" id="nhSuaLuu">💾 Lưu</button><button class="vdNutNho" type="button" id="nhChuan" title="Chuẩn hoá code theo bộ luật (bọc $…$, thụt lề, dọn comment…)">✨ Chuẩn hoá</button><button class="vdNutNho" type="button" id="nhKiem" title="Thử render công thức &amp; hình TikZ, báo nếu code lỗi">🔍 Kiểm tra</button><button class="vdNutNho nhSuaHuyNut" type="button" id="nhSuaHuy">Huỷ</button><span class="nhKiemTT" id="nhKiemTT"></span></div></div>
+						<div class="nhSuaCot"><div class="nhSuaDau"><span class="nhSuaTit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>Xem trước trực tiếp</span></div><div class="toDe nhSuaXem" id="nhSuaXem"></div></div>
 					</div>
 				</div>
 				<p class="vdGhi" id="nhDungLuong"></p>
