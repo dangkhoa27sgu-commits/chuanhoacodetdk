@@ -1419,6 +1419,14 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 .nhSuaMa:focus{border-color:var(--vang,#f5b301)}
 .nhSuaXem{overflow:auto}
 .nhSuaHop .giNut{display:flex;gap:8px}
+/* chuẩn hoá + cổng kiểm render */
+.nhLoiNhan{font-size:10px;font-weight:800;padding:2px 7px;border-radius:99px;background:rgba(255,107,107,.16);color:#ff6b6b}
+.nhCoLoi{font-size:12px}
+.nhSuaNut{flex-wrap:wrap;align-items:center}
+.nhKiemTT{font-size:12px;font-weight:600;line-height:1.4;flex:1;min-width:140px}
+.nhKiemTT.ok{color:var(--luc,#35c08a)}
+.nhKiemTT.loi{color:var(--do,#ff6b6b)}
+#nhChuan{background:var(--vangnhat,rgba(245,179,1,.12));border-color:rgba(245,179,1,.35);color:var(--vang,#f5b301);font-weight:700}
 
 /* ===== Tạo đề thi ===== */
 .tdIco { background: linear-gradient(135deg, #b9f6ca, #20c997); } .tdIco svg { stroke: #053d2c; }
@@ -2725,6 +2733,8 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 					<label class="nhMenuTep"><input type="file" id="nhKhoiPhuc" accept=".json">Khôi phục từ bản sao lưu</label>
 					<button type="button" data-nh="xuat">Xuất các câu đang lọc (.tex)</button>
 					<button type="button" data-nh="gan">Gán ID cho câu chưa phân loại</button>
+					<button type="button" data-nh="chuanlo">✨ Chuẩn hoá lô đang lọc (có kiểm tra)</button>
+					<button type="button" data-nh="kiem">🔍 Kiểm tra code lỗi (lô đang lọc)</button>
 					<button type="button" data-nh="xoahet" class="nguyHiem">Xoá toàn bộ ngân hàng</button>
 				</div>
 			</div>
@@ -2746,6 +2756,7 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 			<div class="nhDD nhDDL" id="nhDDLoai"></div>
 			<div class="nhDD nhDDL" id="nhDDMuc"></div>
 			<label class="vdCong nhCoHinh"><input type="checkbox" id="nhHinh"><i aria-hidden="true"></i>Có hình</label>
+			<label class="vdCong nhCoLoi"><input type="checkbox" id="nhLoi"><i aria-hidden="true"></i>⚠ Code lỗi</label>
 			<span class="nhLocDay"></span>
 			<button class="vdNutNho nhBoLocNut" type="button" id="nhBoLoc">✕ Bỏ lọc</button>
 		</div>
@@ -2767,7 +2778,7 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 					<div class="toDe nhGiay" id="nhGiay"><p class="mdTrong">Bấm vào một câu để xem trước (công thức và hình vẽ hiện như bản in).</p></div>
 					<pre class="nhMa" id="nhMa" hidden></pre>
 					<div class="nhSuaHop" id="nhSuaHop" hidden>
-						<div class="nhSuaMaHop"><textarea class="mdO" id="nhSuaMa" spellcheck="false"></textarea><div class="giNut"><button class="vt3NutChinh nho" type="button" id="nhSuaLuu">Lưu</button><button class="vdNutNho" type="button" id="nhSuaHuy">Huỷ</button></div></div>
+						<div class="nhSuaMaHop"><textarea class="mdO" id="nhSuaMa" spellcheck="false"></textarea><div class="giNut nhSuaNut"><button class="vt3NutChinh nho" type="button" id="nhSuaLuu">Lưu</button><button class="vdNutNho" type="button" id="nhChuan" title="Chuẩn hoá code theo bộ luật (bọc $…$, thụt lề, dọn comment…)">✨ Chuẩn hoá</button><button class="vdNutNho" type="button" id="nhKiem" title="Thử render công thức &amp; hình TikZ, báo nếu code lỗi">🔍 Kiểm tra</button><button class="vdNutNho" type="button" id="nhSuaHuy">Huỷ</button><span class="nhKiemTT" id="nhKiemTT"></span></div></div>
 						<div class="toDe nhSuaXem" id="nhSuaXem"></div>
 					</div>
 				</div>
@@ -9970,7 +9981,7 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 			ALL.sort((a, b) => (a.id || "~").localeCompare(b.id || "~") || a.ngay - b.ngay); veTatCa();
 			const sua = []; ALL.forEach(r => { try { if (r.id && QB.docID(r.id)) return; const x = QB.tachEx(r.raw)[0]; if (x && x.id) { const n = QB.taoBanGhi(r.raw, x.than, x.ids, r.nguon); ["id", "lop", "mon", "chuong", "muc", "bai", "dang"].forEach(k => { r[k] = n[k]; }); sua.push(r); } } catch (e) { } });
 			if (sua.length) { try { for (let k = 0; k < sua.length; k += 500) await QB.dbGhi(sua.slice(k, k + 500)); ALL.sort((a, b) => (a.id || "~").localeCompare(b.id || "~") || a.ngay - b.ngay); veTatCa(); } catch (e) { } } }
-		function locDs() { const q = QB.boDau(loc.q.trim()); return ALL.filter(c => (!loc.nut || nutCua(c).includes(loc.nut)) && (!loc.loai || c.loai === loc.loai) && (!loc.muc || c.muc === loc.muc) && (!loc.hinh || c.coHinh) && (!loc.mau || c.mau) && (!q || QB.boDau(c.tom + " " + c.id + " " + c.nguon).includes(q))); }
+		function locDs() { const q = QB.boDau(loc.q.trim()); return ALL.filter(c => (!loc.nut || nutCua(c).includes(loc.nut)) && (!loc.loai || c.loai === loc.loai) && (!loc.muc || c.muc === loc.muc) && (!loc.hinh || c.coHinh) && (!loc.mau || c.mau) && (!loc.loi || c.loiRender) && (!q || QB.boDau(c.tom + " " + c.id + " " + c.nguon).includes(q))); }
 		// ---------- Tổng quát ----------
 		function veTK() { const theoLop = {}; ALL.forEach(c => { const k = c.lop || "?"; theoLop[k] = (theoLop[k] || 0) + 1; });
 			const loai = { tn: 0, ds: 0, tln: 0, tl: 0 }; ALL.forEach(c => loai[c.loai]++);
@@ -10010,13 +10021,36 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 			const MAU_MUC = { N: "#4f9dff", H: "#35c08a", V: "#f6a723", C: "#ff6b6b" }, tongMuc = Object.values(demM).reduce((s, v) => s + v, 0);
 			veLocDD("nhDDMuc", "Mức", [{ v: "", ten: "Mọi mức", n: tongMuc }].concat(Object.entries(ct().muc).filter(([k]) => demM[k]).map(([k, v]) => ({ v: k, ten: v, n: demM[k], dot: MAU_MUC[k] || "#9aa7c2" }))), loc.muc, "muc");
 			$g("nhDem").textContent = d.length.toLocaleString("vi-VN") + " câu" + (d.length !== ALL.length ? " (lọc từ " + ALL.length.toLocaleString("vi-VN") + ")" : "");
-			$g("nhDs").innerHTML = d.slice(0, soHien).map(c => '<li class="nhCau' + (dangXem === c.k ? " dang" : "") + '" data-k="' + c.k + '"><input type="checkbox" data-chon="' + c.k + '"' + (chon.has(c.k) ? " checked" : "") + ' aria-label="Chọn câu"><div class="nhCauThan"><div class="nhCauDau"><span class="mdChip giLoai ' + c.loai + '">' + QB.TEN_LOAI[c.loai] + "</span>" + (c.id ? '<code class="nhID">' + esc(c.id) + "</code>" : '<span class="giNguon chua">chưa có ID</span>') + (c.muc && ct().muc[c.muc] ? '<span class="nhMucNhan">' + esc(ct().muc[c.muc]) + "</span>" : "") + (c.coHinh ? '<span class="nhHinhNhan" title="Có hình vẽ">▲ hình</span>' : "") + (c.mau ? '<span class="nhMauNhan" title="Có mẫu đổi số (tab Đề tương tự)">🔁 đổi số</span>' : "") + '</div><div class="nhTom">' + esc(c.tom) + "</div></div></li>").join("") || '<li class="mdTrong">Không có câu nào khớp bộ lọc.</li>';
+			$g("nhDs").innerHTML = d.slice(0, soHien).map(c => '<li class="nhCau' + (dangXem === c.k ? " dang" : "") + '" data-k="' + c.k + '"><input type="checkbox" data-chon="' + c.k + '"' + (chon.has(c.k) ? " checked" : "") + ' aria-label="Chọn câu"><div class="nhCauThan"><div class="nhCauDau"><span class="mdChip giLoai ' + c.loai + '">' + QB.TEN_LOAI[c.loai] + "</span>" + (c.id ? '<code class="nhID">' + esc(c.id) + "</code>" : '<span class="giNguon chua">chưa có ID</span>') + (c.muc && ct().muc[c.muc] ? '<span class="nhMucNhan">' + esc(ct().muc[c.muc]) + "</span>" : "") + (c.coHinh ? '<span class="nhHinhNhan" title="Có hình vẽ">▲ hình</span>' : "") + (c.mau ? '<span class="nhMauNhan" title="Có mẫu đổi số (tab Đề tương tự)">🔁 đổi số</span>' : "") + (c.loiRender ? '<span class="nhLoiNhan" title="' + esc((c.loiTxt || []).join("; ")) + '">⚠ code lỗi</span>' : "") + '</div><div class="nhTom">' + esc(c.tom) + "</div></div></li>").join("") || '<li class="mdTrong">Không có câu nào khớp bộ lọc.</li>';
 			$g("nhThem").hidden = d.length <= soHien; $g("nhSoChon").textContent = chon.size; $g("nhGanChon").disabled = !chon.size; $g("nhGio").disabled = $g("nhXoaChon").disabled = $g("nhGanChon").disabled = !chon.size; const chua = ALL.filter(c => !c.id).length; $g("nhGanID").hidden = !chua; $g("nhGanSo").textContent = chua; }
 		const veTatCa = () => { veTK(); veCay(); veDs(); dungLuong(); };
 		async function dungLuong() { try { const e = await navigator.storage.estimate(); $g("nhDungLuong").textContent = "Bộ nhớ trình duyệt: đã dùng " + (e.usage / 1048576).toFixed(1) + " MB / còn khoảng " + ((e.quota - e.usage) / 1073741824).toFixed(1) + " GB — đủ cho hàng trăm nghìn câu. Nên Sao lưu định kỳ."; } catch (e) { } }
 		const duongDan = c => { const C = cay(); return c.lop ? [tenLop(c.lop), C.ten(QB.maChuong(c)), c.bai && C.ten(QB.maBai(c)), c.dang && C.ten(QB.maDang(c))].filter(Boolean).join(" › ") : ""; };
 		async function veGiayVao(el, raw, c) { await QB.xemTruoc(el, raw, { lg: $g("nhLG").checked }); const d = c ? duongDan(c) : ""; if (d || (c && c.nguon)) el.insertAdjacentHTML("afterbegin", '<p class="nhDuong">' + esc(d) + (c && c.nguon ? ' <span>· nguồn: ' + esc(c.nguon) + "</span>" : "") + "</p>"); }
 		const maNguon = raw => esc(raw).replace(/(\\[a-zA-Z]+)/g, '<span class="cmd">$1</span>').replace(/(%\[[^\]]*\])/g, '<span class="env">$1</span>');
+		// ---------- Chuẩn hoá + cổng kiểm render ----------
+		const luatNH = () => Object.assign((typeof luatHienTai === "function" ? luatHienTai() : { bocSo: true, bocTenDiem: true, nhanForeach: true, xoaCanChinh: true, xoaCommentCode: true, thutLe: true }), { khoiDinhDanh: false, ghiChuSuaTay: false });
+		const boTDK = () => window.__TDK || window.TDK;
+		function chuanHoaCode(code) { const T = boTDK(); if (!T || typeof T.chuanHoa !== "function") return { ok: false, code, soSua: 0, loi: "Bộ luật chưa sẵn sàng" }; try { const c = T.chuanHoa(code, luatNH()); return { ok: true, code: c.ketQua, soSua: (c.canhBao || []).length }; } catch (e) { return { ok: false, code, soSua: 0, loi: e.message || e }; } }
+		// render thử: trả danh sách lỗi (rỗng = ok). Bắt được công thức hỏng & hình TikZ không vẽ được.
+		async function kiemRender(code) { const loi = []; const T = boTDK();
+			try { const tmp = document.createElement("div"); await QB.xemTruoc(tmp, code, { khongHinh: true, lg: true }); const ke = tmp.querySelectorAll(".katex-error, .ctLoi, .ketQuaLoi"); if (ke.length) loi.push("Công thức lỗi (" + ke.length + " chỗ)"); } catch (e) { loi.push("Không đọc được đề: " + (e.message || e)); }
+			if (T && typeof T.veTikz === "function") { const hinh = code.match(/\\begin\{tikzpicture\}[\s\S]*?\\end\{tikzpicture\}/g) || [];
+				for (const h of hinh) { try { const r = await T.veTikz(h, { doPhanGiai: 1 }); if (!r || r.loi || !(r.png || r.svg)) loi.push("Hình TikZ không vẽ được" + (r && r.loiTxt ? ": " + String(r.loiTxt).slice(0, 90) : "")); } catch (e) { loi.push("Hình TikZ lỗi: " + String(e.message || e).slice(0, 90)); } } }
+			return loi; }
+		// quét lô: kiểm tra (và tuỳ chọn chuẩn hoá) các câu đang lọc, gắn cờ code lỗi
+		async function batchKiem(chuan) { const d = locDs(); if (!d.length) { toast("Lô đang lọc đang rỗng."); return; }
+			if (d.length > 800 && !confirm((chuan ? "Chuẩn hoá + kiểm tra" : "Kiểm tra") + " " + d.length.toLocaleString("vi-VN") + " câu? Render thử có thể mất vài phút.")) return;
+			let soLoi = 0, soChuan = 0;
+			for (let i = 0; i < d.length; i++) { const c = d[i]; tien(i / d.length * 100, (chuan ? "Chuẩn hoá & kiểm tra " : "Kiểm tra render ") + (i + 1) + "/" + d.length + "…");
+				const rec = ALL.find(x => x.k === c.k); if (!rec) continue; let code = rec.raw, doiMa = false;
+				if (chuan) { const rc = chuanHoaCode(code); if (rc.ok && rc.code && rc.code !== code) { code = rc.code; doiMa = true; } }
+				const loi = await kiemRender(code);
+				if (doiMa) { const x = QB.tachEx(code)[0]; if (x) { const nr = QB.taoBanGhi(x.raw, x.than, x.ids, rec.nguon); nr.ngay = rec.ngay; nr.loiRender = loi.length > 0; nr.loiTxt = loi; if (nr.k !== rec.k) await QB.dbXoa([rec.k]); await QB.dbGhi([nr]); soChuan++; } else { rec.loiRender = loi.length > 0; rec.loiTxt = loi; await QB.dbGhi([rec]); } }
+				else { rec.loiRender = loi.length > 0; rec.loiTxt = loi; await QB.dbGhi([rec]); }
+				if (loi.length) soLoi++; if (i % 8 === 0) await nghi(); }
+			tien(null); await napLai();
+			toast((chuan ? "Đã chuẩn hoá " + soChuan + " câu · " : "") + "Đã kiểm tra " + d.length.toLocaleString("vi-VN") + " câu: " + soLoi + " câu code lỗi" + (soLoi ? " — bật “⚠ Code lỗi” để lọc xem." : " 🎉"), soLoi > 0); }
 		async function apChe(c) { c = c || ALL.find(x => x.k === dangXem); if (!c) return;
 			document.querySelectorAll("#nhSeg button").forEach(b => b.classList.toggle("dang", b.dataset.v === cheXem));
 			const g = $g("nhGiay"), m = $g("nhMa"), s = $g("nhSuaHop"); g.hidden = cheXem !== "in"; m.hidden = cheXem !== "ma"; s.hidden = cheXem !== "sua";
@@ -10103,6 +10137,7 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 				$g("nhSaoLuu").addEventListener("click", saoLuu);
 				$g("nhTim").addEventListener("input", () => { loc.q = $g("nhTim").value; soHien = TRANG; veDs(); });
 				$g("nhHinh").addEventListener("change", () => { loc.hinh = $g("nhHinh").checked; veDs(); });
+					$g("nhLoi").addEventListener("change", () => { loc.loi = $g("nhLoi").checked; soHien = TRANG; veDs(); });
 				const locDDClick = e => { const nut = e.target.closest(".nhDDNut"); if (nut) { e.stopPropagation(); const dd = nut.closest(".nhDD"), mo = dd.classList.contains("mo"); document.querySelectorAll(".nhDD.mo").forEach(x => x.classList.remove("mo")); if (!mo) dd.classList.add("mo"); return; }
 					const it = e.target.closest(".nhDDItem"); if (!it) return; e.stopPropagation();
 					if ("loai" in it.dataset) loc.loai = it.dataset.loai; else if ("muc" in it.dataset) loc.muc = it.dataset.muc;
@@ -10116,7 +10151,7 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 					document.querySelectorAll(".nhDD.mo").forEach(x => x.classList.remove("mo")); locLai(); };
 				["nhDDChuong", "nhDDBai", "nhDDDang"].forEach(id => $g(id).addEventListener("click", ddClick));
 				document.addEventListener("click", () => document.querySelectorAll(".nhDD.mo").forEach(x => x.classList.remove("mo")));
-				$g("nhBoLoc").addEventListener("click", () => { loc = { nut: "", loai: "", muc: "", q: "", hinh: false, mau: false }; $g("nhTim").value = ""; $g("nhHinh").checked = false; locLai(); });
+				$g("nhBoLoc").addEventListener("click", () => { loc = { nut: "", loai: "", muc: "", q: "", hinh: false, mau: false, loi: false }; $g("nhTim").value = ""; $g("nhHinh").checked = false; if ($g("nhLoi")) $g("nhLoi").checked = false; locLai(); });
 				$g("nhDs").addEventListener("click", e => { const cb = e.target.closest("[data-chon]"); if (cb) { cb.checked ? chon.add(cb.dataset.chon) : chon.delete(cb.dataset.chon); $g("nhSoChon").textContent = chon.size; $g("nhGio").disabled = $g("nhXoaChon").disabled = !chon.size; return; } const li = e.target.closest("[data-k]"); if (li) xem(li.dataset.k); });
 				$g("nhThem").addEventListener("click", () => { soHien += TRANG * 2; veDs(); });
 				$g("nhChonHet").addEventListener("click", () => { const d = locDs(), het = d.every(c => chon.has(c.k)); d.forEach(c => het ? chon.delete(c.k) : chon.add(c.k)); veDs(); });
@@ -10131,7 +10166,13 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 				$g("nhChep").addEventListener("click", async () => { const c = ALL.find(x => x.k === dangXem); if (c) { try { await navigator.clipboard.writeText(themTacGia(c.raw)); toast("Đã copy câu hỏi"); } catch (e) { } } });
 				$g("nhXoa1").addEventListener("click", async () => { if (!dangXem || !confirm("Xoá câu này khỏi ngân hàng?")) return; await QB.dbXoa([dangXem]); dangXem = null; cheXem = "in"; $g("nhGiay").hidden = false; $g("nhMa").hidden = true; $g("nhSuaHop").hidden = true; $g("nhGiay").innerHTML = '<p class="mdTrong">Đã xoá.</p>'; $g("nhXemNut").hidden = true; await napLai(); });
 				$g("nhSuaHuy").addEventListener("click", () => { cheXem = "in"; $g("nhSuaHop").dataset.k = ""; apChe(); });
-				$g("nhSuaLuu").addEventListener("click", async () => { const x = QB.tachEx($g("nhSuaMa").value)[0]; if (!x) { toast("Code phải là một khối \\begin{ex}…\\end{ex}"); return; } const cu = ALL.find(c => c.k === dangXem), r = QB.taoBanGhi(x.raw, x.than, x.ids, cu ? cu.nguon : ""); if (cu) r.ngay = cu.ngay; if (cu && r.k !== cu.k) await QB.dbXoa([cu.k]); await QB.dbGhi([r]); dangXem = r.k; cheXem = "in"; $g("nhSuaHop").dataset.k = ""; await napLai(); xem(r.k); toast("Đã lưu câu hỏi"); });
+				const datKiem = (ok, txt) => { const e = $g("nhKiemTT"); if (!e) return; e.className = "nhKiemTT " + (ok ? "ok" : "loi"); e.textContent = txt; };
+					$g("nhChuan").addEventListener("click", () => { const r = chuanHoaCode($g("nhSuaMa").value); if (!r.ok) { datKiem(false, "⚠ " + (r.loi || "Không chuẩn hoá được")); return; } $g("nhSuaMa").value = r.code; datKiem(true, "✨ Đã chuẩn hoá" + (r.soSua ? " · " + r.soSua + " chỗ" : "") + " — bấm Kiểm tra để render thử"); if (cheXem === "sua" && dangXem) veGiayVao($g("nhSuaXem"), r.code, ALL.find(x => x.k === dangXem)); });
+					$g("nhKiem").addEventListener("click", async () => { datKiem(true, "⏳ Đang render thử…"); const loi = await kiemRender($g("nhSuaMa").value); if (loi.length) datKiem(false, "⚠ " + loi.length + " lỗi: " + loi.join("; ")); else datKiem(true, "✓ Render OK, không phát hiện lỗi"); });
+					$g("nhSuaLuu").addEventListener("click", async () => { const x = QB.tachEx($g("nhSuaMa").value)[0]; if (!x) { toast("Code phải là một khối \\begin{ex}…\\end{ex}"); return; }
+						datKiem(true, "⏳ Đang kiểm tra render trước khi lưu…"); const loi = await kiemRender($g("nhSuaMa").value);
+						if (loi.length && !confirm("⚠ Code có vẻ LỖI khi render:\n• " + loi.join("\n• ") + "\n\nVẫn lưu vào ngân hàng? (sẽ gắn cờ ⚠ code lỗi)")) { datKiem(false, "⚠ Đã dừng — chưa lưu. " + loi.join("; ")); return; }
+						const cu = ALL.find(c => c.k === dangXem), r = QB.taoBanGhi(x.raw, x.than, x.ids, cu ? cu.nguon : ""); if (cu) r.ngay = cu.ngay; r.loiRender = loi.length > 0; r.loiTxt = loi; if (cu && r.k !== cu.k) await QB.dbXoa([cu.k]); await QB.dbGhi([r]); dangXem = r.k; cheXem = "in"; $g("nhSuaHop").dataset.k = ""; datKiem(true, ""); await napLai(); xem(r.k); toast(loi.length ? "Đã lưu (gắn cờ ⚠ code lỗi)" : "Đã lưu câu hỏi — render OK"); });
 				$g("nhDongBo").addEventListener("click", () => dongBoGame());
 				$g("nhMenu").addEventListener("click", e => { e.stopPropagation(); const m = $g("nhMenuDs"); m.hidden = !m.hidden; });
 				document.addEventListener("click", e => { if (!e.target.closest("#nhMenuDs")) $g("nhMenuDs").hidden = true; });
@@ -10140,6 +10181,8 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 					if (k === "saoluu") saoLuu();
 					if (k === "xuat") { const d = locDs(); if (!d.length) return; taiVe(new Blob([xuatTex(d)], { type: "text/plain" }), "cau-hoi-" + d.length + ".tex"); }
 					if (k === "gan") { const d = ALL.filter(c => !c.lop); if (!d.length) { toast("Mọi câu đều đã có ID"); return; } localStorage.setItem("tdk_gi_ma", JSON.stringify(d.map(c => c.raw).join("\n\n"))); toast("Đã chuyển " + d.length + " câu sang tab Gán ID — gán xong bấm “Đưa vào Ngân hàng”"); if (typeof chonTab === "function") { $("nhomDeThi").click(); setTimeout(() => $("nutTabGanID").click(), 50); } }
+						if (k === "kiem") await batchKiem(false);
+						if (k === "chuanlo") await batchKiem(true);
 					if (k === "xoahet") { if (!confirm("XOÁ TOÀN BỘ " + ALL.length + " câu trong ngân hàng? Nên Sao lưu trước. Không thể hoàn tác.")) return; await QB.dbXoaHet(); chon.clear(); await napLai(); } });
 				$g("nhKhoiPhuc").addEventListener("change", async () => { const f = $g("nhKhoiPhuc").files[0]; $g("nhKhoiPhuc").value = ""; $g("nhMenuDs").hidden = true; if (!f) return; try { const o = JSON.parse(await f.text()); if (o.loai !== "tdk-nganhang" || !Array.isArray(o.cau)) throw new Error("không phải bản sao lưu ngân hàng"); const cu = new Set(ALL.map(c => c.k)), moi = o.cau.filter(c => c && c.k && c.raw && !cu.has(c.k)); if (!moi.length) { toast("Bản sao lưu không có câu nào mới"); return; } let daGhi = 0; for (let k = 0; k < moi.length; k += 500) { await QB.dbGhi(moi.slice(k, k + 500)); daGhi += Math.min(500, moi.length - k); tien(daGhi / moi.length * 100, "Đang khôi phục… " + daGhi + "/" + moi.length); await nghi(); } tien(null); await napLai(); toast("Đã khôi phục " + moi.length.toLocaleString("vi-VN") + " câu"); await kiemLuu(); } catch (e) { tien(null); toast("Không khôi phục được: " + e.message); } });
 				$g("nhTrung").addEventListener("click", () => { veTrung(); $g("nhHopTrung").showModal(); });
