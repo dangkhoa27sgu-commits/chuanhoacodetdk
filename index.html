@@ -9889,13 +9889,18 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 /* ===== Tab Thi Online — Giai đoạn 1: GV tạo & quản lý phòng thi (Firestore) ===== */
 function khoiDongThiOnline() {
 	if (khoiDongThiOnline.da) { return; }
+	const K = window.KFB;
+	// Cầu nối Firebase (window.KFB) do script module gắn, chạy SAU script này → chờ sẵn sàng rồi mới khởi tạo
+	if (!K || !K.db) {
+		khoiDongThiOnline.n = (khoiDongThiOnline.n || 0) + 1;
+		if (khoiDongThiOnline.n < 30) { setTimeout(khoiDongThiOnline, 300); return; }
+		const el = document.getElementById("toDs"); if (el) el.innerHTML = '<p class="mdTrong">⚠️ Chưa kết nối được Firebase. Hãy đăng nhập rồi nạp lại trang.</p>';
+		return;
+	}
 	khoiDongThiOnline.da = true;
 	const $t = id => document.getElementById(id);
-	const K = window.KFB;
 	const nhac = (m) => (typeof toast === "function" ? toast(m) : alert(m));
 	const esc2 = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-
-	if (!K || !K.db) { $t("toDs").innerHTML = '<p class="mdTrong">⚠️ Chưa kết nối được Firebase. Hãy nạp lại trang sau khi đăng nhập.</p>'; return; }
 
 	// đếm câu khi dán đề
 	function demCau(txt) {
