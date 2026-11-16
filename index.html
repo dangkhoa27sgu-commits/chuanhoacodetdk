@@ -9899,9 +9899,10 @@ function khoiDongThiOnline() {
 
 	// đếm câu khi dán đề
 	function demCau(txt) {
+		const nRe = (String(txt || "").match(/\\begin\s*\{\s*ex\s*\}/g) || []).length;
 		const QB = window.TDKMod && window.TDKMod.QB;
-		try { if (QB && QB.tachEx) return QB.tachEx(txt).length; } catch (e) { }
-		return (String(txt).match(/\\begin\{ex\}/g) || []).length;
+		let nQB = 0; try { if (QB && QB.tachEx) nQB = QB.tachEx(txt).length; } catch (e) { }
+		return Math.max(nRe, nQB);
 	}
 	$t("toDe").addEventListener("input", () => { const n = demCau($t("toDe").value); $t("toDem").textContent = n + " câu"; });
 
