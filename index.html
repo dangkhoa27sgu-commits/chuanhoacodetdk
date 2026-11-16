@@ -2683,7 +2683,7 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 		<header class="mdDau">
 			<div class="mdDauTen">
 				<span class="mdDauIco toIco" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5"/><path d="m9 15 2 2 4-4"/></svg></span>
-				<div><h2>Thi Online <span style="font-size:11px;font-weight:700;color:var(--luc,#2fcf8f);background:rgba(47,207,143,.14);padding:2px 9px;border-radius:99px;vertical-align:middle">b1.3</span></h2><p>Tạo phòng thi từ đề của anh → phát hành <b>link / mã QR</b> cho HS làm → chấm tự động. Dữ liệu lưu trên Firebase của anh.</p></div>
+				<div><h2>Thi Online <span style="font-size:11px;font-weight:700;color:var(--luc,#2fcf8f);background:rgba(47,207,143,.14);padding:2px 9px;border-radius:99px;vertical-align:middle">b1.4</span></h2><p>Tạo phòng thi từ đề của anh → phát hành <b>link / mã QR</b> cho HS làm → chấm tự động. Dữ liệu lưu trên Firebase của anh.</p></div>
 			</div>
 			<div class="mdDauNut"><button class="vt3NutChinh nho" type="button" id="toTao">+ Tạo phòng thi</button></div>
 		</header>
@@ -9892,17 +9892,20 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 	})();
 	function khoiDongChinhPhuc() { CP_API.khoiDong(); window.TDKMod = Object.assign(window.TDKMod || {}, { CP: CP_API }); }
 /* ===== Tab Thi Online — Giai đoạn 1: GV tạo & quản lý phòng thi (Firestore) ===== */
+/* Bộ đếm câu — ĐỘC LẬP, không phụ thuộc Firebase/khởi tạo tab */
+(function ganDemThiOnline() {
+	const toDe = document.getElementById("toDe"), toDem = document.getElementById("toDem");
+	if (!toDe || !toDem) { setTimeout(ganDemThiOnline, 300); return; }
+	if (toDe.__demGan) return; toDe.__demGan = 1;
+	const dem = t => (String(t || "").match(/\\begin\s*\{\s*ex\s*\}/g) || []).length;
+	const up = () => { toDem.textContent = dem(toDe.value) + " câu"; };
+	["input", "paste", "keyup", "change", "blur"].forEach(e => toDe.addEventListener(e, () => setTimeout(up, 0)));
+	up();
+})();
 function khoiDongThiOnline() {
 	if (khoiDongThiOnline.da) { return; }
-	const K = window.KFB;
-	// Cầu nối Firebase (window.KFB) do script module gắn, chạy SAU script này → chờ sẵn sàng rồi mới khởi tạo
-	if (!K || !K.db) {
-		khoiDongThiOnline.n = (khoiDongThiOnline.n || 0) + 1;
-		if (khoiDongThiOnline.n < 30) { setTimeout(khoiDongThiOnline, 300); return; }
-		const el = document.getElementById("toDs"); if (el) el.innerHTML = '<p class="mdTrong">⚠️ Chưa kết nối được Firebase. Hãy đăng nhập rồi nạp lại trang.</p>';
-		return;
-	}
 	khoiDongThiOnline.da = true;
+	// window.KFB do script module gắn (chạy sau) → đọc TƯƠI mỗi khi cần, không chặn việc gắn nút
 	const $t = id => document.getElementById(id);
 	const bang = (m, loai) => { const e = $t("toKQ"); if (e) { e.hidden = false; e.textContent = m; e.className = "toKQ " + (loai || ""); } };
 	const nhac = (m, loai) => { bang(m, loai); if (typeof toast === "function") { try { toast(m); } catch (e) { } } };
@@ -9915,9 +9918,6 @@ function khoiDongThiOnline() {
 		let nQB = 0; try { if (QB && QB.tachEx) nQB = QB.tachEx(txt).length; } catch (e) { }
 		return Math.max(nRe, nQB);
 	}
-	const capNhatDem = () => { $t("toDem").textContent = demCau($t("toDe").value) + " câu"; };
-	["input", "paste", "keyup", "change", "blur"].forEach(ev => $t("toDe").addEventListener(ev, () => setTimeout(capNhatDem, 0)));
-	capNhatDem();
 
 	// mở / đóng form
 	$t("toTao").addEventListener("click", () => { const f = $t("toForm"); f.hidden = !f.hidden; if (!f.hidden) $t("toTen").focus(); });
@@ -9933,6 +9933,8 @@ function khoiDongThiOnline() {
 		const deRaw = $t("toDe").value.trim();
 		const soCau = demCau(deRaw);
 		if (!soCau) { nhac("⚠ Đề chưa có câu hỏi \\begin{ex}…\\end{ex}", "loi"); return; }
+		const K = window.KFB;
+		if (!K || !K.db) { nhac("⚠ Firebase chưa sẵn sàng — đợi 1–2 giây rồi bấm lại", "loi"); return; }
 		const u = K.taiKhoan && K.taiKhoan();
 		if (!u) { nhac("⚠ Chưa đăng nhập Google — không lưu được", "loi"); return; }
 		bang("⏳ Đang lưu lên Firebase…", "");
@@ -9973,12 +9975,13 @@ function khoiDongThiOnline() {
 				+ '<div style="display:flex;align-items:center;gap:10px">' + tt + '<div class="toPhongNut"><button class="vdNutNho" data-chep="' + esc2(p.ma) + '">Chép link</button><button class="vdNutNho toXoa" data-xoa="' + p.id + '">Xoá</button></div></div></div>';
 		}).join("");
 		$t("toDs").querySelectorAll("[data-chep]").forEach(b => b.addEventListener("click", () => { const l = linkCua(b.dataset.chep); navigator.clipboard && navigator.clipboard.writeText(l); nhac("Đã chép link: " + l); }));
-		$t("toDs").querySelectorAll("[data-xoa]").forEach(b => b.addEventListener("click", async () => { if (!confirm("Xoá phòng thi này? Không khôi phục được.")) return; try { await K.deleteDoc(K.doc(K.db, "phongThi", b.dataset.xoa)); nhac("Đã xoá"); } catch (e) { nhac("Lỗi xoá: " + (e.code || e)); } }));
+		$t("toDs").querySelectorAll("[data-xoa]").forEach(b => b.addEventListener("click", async () => { if (!confirm("Xoá phòng thi này? Không khôi phục được.")) return; const K = window.KFB; try { await K.deleteDoc(K.doc(K.db, "phongThi", b.dataset.xoa)); nhac("Đã xoá", "ok"); } catch (e) { nhac("Lỗi xoá: " + (e.code || e), "loi"); } }));
 	}
 	$t("toTimDs").addEventListener("input", ve);
 
 	function lang() {
-		const u = K.taiKhoan && K.taiKhoan(); if (!u) { setTimeout(lang, 400); return; }
+		const K = window.KFB; const u = K && K.db && K.taiKhoan && K.taiKhoan();
+		if (!u) { setTimeout(lang, 400); return; }
 		const q = K.query(K.collection(K.db, "phongThi"), K.where("teacherId", "==", u.uid));
 		K.onSnapshot(q, snap => { DS = snap.docs.map(d => Object.assign({ id: d.id }, d.data())); DS.sort((a, b) => ((b.createdAt && b.createdAt.seconds) || 0) - ((a.createdAt && a.createdAt.seconds) || 0)); ve(); },
 			err => { $t("toDs").innerHTML = '<p class="mdTrong">⚠️ Không đọc được danh sách (' + (err.code || err) + '). Có thể cần cập nhật <b>Quy tắc bảo mật Firestore</b> cho phép GV đọc/ghi collection <code>phongThi</code>.</p>'; });
