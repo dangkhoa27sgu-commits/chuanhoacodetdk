@@ -1465,6 +1465,23 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 .thiCau.thiXL .thiDe .lg summary{cursor:pointer;font-weight:800;color:#2f6fed;font-family:"Be Vietnam Pro",sans-serif;font-size:14px}
 .thiCau.thiXL .thiDe .lg[open] summary{margin-bottom:8px}
 .thiCau.thiXL{background:#fff;color:#16233a;border-radius:16px;padding:18px 22px;margin-bottom:14px;border:none}
+/* b2.1: bảng/căn giữa áp cho CẢ nội dung đáp án đã chép ra ngoài .thiDe */
+.thiDe .giua,.thiPA .o .noi .giua,.thiDSKhoi .nd .giua{text-align:center;margin:10px 0}
+.thiPA .o .noi .boc,.thiDSKhoi .nd .boc{overflow-x:auto;margin:10px 0}
+.thiPA .o .noi table,.thiDSKhoi .nd table{border-collapse:collapse;margin:8px auto;font-size:15px;background:#fff;font-family:"Source Serif 4",Charter,Georgia,serif}
+.thiPA .o .noi table td,.thiPA .o .noi table th,.thiDSKhoi .nd table td,.thiDSKhoi .nd table th{border:1px solid #b9c4d4;padding:6px 13px;text-align:center}
+.thiDSKhoi .nd table tr td:first-child,.thiPA .o .noi table tr td:first-child{text-align:left;font-weight:600;background:#fafbfd}
+.thiDSKhoi .row{align-items:flex-start}
+.thiDSKhoi .ds2{margin-top:2px}
+/* panel đổi số */
+#tabThiOnline .toDoi{margin-top:12px;border:1px solid var(--vien,#2c3850);border-radius:13px;padding:13px 15px;background:var(--mat2,#0e1626)}
+#tabThiOnline .toDoi[hidden]{display:none}
+#tabThiOnline .toDoi .tieu{font-weight:800;font-size:13.5px;margin-bottom:5px;color:var(--vang,#f5b301)}
+#tabThiOnline .toDoi .vdGhi{margin:0 0 10px}
+#tabThiOnline .toDoi .nut{display:flex;gap:8px;flex-wrap:wrap}
+#tabThiOnline .toDoiTT{margin-top:10px;font-size:12.5px;font-weight:700}
+#tabThiOnline .toDoiTT.ok{color:var(--luc,#2fcf8f)}
+#tabThiOnline .toDoiTT.loi{color:var(--do,#ff6b6b)}
 
 /* ===== Gán ID ===== */
 .giThan { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 16px; align-items: start; } @media (max-width: 1000px) { .giThan { grid-template-columns: 1fr; } }
@@ -2906,7 +2923,7 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 		<header class="mdDau">
 			<div class="mdDauTen">
 				<span class="mdDauIco toIco" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.9 5.7 3.9 9s-1.4 6.4-3.9 9c-2.5-2.6-3.9-5.7-3.9-9S9.5 5.6 12 3z"/></svg></span>
-				<div><h2>Thi Online <span style="font-size:11px;font-weight:700;color:var(--luc,#2fcf8f);background:rgba(47,207,143,.14);padding:2px 9px;border-radius:99px;vertical-align:middle">b2.0</span></h2></div>
+				<div><h2>Thi Online <span style="font-size:11px;font-weight:700;color:var(--luc,#2fcf8f);background:rgba(47,207,143,.14);padding:2px 9px;border-radius:99px;vertical-align:middle">b2.1</span></h2></div>
 			</div>
 			<div class="mdDauNut"><button class="vt3NutChinh nho" type="button" id="toTao">+ Tạo phòng thi</button></div>
 		</header>
@@ -2937,6 +2954,17 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 					<label class="vdCong"><input type="checkbox" id="toDoiSo"><i aria-hidden="true"></i>Đổi số mỗi HS (câu có mẫu)</label>
 					<label class="vdCong"><input type="checkbox" id="toKhoa" checked><i aria-hidden="true"></i>Khoá chuyển tab</label>
 				</div>
+			</div>
+
+			<div class="toDoi" id="toDoi" hidden>
+				<div class="tieu">⚙ Đổi số — 10 đề khác nhau</div>
+				<p class="vdGhi">Mỗi học sinh nhận ngẫu nhiên 1 trong 10 đề (cố định theo máy, không bấm lại để đổi). Lấy 10 đề từ tab <b>Công cụ → Đề tương tự</b> (Gemini đã viết sẵn prompt ở đó).</p>
+				<div class="nut">
+					<button class="vdNutNho" type="button" id="toDoiLay">📥 Lấy 10 đề từ “Đề tương tự”</button>
+					<button class="vdNutNho" type="button" id="toDoiSinh">⚙ Sinh từ mẫu trong Ngân hàng</button>
+					<button class="vdNutNho" type="button" id="toDoiBo" hidden>✕ Bỏ biến thể</button>
+				</div>
+				<div class="toDoiTT" id="toDoiTT"></div>
 			</div>
 
 			<label class="toF toFull" style="margin-top:14px"><span class="mdNhan">Nội dung đề — dán các câu <code>\begin{ex}…\end{ex}</code> (mỗi khối một câu)</span>
@@ -10181,6 +10209,7 @@ function khoiDongThiOnline() {
 		const doc = await Promise.all(ds.map(f => f.text().then(t => ({ ten: tenTuFile(f.name), noi: t, soCau: demCau(t) }))));
 		const tot = doc.filter(d => d.soCau > 0), bo = doc.length - tot.length;
 		if (!tot.length) { nhac("⚠ Không file nào có câu \\begin{ex}…\\end{ex}", "loi"); return; }
+		if (tot.length === 1 && tachNhieuDe(tot[0].noi)) { FILES = []; veDsFile(); nhanBienThe(tachNhieuDe(tot[0].noi), "file " + tot[0].ten); return; }
 		if (tot.length === 1) {
 			FILES = []; veDsFile();
 			$t("toSoan").value = tot[0].noi; $t("toDem").textContent = tot[0].soCau + " câu";
@@ -10203,7 +10232,7 @@ function khoiDongThiOnline() {
 
 	// ---------- #3 Sửa phòng đã tạo ----------
 	function moSua(p) {
-		SUAID = p.id; FILES = []; veDsFile();
+		SUAID = p.id; FILES = []; veDsFile(); BIENTHE = Array.isArray(p.bienThe) ? p.bienThe.slice() : [];
 		$t("toForm").hidden = false;
 		$t("toTen").value = p.tenDe || ""; $t("toMon").value = p.mon || ""; $t("toLop").value = p.lop || "";
 		$t("toPhut").value = p.thoiLuong || 45; $t("toLan").value = p.soLan || 1;
@@ -10211,12 +10240,12 @@ function khoiDongThiOnline() {
 		const cd = p.cheDo || {}, cg = p.chongGian || {};
 		$t("toDiem").checked = cd.hienDiem !== false; $t("toDA").checked = !!cd.xemDapAn; $t("toLG").checked = !!cd.xemLoiGiai;
 		$t("toTronC").checked = !!cg.tronCau; $t("toTronD").checked = !!cg.tronDapAn; $t("toDoiSo").checked = !!cg.doiSo; $t("toKhoa").checked = !!cg.khoaTab;
-		$t("toSoan").value = p.deRaw || ""; $t("toDem").textContent = demCau(p.deRaw || "") + " câu";
+		$t("toSoan").value = p.deRaw || ""; $t("toDem").textContent = demCau(p.deRaw || "") + " câu"; capDoi();
 		$t("toPhat").textContent = "✦ Lưu thay đổi";
 		bang("Đang sửa phòng · mã " + p.ma + " — sửa xong bấm “Lưu thay đổi”. Link và mã QR cũ giữ nguyên.", "");
 		$t("toForm").scrollIntoView({ behavior: "smooth", block: "start" });
 	}
-	function thoatSua() { SUAID = null; const b = $t("toPhat"); if (b) b.textContent = "✦ Phát hành phòng thi"; }
+	function thoatSua() { SUAID = null; BIENTHE = []; capDoi(); const b = $t("toPhat"); if (b) b.textContent = "✦ Phát hành phòng thi"; }
 
 	// ---------- #2 Xem trước đề (đúng giao diện HS) + biến thể đổi số ----------
 	const PHAN_XEM = [["tn", "PHẦN 1 · TRẮC NGHIỆM", "Chọn một đáp án đúng · mỗi câu 0,25 điểm", "xanh"],
@@ -10269,10 +10298,10 @@ function khoiDongThiOnline() {
 		const ruot = document.getElementById("toXemRuot"), tt = document.getElementById("toXemTT"), nut = document.getElementById("toXemNut");
 		let DSD = [deRaw], nhan = ["Đề gốc"];
 		if ($t("toDoiSo").checked) {
-			tt.textContent = "đang sinh biến thể…";
+			tt.textContent = "đang chuẩn bị biến thể…";
 			try {
-				const r = await sinhBienThe(deRaw, 10);
-				if (r.bienThe.length) { DSD = r.bienThe; nhan = r.bienThe.map((_, i) => "Đề " + (i + 1)); tt.textContent = r.mauCo + "/" + r.tong + " câu có mẫu đổi số"; }
+				const r = BIENTHE.length ? { bienThe: BIENTHE, mauCo: 0, tong: 0 } : await sinhBienThe(deRaw, 10);
+				if (r.bienThe.length) { DSD = r.bienThe; nhan = r.bienThe.map((_, i) => "Đề " + (i + 1)); tt.textContent = r.bienThe.length + " đề biến thể" + (r.mauCo ? " · " + r.mauCo + "/" + r.tong + " câu có mẫu" : ""); }
 				else { tt.textContent = "chỉ có đề gốc"; ruot.insertAdjacentHTML("afterbegin", '<div class="toKQ loi" style="margin:0 0 14px">⚠ Chưa sinh được đề đổi số: chưa câu nào trong đề này có <b>mẫu đổi số</b>. Vào tab <b>Công cụ → Đề tương tự</b>, nạp đề, lập mẫu cho từng câu rồi bấm <b>💾 Lưu</b>; quay lại đây sẽ có đủ 10 đề.</div>'); }
 			} catch (e) { tt.textContent = "lỗi sinh biến thể"; }
 		}
@@ -10287,27 +10316,106 @@ function khoiDongThiOnline() {
 	}
 	$t("toXem").addEventListener("click", () => moXemTruoc().catch(e => nhac("Lỗi xem trước: " + (e.message || e), "loi")));
 
-	// GĐ4: sinh N biến thể đổi số, dùng lại MẪU đã tạo & kiểm ở tab "Đề tương tự" (kho IndexedDB)
+	// ---------- GĐ4: ĐỔI SỐ ----------
+	let BIENTHE = [];                      // 10 đề biến thể đang gắn cho phòng
+	const MOC_DE = /^\s*%\s*=+\s*ĐỀ TƯƠNG TỰ\s*\d+\s*=+\s*$/gmi;
+	// tách 1 file .tex nhiều đề (do tab "Đề tương tự" xuất) thành mảng đề
+	function tachNhieuDe(txt) {
+		if (!MOC_DE.test(txt)) { MOC_DE.lastIndex = 0; return null; }
+		MOC_DE.lastIndex = 0;
+		const ds = txt.split(MOC_DE).map(x => x.trim()).filter(x => demCau(x) > 0);
+		return ds.length > 1 ? ds : null;
+	}
+	// kiểm 1 câu sinh ra có hợp lệ không (chống lỗi code / nhân đôi câu)
+	function cauHopLe(code, loaiGoc) {
+		try {
+			if (!code || !/\\begin\s*\{\s*ex\s*\}/.test(code)) return false;
+			if ((code.match(/\\begin\s*\{\s*ex\s*\}/g) || []).length !== 1) return false;
+			if ((code.match(/\\end\s*\{\s*ex\s*\}/g) || []).length !== 1) return false;
+			const t = QB.tachEx(code);
+			if (t.length !== 1) return false;
+			if (loaiGoc && QB.loai(t[0].than) !== loaiGoc) return false;
+			const T = (typeof bo === "function") && bo();
+			if (T && T.docDe) { const d = T.docDe(code); if (!d || !d.cau || d.cau.filter(c => !c.phanMoi).length !== 1) return false; }
+			return true;
+		} catch (e) { return false; }
+	}
+	// kiểm cả 1 đề biến thể: đúng số câu, đúng thứ tự loại
+	function deHopLe(deRaw, loaiGoc) {
+		try { const t = QB.tachEx(deRaw); if (t.length !== loaiGoc.length) return false; return t.every((x, i) => QB.loai(x.than) === loaiGoc[i]); } catch (e) { return false; }
+	}
+	// sinh N biến thể từ MẪU đã lưu trong Ngân hàng (tab Đề tương tự)
 	async function sinhBienThe(deRaw, n) {
 		if (!window.TDKMod || !window.TDKMod.TT) { try { if (typeof khoiDongDeTuongTu === "function") khoiDongDeTuongTu(); } catch (e) { } }
 		const TT = window.TDKMod && window.TDKMod.TT;
-		if (!TT || !TT.sinhMau) return { bienThe: [], mauCo: 0, tong: 0 };
+		const exs = QB.tachEx(deRaw), loaiGoc = exs.map(x => QB.loai(x.than));
+		if (!TT || !TT.sinhMau) return { bienThe: [], mauCo: 0, tong: exs.length, bo: 0 };
 		let all = []; try { all = await QB.dbTatCa(); } catch (e) { }
 		const mp = new Map(); all.forEach(r => { if (r.mau && r.mauOk !== false) mp.set(r.k, r.mau); });
-		const exs = QB.tachEx(deRaw);
 		const tpl = exs.map(x => mp.get(QB.bam(QB.vanTay(x.than))) || null);
 		const mauCo = tpl.filter(Boolean).length;
-		if (!mauCo) return { bienThe: [], mauCo: 0, tong: exs.length };
-		const used = tpl.map(() => new Set()), out = [];
+		if (!mauCo) return { bienThe: [], mauCo: 0, tong: exs.length, bo: 0 };
+		const used = tpl.map(() => new Set()), out = []; let bo = 0;
 		for (let v = 0; v < n; v++) {
-			const parts = exs.map((x, i) => { const m = tpl[i]; if (m) { try { const r = TT.sinhMau(m, 1, x.id || "", used[i]); if (r && r[0]) { used[i].add(r[0].khoa); return r[0].code; } } catch (e) { } } return x.raw; });
-			const dr = parts.join("\n");
-			if (QB.tachEx(dr).length === exs.length) out.push(dr); // cổng kiểm: đủ số câu
+			const parts = exs.map((x, i) => {
+				const m = tpl[i]; if (!m) return x.raw;
+				try {
+					const r = TT.sinhMau(m, 1, x.id || "", used[i]);
+					if (r && r[0] && cauHopLe(r[0].code, loaiGoc[i])) { used[i].add(r[0].khoa); return r[0].code; }
+				} catch (e) { }
+				bo++; return x.raw;                       // câu lỗi → giữ nguyên câu gốc
+			});
+			const dr = parts.join("\n\n");
+			if (deHopLe(dr, loaiGoc)) out.push(dr);
 		}
-		return { bienThe: out, mauCo, tong: exs.length };
+		return { bienThe: out, mauCo, tong: exs.length, bo };
+	}
+	// hiện/ẩn panel đổi số
+	function capDoi() {
+		const on = $t("toDoiSo").checked;
+		$t("toDoi").hidden = !on;
+		$t("toDoiBo").hidden = !BIENTHE.length;
+		const e = $t("toDoiTT");
+		if (!on) return;
+		if (BIENTHE.length) { e.className = "toDoiTT ok"; e.textContent = "✓ Đã gắn " + BIENTHE.length + " đề biến thể — mỗi HS nhận ngẫu nhiên 1 đề."; }
+		else { e.className = "toDoiTT loi"; e.textContent = "⚠ Chưa có biến thể — nếu phát hành bây giờ, mọi HS sẽ nhận cùng một đề."; }
+	}
+	$t("toDoiSo").addEventListener("change", capDoi);
+	$t("toDoiBo").addEventListener("click", () => { BIENTHE = []; capDoi(); });
+	// lấy thẳng 10 đề vừa sinh ở tab Đề tương tự
+	$t("toDoiLay").addEventListener("click", () => {
+		if (!window.TDKMod || !window.TDKMod.TT) { try { if (typeof khoiDongDeTuongTu === "function") khoiDongDeTuongTu(); } catch (e) { } }
+		const S = window.TDKMod && window.TDKMod.TT && window.TDKMod.TT._S;
+		const ra = S && S.gemRa;
+		const e = $t("toDoiTT");
+		if (!ra) { e.className = "toDoiTT loi"; e.textContent = "⚠ Chưa thấy đề nào. Vào Công cụ → Đề tương tự → ② Cả đề qua Gemini → đặt Số đề 10 → ⚙ Sinh đề tương tự, rồi quay lại bấm nút này."; return; }
+		const ds = tachNhieuDe(ra) || (demCau(ra) ? [ra] : null);
+		if (!ds) { e.className = "toDoiTT loi"; e.textContent = "⚠ Kết quả ở tab Đề tương tự không đọc được."; return; }
+		nhanBienThe(ds, "Đề tương tự");
+	});
+	// sinh từ mẫu trong Ngân hàng
+	$t("toDoiSinh").addEventListener("click", async () => {
+		const deRaw = $t("toSoan").value.trim();
+		const e = $t("toDoiTT");
+		if (!demCau(deRaw)) { e.className = "toDoiTT loi"; e.textContent = "⚠ Chưa có đề trong ô soạn."; return; }
+		e.className = "toDoiTT"; e.textContent = "⏳ Đang sinh 10 đề từ mẫu…";
+		const r = await sinhBienThe(deRaw, 10);
+		if (!r.bienThe.length) { e.className = "toDoiTT loi"; e.textContent = "⚠ Không sinh được: " + (r.mauCo ? "các mẫu cho ra đề lỗi" : "chưa câu nào có mẫu") + ". Dùng nút “📥 Lấy 10 đề từ Đề tương tự” sẽ chắc hơn."; return; }
+		BIENTHE = r.bienThe; capDoi();
+		e.className = "toDoiTT ok"; e.textContent = "✓ " + r.bienThe.length + " đề biến thể (" + r.mauCo + "/" + r.tong + " câu có mẫu" + (r.bo ? ", " + r.bo + " lượt sinh lỗi đã giữ câu gốc" : "") + ").";
+	});
+	function nhanBienThe(ds, nguon) {
+		const goc = QB.tachEx(ds[0]).map(x => QB.loai(x.than));
+		const tot = ds.filter(d => deHopLe(d, goc));
+		const e = $t("toDoiTT");
+		if (tot.length < 2) { e.className = "toDoiTT loi"; e.textContent = "⚠ Các đề không đồng nhất số câu/loại câu — không dùng làm biến thể được."; return; }
+		BIENTHE = tot;
+		if (!demCau($t("toSoan").value.trim())) $t("toSoan").value = tot[0];
+		$t("toDem").textContent = demCau($t("toSoan").value) + " câu";
+		$t("toDoiSo").checked = true; capDoi();
+		e.className = "toDoiTT ok"; e.textContent = "✓ Nhận " + tot.length + " đề biến thể từ " + nguon + (ds.length > tot.length ? " (bỏ " + (ds.length - tot.length) + " đề lệch cấu trúc)" : "") + ".";
 	}
 
-	// phát hành phòng
 	$t("toPhat").addEventListener("click", async () => {
 		const K = window.KFB;
 		if (!K || !K.db) { nhac("⚠ Firebase chưa sẵn sàng — đợi 1–2 giây rồi bấm lại", "loi"); return; }
@@ -10329,10 +10437,11 @@ function khoiDongThiOnline() {
 		});
 		const lamBT = async raw => {
 			if (!$t("toDoiSo").checked) return { bienThe: [], mauCo: 0, tong: 0 };
+			if (BIENTHE.length) return { bienThe: BIENTHE, mauCo: -1, tong: 0 };
 			bang("⏳ Đang sinh 10 đề đổi số từ mẫu…", "");
 			try { return await sinhBienThe(raw, 10); } catch (e) { console.error("sinh biến thể:", e); return { bienThe: [], mauCo: 0, tong: 0 }; }
 		};
-		const ghiChuBT = bt => $t("toDoiSo").checked ? (bt.bienThe.length ? " · đổi số: " + bt.bienThe.length + " biến thể (" + bt.mauCo + "/" + bt.tong + " câu có mẫu)" : " · ⚠ đổi số chưa chạy: chưa có mẫu ở tab Đề tương tự") : "";
+		const ghiChuBT = bt => $t("toDoiSo").checked ? (bt.bienThe.length ? " · đổi số: " + bt.bienThe.length + " biến thể" + (bt.mauCo > 0 ? " (" + bt.mauCo + "/" + bt.tong + " câu có mẫu)" : "") : " · ⚠ đổi số chưa có biến thể — mọi HS nhận cùng đề") : "";
 		try {
 			if (SUAID) {
 				const bt = await lamBT(deRaw);
@@ -10365,7 +10474,7 @@ function khoiDongThiOnline() {
 					tenDe, deRaw, bienThe: bt.bienThe, soCau: demCau(deRaw),
 					trangThai: "mo", soHS: 0, createdAt: K.serverTimestamp()
 				}));
-				["toTen", "toLop", "toSoan"].forEach(id => $t(id).value = ""); $t("toDem").textContent = "0 câu";
+				["toTen", "toLop", "toSoan"].forEach(id => $t(id).value = ""); $t("toDem").textContent = "0 câu"; BIENTHE = []; capDoi();
 				nhac("✓ Đã phát hành · mã " + ma + " · link: " + linkCua(ma) + ghiChuBT(bt), "ok");
 				setTimeout(() => { $t("toForm").hidden = true; }, 2500);
 			}
@@ -10377,7 +10486,7 @@ function khoiDongThiOnline() {
 
 	// ---------- #7 Thống kê phòng thi ----------
 	const giayRa = g => { g = +g || 0; const m = Math.floor(g / 60), s2 = g % 60; return m + "p" + (s2 < 10 ? "0" : "") + s2 + "s"; };
-	const lucRa = t => { if (!t) return "—"; const d = t.seconds ? new Date(t.seconds * 1000) : new Date(t); return isNaN(d) ? "—" : d.toLocaleString("vi-VN", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }); };
+	const lucRa = t => { if (!t) return "—"; const d = t.seconds ? new Date(t.seconds * 1000) : new Date(+t || t); return isNaN(d) ? "—" : d.toLocaleString("vi-VN", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }); };
 	let TK = { ds: [], sx: "hang", nguoc: false, phong: null };
 	function sapTK() {
 		const d = TK.ds.slice(), k = TK.sx, ng = TK.nguoc ? -1 : 1;
@@ -10386,6 +10495,7 @@ function khoiDongThiOnline() {
 			if (k === "lop") return ng * String(a.lop).localeCompare(String(b.lop), "vi");
 			if (k === "giay") return ng * ((a.giay || 0) - (b.giay || 0));
 			if (k === "nop") return ng * ((a._nop || 0) - (b._nop || 0));
+			if (k === "bd") return ng * ((a.batDauLuc || 0) - (b.batDauLuc || 0));
 			if (k === "vp") return ng * ((b.tabRoi || 0) - (a.tabRoi || 0));
 			// mặc định: điểm cao trước, đồng điểm thì nhanh hơn trước
 			return ng * ((b.diem - a.diem) || ((a.giay || 9e9) - (b.giay || 9e9)));
@@ -10396,24 +10506,83 @@ function khoiDongThiOnline() {
 		const d = sapTK(), box = document.getElementById("toTKBang");
 		if (!d.length) { box.innerHTML = '<p class="mdTrong">Chưa có học sinh nào nộp bài.</p>'; return; }
 		const th = (k, t) => '<th data-sx="' + k + '" class="' + (TK.sx === k ? "on" : "") + '">' + t + (TK.sx === k ? (TK.nguoc ? " ▲" : " ▼") : "") + "</th>";
-		box.innerHTML = '<table><thead><tr><th>#</th>' + th("ten", "HỌ TÊN") + th("lop", "LỚP") + th("nop", "NỘP LÚC") + th("giay", "THỜI GIAN LÀM") + th("hang", "ĐIỂM") + th("vp", "VI PHẠM") + '</tr></thead><tbody>'
+		box.innerHTML = '<table><thead><tr><th>#</th>' + th("ten", "HỌ TÊN") + th("lop", "LỚP") + th("bd", "BẮT ĐẦU") + th("nop", "KẾT THÚC") + th("giay", "THỜI GIAN") + th("hang", "ĐIỂM") + th("vp", "VI PHẠM") + '</tr></thead><tbody>'
 			+ d.map((r, i) => '<tr><td class="hang ' + (TK.sx === "hang" && !TK.nguoc && i < 3 ? "top" + (i + 1) : "") + '">' + (i + 1) + "</td>"
-				+ "<td><b>" + esc2(r.hoTen) + "</b></td><td>" + esc2(r.lop) + "</td><td>" + lucRa(r.nopLuc) + "</td><td>" + giayRa(r.giay) + '</td><td class="dm">' + r.diem + "</td><td>"
+				+ "<td><b>" + esc2(r.hoTen) + "</b></td><td>" + esc2(r.lop) + "</td><td>" + lucRa(r.batDauLuc) + "</td><td>" + lucRa(r.nopLuc) + "</td><td>" + giayRa(r.giay) + '</td><td class="dm">' + r.diem + "</td><td>"
 				+ (r.tabRoi || r.auto ? '<span class="vp">' + (r.tabRoi ? "rời tab " + r.tabRoi + "×" : "") + (r.tabRoi && r.auto ? " · " : "") + (r.auto ? "tự nộp" : "") + "</span>" : '<span class="sach">—</span>') + "</td></tr>").join("")
 			+ "</tbody></table>";
 		box.querySelectorAll("[data-sx]").forEach(h => h.addEventListener("click", () => { const k = h.dataset.sx; if (TK.sx === k) TK.nguoc = !TK.nguoc; else { TK.sx = k; TK.nguoc = false; } veTK(); }));
 	}
+	// ---- xuất .xlsx (Office) theo form mẫu: STT | Họ và tên | Lớp | Bắt đầu | Kết thúc | Thời gian | Điểm | Vi phạm ----
+	const BANG_CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+	const crc32 = u8 => { let c = 0xFFFFFFFF; for (let i = 0; i < u8.length; i++) c = BANG_CRC[(c ^ u8[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
+	function zipTao(ds) {                               // ds: [{ten, data:Uint8Array}] — nén kiểu "store"
+		const td = [], cd = []; let off = 0;
+		const u16 = n => [n & 255, (n >> 8) & 255], u32 = n => [n & 255, (n >> 8) & 255, (n >> 16) & 255, (n >>> 24) & 255];
+		ds.forEach(f => {
+			const ten = new TextEncoder().encode(f.ten), c = crc32(f.data), n = f.data.length;
+			const lh = [].concat([80, 75, 3, 4], u16(20), u16(0), u16(0), u16(0), u16(0), u32(c), u32(n), u32(n), u16(ten.length), u16(0));
+			td.push(new Uint8Array(lh), ten, f.data);
+			cd.push(new Uint8Array([].concat([80, 75, 1, 2], u16(20), u16(20), u16(0), u16(0), u16(0), u16(0), u32(c), u32(n), u32(n), u16(ten.length), u16(0), u16(0), u16(0), u16(0), u32(0), u32(off))), ten);
+			off += lh.length + ten.length + n;
+		});
+		let cdLen = 0; cd.forEach(x => cdLen += x.length);
+		const eo = new Uint8Array([].concat([80, 75, 5, 6], u16(0), u16(0), u16(ds.length), u16(ds.length), u32(cdLen), u32(off), u16(0)));
+		let tong = off + cdLen + eo.length, ra = new Uint8Array(tong), i = 0;
+		td.concat(cd, [eo]).forEach(x => { ra.set(x, i); i += x.length; });
+		return ra;
+	}
+	const xmlEsc = v => String(v == null ? "" : v).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" }[c]));
+	const U8 = t => new TextEncoder().encode(t);
 	function xuatExcel() {
 		const d = sapTK(), p = TK.phong || {};
-		const hang = [["Hạng", "Họ tên", "Lớp", "Nộp lúc", "Thời gian làm", "Điểm", "TN", "Đ/S", "TLN", "Vi phạm"]]
-			.concat(d.map((r, i) => [i + 1, r.hoTen, r.lop, lucRa(r.nopLuc), giayRa(r.giay), r.diem, r.d1 == null ? "" : r.d1, r.d2 == null ? "" : r.d2, r.d3 == null ? "" : r.d3,
-				(r.tabRoi ? "rời tab " + r.tabRoi + " lần" : "") + (r.auto ? (r.tabRoi ? "; " : "") + "tự nộp" : "")]));
-		const csv = "\uFEFF" + hang.map(h => h.map(o => '"' + String(o == null ? "" : o).replace(/"/g, '""') + '"').join(";")).join("\r\n");
+		const cot = ["STT", "Họ và tên", "Lớp", "Bắt đầu", "Kết thúc", "Thời gian", "Điểm", "Vi phạm"];
+		const hang = d.map((r, i) => [i + 1, r.hoTen, r.lop, lucRa(r.batDauLuc), lucRa(r.nopLuc), giayRa(r.giay), r.diem,
+			(r.tabRoi ? "rời tab " + r.tabRoi + " lần" : "") + (r.auto ? (r.tabRoi ? "; " : "") + "tự nộp" : "") || "—"]);
+		const o = (c, rI, v, st) => typeof v === "number"
+			? '<c r="' + c + rI + '" s="' + st + '"><v>' + v + "</v></c>"
+			: '<c r="' + c + rI + '" s="' + st + '" t="inlineStr"><is><t xml:space="preserve">' + xmlEsc(v) + "</t></is></c>";
+		const C = "ABCDEFGH".split("");
+		let rows = '<row r="1" ht="26" customHeight="1">' + o("A", 1, "TỔNG KẾT BẢNG ĐIỂM + " + (p.tenDe || ""), 1) + C.slice(1).map(c => '<c r="' + c + '1" s="1"/>').join("") + "</row>";
+		rows += '<row r="2" ht="20" customHeight="1">' + cot.map((t, i) => o(C[i], 2, t, 2)).join("") + "</row>";
+		hang.forEach((h, i) => { const rI = i + 3; rows += '<row r="' + rI + '">' + h.map((v, j) => o(C[j], rI, v, j === 1 ? 4 : 3)).join("") + "</row>"; });
+		const sheet = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+			+ '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><cols>'
+			+ '<col min="1" max="1" width="9.07" customWidth="1"/><col min="2" max="2" width="26" customWidth="1"/><col min="3" max="3" width="7" customWidth="1"/>'
+			+ '<col min="4" max="4" width="15" customWidth="1"/><col min="5" max="5" width="15" customWidth="1"/><col min="6" max="6" width="11" customWidth="1"/>'
+			+ '<col min="7" max="7" width="7.6" customWidth="1"/><col min="8" max="8" width="20" customWidth="1"/></cols>'
+			+ "<sheetData>" + rows + "</sheetData><mergeCells count=\"1\"><mergeCell ref=\"A1:H1\"/></mergeCells></worksheet>";
+		const vien = '<border><left style="thin"><color rgb="FFB0B7C3"/></left><right style="thin"><color rgb="FFB0B7C3"/></right><top style="thin"><color rgb="FFB0B7C3"/></top><bottom style="thin"><color rgb="FFB0B7C3"/></bottom></border>';
+		const styles = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+			+ '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+			+ '<fonts count="3"><font><sz val="11"/><name val="Calibri"/></font>'
+			+ '<font><b/><sz val="14"/><name val="Calibri"/></font>'
+			+ '<font><b/><sz val="11"/><name val="Calibri"/></font></fonts>'
+			+ '<fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill>'
+			+ '<fill><patternFill patternType="solid"><fgColor rgb="FFF2F5FA"/><bgColor indexed="64"/></patternFill></fill></fills>'
+			+ '<borders count="2"><border/>' + vien + "</borders>"
+			+ '<cellStyleXfs count="1"><xf/></cellStyleXfs>'
+			+ '<cellXfs count="5">'
+			+ "<xf/>"
+			+ '<xf fontId="1" applyFont="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>'
+			+ '<xf fontId="2" fillId="2" borderId="1" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>'
+			+ '<xf borderId="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>'
+			+ '<xf borderId="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="center"/></xf>'
+			+ "</cellXfs></styleSheet>";
+		const tep = [
+			{ ten: "[Content_Types].xml", data: U8('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>') },
+			{ ten: "_rels/.rels", data: U8('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>') },
+			{ ten: "xl/workbook.xml", data: U8('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Thong ke" sheetId="1" r:id="rId1"/></sheets></workbook>') },
+			{ ten: "xl/_rels/workbook.xml.rels", data: U8('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>') },
+			{ ten: "xl/styles.xml", data: U8(styles) },
+			{ ten: "xl/worksheets/sheet1.xml", data: U8(sheet) }
+		];
 		const a = document.createElement("a");
-		a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
-		a.download = "ThongKe_" + (p.ma || "phong") + "_" + String(p.tenDe || "").replace(/[^\p{L}\p{N}]+/gu, "_").slice(0, 40) + ".csv";
+		a.href = URL.createObjectURL(new Blob([zipTao(tep)], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }));
+		a.download = "ThongKe_" + (p.ma || "phong") + "_" + String(p.tenDe || "").replace(/[^\p{L}\p{N}]+/gu, "_").slice(0, 40) + ".xlsx";
 		a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
 	}
+
 	async function moThongKe(p) {
 		let lop = document.getElementById("toTKLop");
 		if (!lop) { lop = document.createElement("div"); lop.id = "toTKLop"; document.body.appendChild(lop); }
