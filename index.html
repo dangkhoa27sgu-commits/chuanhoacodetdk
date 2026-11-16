@@ -1211,6 +1211,34 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 .gtXoa{border:0;background:none;color:var(--phu);font-size:22px;line-height:1;cursor:pointer}
 .gtXoa:hover{color:var(--do,#e03131)}
 
+/* ===== Tab Thi Online ===== */
+.toIco{background:linear-gradient(135deg,#8affc9,#2fcf8f)!important}
+.toIco svg{stroke:#063!important}
+#tabThiOnline .to2{display:flex;flex-direction:column;gap:16px}
+#tabThiOnline .toLuoi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px 14px;margin:6px 0 10px}
+#tabThiOnline .toF{display:flex;flex-direction:column;gap:5px;min-width:0}
+#tabThiOnline .toF.toFull{grid-column:1/-1}
+#tabThiOnline .toNhom2{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:14px 0;border-top:1px solid var(--vien,#2c3850);margin-top:8px}
+#tabThiOnline .toNhom2 .vdCong{display:flex;margin:7px 0}
+@media(max-width:720px){#tabThiOnline .toNhom2{grid-template-columns:1fr}}
+#tabThiOnline .toFormDay{display:flex;align-items:center;gap:14px;justify-content:flex-end;margin-top:14px}
+#tabThiOnline .toFormDay .vdGhi{margin-right:auto}
+#tabThiOnline .toForm[hidden]{display:none}
+#tabThiOnline .toTim{width:220px;max-width:40vw}
+/* danh sách phòng */
+#tabThiOnline .toDs{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+#tabThiOnline .toPhong{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:14px 16px;border:1px solid var(--vien,#2c3850);border-radius:14px;background:var(--mat2,#0e1626)}
+#tabThiOnline .toPhong .tt{width:46px;height:46px;flex:none;border-radius:12px;display:grid;place-items:center;font:800 11px "Be Vietnam Pro";background:rgba(47,207,143,.14);color:var(--luc,#2fcf8f);text-align:center;line-height:1.1}
+#tabThiOnline .toPhong .ten{font-size:15px;font-weight:700}
+#tabThiOnline .toPhong .meta{font-size:12px;color:var(--phu,#9aa7c2);margin-top:3px;display:flex;gap:10px;flex-wrap:wrap}
+#tabThiOnline .toPhong .meta b{color:var(--vang,#f5b301);font-family:ui-monospace,monospace}
+#tabThiOnline .toTT{font-size:11px;font-weight:800;padding:3px 10px;border-radius:99px}
+#tabThiOnline .toTT.mo{background:rgba(47,207,143,.16);color:var(--luc,#2fcf8f)}
+#tabThiOnline .toTT.dong{background:rgba(255,107,107,.14);color:var(--do,#ff6b6b)}
+#tabThiOnline .toTT.cho{background:rgba(245,179,1,.14);color:var(--vang,#f5b301)}
+#tabThiOnline .toPhongNut{display:flex;gap:7px}
+#tabThiOnline .toXoa{color:var(--do,#ff6b6b)!important}
+
 /* ===== Gán ID ===== */
 .giThan { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 16px; align-items: start; } @media (max-width: 1000px) { .giThan { grid-template-columns: 1fr; } }
 .giVao { display: grid; gap: 10px; position: sticky; top: 12px; }
@@ -1740,6 +1768,7 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 	<div class="tabMenu" id="conLopHoc" role="tablist" aria-label="Lớp học" hidden>
 		<button type="button" role="tab" id="nutTabGoiTen" aria-selected="false" aria-controls="tabGoiTen" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/><path d="M19 3l1 2 2 .5-1.5 1.5.3 2.2L19 8.2 17.2 9.2l.3-2.2L16 5.5l2-.5z"/></svg><span>Gọi tên học sinh</span></button>
 		<button type="button" role="tab" id="nutTabChinhPhuc" aria-selected="false" aria-controls="tabChinhPhuc" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 17.5 3 6V3h3l11.5 11.5"/><path d="m13 19 6-6M16 16l4 4M19 21l2-2"/></svg><span>Game Chinh phục</span></button>
+		<button type="button" role="tab" id="nutTabThiOnline" aria-selected="false" aria-controls="tabThiOnline" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5"/><path d="m9 15 2 2 4-4"/></svg><span>Thi Online</span></button>
 	</div>
 	<div class="tabMenu" id="conDeThi" role="tablist" aria-label="Đề thi" hidden>
 		<button type="button" role="tab" id="nutTabGanID" aria-selected="false" aria-controls="tabGanID" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg><span>Gán ID</span></button>
@@ -2645,6 +2674,56 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 		</div>
 	</div>
 </section>
+<section class="manTab" id="tabThiOnline" role="tabpanel" aria-labelledby="nutTabThiOnline" hidden>
+	<div class="to2">
+		<header class="mdDau">
+			<div class="mdDauTen">
+				<span class="mdDauIco toIco" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5"/><path d="m9 15 2 2 4-4"/></svg></span>
+				<div><h2>Thi Online</h2><p>Tạo phòng thi từ đề của anh → phát hành <b>link / mã QR</b> cho HS làm → chấm tự động. Dữ liệu lưu trên Firebase của anh.</p></div>
+			</div>
+			<div class="mdDauNut"><button class="vt3NutChinh nho" type="button" id="toTao">+ Tạo phòng thi</button></div>
+		</header>
+
+		<!-- FORM TẠO PHÒNG -->
+		<section class="mdThe toForm" id="toForm" hidden>
+			<div class="giThanh"><b>Tạo phòng thi mới</b><div class="giThanhNut"><button class="vdNutNho" type="button" id="toHuy">Huỷ</button></div></div>
+			<div class="toLuoi">
+				<label class="toF toFull"><span class="mdNhan">Tên đề thi *</span><input class="mdO" id="toTen" placeholder="VD: Kiểm tra giữa kỳ I — Toán 12"></label>
+				<label class="toF"><span class="mdNhan">Môn</span><input class="mdO" id="toMon" value="Toán"></label>
+				<label class="toF"><span class="mdNhan">Khối / Lớp</span><input class="mdO" id="toLop" placeholder="12"></label>
+				<label class="toF"><span class="mdNhan">Thời lượng (phút)</span><input class="mdO" id="toPhut" type="number" value="45" min="1"></label>
+				<label class="toF"><span class="mdNhan">Số lần được làm</span><input class="mdO" id="toLan" type="number" value="1" min="1"></label>
+				<label class="toF"><span class="mdNhan">Mở đề lúc</span><input class="mdO" id="toMo" type="datetime-local"></label>
+				<label class="toF"><span class="mdNhan">Đóng đề lúc</span><input class="mdO" id="toDong" type="datetime-local"></label>
+			</div>
+			<p class="vdGhi" style="margin:4px 0 2px">Ngoài khung giờ, link &amp; mã QR tự hết hiệu lực.</p>
+
+			<div class="toNhom2">
+				<div><div class="mdNhan" style="margin-bottom:8px">Sau khi HS nộp</div>
+					<label class="vdCong"><input type="checkbox" id="toDiem" checked><i aria-hidden="true"></i>Hiện điểm ngay</label>
+					<label class="vdCong"><input type="checkbox" id="toDA" checked><i aria-hidden="true"></i>Cho xem đáp án</label>
+					<label class="vdCong"><input type="checkbox" id="toLG"><i aria-hidden="true"></i>Cho xem lời giải</label>
+				</div>
+				<div><div class="mdNhan" style="margin-bottom:8px">Chống gian lận</div>
+					<label class="vdCong"><input type="checkbox" id="toTronC" checked><i aria-hidden="true"></i>Trộn thứ tự câu</label>
+					<label class="vdCong"><input type="checkbox" id="toTronD" checked><i aria-hidden="true"></i>Trộn đáp án A/B/C/D</label>
+					<label class="vdCong"><input type="checkbox" id="toDoiSo"><i aria-hidden="true"></i>Đổi số mỗi HS (câu có mẫu)</label>
+					<label class="vdCong"><input type="checkbox" id="toKhoa" checked><i aria-hidden="true"></i>Khoá chuyển tab</label>
+				</div>
+			</div>
+
+			<label class="toF toFull" style="margin-top:14px"><span class="mdNhan">Nội dung đề — dán các câu <code>\begin{ex}…\end{ex}</code> (mỗi khối một câu)</span>
+				<textarea class="mdO" id="toDe" rows="7" spellcheck="false" placeholder="Dán đề từ Giỏ đề / Tạo đề, hoặc lấy từ Ngân hàng."></textarea></label>
+			<div class="toFormDay"><span class="vdGhi" id="toDem">0 câu</span><button class="gtBatDau" type="button" id="toPhat">✦ Phát hành phòng thi</button></div>
+		</section>
+
+		<!-- DANH SÁCH PHÒNG -->
+		<section class="mdThe">
+			<div class="giThanh"><b id="toDsTen">Phòng thi của tôi</b><div class="giThanhNut"><input class="mdO toTim" id="toTimDs" placeholder="Tìm theo tên / mã…"></div></div>
+			<div class="toDs" id="toDs"><p class="mdTrong">Chưa có phòng thi nào. Bấm <b>+ Tạo phòng thi</b> để bắt đầu.</p></div>
+		</section>
+	</div>
+</section>
 <section class="manTab" id="tabGanID" role="tabpanel" aria-labelledby="nutTabGanID" hidden>
 	<div class="gi">
 		<header class="mdDau">
@@ -3246,13 +3325,16 @@ Lớp: ...</textarea></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, increment, serverTimestamp, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, increment, serverTimestamp, writeBatch, collection, addDoc, getDocs, query, where, orderBy, limit, onSnapshot, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { firebaseConfig, EMAIL_QUAN_TRI, LIEN_HE } from "./cauhinh.js";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+// ===== Cầu nối Firebase cho module Thi Online (dùng collection/query/realtime) =====
+window.KFB = { db, auth, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, where, orderBy, limit, onSnapshot, serverTimestamp, writeBatch, increment, arrayUnion, signInAnonymously,
+	uid: () => auth.currentUser && auth.currentUser.uid, taiKhoan: () => auth.currentUser };
 let boMay = null;   // bộ luật, chỉ tải được khi tài khoản đã duyệt
 const $ = id => document.getElementById(id);
 
@@ -3448,18 +3530,6 @@ O_CHON.forEach(k => { const v = doc_(k); if (v !== null) $(k).checked = v === "1
 function dem(s) { const n = s ? s.split("\n").length : 0; return n ? "· " + n + " dòng" : ""; }
 $("vao").addEventListener("input", () => $("demVao").textContent = dem($("vao").value));
 
-// Tiền xử lý: bung \foreach \p in {A,B,C} \node[below left] at (\p){$\p$} thành node riêng,
-// để engine tự đổi nhãn sang vị trí theo GÓC ĐỘ (dưới-trái → -135…) thay vì giữ below left.
-function moRongForeachNhan(code) {
-	return String(code || "").replace(/\\foreach\s*((?:\\[a-zA-Z]+\/?)+)\s*in\s*\{([^{}]*)\}\s*(\\node\b[\s\S]*?\{[^{}]*\}\s*;?)/g,
-		(m, varsRaw, items, body) => {
-			const vars = (varsRaw.match(/\\[a-zA-Z]+/g) || []).map(v => v.slice(1));
-			const its = items.split(",").map(s => s.trim()).filter(Boolean); if (!its.length) return m;
-			const out = its.map(it => { const f = it.split("/").map(s => s.trim()); if (f.length !== vars.length) return null;
-				let b = body; vars.forEach((vn, i) => { b = b.replace(new RegExp("\\\\" + vn + "(?![a-zA-Z])", "g"), f[i]); }); return b.trim(); });
-			return out.some(x => x === null) ? m : out.join("\n"); });
-}
-window.moRongForeachNhan = moRongForeachNhan;
 async function kiemRenderChuan() {
 	const src = $("ra").value || $("vao").value; const box = $("kiemRa");
 	if (!src.trim()) { box.innerHTML = '<span class="the">Chưa có code để kiểm.</span>'; return; }
@@ -3477,7 +3547,7 @@ async function kiemRenderChuan() {
 		: '<span class="the on">✓ ' + hinh.length + " hình TikZ render OK — chuẩn hoá không làm hỏng hình.</span>";
 }
 async function chay() {
-	const src = moRongForeachNhan($("vao").value);
+	const src = $("vao").value;
 	if (!src.trim()) { hien("Chưa có code để chuẩn hoá"); return; }
 	const tuyChon = {};
 	O_TT.forEach(k => tuyChon[k] = $(k).value.trim());
@@ -3595,8 +3665,8 @@ $("vao").addEventListener("keydown", e => {
 	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 12.3.";
 
 	/* ---------- tab ngang ---------- */
-	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"], ["nutTabVeHinh", "tabVeHinh"], ["nutTabVeThucTe", "tabVeThucTe"], ["nutTabVeTuY", "tabVeTuY"], ["nutTabKhoAnh", "tabKhoAnh"], ["nutTabVideo", "tabVideo"], ["nutTabGoiTen", "tabGoiTen"], ["nutTabChinhPhuc", "tabChinhPhuc"], ["nutTabGanID", "tabGanID"], ["nutTabNganHang", "tabNganHang"], ["nutTabTaoDe", "tabTaoDe"], ["nutTabDeTuongTu", "tabDeTuongTu"], ["nutTabVanPhong", "tabVanPhong"]];
-	const NHOM_TAB = { CongCu: ["nutTabPdfTex", "nutTabPdfWord", "nutTabTexWord", "nutTabWordTex"], VeHinh: ["nutTabVeHinh", "nutTabVeThucTe", "nutTabVeTuY", "nutTabKhoAnh"], LopHoc: ["nutTabGoiTen", "nutTabChinhPhuc"], DeThi: ["nutTabGanID", "nutTabNganHang", "nutTabTaoDe", "nutTabDeTuongTu"] };
+	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"], ["nutTabVeHinh", "tabVeHinh"], ["nutTabVeThucTe", "tabVeThucTe"], ["nutTabVeTuY", "tabVeTuY"], ["nutTabKhoAnh", "tabKhoAnh"], ["nutTabVideo", "tabVideo"], ["nutTabGoiTen", "tabGoiTen"], ["nutTabChinhPhuc", "tabChinhPhuc"], ["nutTabThiOnline", "tabThiOnline"], ["nutTabGanID", "tabGanID"], ["nutTabNganHang", "tabNganHang"], ["nutTabTaoDe", "tabTaoDe"], ["nutTabDeTuongTu", "tabDeTuongTu"], ["nutTabVanPhong", "tabVanPhong"]];
+	const NHOM_TAB = { CongCu: ["nutTabPdfTex", "nutTabPdfWord", "nutTabTexWord", "nutTabWordTex"], VeHinh: ["nutTabVeHinh", "nutTabVeThucTe", "nutTabVeTuY", "nutTabKhoAnh"], LopHoc: ["nutTabGoiTen", "nutTabChinhPhuc", "nutTabThiOnline"], DeThi: ["nutTabGanID", "nutTabNganHang", "nutTabTaoDe", "nutTabDeTuongTu"] };
 	const dongMenuTab = () => Object.keys(NHOM_TAB).forEach(k => { $("con" + k).hidden = true; $("nhom" + k).setAttribute("aria-expanded", "false"); });
 	function capNhatNhom(nut) { dongMenuTab(); Object.entries(NHOM_TAB).forEach(([k, ds]) => { const on = ds.includes(nut), b = $("nhom" + k); b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1; $("nhom" + k + "Con").textContent = on ? $(nut).textContent.replace(/^Vẽ hình TikZ\s*/, "").trim() : ""; }); }
 	function moMenuTab(k) { const m = $("con" + k), b = $("nhom" + k), mo = m.hidden; dongMenuTab(); if (!mo) return; const kh = b.closest(".tabKhung").getBoundingClientRect(), r = b.getBoundingClientRect(); m.style.left = Math.max(0, Math.min(r.left - kh.left, kh.width - 300)) + "px"; m.hidden = false; b.setAttribute("aria-expanded", "true"); }
@@ -3617,6 +3687,7 @@ $("vao").addEventListener("keydown", e => {
 		if (nut === "nutTabVideo") khoiDongVideo();
 		if (nut === "nutTabGoiTen") khoiDongGoiTen();
 		if (nut === "nutTabChinhPhuc") khoiDongChinhPhuc();
+		if (nut === "nutTabThiOnline") khoiDongThiOnline();
 		if (nut === "nutTabGanID") khoiDongGanID();
 		if (nut === "nutTabNganHang") khoiDongNganHang();
 		if (nut === "nutTabTaoDe") khoiDongTaoDe();
@@ -9815,6 +9886,89 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 		return { khoiDong };
 	})();
 	function khoiDongChinhPhuc() { CP_API.khoiDong(); window.TDKMod = Object.assign(window.TDKMod || {}, { CP: CP_API }); }
+/* ===== Tab Thi Online — Giai đoạn 1: GV tạo & quản lý phòng thi (Firestore) ===== */
+function khoiDongThiOnline() {
+	if (khoiDongThiOnline.da) { return; }
+	khoiDongThiOnline.da = true;
+	const $t = id => document.getElementById(id);
+	const K = window.KFB;
+	const nhac = (m) => (typeof toast === "function" ? toast(m) : alert(m));
+	const esc2 = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+	if (!K || !K.db) { $t("toDs").innerHTML = '<p class="mdTrong">⚠️ Chưa kết nối được Firebase. Hãy nạp lại trang sau khi đăng nhập.</p>'; return; }
+
+	// đếm câu khi dán đề
+	function demCau(txt) {
+		const QB = window.TDKMod && window.TDKMod.QB;
+		try { if (QB && QB.tachEx) return QB.tachEx(txt).length; } catch (e) { }
+		return (String(txt).match(/\\begin\{ex\}/g) || []).length;
+	}
+	$t("toDe").addEventListener("input", () => { const n = demCau($t("toDe").value); $t("toDem").textContent = n + " câu"; });
+
+	// mở / đóng form
+	$t("toTao").addEventListener("click", () => { const f = $t("toForm"); f.hidden = !f.hidden; if (!f.hidden) $t("toTen").focus(); });
+	$t("toHuy").addEventListener("click", () => { $t("toForm").hidden = true; });
+
+	const maNgauNhien = () => { const c = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let s = ""; for (let i = 0; i < 6; i++) s += c[Math.floor(Math.random() * c.length)]; return s; };
+	const linkCua = ma => location.origin + location.pathname + "?thi=" + ma;
+
+	// phát hành phòng
+	$t("toPhat").addEventListener("click", async () => {
+		const tenDe = $t("toTen").value.trim();
+		if (!tenDe) { nhac("Chưa nhập tên đề thi"); return; }
+		const deRaw = $t("toDe").value.trim();
+		const soCau = demCau(deRaw);
+		if (!soCau) { nhac("Đề chưa có câu hỏi (\\begin{ex}…\\end{ex})"); return; }
+		const u = K.taiKhoan && K.taiKhoan();
+		if (!u) { nhac("Chưa đăng nhập"); return; }
+		const b = $t("toPhat"); b.disabled = true; const nhanCu = b.textContent; b.textContent = "Đang phát hành…";
+		try {
+			const ma = maNgauNhien();
+			await K.addDoc(K.collection(K.db, "phongThi"), {
+				teacherId: u.uid, teacherName: u.displayName || u.email || "", ma,
+				tenDe, mon: $t("toMon").value.trim(), lop: $t("toLop").value.trim(),
+				thoiLuong: +$t("toPhut").value || 45, soLan: +$t("toLan").value || 1,
+				moLuc: $t("toMo").value || "", dongLuc: $t("toDong").value || "",
+				cheDo: { hienDiem: $t("toDiem").checked, xemDapAn: $t("toDA").checked, xemLoiGiai: $t("toLG").checked },
+				chongGian: { tronCau: $t("toTronC").checked, tronDapAn: $t("toTronD").checked, doiSo: $t("toDoiSo").checked, khoaTab: $t("toKhoa").checked },
+				deRaw, soCau, trangThai: "mo", soHS: 0, createdAt: K.serverTimestamp()
+			});
+			$t("toForm").hidden = true;
+			["toTen", "toLop", "toDe"].forEach(id => $t(id).value = ""); $t("toDem").textContent = "0 câu";
+			nhac("Đã phát hành phòng thi · mã " + ma);
+		} catch (e) {
+			nhac("Lỗi lưu: " + (e.code || e.message || e));
+		} finally { b.disabled = false; b.textContent = nhanCu; }
+	});
+
+	// danh sách realtime
+	let DS = [];
+	function ve() {
+		const q = ($t("toTimDs").value || "").trim().toLowerCase();
+		const ds = DS.filter(p => !q || (p.tenDe + " " + p.ma).toLowerCase().includes(q));
+		$t("toDsTen").textContent = "Phòng thi của tôi (" + DS.length + ")";
+		if (!ds.length) { $t("toDs").innerHTML = '<p class="mdTrong">' + (DS.length ? "Không khớp tìm kiếm." : "Chưa có phòng thi nào. Bấm <b>+ Tạo phòng thi</b> để bắt đầu.") + '</p>'; return; }
+		$t("toDs").innerHTML = ds.map(p => {
+			const tt = p.trangThai === "dong" ? '<span class="toTT dong">Đã đóng</span>' : '<span class="toTT mo">Đang mở</span>';
+			const cg = []; if (p.chongGian) { if (p.chongGian.tronCau) cg.push("trộn câu"); if (p.chongGian.doiSo) cg.push("đổi số"); if (p.chongGian.khoaTab) cg.push("khoá tab"); }
+			return '<div class="toPhong"><span class="tt">' + p.soCau + '<br>câu</span>'
+				+ '<div><div class="ten">' + esc2(p.tenDe) + '</div><div class="meta"><span>Mã <b>' + esc2(p.ma) + '</b></span><span>' + (p.thoiLuong || 45) + ' phút</span>'
+				+ (p.lop ? '<span>Lớp ' + esc2(p.lop) + '</span>' : '') + '<span>' + (p.soHS || 0) + ' lượt làm</span>' + (cg.length ? '<span>· ' + cg.join(", ") + '</span>' : '') + '</div></div>'
+				+ '<div style="display:flex;align-items:center;gap:10px">' + tt + '<div class="toPhongNut"><button class="vdNutNho" data-chep="' + esc2(p.ma) + '">Chép link</button><button class="vdNutNho toXoa" data-xoa="' + p.id + '">Xoá</button></div></div></div>';
+		}).join("");
+		$t("toDs").querySelectorAll("[data-chep]").forEach(b => b.addEventListener("click", () => { const l = linkCua(b.dataset.chep); navigator.clipboard && navigator.clipboard.writeText(l); nhac("Đã chép link: " + l); }));
+		$t("toDs").querySelectorAll("[data-xoa]").forEach(b => b.addEventListener("click", async () => { if (!confirm("Xoá phòng thi này? Không khôi phục được.")) return; try { await K.deleteDoc(K.doc(K.db, "phongThi", b.dataset.xoa)); nhac("Đã xoá"); } catch (e) { nhac("Lỗi xoá: " + (e.code || e)); } }));
+	}
+	$t("toTimDs").addEventListener("input", ve);
+
+	function lang() {
+		const u = K.taiKhoan && K.taiKhoan(); if (!u) { setTimeout(lang, 400); return; }
+		const q = K.query(K.collection(K.db, "phongThi"), K.where("teacherId", "==", u.uid));
+		K.onSnapshot(q, snap => { DS = snap.docs.map(d => Object.assign({ id: d.id }, d.data())); DS.sort((a, b) => ((b.createdAt && b.createdAt.seconds) || 0) - ((a.createdAt && a.createdAt.seconds) || 0)); ve(); },
+			err => { $t("toDs").innerHTML = '<p class="mdTrong">⚠️ Không đọc được danh sách (' + (err.code || err) + '). Có thể cần cập nhật <b>Quy tắc bảo mật Firestore</b> cho phép GV đọc/ghi collection <code>phongThi</code>.</p>'; });
+	}
+	lang();
+}
 	// ===== Tab Gán ID (gán tay + gán tự động) =====
 	const GI_API = (() => {
 		const $g = id => document.getElementById(id);
@@ -10072,7 +10226,7 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 		// ---------- Chuẩn hoá + cổng kiểm render ----------
 		const luatNH = () => Object.assign((typeof luatHienTai === "function" ? luatHienTai() : { bocSo: true, bocTenDiem: true, nhanForeach: true, xoaCanChinh: true, xoaCommentCode: true, thutLe: true }), { khoiDinhDanh: false, ghiChuSuaTay: false });
 		const boTDK = () => window.__TDK || window.TDK;
-		function chuanHoaCode(code) { const T = boTDK(); if (!T || typeof T.chuanHoa !== "function") return { ok: false, code, soSua: 0, loi: "Bộ luật chưa sẵn sàng" }; try { const src = typeof window.moRongForeachNhan === "function" ? window.moRongForeachNhan(code) : code; const c = T.chuanHoa(src, luatNH()); return { ok: true, code: c.ketQua, soSua: (c.canhBao || []).length }; } catch (e) { return { ok: false, code, soSua: 0, loi: e.message || e }; } }
+		function chuanHoaCode(code) { const T = boTDK(); if (!T || typeof T.chuanHoa !== "function") return { ok: false, code, soSua: 0, loi: "Bộ luật chưa sẵn sàng" }; try { const c = T.chuanHoa(code, luatNH()); return { ok: true, code: c.ketQua, soSua: (c.canhBao || []).length }; } catch (e) { return { ok: false, code, soSua: 0, loi: e.message || e }; } }
 		// render thử: trả danh sách lỗi (rỗng = ok). Bắt được công thức hỏng & hình TikZ không vẽ được.
 		async function kiemRender(code) { const loi = []; const T = boTDK();
 			try { const tmp = document.createElement("div"); await QB.xemTruoc(tmp, code, { khongHinh: true, lg: true }); const ke = tmp.querySelectorAll(".katex-error, .ctLoi, .ketQuaLoi"); if (ke.length) loi.push("Công thức lỗi (" + ke.length + " chỗ)"); } catch (e) { loi.push("Không đọc được đề: " + (e.message || e)); }
