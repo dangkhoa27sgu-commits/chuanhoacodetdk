@@ -2923,7 +2923,7 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 		<header class="mdDau">
 			<div class="mdDauTen">
 				<span class="mdDauIco toIco" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.9 5.7 3.9 9s-1.4 6.4-3.9 9c-2.5-2.6-3.9-5.7-3.9-9S9.5 5.6 12 3z"/></svg></span>
-				<div><h2>Thi Online <span style="font-size:11px;font-weight:700;color:var(--luc,#2fcf8f);background:rgba(47,207,143,.14);padding:2px 9px;border-radius:99px;vertical-align:middle">b2.1</span></h2></div>
+				<div><h2>Thi Online <span style="font-size:11px;font-weight:700;color:var(--luc,#2fcf8f);background:rgba(47,207,143,.14);padding:2px 9px;border-radius:99px;vertical-align:middle">b2.2</span></h2></div>
 			</div>
 			<div class="mdDauNut"><button class="vt3NutChinh nho" type="button" id="toTao">+ Tạo phòng thi</button></div>
 		</header>
@@ -10159,6 +10159,7 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 	})();
 	function khoiDongChinhPhuc() { CP_API.khoiDong(); window.TDKMod = Object.assign(window.TDKMod || {}, { CP: CP_API }); }
 /* ===== Tab Thi Online — Giai đoạn 1: GV tạo & quản lý phòng thi (Firestore) ===== */
+try { window.TDKMod = Object.assign(window.TDKMod || {}, { QB }); } catch (e) { }
 /* Bộ đếm câu — ĐỘC LẬP, không phụ thuộc Firebase/khởi tạo tab */
 (function ganDemThiOnline() {
 	const toDe = document.getElementById("toSoan"), toDem = document.getElementById("toDem");
@@ -10301,7 +10302,7 @@ function khoiDongThiOnline() {
 			tt.textContent = "đang chuẩn bị biến thể…";
 			try {
 				const r = BIENTHE.length ? { bienThe: BIENTHE, mauCo: 0, tong: 0 } : await sinhBienThe(deRaw, 10);
-				if (r.bienThe.length) { DSD = r.bienThe; nhan = r.bienThe.map((_, i) => "Đề " + (i + 1)); tt.textContent = r.bienThe.length + " đề biến thể" + (r.mauCo ? " · " + r.mauCo + "/" + r.tong + " câu có mẫu" : ""); }
+				if (r.bienThe.length) { DSD = [deRaw].concat(r.bienThe); nhan = ["Đề gốc"].concat(r.bienThe.map((_, i) => "Đề " + (i + 1))); tt.textContent = r.bienThe.length + " đề biến thể (so với đề gốc)"; }
 				else { tt.textContent = "chỉ có đề gốc"; ruot.insertAdjacentHTML("afterbegin", '<div class="toKQ loi" style="margin:0 0 14px">⚠ Chưa sinh được đề đổi số: chưa câu nào trong đề này có <b>mẫu đổi số</b>. Vào tab <b>Công cụ → Đề tương tự</b>, nạp đề, lập mẫu cho từng câu rồi bấm <b>💾 Lưu</b>; quay lại đây sẽ có đủ 10 đề.</div>'); }
 			} catch (e) { tt.textContent = "lỗi sinh biến thể"; }
 		}
@@ -10344,32 +10345,46 @@ function khoiDongThiOnline() {
 	function deHopLe(deRaw, loaiGoc) {
 		try { const t = QB.tachEx(deRaw); if (t.length !== loaiGoc.length) return false; return t.every((x, i) => QB.loai(x.than) === loaiGoc[i]); } catch (e) { return false; }
 	}
+	// sinh 1 câu biến thể; nếu mẫu cho đáp án quá dài (tln) thì tự thử lại với lamTron thô hơn
+	function sinhCauBT(TT, m, id, used, loaiGoc) {
+		const ds = [m];
+		if ((m.loai || loaiGoc) === "tln") ["2", "1", "0"].forEach(t2 => { if (String(m.lamTron == null ? "" : m.lamTron) !== t2) ds.push(Object.assign({}, m, { lamTron: t2 })); });
+		let li = "";
+		for (const mm of ds) {
+			try {
+				const r = TT.sinhMau(mm, 1, id, used);
+				if (r && r[0] && cauHopLe(r[0].code, loaiGoc)) { used.add(r[0].khoa); return { code: r[0].code }; }
+				if (r && r.loi) li = r.loi;
+			} catch (e) { li = e.message; }
+		}
+		return { loi: li };
+	}
 	// sinh N biến thể từ MẪU đã lưu trong Ngân hàng (tab Đề tương tự)
 	async function sinhBienThe(deRaw, n) {
 		if (!window.TDKMod || !window.TDKMod.TT) { try { if (typeof khoiDongDeTuongTu === "function") khoiDongDeTuongTu(); } catch (e) { } }
 		const TT = window.TDKMod && window.TDKMod.TT;
 		const exs = QB.tachEx(deRaw), loaiGoc = exs.map(x => QB.loai(x.than));
-		if (!TT || !TT.sinhMau) return { bienThe: [], mauCo: 0, tong: exs.length, bo: 0 };
+		if (!TT || !TT.sinhMau) return { bienThe: [], mauCo: 0, tong: exs.length, hong: [], doi: 0 };
 		let all = []; try { all = await QB.dbTatCa(); } catch (e) { }
 		const mp = new Map(); all.forEach(r => { if (r.mau && r.mauOk !== false) mp.set(r.k, r.mau); });
 		const tpl = exs.map(x => mp.get(QB.bam(QB.vanTay(x.than))) || null);
 		const mauCo = tpl.filter(Boolean).length;
-		if (!mauCo) return { bienThe: [], mauCo: 0, tong: exs.length, bo: 0 };
-		const used = tpl.map(() => new Set()), out = []; let bo = 0;
+		if (!mauCo) return { bienThe: [], mauCo: 0, tong: exs.length, hong: [], doi: 0 };
+		const used = tpl.map(() => new Set()), out = [], hong = new Map(); const doiOk = new Set();
 		for (let v = 0; v < n; v++) {
 			const parts = exs.map((x, i) => {
 				const m = tpl[i]; if (!m) return x.raw;
-				try {
-					const r = TT.sinhMau(m, 1, x.id || "", used[i]);
-					if (r && r[0] && cauHopLe(r[0].code, loaiGoc[i])) { used[i].add(r[0].khoa); return r[0].code; }
-				} catch (e) { }
-				bo++; return x.raw;                       // câu lỗi → giữ nguyên câu gốc
+				const r = sinhCauBT(TT, m, x.id || "", used[i], loaiGoc[i]);
+				if (r.code) { doiOk.add(i); return r.code; }
+				if (!hong.has(i)) hong.set(i, r.loi || "");
+				return x.raw;
 			});
 			const dr = parts.join("\n\n");
-			if (deHopLe(dr, loaiGoc)) out.push(dr);
+			if (deHopLe(dr, loaiGoc) && dr !== deRaw && !out.includes(dr)) out.push(dr);
 		}
-		return { bienThe: out, mauCo, tong: exs.length, bo };
+		return { bienThe: out, mauCo, tong: exs.length, hong: [...hong.keys()].map(i => i + 1), doi: doiOk.size };
 	}
+	const loiBT = r => r.hong && r.hong.length ? " Câu không đổi được: " + r.hong.join(", ") + " (đáp án quá 4 ký tự / thiếu phương án nhiễu — sửa mẫu ở tab Đề tương tự)." : "";
 	// hiện/ẩn panel đổi số
 	function capDoi() {
 		const on = $t("toDoiSo").checked;
@@ -10400,9 +10415,9 @@ function khoiDongThiOnline() {
 		if (!demCau(deRaw)) { e.className = "toDoiTT loi"; e.textContent = "⚠ Chưa có đề trong ô soạn."; return; }
 		e.className = "toDoiTT"; e.textContent = "⏳ Đang sinh 10 đề từ mẫu…";
 		const r = await sinhBienThe(deRaw, 10);
-		if (!r.bienThe.length) { e.className = "toDoiTT loi"; e.textContent = "⚠ Không sinh được: " + (r.mauCo ? "các mẫu cho ra đề lỗi" : "chưa câu nào có mẫu") + ". Dùng nút “📥 Lấy 10 đề từ Đề tương tự” sẽ chắc hơn."; return; }
+		if (!r.bienThe.length) { e.className = "toDoiTT loi"; e.textContent = "⚠ Không sinh được đề khác đề gốc." + (r.mauCo ? loiBT(r) : " Chưa câu nào có mẫu."); return; }
 		BIENTHE = r.bienThe; capDoi();
-		e.className = "toDoiTT ok"; e.textContent = "✓ " + r.bienThe.length + " đề biến thể (" + r.mauCo + "/" + r.tong + " câu có mẫu" + (r.bo ? ", " + r.bo + " lượt sinh lỗi đã giữ câu gốc" : "") + ").";
+		e.className = "toDoiTT ok"; e.textContent = "✓ " + r.bienThe.length + " đề biến thể · " + r.doi + "/" + r.tong + " câu thật sự đổi số (có mẫu: " + r.mauCo + ")." + loiBT(r);
 	});
 	function nhanBienThe(ds, nguon) {
 		const goc = QB.tachEx(ds[0]).map(x => QB.loai(x.than));
@@ -10537,7 +10552,8 @@ function khoiDongThiOnline() {
 	function xuatExcel() {
 		const d = sapTK(), p = TK.phong || {};
 		const cot = ["STT", "Họ và tên", "Lớp", "Bắt đầu", "Kết thúc", "Thời gian", "Điểm", "Vi phạm"];
-		const hang = d.map((r, i) => [i + 1, r.hoTen, r.lop, lucRa(r.batDauLuc), lucRa(r.nopLuc), giayRa(r.giay), r.diem,
+		const soHoa = v => { const t = String(v == null ? "" : v).trim().replace(",", "."); return t !== "" && isFinite(+t) ? +t : v; };
+		const hang = d.map((r, i) => [i + 1, r.hoTen, soHoa(r.lop), lucRa(r.batDauLuc), lucRa(r.nopLuc), giayRa(r.giay), r.diem,
 			(r.tabRoi ? "rời tab " + r.tabRoi + " lần" : "") + (r.auto ? (r.tabRoi ? "; " : "") + "tự nộp" : "") || "—"]);
 		const o = (c, rI, v, st) => typeof v === "number"
 			? '<c r="' + c + rI + '" s="' + st + '"><v>' + v + "</v></c>"
@@ -11837,7 +11853,7 @@ async function thiChay(ma) {
 		let locTang = "";
 		function locKho() { document.querySelectorAll("#ttKhoDs .ttKhoDong").forEach(el => { el.style.display = (!locTang || el.dataset.cat === locTang) ? "" : "none"; }); }
 		// ---------- ② CẢ ĐỀ QUA GEMINI ----------
-		function nhacGem(ds) { return "VAI TRÒ: Bạn là chuyên gia Toán THPT Việt Nam hơn 20 năm ra đề, đồng thời giỏi lập trình. Hãy biến TỪNG CÂU HỎI LaTeX dưới đây thành MẪU THAM SỐ để sinh câu tương tự (chỉ thay số liệu, giữ nguyên dạng toán; đáp án phải tính lại CHÍNH XÁC bằng công thức).\n\nQUY TRÌNH (làm nháp trong đầu, không in ra): giải từng câu → xác định số liệu nào đổi được mà bài vẫn đẹp → viết công thức đáp án theo tham số → thử lại với số gốc phải ra đúng đáp án gốc.\n\nQUY TẮC:\n- Tham số đặt tên a, b, c, m, n, p, q, k (KHÔNG dùng d, e, x, y, z, i). Khoảng giá trị là số nguyên nhỏ hợp lý: \"a = 2..9\", \"b = 1..6 bước 1\", danh sách \"c = [2, 3, 5]\", tham số phụ thuộc \"m = a*b+1\".\n- Biểu thức chỉ dùng: + - * / ^ ( ), sqrt, abs, min, max, round(x,n), C(n,k), A(n,k), fact(n), sin, cos, tan, ln, log(a,b), pi; so sánh == != < > <= >= && ||.\n- deBai: giữ nguyên LaTeX của đề (KHÔNG gồm \\choice, \\choiceTF, \\shortans, \\loigiai); chỗ số liệu thay bằng {a}; chỗ cần tính thay bằng {=biểu thức}; số có dấu đứng sau phép toán viết {+b}. XỬ LÝ HÌNH TIKZ theo loại: (a) HÌNH HÌNH HỌC (toạ độ \\\\coordinate/\\\\draw/\\\\node/\\\\fill, như tam giác, tứ giác, nhà-góc, hồ bơi): thay MỌI số liệu trong toạ độ VÀ trong nhãn ($\\\\dots$ m, góc) bằng {a} hoặc {=biểu thức}, để hình tự vẽ lại khớp số mới — số hiển thị trong hình PHẢI khớp số trong đề. (b) BẢNG BIẾN THIÊN, ĐỒ THỊ (\\\\addplot, plot, axis, \\\\matrix, tkzTab), hoặc \\\\includegraphics: TUYỆT ĐỐI GIỮ NGUYÊN, KHÔNG đặt {a} vào trong các hình này (cấu trúc dấu/mũi tên/đường cong phụ thuộc bản chất hàm, đổi số sẽ sai). Nếu số BẮT BUỘC phải đổi lại nằm trong bảng biến thiên/đồ thị/ảnh thì trả {\"cau\": số, \"khongDoi\": true}.\n- Trắc nghiệm (tn): dapAn là biểu thức đáp án đúng; nhieu là 3 biểu thức phương án sai thường gặp (khác nhau, khác đáp án).\n- Đúng/Sai (ds): nhieu là ĐÚNG 4 dòng \"nội dung ý có {a} || điều kiện để ý đó Đúng\" (dùng 1 nếu luôn đúng, 0 nếu luôn sai).\n- Trả lời ngắn (tln): dapAn là biểu thức; đáp số ghi được tối đa 4 ký tự (kể cả dấu - và dấu phẩy) — chọn khoảng tham số phù hợp hoặc đặt lamTron (0, 1, 2 chữ số thập phân).\n- dieuKien: điều kiện để bài có nghĩa/đẹp (vd a != b), để trống nếu không cần.\n- loiGiai: lời giải ngắn có {a}, {=…} (tuỳ chọn).\n- goc: giá trị các tham số trong câu gốc; dapAnGoc: đáp án số của câu gốc (tn, tln).\n- Câu không đổi số được (lý thuyết, không có số liệu): trả {\"cau\": số, \"khongDoi\": true}.\n- dapAn và nhieu (tn, tln) viết biểu thức TRẦN, KHÔNG bọc {= }. Trong nhieu được dùng biến dapAn (vd round(dapAn + 1.25, 2)). Nếu đáp án là mệnh đề/LaTeX (không phải số) thì dapAn, nhieu viết LaTeX có $…$ và {a}.\n- Rẽ nhánh dùng neu(điều kiện, giá trị nếu đúng, giá trị nếu sai), KHÔNG dùng if/else kiểu Python.\n- JSON hợp lệ: mọi dấu \\ của LaTeX phải viết đôi \\\\ (vd \\\\dfrac, \\\\Leftrightarrow).\n\nĐỊNH DẠNG TRẢ VỀ: chỉ MỘT khối ```json chứa MẢNG, mỗi phần tử một câu, không viết gì ngoài khối:\n[{\"cau\":1,\"loai\":\"tn|ds|tln|tl\",\"thamSo\":[\"a = 2..9\"],\"dieuKien\":\"\",\"deBai\":\"...\",\"dapAn\":\"...\",\"nhieu\":[\"...\"],\"lamTron\":\"\",\"loiGiai\":\"\",\"goc\":{\"a\":3},\"dapAnGoc\":\"...\"}]\n\nCÁC CÂU HỎI:\n" + ds.map((x, i) => "### Câu " + (i + 1) + "\n" + x.raw.replace(/%\[[^\]]*\]/g, "")).join("\n\n"); }
+		function nhacGem(ds) { return "VAI TRÒ: Bạn là chuyên gia Toán THPT Việt Nam hơn 20 năm ra đề, đồng thời giỏi lập trình. Hãy biến TỪNG CÂU HỎI LaTeX dưới đây thành MẪU THAM SỐ để sinh câu tương tự (chỉ thay số liệu, giữ nguyên dạng toán; đáp án phải tính lại CHÍNH XÁC bằng công thức).\n\nQUY TRÌNH (làm nháp trong đầu, không in ra): giải từng câu → xác định số liệu nào đổi được mà bài vẫn đẹp → viết công thức đáp án theo tham số → thử lại với số gốc phải ra đúng đáp án gốc.\n\nQUY TẮC:\n- Tham số đặt tên a, b, c, m, n, p, q, k (KHÔNG dùng d, e, x, y, z, i). Khoảng giá trị là số nguyên nhỏ hợp lý: \"a = 2..9\", \"b = 1..6 bước 1\", danh sách \"c = [2, 3, 5]\", tham số phụ thuộc \"m = a*b+1\".\n- Biểu thức chỉ dùng: + - * / ^ ( ), sqrt, abs, min, max, round(x,n), C(n,k), A(n,k), fact(n), sin, cos, tan, ln, log(a,b), pi; so sánh == != < > <= >= && ||.\n- deBai: giữ nguyên LaTeX của đề (KHÔNG gồm \\choice, \\choiceTF, \\shortans, \\loigiai); chỗ số liệu thay bằng {a}; chỗ cần tính thay bằng {=biểu thức}; số có dấu đứng sau phép toán viết {+b}. XỬ LÝ HÌNH TIKZ theo loại: (a) HÌNH HÌNH HỌC (toạ độ \\\\coordinate/\\\\draw/\\\\node/\\\\fill, như tam giác, tứ giác, nhà-góc, hồ bơi): thay MỌI số liệu trong toạ độ VÀ trong nhãn ($\\\\dots$ m, góc) bằng {a} hoặc {=biểu thức}, để hình tự vẽ lại khớp số mới — số hiển thị trong hình PHẢI khớp số trong đề. (b) BẢNG BIẾN THIÊN, ĐỒ THỊ (\\\\addplot, plot, axis, \\\\matrix, tkzTab), hoặc \\\\includegraphics: TUYỆT ĐỐI GIỮ NGUYÊN, KHÔNG đặt {a} vào trong các hình này (cấu trúc dấu/mũi tên/đường cong phụ thuộc bản chất hàm, đổi số sẽ sai). Nếu số BẮT BUỘC phải đổi lại nằm trong bảng biến thiên/đồ thị/ảnh thì trả {\"cau\": số, \"khongDoi\": true}.\n- Trắc nghiệm (tn): dapAn là biểu thức đáp án đúng; nhieu PHẢI đủ 3 biểu thức phương án sai thường gặp, khác nhau và khác đáp án với mọi bộ tham số (thiếu 1 phương án là câu bị loại).\n- Đúng/Sai (ds): nhieu là ĐÚNG 4 dòng \"nội dung ý có {a} || điều kiện để ý đó Đúng\" (dùng 1 nếu luôn đúng, 0 nếu luôn sai).\n- Trả lời ngắn (tln): dapAn là biểu thức. BẮT BUỘC: với MỌI bộ tham số trong khoảng đã khai, đáp số sau làm tròn phải ghi được TỐI ĐA 4 ký tự (kể cả dấu - và dấu phẩy) và KHÔNG được là phân số. Hãy tự thử 3 bộ tham số bất kỳ trong khoảng; nếu có bộ nào vượt 4 ký tự hoặc ra phân số thì PHẢI thu hẹp khoảng tham số, hoặc đặt lamTron (0, 1 hoặc 2), cho tới khi mọi bộ đều đạt. Nếu đáp án không phải số nguyên thì LUÔN điền lamTron. Câu nào không thể đạt điều kiện này thì trả khongDoi: true.\n- dieuKien: điều kiện để bài có nghĩa/đẹp (vd a != b), để trống nếu không cần.\n- loiGiai: lời giải ngắn có {a}, {=…} (tuỳ chọn).\n- goc: giá trị các tham số trong câu gốc; dapAnGoc: đáp án số của câu gốc (tn, tln).\n- Câu không đổi số được (lý thuyết, không có số liệu): trả {\"cau\": số, \"khongDoi\": true}.\n- dapAn và nhieu (tn, tln) viết biểu thức TRẦN, KHÔNG bọc {= }. Trong nhieu được dùng biến dapAn (vd round(dapAn + 1.25, 2)). Nếu đáp án là mệnh đề/LaTeX (không phải số) thì dapAn, nhieu viết LaTeX có $…$ và {a}.\n- Rẽ nhánh dùng neu(điều kiện, giá trị nếu đúng, giá trị nếu sai), KHÔNG dùng if/else kiểu Python.\n- JSON hợp lệ: mọi dấu \\ của LaTeX phải viết đôi \\\\ (vd \\\\dfrac, \\\\Leftrightarrow).\n\nĐỊNH DẠNG TRẢ VỀ: chỉ MỘT khối ```json chứa MẢNG, mỗi phần tử một câu, không viết gì ngoài khối:\n[{\"cau\":1,\"loai\":\"tn|ds|tln|tl\",\"thamSo\":[\"a = 2..9\"],\"dieuKien\":\"\",\"deBai\":\"...\",\"dapAn\":\"...\",\"nhieu\":[\"...\"],\"lamTron\":\"\",\"loiGiai\":\"\",\"goc\":{\"a\":3},\"dapAnGoc\":\"...\"}]\n\nCÁC CÂU HỎI:\n" + ds.map((x, i) => "### Câu " + (i + 1) + "\n" + x.raw.replace(/%\[[^\]]*\]/g, "")).join("\n\n"); }
 		function suaJSON(t) { let r = "", trong = false; for (let k = 0; k < t.length; k++) { const c = t[k]; if (!trong) { if (c === '"') trong = true; if (c === "," && /^\s*[\]}]/.test(t.slice(k + 1))) continue; r += c; continue; } if (c === '"') { trong = false; r += c; continue; } if (c === "\n") { r += "\\n"; continue; } if (c === "\r") continue; if (c === "\t") { r += "\\t"; continue; } if (c !== "\\") { r += c; continue; } const n = t[k + 1] || "", n2 = t[k + 2] || ""; if (n === "\\" || n === '"' || n === "/") { r += c + n; k++; continue; } if (n === "u" && /^[0-9a-fA-F]{4}$/.test(t.substr(k + 2, 4))) { r += c; continue; } if ("bfnrt".includes(n) && !/[a-z]/.test(n2)) { r += c; continue; } r += "\\\\"; } return r; }
 		function docJSON(t) { t = String(t || "").replace(/^\uFEFF/, ""); const m = t.match(/```(?:json|JSON)?\s*([\s\S]*?)```/); if (m) t = m[1]; const a = t.indexOf("["), b = t.lastIndexOf("]"); if (a < 0 || b < a) throw new Error("không thấy mảng JSON [ … ]"); t = t.slice(a, b + 1); try { return JSON.parse(t); } catch (e) { try { return JSON.parse(suaJSON(t)); } catch (e2) { throw new Error(e.message); } } }
 		const boBoc = x => { x = String(x == null ? "" : x).trim(); const m = x.match(/^\{=([\s\S]*)\}$/); if (m) { let d = 0; for (const c of m[1]) { if (c === "{") d++; else if (c === "}" && --d < 0) return x; } if (d === 0) return m[1].trim(); } return x; };
