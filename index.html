@@ -1238,6 +1238,10 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 #tabThiOnline .toTT.cho{background:rgba(245,179,1,.14);color:var(--vang,#f5b301)}
 #tabThiOnline .toPhongNut{display:flex;gap:7px}
 #tabThiOnline .toXoa{color:var(--do,#ff6b6b)!important}
+#tabThiOnline .toKQ{margin-top:12px;padding:12px 15px;border-radius:12px;font-size:13.5px;font-weight:600;line-height:1.5;word-break:break-all}
+#tabThiOnline .toKQ[hidden]{display:none}
+#tabThiOnline .toKQ.ok{background:rgba(47,207,143,.14);border:1px solid rgba(47,207,143,.4);color:var(--luc,#2fcf8f)}
+#tabThiOnline .toKQ.loi{background:rgba(255,107,107,.12);border:1px solid rgba(255,107,107,.4);color:var(--do,#ff6b6b)}
 
 /* ===== Gán ID ===== */
 .giThan { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 16px; align-items: start; } @media (max-width: 1000px) { .giThan { grid-template-columns: 1fr; } }
@@ -2679,7 +2683,7 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 		<header class="mdDau">
 			<div class="mdDauTen">
 				<span class="mdDauIco toIco" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5"/><path d="m9 15 2 2 4-4"/></svg></span>
-				<div><h2>Thi Online <span style="font-size:11px;font-weight:700;color:var(--luc,#2fcf8f);background:rgba(47,207,143,.14);padding:2px 9px;border-radius:99px;vertical-align:middle">b1.2</span></h2><p>Tạo phòng thi từ đề của anh → phát hành <b>link / mã QR</b> cho HS làm → chấm tự động. Dữ liệu lưu trên Firebase của anh.</p></div>
+				<div><h2>Thi Online <span style="font-size:11px;font-weight:700;color:var(--luc,#2fcf8f);background:rgba(47,207,143,.14);padding:2px 9px;border-radius:99px;vertical-align:middle">b1.3</span></h2><p>Tạo phòng thi từ đề của anh → phát hành <b>link / mã QR</b> cho HS làm → chấm tự động. Dữ liệu lưu trên Firebase của anh.</p></div>
 			</div>
 			<div class="mdDauNut"><button class="vt3NutChinh nho" type="button" id="toTao">+ Tạo phòng thi</button></div>
 		</header>
@@ -2715,6 +2719,7 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 			<label class="toF toFull" style="margin-top:14px"><span class="mdNhan">Nội dung đề — dán các câu <code>\begin{ex}…\end{ex}</code> (mỗi khối một câu)</span>
 				<textarea class="mdO" id="toDe" rows="7" spellcheck="false" placeholder="Dán đề từ Giỏ đề / Tạo đề, hoặc lấy từ Ngân hàng."></textarea></label>
 			<div class="toFormDay"><span class="vdGhi" id="toDem">0 câu</span><button class="gtBatDau" type="button" id="toPhat">✦ Phát hành phòng thi</button></div>
+			<div class="toKQ" id="toKQ" hidden></div>
 		</section>
 
 		<!-- DANH SÁCH PHÒNG -->
@@ -9899,7 +9904,8 @@ function khoiDongThiOnline() {
 	}
 	khoiDongThiOnline.da = true;
 	const $t = id => document.getElementById(id);
-	const nhac = (m) => (typeof toast === "function" ? toast(m) : alert(m));
+	const bang = (m, loai) => { const e = $t("toKQ"); if (e) { e.hidden = false; e.textContent = m; e.className = "toKQ " + (loai || ""); } };
+	const nhac = (m, loai) => { bang(m, loai); if (typeof toast === "function") { try { toast(m); } catch (e) { } } };
 	const esc2 = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
 	// đếm câu khi dán đề
@@ -9923,12 +9929,13 @@ function khoiDongThiOnline() {
 	// phát hành phòng
 	$t("toPhat").addEventListener("click", async () => {
 		const tenDe = $t("toTen").value.trim();
-		if (!tenDe) { nhac("Chưa nhập tên đề thi"); return; }
+		if (!tenDe) { nhac("⚠ Chưa nhập Tên đề thi", "loi"); $t("toTen").focus(); return; }
 		const deRaw = $t("toDe").value.trim();
 		const soCau = demCau(deRaw);
-		if (!soCau) { nhac("Đề chưa có câu hỏi (\\begin{ex}…\\end{ex})"); return; }
+		if (!soCau) { nhac("⚠ Đề chưa có câu hỏi \\begin{ex}…\\end{ex}", "loi"); return; }
 		const u = K.taiKhoan && K.taiKhoan();
-		if (!u) { nhac("Chưa đăng nhập"); return; }
+		if (!u) { nhac("⚠ Chưa đăng nhập Google — không lưu được", "loi"); return; }
+		bang("⏳ Đang lưu lên Firebase…", "");
 		const b = $t("toPhat"); b.disabled = true; const nhanCu = b.textContent; b.textContent = "Đang phát hành…";
 		try {
 			const ma = maNgauNhien();
@@ -9941,11 +9948,12 @@ function khoiDongThiOnline() {
 				chongGian: { tronCau: $t("toTronC").checked, tronDapAn: $t("toTronD").checked, doiSo: $t("toDoiSo").checked, khoaTab: $t("toKhoa").checked },
 				deRaw, soCau, trangThai: "mo", soHS: 0, createdAt: K.serverTimestamp()
 			});
-			$t("toForm").hidden = true;
 			["toTen", "toLop", "toDe"].forEach(id => $t(id).value = ""); $t("toDem").textContent = "0 câu";
-			nhac("Đã phát hành phòng thi · mã " + ma);
+			nhac("✓ Đã phát hành · mã " + ma + " · link: " + linkCua(ma), "ok");
+			setTimeout(() => { $t("toForm").hidden = true; }, 2500);
 		} catch (e) {
-			nhac("Lỗi lưu: " + (e.code || e.message || e));
+			console.error("ThiOnline phát hành lỗi:", e);
+			nhac("✕ Lỗi lưu Firebase: " + (e.code || e.message || e) + " — kiểm tra Rules collection phongThi", "loi");
 		} finally { b.disabled = false; b.textContent = nhanCu; }
 	});
 
