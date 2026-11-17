@@ -2090,6 +2090,29 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 			</div>
 		</details>
 
+		<section class="nhieuFile" aria-label="Chuẩn hoá nhiều file">
+			<style>
+				.nhieuFile{margin:12px 0;padding:12px 14px;border:1px dashed var(--vien,#c9d2e0);border-radius:12px}
+				.nhieuFile .nfDau{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;justify-content:space-between}
+				.nhieuFile .nfDau span{font-size:13px;opacity:.8}
+				.nhieuFile .nfNut{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+				.nhieuFile .nfDs{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:6px}
+				.nhieuFile .nfDong{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:7px 10px;border-radius:9px;background:rgba(127,127,127,.08)}
+				.nhieuFile .nfDong .ma{font-weight:700;margin-right:auto;word-break:break-all}
+				.nhieuFile .nfNut2{display:flex;gap:6px}
+			</style>
+			<div class="nfDau">
+				<b>Chuẩn hoá nhiều file</b>
+				<span>Chọn nhiều file .tex một lần: web chuẩn hoá từng file và cho tải về bản .tex đã chuẩn hoá.</span>
+			</div>
+			<div class="nfNut">
+				<button class="nut" id="nutNapNhieu" type="button">📂 Chọn nhiều file .tex</button>
+				<button class="nut chinh" id="nutTaiHet" type="button" hidden>⬇ Tải tất cả (.zip)</button>
+				<input type="file" id="chuanNap" accept=".tex,.txt" multiple hidden>
+			</div>
+			<ul class="nfDs" id="nfDs"></ul>
+		</section>
+
 		<section class="haiKhung">
 			<div class="oCode">
 				<div class="dauO">
@@ -3937,6 +3960,99 @@ async function chay() {
 	// đếm lượt dùng (không lưu nội dung code)
 	updateDoc(doc(db, "nguoiDung", auth.currentUser.uid), { luotDung: increment(1), lanCuoi: serverTimestamp() }).catch(() => {});
 }
+// ---- Chuẩn hoá nhiều file .tex một lần ----
+let nfKq = [];
+function layTuyChonChuan() {
+	const t = {};
+	O_TT.forEach(k => t[k] = $(k).value.trim());
+	O_CHON.forEach(k => t[k] = $(k).checked);
+	t.cheDoMau = $("cheDoMau").value;
+	return t;
+}
+function taiTep(ten, noi) {
+	const url = URL.createObjectURL(new Blob(["﻿" + noi], { type: "text/plain;charset=utf-8" }));
+	const a = document.createElement("a");
+	a.href = url; a.download = ten;
+	document.body.appendChild(a); a.click(); a.remove();
+	setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+function tenTexChuan(ten) { return ten.replace(/\.(tex|txt)$/i, "") + "_chuanhoa.tex"; }
+function veNf() {
+	const ds = $("nfDs"), co = nfKq.filter(x => !x.loi).length;
+	$("nutTaiHet").hidden = co < 2;
+	ds.innerHTML = nfKq.map((it, i) =>
+		'<li class="nfDong"><span class="ma">' + esc(it.ten) + '</span>' +
+		(it.loi ? '<span class="the canh">' + esc(it.loi) + '</span>' :
+			'<span class="the sua">Đã tự sửa ' + it.sua + ' chỗ</span>' +
+			(it.canh ? '<span class="the canh">' + it.canh + ' chỗ cần sửa tay</span>' : '<span class="the on">Không còn chỗ cần sửa tay</span>')) +
+		'<span class="nfNut2"><button class="nut" type="button" data-xem="' + i + '">Xem</button>' +
+		(it.loi ? '' : '<button class="nut chinh" type="button" data-tai="' + i + '">⬇ Tải .tex</button>') + '</span></li>').join("")
+		|| '<li class="trong">Chưa nạp file nào.</li>';
+}
+$("nutNapNhieu").addEventListener("click", () => $("chuanNap").click());
+$("chuanNap").addEventListener("change", async e => {
+	const files = Array.from(e.target.files || []);
+	e.target.value = "";
+	if (!files.length) return;
+	if (!boMay) { hien("Bộ luật chưa sẵn sàng"); return; }
+	const tuyChon = layTuyChonChuan();
+	nfKq = [];
+	$("nfDs").innerHTML = '<li class="trong">Đang chuẩn hoá ' + files.length + ' file…</li>';
+	for (const f of files) {
+		const it = { ten: f.name, goc: "", ketQua: "", canh: 0, sua: 0, loi: "", r: null };
+		try {
+			it.goc = await f.text();
+			it.r = boMay.chuanHoa(it.goc, tuyChon);
+			it.ketQua = it.r.ketQua;
+			it.canh = it.r.canhBao.length;
+			it.sua = it.r.nhatKi.reduce((a, x) => a + x.n, 0);
+		} catch (err) {
+			it.loi = "Máy gặp lỗi khi đọc file này";
+		}
+		nfKq.push(it);
+		veNf();
+		await new Promise(r => setTimeout(r, 0));
+	}
+	hien("Đã chuẩn hoá " + nfKq.length + " file");
+});
+$("nfDs").addEventListener("click", async e => {
+	const xem = e.target.closest("button[data-xem]"), tai = e.target.closest("button[data-tai]");
+	if (xem) {
+		const it = nfKq[+xem.dataset.xem];
+		$("vao").value = it.goc;
+		$("ra").value = it.ketQua;
+		$("demVao").textContent = dem(it.goc);
+		$("demRa").textContent = dem(it.ketQua);
+		veBaoCao(it.r);
+		$("kiemRa").innerHTML = "";
+		$("tabChuan").scrollIntoView({ behavior: "smooth", block: "start" });
+	}
+	if (tai) {
+		const it = nfKq[+tai.dataset.tai];
+		taiTep(tenTexChuan(it.ten), it.ketQua);
+	}
+});
+$("nutTaiHet").addEventListener("click", async () => {
+	const ds = nfKq.filter(x => !x.loi);
+	if (!ds.length) return;
+	try {
+		if (!window.JSZip) await new Promise((ok, loi) => { const s = document.createElement("script"); s.src = "https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"; s.onload = ok; s.onerror = loi; document.head.appendChild(s); });
+		const z = new window.JSZip(), da = new Map();
+		ds.forEach(it => {
+			let ten = tenTexChuan(it.ten), n = da.get(ten) || 0;
+			da.set(ten, n + 1);
+			if (n) ten = ten.replace(/\.tex$/, "_" + (n + 1) + ".tex");
+			z.file(ten, "﻿" + it.ketQua);
+		});
+		const blob = await z.generateAsync({ type: "blob" });
+		const url = URL.createObjectURL(blob), a = document.createElement("a");
+		a.href = url; a.download = "chuanhoa_" + ds.length + "_file.zip";
+		document.body.appendChild(a); a.click(); a.remove();
+		setTimeout(() => URL.revokeObjectURL(url), 1500);
+	} catch (err) {
+		hien("Không tạo được file zip, hãy tải từng file");
+	}
+});
 function veBaoCao(r) {
 	const tong = r.nhatKi.reduce((a, e) => a + e.n, 0);
 	const nhom = new Map();
