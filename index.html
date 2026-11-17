@@ -2103,11 +2103,12 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 			</style>
 			<div class="nfDau">
 				<b>Chuẩn hoá nhiều file</b>
-				<span>Chọn nhiều file .tex một lần: web chuẩn hoá từng file và cho tải về bản .tex đã chuẩn hoá.</span>
+				<span>Chọn nhiều file .tex một lần: web chuẩn hoá từng file, render thử lần lượt mọi hình TikZ (hình bị chuẩn hoá làm hỏng tự trả về code gốc) rồi cho tải về.</span>
 			</div>
 			<div class="nfNut">
 				<button class="nut" id="nutNapNhieu" type="button">📂 Chọn nhiều file .tex</button>
 				<button class="nut chinh" id="nutTaiHet" type="button" hidden>⬇ Tải tất cả (.zip)</button>
+				<button class="nut" id="nutDungNf" type="button" hidden>⏹ Dừng kiểm hình</button>
 				<input type="file" id="chuanNap" accept=".tex,.txt" multiple hidden>
 			</div>
 			<ul class="nfDs" id="nfDs"></ul>
@@ -3894,40 +3895,62 @@ async function veThuHinh(h) {
 	} catch (e) { return String(e.message || e).slice(0, 160); }
 }
 async function chayLuongCH(ds, n, f) { let k = 0; await Promise.all(Array.from({ length: Math.min(n, ds.length) }, async () => { while (k < ds.length) { const i = k++; await f(ds[i], i); } })); }
+// Nhớ kết quả render theo code hình (trong phiên) — hình trùng nhau giữa các file chỉ vẽ 1 lần. Không nhớ lỗi quá giờ.
+const nhoVe = new Map();
+async function veThuNho(h) {
+	if (nhoVe.has(h)) return nhoVe.get(h);
+	const r = await veThuHinh(h);
+	if (!/^quá \d+ giây/.test(r)) { if (nhoVe.size > 3000) nhoVe.clear(); nhoVe.set(h, r); }
+	return r;
+}
+// Lõi kiểm hình (dùng chung 1 file / nhiều file): render từng hình của `ra`; hình lỗi → thử code gốc cùng vị trí, vẽ được thì thay vào.
+// Trả { moi, ket, tong } hoặc null nếu bị dừng.
+async function kiemHinhLoi(goc, ra, o = {}) {
+	const src = ra || goc, hinh = [...src.matchAll(RE_HINH)], tien = o.tien || (() => {}), dung = o.dung || (() => false);
+	const loi = new Array(hinh.length).fill(""); let xong = 0;
+	await chayLuongCH(hinh.map((_, i) => i), o.song || 1, async i => { if (dung()) return; loi[i] = await veThuNho(hinh[i][0]); tien("ve", ++xong, hinh.length); });
+	if (dung()) return null;
+	const hong = loi.map((t, i) => t ? i : -1).filter(i => i >= 0), ket = [];
+	let moi = ra;
+	if (ra && hong.length) {
+		const hinhGoc = [...goc.matchAll(RE_HINH)], khop = hinhGoc.length === hinh.length;
+		for (const i of hong.slice().reverse()) {            // thay từ cuối lên để không lệch vị trí
+			let tra = "khongKhop";
+			if (khop) {
+				if (hinhGoc[i][0] === hinh[i][0]) tra = "gocLoi";   // chuẩn hoá không đổi hình này → lỗi có sẵn từ gốc
+				else { if (dung()) return null; tien("goc", i + 1);
+					if (!(await veThuNho(hinhGoc[i][0]))) { moi = moi.slice(0, hinh[i].index) + hinhGoc[i][0] + moi.slice(hinh[i].index + hinh[i][0].length); tra = "goc"; } else tra = "gocLoi"; }
+			}
+			ket.unshift({ i, txt: loi[i], tra });
+		}
+	} else hong.forEach(i => ket.push({ i, txt: loi[i], tra: "" }));
+	const cuoi = moi || src, vt = [...cuoi.matchAll(RE_HINH)];
+	ket.forEach(k => { const m = vt[k.i]; if (!m) return; k.dong = cuoi.slice(0, m.index).split("\n").length; k.a = m.index; k.b = m.index + m[0].length;
+		k.mo = (m[0].split("\n").find(l => /\\(draw|fill|filldraw|coordinate|path|node|foreach|tkz[A-Za-z]*|clip)\b/.test(l)) || "").trim().slice(0, 80); });
+	return { moi, ket, tong: hinh.length };
+}
+function htmlKiem(r) {
+	const ket = r.ket, daTra = ket.filter(k => k.tra === "goc").length, conLoi = ket.length - daTra;
+	const dong = k => k.dong ? '<button class="dong" type="button" data-a="' + k.a + '" data-b="' + k.b + '">dòng ' + k.dong + "</button>" : "";
+	const moTa = k => k.tra === "goc" ? "<b>đã tự trả về code gốc</b> (code gốc vẽ được)" : k.tra === "gocLoi" ? "cả code gốc cũng không vẽ được — " + esc(k.txt) : k.tra === "khongKhop" ? "không tự trả về được (số hình trước/sau chuẩn hoá khác nhau) — " + esc(k.txt) : esc(k.txt);
+	if (!r.tong) return '<span class="the on">Không có hình TikZ nào để kiểm.</span>';
+	return (!ket.length ? '<span class="the on">✓ ' + r.tong + " hình TikZ đều vẽ được — chuẩn hoá không làm hỏng hình.</span>"
+		: (conLoi ? '<span class="the canh">⚠ ' + conLoi + "/" + r.tong + " hình chưa vẽ được" + (daTra ? " · " + daTra + " hình đã tự trả về code gốc" : "") + "</span>"
+			: '<span class="the on">✓ ' + r.tong + " hình đều vẽ được · " + daTra + " hình bị chuẩn hoá làm lỗi đã tự trả về code gốc</span>")
+		+ '<ul class="ds kiemDs">' + ket.map(k => '<li><span class="ma">Hình #' + (k.i + 1) + "</span>" + dong(k) + "<span>" + moTa(k) + (k.mo ? ' <code class="moHinh">' + esc(k.mo) + "</code>" : "") + "</span></li>").join("") + "</ul>");
+}
 let dangKiem = false;
 async function kiemRenderChuan() {
 	if (dangKiem) return;
 	const box = $("kiemRa"), goc = $("vao").value, ra = $("ra").value, src = ra || goc;
 	if (!src.trim()) { box.innerHTML = '<span class="the">Chưa có code để kiểm.</span>'; return; }
 	if (!boMay || typeof boMay.veTikz !== "function") { box.innerHTML = '<span class="the canh">Bộ render hình chưa sẵn sàng.</span>'; return; }
-	const hinh = [...src.matchAll(RE_HINH)];
-	if (!hinh.length) { box.innerHTML = '<span class="the on">Không có hình TikZ nào để kiểm.</span>'; return; }
+	if (!/\\begin\{tikzpicture\}/.test(src)) { box.innerHTML = '<span class="the on">Không có hình TikZ nào để kiểm.</span>'; return; }
 	dangKiem = true; const btn = $("nutKiem"), lab = btn.textContent; btn.disabled = true; btn.textContent = "⏳ Đang render…";
 	try {
-		const loi = new Array(hinh.length).fill(""); let xong = 0;
-		await chayLuongCH(hinh.map((_, i) => i), 3, async i => { loi[i] = await veThuHinh(hinh[i][0]); box.innerHTML = '<span class="the">⏳ Đang render thử ' + (++xong) + "/" + hinh.length + " hình…</span>"; });
-		const hong = loi.map((t, i) => t ? i : -1).filter(i => i >= 0), ket = [];
-		let moi = ra;
-		if (ra && hong.length) {
-			const hinhGoc = [...goc.matchAll(RE_HINH)], khop = hinhGoc.length === hinh.length;
-			for (const i of hong.slice().reverse()) {            // thay từ cuối lên để không lệch vị trí
-				let tra = "khongKhop";
-				if (khop) { box.innerHTML = '<span class="the">⏳ Thử lại hình #' + (i + 1) + " bằng code gốc…</span>";
-					if (!(await veThuHinh(hinhGoc[i][0]))) { moi = moi.slice(0, hinh[i].index) + hinhGoc[i][0] + moi.slice(hinh[i].index + hinh[i][0].length); tra = "goc"; } else tra = "gocLoi"; }
-				ket.unshift({ i, txt: loi[i], tra });
-			}
-			if (moi !== ra) { $("ra").value = moi; $("demRa").textContent = dem(moi); }
-		} else hong.forEach(i => ket.push({ i, txt: loi[i], tra: "" }));
-		const cuoi = $("ra").value || src, vt = [...cuoi.matchAll(RE_HINH)];
-		ket.forEach(k => { const m = vt[k.i]; if (!m) return; k.dong = cuoi.slice(0, m.index).split("\n").length; k.a = m.index; k.b = m.index + m[0].length;
-			k.mo = (m[0].split("\n").find(l => /\\(draw|fill|filldraw|coordinate|path|node|foreach|tkz[A-Za-z]*|clip)\b/.test(l)) || "").trim().slice(0, 80); });
-		const daTra = ket.filter(k => k.tra === "goc").length, conLoi = ket.length - daTra;
-		const dong = k => k.dong ? '<button class="dong" type="button" data-a="' + k.a + '" data-b="' + k.b + '">dòng ' + k.dong + "</button>" : "";
-		const moTa = k => k.tra === "goc" ? "<b>đã tự trả về code gốc</b> (code gốc vẽ được)" : k.tra === "gocLoi" ? "cả code gốc cũng không vẽ được — " + esc(k.txt) : k.tra === "khongKhop" ? "không tự trả về được (số hình trước/sau chuẩn hoá khác nhau) — " + esc(k.txt) : esc(k.txt);
-		box.innerHTML = (!ket.length ? '<span class="the on">✓ ' + hinh.length + " hình TikZ đều vẽ được — chuẩn hoá không làm hỏng hình.</span>"
-			: (conLoi ? '<span class="the canh">⚠ ' + conLoi + "/" + hinh.length + " hình chưa vẽ được" + (daTra ? " · " + daTra + " hình đã tự trả về code gốc" : "") + "</span>"
-				: '<span class="the on">✓ ' + hinh.length + " hình đều vẽ được · " + daTra + " hình bị chuẩn hoá làm lỗi đã tự trả về code gốc</span>")
-			+ '<ul class="ds kiemDs">' + ket.map(k => '<li><span class="ma">Hình #' + (k.i + 1) + "</span>" + dong(k) + "<span>" + moTa(k) + (k.mo ? ' <code class="moHinh">' + esc(k.mo) + "</code>" : "") + "</span></li>").join("") + "</ul>");
+		const r = await kiemHinhLoi(goc, ra, { song: 3, tien: (k, a, b) => box.innerHTML = '<span class="the">⏳ ' + (k === "ve" ? "Đang render thử " + a + "/" + b + " hình…" : "Thử lại hình #" + a + " bằng code gốc…") + "</span>" });
+		if (ra && r.moi !== ra) { $("ra").value = r.moi; $("demRa").textContent = dem(r.moi); }
+		box.innerHTML = htmlKiem(r);
 	} finally { dangKiem = false; btn.disabled = false; btn.textContent = lab; }
 }
 // bấm "dòng N" → nhảy tới và bôi đen cả hình trong ô kết quả
@@ -3977,6 +4000,14 @@ function taiTep(ten, noi) {
 	setTimeout(() => URL.revokeObjectURL(url), 1500);
 }
 function tenTexChuan(ten) { return ten.replace(/\.(tex|txt)$/i, "") + "_chuanhoa.tex"; }
+function theKiemNf(it) {
+	if (it.kiemTt) return '<span class="the">' + esc(it.kiemTt) + "</span>";
+	const k = it.kiem; if (!k) return "";
+	if (!k.tong) return '<span class="the on">Không có hình TikZ</span>';
+	const tra = k.ket.filter(x => x.tra === "goc").length, con = k.ket.length - tra;
+	return (con ? '<span class="the canh">⚠ ' + con + "/" + k.tong + " hình không vẽ được</span>" : '<span class="the on">✓ ' + k.tong + " hình vẽ được</span>")
+		+ (tra ? '<span class="the sua">' + tra + " hình đã tự trả về code gốc</span>" : "");
+}
 function veNf() {
 	const ds = $("nfDs"), co = nfKq.filter(x => !x.loi).length;
 	$("nutTaiHet").hidden = co < 2;
@@ -3984,12 +4015,33 @@ function veNf() {
 		'<li class="nfDong"><span class="ma">' + esc(it.ten) + '</span>' +
 		(it.loi ? '<span class="the canh">' + esc(it.loi) + '</span>' :
 			'<span class="the sua">Đã tự sửa ' + it.sua + ' chỗ</span>' +
-			(it.canh ? '<span class="the canh">' + it.canh + ' chỗ cần sửa tay</span>' : '<span class="the on">Không còn chỗ cần sửa tay</span>')) +
+			(it.canh ? '<span class="the canh">' + it.canh + ' chỗ cần sửa tay</span>' : '<span class="the on">Không còn chỗ cần sửa tay</span>') + theKiemNf(it)) +
 		'<span class="nfNut2"><button class="nut" type="button" data-xem="' + i + '">Xem</button>' +
 		(it.loi ? '' : '<button class="nut chinh" type="button" data-tai="' + i + '">⬇ Tải .tex</button>') + '</span></li>').join("")
 		|| '<li class="trong">Chưa nạp file nào.</li>';
 }
-$("nutNapNhieu").addEventListener("click", () => $("chuanNap").click());
+let nfDangKiem = false, nfDung = false;
+async function kiemHinhNhieu() {
+	const ds = nfKq.filter(it => !it.loi && /\\begin\{tikzpicture\}/.test(it.ketQua));
+	nfKq.forEach(it => { if (!it.loi && !ds.includes(it)) it.kiem = { moi: it.ketQua, ket: [], tong: 0 }; });
+	if (!ds.length) { veNf(); return; }
+	if (!boMay || typeof boMay.veTikz !== "function") { ds.forEach(it => it.kiemTt = "Bộ render hình chưa sẵn sàng, chưa kiểm hình"); veNf(); return; }
+	nfDangKiem = true; nfDung = false; $("nutDungNf").hidden = false; $("nutTaiHet").disabled = true;
+	ds.forEach(it => it.kiemTt = "Chờ kiểm hình…"); veNf();
+	try {
+		for (let f = 0; f < ds.length; f++) {
+			const it = ds[f];
+			if (nfDung) { it.kiemTt = "Đã dừng, chưa kiểm hình"; continue; }
+			it.kiemTt = "⏳ File " + (f + 1) + "/" + ds.length + " · đang render…"; veNf();
+			const r = await kiemHinhLoi(it.goc, it.ketQua, { song: 1, dung: () => nfDung,
+				tien: (k, a, b) => { it.kiemTt = "⏳ File " + (f + 1) + "/" + ds.length + (k === "ve" ? " · đã render " + a + "/" + b + " hình" : " · thử code gốc hình #" + a); veNf(); } });
+			if (!r) { it.kiemTt = "Đã dừng, chưa kiểm hình"; veNf(); continue; }
+			it.ketQua = r.moi; it.kiem = r; it.kiemTt = ""; veNf();
+		}
+	} finally { nfDangKiem = false; $("nutDungNf").hidden = true; $("nutTaiHet").disabled = false; veNf(); }
+}
+$("nutDungNf").addEventListener("click", () => { nfDung = true; $("nutDungNf").hidden = true; hien("Đang dừng sau hình hiện tại…"); });
+$("nutNapNhieu").addEventListener("click", () => { if (nfDangKiem) { hien("Đang kiểm hình, bấm Dừng trước khi nạp lô mới"); return; } $("chuanNap").click(); });
 $("chuanNap").addEventListener("change", async e => {
 	const files = Array.from(e.target.files || []);
 	e.target.value = "";
@@ -4013,7 +4065,11 @@ $("chuanNap").addEventListener("change", async e => {
 		veNf();
 		await new Promise(r => setTimeout(r, 0));
 	}
-	hien("Đã chuẩn hoá " + nfKq.length + " file");
+	hien("Đã chuẩn hoá " + nfKq.length + " file · đang render kiểm hình từng file…");
+	await kiemHinhNhieu();
+	const tra = nfKq.reduce((a, it) => a + (it.kiem ? it.kiem.ket.filter(x => x.tra === "goc").length : 0), 0),
+		hong = nfKq.reduce((a, it) => a + (it.kiem ? it.kiem.ket.filter(x => x.tra !== "goc").length : 0), 0);
+	hien("Đã chuẩn hoá " + nfKq.length + " file" + (tra ? " · " + tra + " hình đã trả về code gốc" : "") + (hong ? " · " + hong + " hình không vẽ được" : " · mọi hình đều vẽ được"));
 });
 $("nfDs").addEventListener("click", async e => {
 	const xem = e.target.closest("button[data-xem]"), tai = e.target.closest("button[data-tai]");
@@ -4024,7 +4080,7 @@ $("nfDs").addEventListener("click", async e => {
 		$("demVao").textContent = dem(it.goc);
 		$("demRa").textContent = dem(it.ketQua);
 		veBaoCao(it.r);
-		$("kiemRa").innerHTML = "";
+		$("kiemRa").innerHTML = it.kiem ? htmlKiem(it.kiem) : (it.kiemTt ? '<span class="the">' + esc(it.kiemTt) + "</span>" : "");
 		$("tabChuan").scrollIntoView({ behavior: "smooth", block: "start" });
 	}
 	if (tai) {
