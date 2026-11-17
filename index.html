@@ -8,6 +8,13 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&family=Noto+Serif:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Archivo+Black&display=swap">
 <link rel="stylesheet" href="style.css">
 <style>
+#kiemRa .kiemDs{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+#kiemRa .kiemDs li{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;font-size:13px;line-height:1.5}
+#kiemRa .kiemDs .ma{font-family:ui-monospace,monospace;font-weight:700;color:#ff8f8f;flex:none}
+#kiemRa .dong{flex:none;font:600 12px ui-monospace,monospace;padding:3px 9px;border-radius:7px;border:1px solid rgba(245,179,1,.4);background:rgba(245,179,1,.12);color:#f5b301;cursor:pointer}
+#kiemRa .dong:hover{background:rgba(245,179,1,.25)}
+#kiemRa .moHinh{font-size:11.5px;opacity:.75;word-break:break-all}
+
 .tabChinh { display: flex; gap: 2px; margin-top: 16px; border-bottom: 1px solid var(--vien); overflow-x: auto; scrollbar-width: none; }
 .tabChinh::-webkit-scrollbar { display: none; }
 .tabChinh button { font: inherit; font-size: 14px; font-weight: 600; background: none; border: 0; border-bottom: 3px solid transparent; color: var(--phu); padding: 10px 16px 9px; cursor: pointer; white-space: nowrap; display: flex; gap: 8px; align-items: center; }
@@ -2960,7 +2967,7 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 		<header class="mdDau">
 			<div class="mdDauTen">
 				<span class="mdDauIco toIco" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.9 5.7 3.9 9s-1.4 6.4-3.9 9c-2.5-2.6-3.9-5.7-3.9-9S9.5 5.6 12 3z"/></svg></span>
-				<div><h2>Thi Online <span style="font-size:11px;font-weight:700;color:var(--luc,#2fcf8f);background:rgba(47,207,143,.14);padding:2px 9px;border-radius:99px;vertical-align:middle">b2.4</span></h2></div>
+				<div><h2>Thi Online <span style="font-size:11px;font-weight:700;color:var(--luc,#2fcf8f);background:rgba(47,207,143,.14);padding:2px 9px;border-radius:99px;vertical-align:middle">b2.5</span></h2></div>
 			</div>
 			<div class="mdDauNut"><button class="vt3NutChinh nho" type="button" id="toTao">+ Tạo phòng thi</button></div>
 		</header>
@@ -3855,22 +3862,58 @@ O_CHON.forEach(k => { const v = doc_(k); if (v !== null) $(k).checked = v === "1
 function dem(s) { const n = s ? s.split("\n").length : 0; return n ? "· " + n + " dòng" : ""; }
 $("vao").addEventListener("input", () => $("demVao").textContent = dem($("vao").value));
 
+// Render thử từng hình TikZ sau chuẩn hoá. Hình nào lỗi → tự TRẢ VỀ CODE GỐC của đúng hình đó (nếu code gốc vẽ được).
+const RE_HINH = /\\begin\{tikzpicture\}[\s\S]*?\\end\{tikzpicture\}/g;
+async function veThuHinh(h) {
+	try {
+		const r = await Promise.race([boMay.veTikz(h, { doPhanGiai: 1 }), new Promise(ok => setTimeout(() => ok({ loi: true, loiTxt: "quá 25 giây không vẽ xong" }), 25000))]);
+		return r && !r.loi && (r.png || r.svg) ? "" : (r && r.loiTxt ? String(r.loiTxt).slice(0, 160) : "không vẽ được");
+	} catch (e) { return String(e.message || e).slice(0, 160); }
+}
+async function chayLuongCH(ds, n, f) { let k = 0; await Promise.all(Array.from({ length: Math.min(n, ds.length) }, async () => { while (k < ds.length) { const i = k++; await f(ds[i], i); } })); }
+let dangKiem = false;
 async function kiemRenderChuan() {
-	const src = $("ra").value || $("vao").value; const box = $("kiemRa");
+	if (dangKiem) return;
+	const box = $("kiemRa"), goc = $("vao").value, ra = $("ra").value, src = ra || goc;
 	if (!src.trim()) { box.innerHTML = '<span class="the">Chưa có code để kiểm.</span>'; return; }
 	if (!boMay || typeof boMay.veTikz !== "function") { box.innerHTML = '<span class="the canh">Bộ render hình chưa sẵn sàng.</span>'; return; }
-	const hinh = src.match(/\\begin\{tikzpicture\}[\s\S]*?\\end\{tikzpicture\}/g) || [];
+	const hinh = [...src.matchAll(RE_HINH)];
 	if (!hinh.length) { box.innerHTML = '<span class="the on">Không có hình TikZ nào để kiểm.</span>'; return; }
-	const btn = $("nutKiem"), lab = btn.textContent; btn.disabled = true; btn.textContent = "⏳ Đang render…";
-	const loi = [];
-	for (let i = 0; i < hinh.length; i++) { box.innerHTML = '<span class="the">⏳ Render thử hình ' + (i + 1) + "/" + hinh.length + "…</span>";
-		try { const r = await boMay.veTikz(hinh[i], { doPhanGiai: 1 }); if (!r || r.loi || !(r.png || r.svg)) loi.push({ i: i + 1, txt: r && r.loiTxt ? String(r.loiTxt).slice(0, 140) : "không vẽ được" }); }
-		catch (e) { loi.push({ i: i + 1, txt: String(e.message || e).slice(0, 140) }); } }
-	btn.disabled = false; btn.textContent = lab;
-	box.innerHTML = loi.length
-		? '<span class="the canh">⚠ ' + loi.length + "/" + hinh.length + ' hình render LỖI sau chuẩn hoá — kiểm lại trước khi dùng:</span><ul class="ds kiemDs">' + loi.map(x => '<li><span class="ma">Hình #' + x.i + "</span><span>" + esc(x.txt) + "</span></li>").join("") + "</ul>"
-		: '<span class="the on">✓ ' + hinh.length + " hình TikZ render OK — chuẩn hoá không làm hỏng hình.</span>";
+	dangKiem = true; const btn = $("nutKiem"), lab = btn.textContent; btn.disabled = true; btn.textContent = "⏳ Đang render…";
+	try {
+		const loi = new Array(hinh.length).fill(""); let xong = 0;
+		await chayLuongCH(hinh.map((_, i) => i), 3, async i => { loi[i] = await veThuHinh(hinh[i][0]); box.innerHTML = '<span class="the">⏳ Đang render thử ' + (++xong) + "/" + hinh.length + " hình…</span>"; });
+		const hong = loi.map((t, i) => t ? i : -1).filter(i => i >= 0), ket = [];
+		let moi = ra;
+		if (ra && hong.length) {
+			const hinhGoc = [...goc.matchAll(RE_HINH)], khop = hinhGoc.length === hinh.length;
+			for (const i of hong.slice().reverse()) {            // thay từ cuối lên để không lệch vị trí
+				let tra = "khongKhop";
+				if (khop) { box.innerHTML = '<span class="the">⏳ Thử lại hình #' + (i + 1) + " bằng code gốc…</span>";
+					if (!(await veThuHinh(hinhGoc[i][0]))) { moi = moi.slice(0, hinh[i].index) + hinhGoc[i][0] + moi.slice(hinh[i].index + hinh[i][0].length); tra = "goc"; } else tra = "gocLoi"; }
+				ket.unshift({ i, txt: loi[i], tra });
+			}
+			if (moi !== ra) { $("ra").value = moi; $("demRa").textContent = dem(moi); }
+		} else hong.forEach(i => ket.push({ i, txt: loi[i], tra: "" }));
+		const cuoi = $("ra").value || src, vt = [...cuoi.matchAll(RE_HINH)];
+		ket.forEach(k => { const m = vt[k.i]; if (!m) return; k.dong = cuoi.slice(0, m.index).split("\n").length; k.a = m.index; k.b = m.index + m[0].length;
+			k.mo = (m[0].split("\n").find(l => /\\(draw|fill|filldraw|coordinate|path|node|foreach|tkz[A-Za-z]*|clip)\b/.test(l)) || "").trim().slice(0, 80); });
+		const daTra = ket.filter(k => k.tra === "goc").length, conLoi = ket.length - daTra;
+		const dong = k => k.dong ? '<button class="dong" type="button" data-a="' + k.a + '" data-b="' + k.b + '">dòng ' + k.dong + "</button>" : "";
+		const moTa = k => k.tra === "goc" ? "<b>đã tự trả về code gốc</b> (code gốc vẽ được)" : k.tra === "gocLoi" ? "cả code gốc cũng không vẽ được — " + esc(k.txt) : k.tra === "khongKhop" ? "không tự trả về được (số hình trước/sau chuẩn hoá khác nhau) — " + esc(k.txt) : esc(k.txt);
+		box.innerHTML = (!ket.length ? '<span class="the on">✓ ' + hinh.length + " hình TikZ đều vẽ được — chuẩn hoá không làm hỏng hình.</span>"
+			: (conLoi ? '<span class="the canh">⚠ ' + conLoi + "/" + hinh.length + " hình chưa vẽ được" + (daTra ? " · " + daTra + " hình đã tự trả về code gốc" : "") + "</span>"
+				: '<span class="the on">✓ ' + hinh.length + " hình đều vẽ được · " + daTra + " hình bị chuẩn hoá làm lỗi đã tự trả về code gốc</span>")
+			+ '<ul class="ds kiemDs">' + ket.map(k => '<li><span class="ma">Hình #' + (k.i + 1) + "</span>" + dong(k) + "<span>" + moTa(k) + (k.mo ? ' <code class="moHinh">' + esc(k.mo) + "</code>" : "") + "</span></li>").join("") + "</ul>");
+	} finally { dangKiem = false; btn.disabled = false; btn.textContent = lab; }
 }
+// bấm "dòng N" → nhảy tới và bôi đen cả hình trong ô kết quả
+$("kiemRa").addEventListener("click", e => {
+	const b = e.target.closest("button[data-a]"); if (!b) return;
+	const ta = $("ra"), a = +b.dataset.a, z = +b.dataset.b;
+	ta.focus(); ta.setSelectionRange(a, z);
+	const n = ta.value.slice(0, a).split("\n").length; ta.scrollTop = Math.max(0, (n - 3) * parseFloat(getComputedStyle(ta).lineHeight));
+});
 async function chay() {
 	const src = $("vao").value;
 	if (!src.trim()) { hien("Chưa có code để chuẩn hoá"); return; }
@@ -3884,8 +3927,9 @@ async function chay() {
 		$("ra").value = data.ketQua;
 		$("demRa").textContent = dem(data.ketQua);
 		veBaoCao(data);
-		$("kiemRa").innerHTML = '<span class="the">Bấm <b>🔍 Kiểm tra render</b> để render thử hình, phát hiện hình bị lỗi.</span>';
+		$("kiemRa").innerHTML = "";
 		hien("Đã chuẩn hoá");
+		if (/\\begin\{tikzpicture\}/.test(data.ketQua)) kiemRenderChuan();      // tự kiểm hình ngay
 	} catch (e) {
 		$("tomtat").innerHTML = '<span class="the canh">Máy gặp lỗi khi đọc đoạn code này. Gửi đoạn code cho quản trị viên để sửa luật.</span>';
 		return;
@@ -9655,7 +9699,7 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 		async function xemTruoc(el, code, o) { o = o || {}; const T = bo(); if (!T || !T.docDe) { el.innerHTML = '<p class="mdTrong">Bộ đọc đề chưa sẵn sàng.</p>'; return; } if (!window.katex) { try { await napKatex(); } catch (e) { } }
 			const hinh = (code.match(/\\begin\{tikzpicture\}[\s\S]*?\\end\{tikzpicture\}/g) || []), ve = () => { ANH = { url: o.anh || {}, tikz: hinh.map(h => boHinh.get(h) || null).map(x => x === null ? undefined : x) }; const r = htmlDe(code, Object.assign({ lg: false, gach: true, tieuDe: false, dsBang: false }, o)); el.innerHTML = r.h || '<p class="mdTrong">Không có câu hỏi.</p>'; return r; };
 			const kq = ve(); const can = hinh.filter(h => !boHinh.has(h)); if (!can.length || o.khongHinh) return kq;
-			for (const h of can) { if (!el.isConnected) return kq; try { const r = await T.veTikz(h, { doPhanGiai: 2 }); boHinh.set(h, r && !r.loi && (r.png || r.svg) ? { u: URL.createObjectURL(r.png ? new Blob([r.png], { type: "image/png" }) : new Blob([r.svg], { type: "image/svg+xml" })), w: r.wPt } : { u: null }); } catch (e) { boHinh.set(h, { u: null }); } ve(); }
+			for (const h of can) { if (!el.isConnected) return kq; try { const r = await Promise.race([T.veTikz(h, { doPhanGiai: 2 }), new Promise(ok => setTimeout(() => ok("quaGio"), o.choHinh || 20000))]); if (r === "quaGio") { boHinh.set(h, { u: null }); ve(); continue; } boHinh.set(h, r && !r.loi && (r.png || r.svg) ? { u: URL.createObjectURL(r.png ? new Blob([r.png], { type: "image/png" }) : new Blob([r.svg], { type: "image/svg+xml" })), w: r.wPt } : { u: null }); } catch (e) { boHinh.set(h, { u: null }); } ve(); }
 			return kq; }
 		return { docCT, ghiCT, docCay, ghiCay, CAY_MD, phanCay, docID, taoID, maChuong, maBai, maDang, tachEx, loai, TEN_LOAI, TEN_LOAI_DAI, vanTat, vanTay, bam, boLG, doanChuong, dbTatCa, dbGhi, dbXoa, dbXoaHet, taoBanGhi, xemTruoc, boDau, doanDang };
 	})();
@@ -10949,6 +10993,8 @@ async function thiChay(ma) {
 	const chuanTln = s => String(s == null ? "" : s).replace(/\$/g, "").replace(/\\(dfrac|tfrac|frac)\b/g, "frac").replace(/\\[a-zA-Z]+/g, "").replace(/\{,\}/g, ".").replace(/[{}\s]/g, "").replace(/,/g, ".").replace(/^\+/, "").toLowerCase();
 	const soSanh = (hs, key) => { const a = chuanTln(hs), b = chuanTln(key); if (!a) return false; if (a === b) return true; const na = parseFloat(a), nb = parseFloat(b); return isFinite(na) && isFinite(nb) && Math.abs(na - nb) < 1e-9; };
 
+	// chạy song song tối đa n việc (vẽ hình gọi máy chủ — tránh chờ tuần tự)
+	async function chayLuong(ds, n, f) { let k = 0; await Promise.all(Array.from({ length: Math.min(n, ds.length) }, async () => { while (k < ds.length) { const i = k++; try { await f(ds[i], i); } catch (e) { console.warn("dựng câu lỗi:", e); } } })); }
 	// ---- tải phòng ----
 	async function taiPhong(m) {
 		if (window.__thiDemo) return window.__thiDemo;
@@ -11070,7 +11116,7 @@ async function thiChay(ma) {
 		const dh = document.getElementById("thiDongHo");
 		const veDH = () => { const m = Math.floor(conLai / 60), s2 = conLai % 60; dh.textContent = "⏳ " + (m < 10 ? "0" : "") + m + ":" + (s2 < 10 ? "0" : "") + s2; dh.className = "thiDongHo" + (conLai <= 60 ? " nguy" : conLai <= 300 ? " gap" : ""); };
 		veDH();
-		CAU = []; DA = []; BLOCKS = []; const theCau = [];
+		CAU = []; DA = []; BLOCKS = []; const theCau = [], viec = [];
 		let stt = 0, soPh = 0;
 		for (let p = 0; p < PHAN.length; p++) {
 			const g = nhom[p]; if (!g.length) continue;
@@ -11082,16 +11128,22 @@ async function thiChay(ma) {
 				const i = stt++;
 				const card = el("div", "thiCau"), de = el("div", "thiDe");
 				card.appendChild(de); kho.appendChild(card); theCau.push(card); BLOCKS.push(g[j].raw);
-				const kq = await QB.xemTruoc(de, g[j].raw, { lg: false, gach: false, tieuDe: false, anh: room.hinhAnh || {} });
-				const c = (kq && kq.de && kq.de.cau || []).find(x => !x.phanMoi) || (kq && kq.de && kq.de.cau || [])[0] || { loai: g[j].loai, dung: [], phuongAn: [] };
-				CAU.push({ loai: c.loai || g[j].loai, dung: (c.dung || []).slice(), dapSo: c.dapSo || "" });
-				const nhan = de.querySelector(".nhanCau"); if (nhan) nhan.textContent = "Câu " + (j + 1) + ".";
-				taoChon(c.loai || g[j].loai, i, de, card);
+				viec.push({ i, j, de, card, raw: g[j].raw, loai: g[j].loai });
 				const bn = document.createElement("button"); bn.type = "button"; bn.textContent = i + 1;
 				bn.onclick = () => { card.scrollIntoView({ behavior: "smooth", block: "center" }); biEl.querySelectorAll("button").forEach(z => z.classList.remove("dangXem")); bn.classList.add("dangXem"); };
 				biEl.appendChild(bn);
 			}
 		}
+		let xong = 0;
+		await chayLuong(viec, 4, async v => {
+			const kq = await QB.xemTruoc(v.de, QB.boLG(v.raw), { lg: false, gach: false, tieuDe: false, anh: room.hinhAnh || {}, choHinh: 12000 });   // HS không nhận lời giải
+			const c = (kq && kq.de && kq.de.cau || []).find(x => !x.phanMoi) || (kq && kq.de && kq.de.cau || [])[0] || { loai: v.loai, dung: [], phuongAn: [] };
+			CAU[v.i] = { loai: c.loai || v.loai, dung: (c.dung || []).slice(), dapSo: c.dapSo || "" };
+			const nhan = v.de.querySelector(".nhanCau"); if (nhan) nhan.textContent = "Câu " + (v.j + 1) + ".";
+			taoChon(c.loai || v.loai, v.i, v.de, v.card);
+			tai.lastChild.textContent = "Đang tải đề thi… " + (++xong) + "/" + viec.length;
+		});
+		for (let i = 0; i < viec.length; i++) if (!CAU[i]) CAU[i] = { loai: viec[i].loai, dung: [], dapSo: "" };
 		DA.length = CAU.length;
 		capNhatTien();
 		tai.remove(); kho.className = "";       // hiện đề
@@ -11215,7 +11267,7 @@ async function thiChay(ma) {
 			+ '<button class="ve" id="thiVeKQ">← Về kết quả</button></div>'
 			+ '<div class="thiTai"><div class="quay"></div>Đang dựng đáp án…</div><div id="thiXLDs"></div></div>';
 		document.getElementById("thiVeKQ").addEventListener("click", () => manKetQua(kq, auto));
-		const ds = document.getElementById("thiXLDs");
+		const ds = document.getElementById("thiXLDs"), dsDe = [];
 		const tenLoai = { tn: "Trắc nghiệm", ds: "Đúng / Sai", tln: "Trả lời ngắn", tl: "Tự luận" };
 		for (let i = 0; i < BLOCKS.length; i++) {
 			const c = CAU[i] || {}, a = DA[i] || {}, ct = (kq.ct || []).find(x => x.i === i) || {};
@@ -11233,10 +11285,17 @@ async function thiChay(ma) {
 				ban = '<span class="ban">Bạn điền: ' + esc2(a.val || "—") + "</span>";
 			} else tt = '<span class="tt p">Chấm tay</span>';
 			dau.innerHTML = '<span class="n">Câu ' + (i + 1) + '</span><span class="lo" style="font-size:11.5px;color:#5a7290;font-weight:700">' + (tenLoai[c.loai] || "") + "</span>" + tt + ban;
-			card.appendChild(dau); card.appendChild(de); ds.appendChild(card);
-			await QB.xemTruoc(de, BLOCKS[i], { lg: xemLG, gach: true, tieuDe: false, anh: room.hinhAnh || {} });
+			card.appendChild(dau); card.appendChild(de); ds.appendChild(card); dsDe.push(de);
+			try { await QB.xemTruoc(de, BLOCKS[i], { lg: xemLG, gach: true, tieuDe: false, anh: room.hinhAnh || {}, khongHinh: true }); } catch (e) { de.textContent = "(không hiển thị được câu này)"; }
 			const nh = de.querySelector(".nhanCau"); if (nh) nh.remove();
 		}
+		const t0 = document.querySelector(".thiXemLai .thiTai"); if (t0) t0.remove();
+		// vẽ hình (đề + lời giải) ở nền — mỗi hình tối đa 20s, không chặn phần chữ
+		chayLuong(BLOCKS.map((b, i) => i).filter(i => /tikzpicture/.test(BLOCKS[i])), 3, async i => {
+			if (!dsDe[i] || !dsDe[i].isConnected) return;
+			await QB.xemTruoc(dsDe[i], BLOCKS[i], { lg: xemLG, gach: true, tieuDe: false, anh: room.hinhAnh || {} });
+			const nh = dsDe[i].querySelector(".nhanCau"); if (nh) nh.remove();
+		});
 		const t = document.querySelector(".thiXemLai .thiTai"); if (t) t.remove();
 		window.scrollTo(0, 0);
 	}
