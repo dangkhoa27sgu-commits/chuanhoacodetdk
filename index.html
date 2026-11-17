@@ -1990,6 +1990,122 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 #kwTrangThai{text-align:center;margin-top:9px}
 
 </style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700;800;900&display=swap">
+<style id="kcCongCss">
+/* ===== KMath — CỔNG ĐĂNG NHẬP VŨ TRỤ (chỉ áp cho #manDangNhap) ===== */
+#manDangNhap.kc{position:fixed;inset:0;z-index:9000;overflow-y:auto;background:#020617;color:#F1F5F9;font-family:"Be Vietnam Pro",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+#manDangNhap.kc[hidden]{display:none}
+.kc *,.kc *::before,.kc *::after{box-sizing:border-box}
+.kc a{color:inherit;text-decoration:none}
+.kc .kcNenBo{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.kc .kcVuTru{position:absolute;inset:0;background:radial-gradient(ellipse 45% 40% at 20% 30%,rgba(76,29,149,.28),transparent 70%),radial-gradient(ellipse 50% 45% at 85% 75%,rgba(14,116,144,.25),transparent 70%),radial-gradient(ellipse 70% 60% at 50% 50%,#0A1A3F 0%,#050C24 55%,#020617 100%)}
+.kc #kcLopNen{position:absolute;inset:0;transition:transform .6s cubic-bezier(.2,.7,.2,1);will-change:transform}
+.kc .kcAnh{position:absolute;inset:7% 5%;background:url("giaodien/nen-vutru-4k.jpg") center/cover;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 58%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 58%,transparent 100%);animation:kcTroi 60s ease-in-out infinite alternate}
+@keyframes kcTroi{from{transform:scale(.98)}to{transform:scale(1.01)}}
+.kc .kcPhu{position:absolute;inset:0;background:radial-gradient(ellipse 50% 48% at 33% 50%,rgba(2,6,23,.58) 0%,rgba(2,6,23,.18) 75%,rgba(2,6,23,0) 100%),linear-gradient(90deg,rgba(2,6,23,.3) 0%,rgba(2,6,23,.05) 45%,rgba(2,6,23,.55) 100%),linear-gradient(180deg,rgba(2,6,23,.6) 0%,rgba(2,6,23,0) 16%,rgba(2,6,23,0) 78%,rgba(2,6,23,.8) 100%)}
+.kc .kcSau{position:absolute;inset:0;backdrop-filter:blur(2px) brightness(.75);-webkit-backdrop-filter:blur(2px) brightness(.75);-webkit-mask-image:radial-gradient(ellipse 70% 68% at 50% 50%,transparent 70%,#000 100%);mask-image:radial-gradient(ellipse 70% 68% at 50% 50%,transparent 70%,#000 100%)}
+.kc #kcSao{position:absolute;inset:0;width:100%;height:100%}
+.kc .kcKhung{position:relative;z-index:1;min-height:100%;display:flex;flex-direction:column}
+.kc .kcKinh{background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.03) 60%),rgba(8,15,38,.38);backdrop-filter:blur(28px) saturate(170%);-webkit-backdrop-filter:blur(28px) saturate(170%);border:1px solid rgba(255,255,255,.16);box-shadow:0 40px 90px -24px rgba(0,0,0,.8),0 0 0 1px rgba(94,235,255,.05),inset 0 1px 0 rgba(255,255,255,.22)}
+/* header */
+.kc .kcDau{position:sticky;top:0;z-index:5;padding:12px 12px 0}
+.kc .kcThanh{max-width:1500px;margin:0 auto;display:flex;align-items:center;gap:12px;border-radius:16px;padding:8px 12px}
+.kc .kcThuongHieuNho{display:flex;align-items:center;gap:8px;padding-right:8px;flex-shrink:0;cursor:pointer;background:none;border:0;color:inherit;font:inherit}
+.kc .kcThuongHieuNho img{width:40px;height:40px;object-fit:contain;filter:drop-shadow(0 0 4px rgba(255,0,40,.95)) drop-shadow(0 0 12px rgba(220,0,30,.7))}
+.kc .kcThuongHieuNho span{font:800 24px/1 "Exo 2",sans-serif;letter-spacing:.02em}
+.kc .kcTabs{display:flex;flex:1;gap:4px;overflow-x:auto;margin-left:4px}
+.kc .kcTab{position:relative;white-space:nowrap;border-radius:12px;padding:10px 16px;font:500 16px/1.2 "Be Vietnam Pro",sans-serif;color:#E2E8F0;background:transparent;border:0;cursor:pointer;transition:color .3s,text-shadow .3s,background-color .3s}
+.kc .kcTab:hover{color:#fff;background:rgba(255,255,255,.06);text-shadow:0 0 10px rgba(186,230,253,.9),0 0 22px rgba(94,235,255,.5)}
+.kc .kcTab::after{content:"";position:absolute;left:16px;right:16px;bottom:3px;height:2px;border-radius:2px;background:linear-gradient(90deg,#22D3EE,#5EEBFF,#38BDF8);box-shadow:0 0 8px #5EEBFF,0 0 18px rgba(94,235,255,.7);transform:scaleX(0);transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.kc .kcTab:hover::after,.kc .kcTab.on::after{transform:scaleX(1)}
+.kc .kcTab.on{color:#CFFAFE;text-shadow:0 0 10px rgba(94,235,255,.95),0 0 26px rgba(56,189,248,.6)}
+.kc .kcNutDN{margin-left:auto;border-radius:12px;border:1px solid rgba(103,232,249,.4);background:rgba(103,232,249,.1);padding:10px 16px;font:600 14px "Be Vietnam Pro",sans-serif;color:#CFFAFE;cursor:pointer;transition:.2s}
+.kc .kcNutDN:hover{background:rgba(103,232,249,.2);box-shadow:0 0 24px -4px rgba(94,235,255,.8)}
+.kc .kcMenu{display:none;margin-left:auto;width:44px;height:44px;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#fff;place-items:center;cursor:pointer}
+.kc .kcMenuDT{max-width:1500px;margin:8px auto 0;border-radius:16px;padding:8px;display:none;grid-template-columns:1fr 1fr;gap:4px}
+.kc .kcMenuDT.mo{display:grid}
+.kc .kcMenuDT button{text-align:left;border:0;background:none;color:#E2E8F0;font:16px "Be Vietnam Pro",sans-serif;padding:12px 16px;border-radius:12px;cursor:pointer}
+.kc .kcMenuDT button:hover,.kc .kcMenuDT button.on{background:rgba(255,255,255,.1);color:#A5F3FC}
+/* bố cục 70/30 */
+.kc .kcChinh{flex:1;width:100%;max-width:1500px;margin:0 auto;padding:24px;display:grid;grid-template-columns:7fr 3fr;align-items:center;gap:24px}
+.kc .kcTrai{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 120px)}
+.kc .kcCot{display:flex;flex-direction:column;align-items:center}
+.kc .kcKhoi{position:relative;display:flex;flex-direction:row;align-items:center;gap:12px;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.kc .kcKhoi:hover{transform:scale(1.025)}
+.kc .kcLogoHop{position:relative;display:grid;place-items:center;flex-shrink:0;width:176px;height:176px}
+.kc .kcQuang{position:absolute;inset:8px;border-radius:50%;background:rgba(185,28,28,.35);filter:blur(40px);opacity:.45;transition:opacity .5s,transform .5s;pointer-events:none}
+.kc .kcKhoi:hover .kcQuang{opacity:1;transform:scale(1.25)}
+.kc .kcLogo{position:relative;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 0 4px rgba(255,0,40,.95)) drop-shadow(0 0 14px rgba(230,0,30,.85)) drop-shadow(0 0 40px rgba(200,0,25,.6));animation:kcTho 4s ease-in-out infinite}
+@keyframes kcTho{0%,100%{filter:drop-shadow(0 0 4px rgba(255,0,40,.95)) drop-shadow(0 0 14px rgba(230,0,30,.85)) drop-shadow(0 0 40px rgba(200,0,25,.6))}50%{filter:drop-shadow(0 0 6px rgba(255,0,40,1)) drop-shadow(0 0 22px rgba(230,0,30,1)) drop-shadow(0 0 60px rgba(200,0,25,.75))}}
+.kc .kcKhoi:hover .kcLogo{animation:none;filter:drop-shadow(0 0 6px rgba(255,0,40,1)) drop-shadow(0 0 24px rgba(235,0,30,1)) drop-shadow(0 0 70px rgba(210,0,25,.9)) drop-shadow(0 0 130px rgba(190,0,20,.6))}
+.kc .kcDo{color:#E8001C;text-shadow:0 0 4px rgba(255,0,40,.9),0 0 14px rgba(230,0,30,.85),0 0 34px rgba(200,0,25,.7),0 0 70px rgba(180,0,20,.5);animation:kcChuTho 4s ease-in-out infinite}
+@keyframes kcChuTho{0%,100%{text-shadow:0 0 4px rgba(255,0,40,.9),0 0 14px rgba(230,0,30,.85),0 0 34px rgba(200,0,25,.7),0 0 70px rgba(180,0,20,.5)}50%{text-shadow:0 0 6px rgba(255,0,40,1),0 0 20px rgba(230,0,30,1),0 0 48px rgba(200,0,25,.85),0 0 100px rgba(180,0,20,.6)}}
+.kc .kcKhoi:hover .kcDo{animation:none;color:#F5001E;text-shadow:0 0 6px rgba(255,0,40,1),0 0 22px rgba(235,0,30,1),0 0 56px rgba(210,0,25,.95),0 0 120px rgba(190,0,20,.7)}
+.kc .kcTen{margin:0;font:900 8.5rem/.9 "Exo 2",sans-serif;letter-spacing:-.02em}
+.kc .kcSlogan{margin:12px 0 0;padding-left:4px;font:700 24px/1.2 "Exo 2",sans-serif;text-transform:uppercase;letter-spacing:.2em;color:#E9FDFF;text-shadow:0 0 1px #fff,0 0 8px rgba(94,235,255,.85),0 0 22px rgba(56,189,248,.6),0 0 44px rgba(56,189,248,.3)}
+.kc .kcHat{position:absolute;inset:0;pointer-events:none}
+.kc .kcH{position:absolute;left:0;top:0;width:4px;height:4px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,#FFE5E8 0%,#FF3050 40%,rgba(230,0,30,0) 75%);box-shadow:0 0 6px 1px rgba(235,0,30,.9);animation:kcHatBay var(--t,1s) ease-out forwards}
+.kc .kcH.tia{width:10px;height:10px;background:none;box-shadow:none}
+.kc .kcH.tia::before,.kc .kcH.tia::after{content:"";position:absolute;left:50%;top:50%;background:#FFD6DC;box-shadow:0 0 6px #E8001C;border-radius:1px;transform:translate(-50%,-50%)}
+.kc .kcH.tia::before{width:100%;height:1.5px}.kc .kcH.tia::after{width:1.5px;height:100%}
+@keyframes kcHatBay{0%{opacity:0;transform:translate(var(--x0),var(--y0)) scale(.3)}15%{opacity:1}100%{opacity:0;transform:translate(var(--x1),var(--y1)) scale(var(--s,1))}}
+.kc .kcTacGia{margin-top:56px;display:inline-flex;flex-direction:column;align-items:center}
+.kc .kcVach{margin-bottom:12px;height:1px;width:100%;background:linear-gradient(90deg,transparent,#F1F5F9,transparent);opacity:.5}
+.kc .kcTenTG{font:700 24px/1.2 "Exo 2",sans-serif;letter-spacing:.22em;background:linear-gradient(100deg,#C9D4E2 0%,#fff 20%,#E5ECF4 40%,#fff 50%,#BFD0E4 60%,#F4F8FC 80%,#C9D4E2 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:kcBac 5s linear infinite,kcTGSang 3s ease-in-out infinite}
+@keyframes kcBac{from{background-position:100% 0}to{background-position:-150% 0}}
+@keyframes kcTGSang{0%,100%{filter:drop-shadow(0 0 4px rgba(255,255,255,.7)) drop-shadow(0 0 14px rgba(170,215,255,.55)) drop-shadow(0 0 30px rgba(94,235,255,.25))}50%{filter:drop-shadow(0 0 6px rgba(255,255,255,.95)) drop-shadow(0 0 22px rgba(170,215,255,.85)) drop-shadow(0 0 48px rgba(94,235,255,.45))}}
+.kc .kcZalo{margin-top:16px;display:inline-flex;align-items:center;gap:12px;border-radius:12px;border:2px solid rgba(103,232,249,.55);background:rgba(2,6,23,.45);backdrop-filter:blur(12px);padding:6px 16px 6px 6px;font:700 18px "Exo 2",sans-serif;letter-spacing:.12em;color:#fff;box-shadow:0 0 16px -6px rgba(94,235,255,.8);transition:.25s}
+.kc .kcZalo:hover{border-color:#A5F3FC;background:rgba(34,211,238,.1);box-shadow:0 0 26px -4px rgba(94,235,255,1)}
+.kc .kcZalo i{display:grid;place-items:center;width:36px;height:36px;border-radius:8px;border:1px solid rgba(165,243,252,.6);background:linear-gradient(135deg,rgba(34,211,238,.35),rgba(2,132,199,.3));color:#CFFAFE;box-shadow:inset 0 0 10px rgba(94,235,255,.35)}
+/* form */
+.kc .kcPhai{display:flex;align-items:center;justify-content:center}
+.kc .kcThe{position:relative;width:100%;max-width:448px;border-radius:24px;padding:32px}
+.kc .kcThe::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;pointer-events:none;background:linear-gradient(135deg,rgba(94,235,255,.7),rgba(167,139,250,.15) 40%,rgba(255,59,59,.55));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.kc .kcChe{display:grid;grid-template-columns:1fr 1fr;border-radius:16px;background:rgba(2,6,23,.4);padding:4px;margin-bottom:24px}
+.kc .kcChe button{border:0;border-radius:12px;padding:10px;font:600 14px "Be Vietnam Pro",sans-serif;color:#94A3B8;background:none;cursor:pointer;transition:.2s}
+.kc .kcChe button:hover{color:#fff}
+.kc .kcChe button[aria-selected="true"]{background:rgba(255,255,255,.15);color:#fff;box-shadow:0 0 20px -6px rgba(94,235,255,.7)}
+.kc .kcThe h2{margin:0;font:700 24px "Exo 2",sans-serif;color:#fff}
+.kc .kcMoTa{margin:4px 0 0;font-size:14px;color:#CBD5E1}
+.kc form{margin-top:28px;display:flex;flex-direction:column;gap:20px}
+.kc label.kcNhan{display:block;margin-bottom:8px;font-size:14px;font-weight:500;color:#E2E8F0}
+.kc .kcDong{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.kc .kcDong label.kcNhan{margin:0}
+.kc .kcLink{border:0;background:none;padding:0;font:500 12px "Be Vietnam Pro",sans-serif;color:#A5F3FC;cursor:pointer}
+.kc .kcLink:hover{color:#fff}
+.kc .kcO{position:relative}
+.kc .kcO svg.kcIco{position:absolute;left:18px;top:50%;transform:translateY(-50%);color:#94A3B8;pointer-events:none}
+.kc input.kcIn{width:100%;height:56px;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(2,6,23,.55);padding:0 20px 0 48px;font:16px "Be Vietnam Pro",sans-serif;color:#fff;outline:none;transition:.2s}
+.kc input.kcIn.khongIco{padding-left:20px}
+.kc input.kcIn::placeholder{color:#64748B}
+.kc input.kcIn:focus{border-color:rgba(103,232,249,.7);box-shadow:0 0 0 4px rgba(94,235,255,.15)}
+.kc .kcHienMk{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:36px;height:36px;display:grid;place-items:center;border:0;border-radius:8px;background:none;color:#94A3B8;cursor:pointer}
+.kc .kcHienMk:hover{background:rgba(255,255,255,.1);color:#fff}
+.kc .kcNutChinh{position:relative;overflow:hidden;height:56px;width:100%;border:0;border-radius:12px;color:#fff;font:700 16px "Exo 2",sans-serif;text-transform:uppercase;letter-spacing:.15em;cursor:pointer;background:linear-gradient(100deg,#6B0000 0%,#B30000 35%,#FF2A1F 75%,#FF5A3C 100%);background-size:160% 100%;background-position:0 0;transition:background-position .5s,box-shadow .3s,transform .2s;box-shadow:0 8px 24px -10px rgba(255,40,20,.7),inset 0 1px 0 rgba(255,255,255,.25)}
+.kc .kcNutChinh:hover,.kc .kcNutChinh:focus-visible,.kc .kcNutChinh:active{background-position:100% 0;outline:none;box-shadow:0 10px 15px -3px rgba(239,68,68,.5),0 4px 6px -4px rgba(239,68,68,.5),0 0 0 1px rgba(255,140,110,.7),0 0 24px rgba(255,60,30,.85),0 0 70px -4px rgba(255,60,30,.9),inset 0 1px 0 rgba(255,255,255,.4)}
+.kc .kcNutChinh:hover{transform:translateY(-2px)}
+.kc .kcNutChinh::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-20deg);transition:left .7s}
+.kc .kcNutChinh:hover::after{left:120%}
+.kc .kcNutChinh:disabled{opacity:.6;cursor:wait}
+.kc .kcHoac{display:flex;align-items:center;gap:12px;font-size:12px;color:#94A3B8}
+.kc .kcHoac::before,.kc .kcHoac::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.15)}
+.kc .kcGoogle{display:flex;align-items:center;justify-content:center;gap:12px;height:56px;width:100%;border:0;border-radius:12px;background:#fff;color:#1E293B;font:600 16px "Be Vietnam Pro",sans-serif;cursor:pointer;transition:.2s}
+.kc .kcGoogle:hover{background:#F1F5F9;box-shadow:0 0 30px -6px rgba(255,255,255,.7)}
+.kc .kcGoogle svg{width:20px;height:20px}
+.kc .kcBao{min-height:20px;margin:0;text-align:center;font-size:14px;color:#A5F3FC}
+.kc .kcBao.loi{color:#FCA5A5}
+.kc .kcDuoi{margin:8px 0 0;text-align:center;font-size:14px;color:#CBD5E1}
+.kc .kcDuoi .kcLink{font-size:14px;font-weight:600}
+.kc .kcChan{position:relative;z-index:1;padding:0 16px 20px;text-align:center;font-size:12px;color:#94A3B8}
+.kc .kcAn{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.kc .kcVao{animation:kcLen .9s cubic-bezier(.2,.7,.2,1) both}
+@keyframes kcLen{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@media (max-width:1279px){.kc .kcTen{font-size:6rem}.kc .kcLogoHop{width:144px;height:144px}.kc .kcSlogan{font-size:18px}}
+@media (max-width:1023px){.kc .kcTabs,.kc .kcNutDN{display:none}.kc .kcMenu{display:grid}.kc .kcChinh{grid-template-columns:1fr;gap:40px;padding:40px 16px}.kc .kcTrai{min-height:0}}
+@media (max-width:639px){.kc .kcTen{font-size:3.75rem}.kc .kcLogoHop{width:96px;height:96px}.kc .kcSlogan{font-size:11px;margin-top:8px}.kc .kcTacGia{margin-top:40px}.kc .kcTenTG{font-size:18px}.kc .kcZalo{font-size:16px}.kc .kcThe{padding:24px}.kc .kcMenuDT{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.kc .kcAnh,.kc .kcLogo,.kc .kcDo,.kc .kcTenTG,.kc .kcVao,.kc .kcH{animation:none!important}.kc .kcH{display:none}}
+</style>
+
 </head>
 <body>
 <header class="dau">
@@ -2006,20 +2122,106 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 	<div class="vach"></div>
 </header>
 
+	<!-- MÀN HÌNH 2: trang chủ kiêm đăng nhập (giao diện vũ trụ) -->
+	<section class="kc" id="manDangNhap" hidden aria-label="KMath — Đăng nhập">
+		<div class="kcNenBo" aria-hidden="true">
+			<div class="kcVuTru"></div>
+			<div id="kcLopNen"><div class="kcAnh"></div></div>
+			<div class="kcPhu"></div>
+			<div class="kcSau"></div>
+			<canvas id="kcSao"></canvas>
+		</div>
+		<div class="kcKhung">
+			<header class="kcDau">
+				<div class="kcThanh kcKinh">
+					<button type="button" class="kcThuongHieuNho" id="kcVeDau" aria-label="KMath — trang chính"><img src="giaodien/logo-neon.png" alt=""><span class="kcDo">KMath</span></button>
+					<nav class="kcTabs" aria-label="Chức năng">
+						<button type="button" class="kcTab">Chuẩn hoá code LaTeX</button>
+						<button type="button" class="kcTab">Vẽ hình TikZ</button>
+						<button type="button" class="kcTab">Công cụ</button>
+						<button type="button" class="kcTab">Lớp học</button>
+						<button type="button" class="kcTab">Đề thi</button>
+						<button type="button" class="kcTab">Văn phòng</button>
+						<button type="button" class="kcTab">Tạo video</button>
+					</nav>
+					<button type="button" class="kcNutDN" id="kcToiForm">Đăng nhập</button>
+					<button type="button" class="kcMenu" id="kcNutMenu" aria-label="Mở menu" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+				</div>
+				<nav class="kcMenuDT kcKinh" id="kcMenuDT" aria-label="Chức năng">
+					<button type="button">Chuẩn hoá code LaTeX</button><button type="button">Vẽ hình TikZ</button><button type="button">Công cụ</button><button type="button">Lớp học</button><button type="button">Đề thi</button><button type="button">Văn phòng</button><button type="button">Tạo video</button>
+				</nav>
+			</header>
+
+			<main class="kcChinh">
+				<div class="kcTrai kcVao">
+					<div class="kcCot">
+						<div class="kcKhoi" id="kcKhoi">
+							<div class="kcLogoHop"><div class="kcQuang"></div><img class="kcLogo" src="giaodien/logo-neon.png" alt="Logo TĐK Math"></div>
+							<div>
+								<h1 class="kcTen kcDo">KMath</h1>
+								<p class="kcSlogan">Hệ sinh thái giáo dục thông minh</p>
+							</div>
+							<div class="kcHat" id="kcHat" aria-hidden="true"></div>
+						</div>
+						<div class="kcTacGia">
+							<span class="kcVach"></span>
+							<span class="kcTenTG">ThS. TRƯƠNG ĐĂNG KHOA</span>
+							<a class="kcZalo" href="https://zalo.me/0364251924" target="_blank" rel="noopener noreferrer" title="Nhắn Zalo cho tác giả">
+								<i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg></i>
+								<span><span class="kcAn">Zalo: </span>0364 251 924</span>
+							</a>
+						</div>
+					</div>
+				</div>
+
+				<div class="kcPhai kcVao" style="animation-delay:.15s">
+					<div class="kcThe kcKinh" id="kcThe">
+						<div class="kcChe" role="tablist">
+							<button type="button" role="tab" data-che="dn" aria-selected="true">Đăng nhập</button>
+							<button type="button" role="tab" data-che="dk" aria-selected="false">Đăng ký</button>
+						</div>
+						<h2 id="kcTieuDe">Đăng nhập hệ thống</h2>
+						<p class="kcMoTa" id="kcMoTa">Chào mừng thầy cô quay lại KMath.</p>
+						<form id="kcForm" novalidate>
+							<div id="kcOTen" hidden>
+								<label class="kcNhan" for="kcTenNd">Họ và tên</label>
+								<input class="kcIn khongIco" id="kcTenNd" type="text" autocomplete="name" placeholder="Nguyễn Văn A">
+							</div>
+							<div>
+								<label class="kcNhan" for="kcEmail">Tài khoản (email)</label>
+								<div class="kcO">
+									<svg class="kcIco" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg>
+									<input class="kcIn" id="kcEmail" type="email" autocomplete="email" placeholder="email@truong.edu.vn">
+								</div>
+							</div>
+							<div>
+								<div class="kcDong"><label class="kcNhan" for="kcMk">Mật khẩu</label><button type="button" class="kcLink" id="kcQuenMk">Quên mật khẩu?</button></div>
+								<div class="kcO">
+									<svg class="kcIco" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+									<input class="kcIn" id="kcMk" type="password" autocomplete="current-password" placeholder="••••••••" style="padding-right:56px">
+									<button type="button" class="kcHienMk" id="kcHienMk" aria-label="Hiện mật khẩu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+								</div>
+							</div>
+							<button type="submit" class="kcNutChinh" id="kcNutChinh">Đăng nhập</button>
+							<div class="kcHoac">hoặc</div>
+							<button type="button" class="kcGoogle" id="nutDangNhap">
+								<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+								Đăng nhập bằng Google
+							</button>
+							<p class="kcBao" id="loiDangNhap" role="status"></p>
+						</form>
+						<p class="kcDuoi"><span id="kcHoiDuoi">Chưa có tài khoản?</span> <button type="button" class="kcLink" id="kcNutDoi">Đăng ký ngay</button></p>
+					</div>
+				</div>
+			</main>
+			<footer class="kcChan">© 2026 KMath · Hệ sinh thái giáo dục thông minh · kmath.io.vn</footer>
+		</div>
+	</section>
+
 <main class="khung">
 	<!-- MÀN HÌNH 1: đang tải -->
 	<section class="manHinh" id="manTai"><p>Đang kiểm tra đăng nhập…</p></section>
 
-	<!-- MÀN HÌNH 2: đăng nhập -->
-	<section class="manHinh" id="manDangNhap" hidden>
-		<h2>Đăng nhập</h2>
-		<p>Dùng tài khoản Gmail để đăng nhập. Tài khoản mới cần quản trị viên duyệt trước khi sử dụng.</p>
-		<button class="nut chinh nutGoogle" id="nutDangNhap" type="button">
-			<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
-			Đăng nhập bằng Google
-		</button>
-		<p class="hanDung" id="loiDangNhap" style="margin-top:12px"></p>
-	</section>
 
 	<!-- MÀN HÌNH 3: chờ duyệt / hết hạn -->
 	<section class="manHinh" id="manChoDuyet" hidden>
@@ -3670,10 +3872,94 @@ Lớp: ...</textarea></div>
 	</form>
 </dialog>
 <div class="toast" id="toast" role="status"></div>
+<script>
+/* ===== Cổng đăng nhập vũ trụ: hiệu ứng giao diện (không đụng Firebase) ===== */
+(function () {
+	const $k = id => document.getElementById(id), cong = $k("manDangNhap");
+	if (!cong) return;
+	const itChuyen = matchMedia("(prefers-reduced-motion: reduce)").matches;
+	// sao sắc nét theo độ phân giải màn hình
+	const cv = $k("kcSao"), ctx = cv.getContext("2d");
+	function veSao() {
+		if (cong.hidden) return;
+		const d = Math.min(devicePixelRatio || 1, 2), w = innerWidth, h = innerHeight;
+		cv.width = w * d; cv.height = h * d; ctx.setTransform(d, 0, 0, d, 0, 0); ctx.clearRect(0, 0, w, h);
+		for (let i = 0, n = Math.round(w * h / 2600); i < n; i++) {
+			const x = Math.random() * w, y = Math.random() * h, r = Math.random() < .9 ? Math.random() * .7 + .2 : Math.random() * 1.2 + .8;
+			ctx.fillStyle = "rgba(" + (200 + Math.random() * 55 | 0) + "," + (225 + Math.random() * 30 | 0) + ",255," + (.35 + Math.random() * .6).toFixed(2) + ")";
+			ctx.beginPath(); ctx.arc(x, y, r, 0, 6.2832); ctx.fill();
+		}
+		for (let i = 0; i < 9; i++) {
+			const x = Math.random() * w, y = Math.random() * h, L = 8 + Math.random() * 14, g = ctx.createRadialGradient(x, y, 0, x, y, L * .6);
+			g.addColorStop(0, "rgba(255,255,255,.95)"); g.addColorStop(1, "rgba(120,200,255,0)");
+			ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, L * .6, 0, 6.2832); ctx.fill();
+			ctx.strokeStyle = "rgba(200,235,255,.7)"; ctx.lineWidth = .7;
+			ctx.beginPath(); ctx.moveTo(x - L, y); ctx.lineTo(x + L, y); ctx.moveTo(x, y - L); ctx.lineTo(x, y + L); ctx.stroke();
+		}
+	}
+	new MutationObserver(veSao).observe(cong, { attributes: true, attributeFilter: ["hidden"] });
+	let henSao; addEventListener("resize", () => { clearTimeout(henSao); henSao = setTimeout(veSao, 200); });
+	veSao();
+	// thị sai
+	if (!itChuyen && !matchMedia("(pointer: coarse)").matches) {
+		const nen = $k("kcLopNen");
+		cong.addEventListener("mousemove", e => { nen.style.transform = "translate3d(" + ((e.clientX / innerWidth - .5) * -10) + "px," + ((e.clientY / innerHeight - .5) * -7) + "px,0)"; });
+	}
+	// hạt sáng quanh logo + KMath
+	if (!itChuyen) {
+		const khoi = $k("kcKhoi"), hop = $k("kcHat"); let hen = null;
+		const ban = n => {
+			const W = khoi.offsetWidth, H = khoi.offsetHeight;
+			for (let i = 0; i < n; i++) {
+				const h = document.createElement("span"); h.className = "kcH" + (Math.random() < .18 ? " tia" : "");
+				const x0 = Math.random() < .55 ? W * (.04 + Math.random() * .28) : W * (.35 + Math.random() * .6), y0 = H * (.15 + Math.random() * .7);
+				const g = Math.random() * 6.2832, d = 30 + Math.random() * 90;
+				h.style.cssText = "--x0:" + x0 + "px;--y0:" + y0 + "px;--x1:" + (x0 + Math.cos(g) * d) + "px;--y1:" + (y0 + Math.sin(g) * d - 20) + "px;--s:" + (.6 + Math.random() * 1.2).toFixed(2) + ";--t:" + (.7 + Math.random() * .9).toFixed(2) + "s";
+				hop.appendChild(h); h.addEventListener("animationend", () => h.remove());
+			}
+		};
+		const batDau = () => { if (hen) return; ban(26); hen = setInterval(() => ban(4), 110); }, dung = () => { clearInterval(hen); hen = null; };
+		khoi.addEventListener("mouseenter", batDau); khoi.addEventListener("mouseleave", dung);
+		khoi.addEventListener("touchstart", () => { batDau(); setTimeout(dung, 1200); }, { passive: true });
+	}
+	// tab: chưa đăng nhập → bấm tab thì đánh dấu + đưa tới form
+	const tabs = [...cong.querySelectorAll(".kcTab, #kcMenuDT button")], the = $k("kcThe");
+	const toiForm = msg => { the.scrollIntoView({ behavior: "smooth", block: "center" }); $k("kcEmail").focus({ preventScroll: true }); if (msg) { const b = $k("loiDangNhap"); b.className = "kcBao"; b.textContent = msg; } };
+	tabs.forEach(t => t.addEventListener("click", () => {
+		const ten = t.textContent.trim();
+		tabs.forEach(x => x.classList.toggle("on", x.textContent.trim() === ten));
+		$k("kcMenuDT").classList.remove("mo"); $k("kcNutMenu").setAttribute("aria-expanded", "false");
+		toiForm("Đăng nhập để dùng " + ten + ".");
+	}));
+	$k("kcVeDau").addEventListener("click", () => { tabs.forEach(x => x.classList.remove("on")); cong.scrollTo({ top: 0, behavior: "smooth" }); });
+	$k("kcToiForm").addEventListener("click", () => toiForm(""));
+	$k("kcNutMenu").addEventListener("click", e => { const mo = $k("kcMenuDT").classList.toggle("mo"); e.currentTarget.setAttribute("aria-expanded", mo); });
+	// hiện / ẩn mật khẩu
+	$k("kcHienMk").addEventListener("click", e => { const mk = $k("kcMk"), hien = mk.type === "password"; mk.type = hien ? "text" : "password"; e.currentTarget.setAttribute("aria-label", hien ? "Ẩn mật khẩu" : "Hiện mật khẩu"); });
+	// chuyển Đăng nhập / Đăng ký (trạng thái đọc ở module Firebase qua window.__kcChe)
+	const che = [...cong.querySelectorAll(".kcChe button")];
+	function datChe(k) {
+		const dk = k === "dk"; window.__kcChe = k;
+		che.forEach(b => b.setAttribute("aria-selected", b.dataset.che === k));
+		$k("kcTieuDe").textContent = dk ? "Tạo tài khoản" : "Đăng nhập hệ thống";
+		$k("kcMoTa").textContent = dk ? "Tài khoản mới cần quản trị viên duyệt trước khi dùng." : "Chào mừng thầy cô quay lại KMath.";
+		$k("kcOTen").hidden = !dk; $k("kcQuenMk").hidden = dk;
+		$k("kcMk").autocomplete = dk ? "new-password" : "current-password";
+		$k("kcNutChinh").textContent = dk ? "Đăng ký" : "Đăng nhập";
+		$k("kcHoiDuoi").textContent = dk ? "Đã có tài khoản?" : "Chưa có tài khoản?";
+		$k("kcNutDoi").textContent = dk ? "Đăng nhập" : "Đăng ký ngay";
+		$k("loiDangNhap").textContent = "";
+	}
+	che.forEach(b => b.addEventListener("click", () => datChe(b.dataset.che)));
+	$k("kcNutDoi").addEventListener("click", () => datChe(window.__kcChe === "dk" ? "dn" : "dk"));
+	datChe("dn");
+})();
+</script>
+
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, signInAnonymously, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, increment, serverTimestamp, writeBatch, collection, addDoc, getDocs, query, where, orderBy, limit, onSnapshot, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { firebaseConfig, EMAIL_QUAN_TRI, LIEN_HE } from "./cauhinh.js";
 
@@ -3697,6 +3983,40 @@ $("nutDangNhap").addEventListener("click", async () => {
 	$("loiDangNhap").textContent = "";
 	try { await signInWithPopup(auth, new GoogleAuthProvider()); }
 	catch (e) { $("loiDangNhap").textContent = "Không đăng nhập được (" + e.code + "). Thử lại hoặc cho phép cửa sổ bật lên."; }
+});
+/* ---------- đăng nhập email / mật khẩu (cổng mới) ---------- */
+const kcBao = (t, loi) => { const b = $("loiDangNhap"); b.className = "kcBao" + (loi ? " loi" : ""); b.textContent = t; };
+const kcLoi = c => ({
+	"auth/invalid-email": "Email không hợp lệ.",
+	"auth/missing-password": "Chưa nhập mật khẩu.",
+	"auth/weak-password": "Mật khẩu cần ít nhất 6 ký tự.",
+	"auth/email-already-in-use": "Email này đã có tài khoản — chọn Đăng nhập.",
+	"auth/invalid-credential": "Sai email hoặc mật khẩu.",
+	"auth/wrong-password": "Sai email hoặc mật khẩu.",
+	"auth/user-not-found": "Chưa có tài khoản với email này — chọn Đăng ký.",
+	"auth/too-many-requests": "Thử sai quá nhiều lần, vui lòng đợi ít phút.",
+	"auth/operation-not-allowed": "Hệ thống chưa bật đăng nhập bằng email — dùng nút Google."
+})[c] || "Không thực hiện được (" + c + ").";
+$("kcForm").addEventListener("submit", async e => {
+	e.preventDefault();
+	const email = $("kcEmail").value.trim(), mk = $("kcMk").value, dk = window.__kcChe === "dk", nut = $("kcNutChinh");
+	if (!email || !mk) { kcBao("Nhập đủ email và mật khẩu.", true); return; }
+	nut.disabled = true; kcBao(dk ? "Đang tạo tài khoản…" : "Đang đăng nhập…");
+	try {
+		if (dk) {
+			const kq = await createUserWithEmailAndPassword(auth, email, mk);
+			const ten = $("kcTenNd").value.trim();
+			if (ten) await updateProfile(kq.user, { displayName: ten });
+		} else await signInWithEmailAndPassword(auth, email, mk);
+		kcBao("");
+	} catch (er) { kcBao(kcLoi(er.code), true); }
+	finally { nut.disabled = false; }
+});
+$("kcQuenMk").addEventListener("click", async () => {
+	const email = $("kcEmail").value.trim();
+	if (!email) { kcBao("Nhập email rồi bấm lại Quên mật khẩu.", true); $("kcEmail").focus(); return; }
+	try { await sendPasswordResetEmail(auth, email); kcBao("Đã gửi thư đặt lại mật khẩu tới " + email + "."); }
+	catch (er) { kcBao(kcLoi(er.code), true); }
 });
 $("nutThoat").addEventListener("click", () => { boMay = null; signOut(auth); });
 $("nutKiemTraLai").addEventListener("click", () => auth.currentUser && kiemTraQuyen(auth.currentUser));
