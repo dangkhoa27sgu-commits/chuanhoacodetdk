@@ -1503,6 +1503,22 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 .thiTop .th .kms em{width:7px;height:7px;border-radius:50%;background:#2fcf8f;box-shadow:0 0 0 0 rgba(47,207,143,.6);animation:kmSong 2s infinite}
 @keyframes kmSong{0%{box-shadow:0 0 0 0 rgba(47,207,143,.55)}70%{box-shadow:0 0 0 7px rgba(47,207,143,0)}100%{box-shadow:0 0 0 0 rgba(47,207,143,0)}}
 .thiDN .loiMa{color:#ff8fa3;font-size:12.5px;font-weight:700;margin:-6px 0 10px;min-height:16px}
+/* b2.4: logo web (TĐK MATH) + cụm thương hiệu dưới thanh bên */
+.thiTop .logo.web,.thiWebDuoi .logo.web{background:#fff;padding:3px}
+.thiTop .logo.web img,.thiWebDuoi .logo.web img{object-fit:contain}
+.thiWebDuoi{display:flex;align-items:center;gap:12px;justify-content:center;padding:14px 10px 6px}
+.thiWebDuoi .logo{width:40px;height:40px;border-radius:11px;flex:none;overflow:hidden;display:grid;place-items:center}
+.thiWebDuoi .logo img{width:100%;height:100%}
+.thiWebDuoi .th{display:flex;flex-direction:column;line-height:1.2}
+.thiWebDuoi .kmw{font:900 17px/1.05 "Be Vietnam Pro",sans-serif;color:#fff;letter-spacing:-.3px}
+.thiWebDuoi .kmw i{font-style:normal;color:#f5b301}
+.thiWebDuoi .kms{display:inline-flex;align-items:center;gap:6px;font-size:9.5px;font-weight:800;letter-spacing:2px;color:#8fb0d8;margin-top:3px}
+.thiWebDuoi .kms em{width:6px;height:6px;border-radius:50%;background:#2fcf8f;animation:kmSong 2s infinite}
+#toXemLop .bt.da.on{background:#2fcf8f;border-color:#2fcf8f;color:#0a1a12}
+/* nhãn Đúng/Sai khi xem đáp án */
+.thiCau.thiXL .thiDe .ds > div{display:flex;align-items:flex-start;gap:10px;justify-content:space-between}
+.thiCau.thiXL .thiDe .ds .dS{flex:none;margin-left:auto;font:800 12px "Be Vietnam Pro",sans-serif;padding:4px 12px;border-radius:99px;background:#e6f9f0;color:#13794f}
+.thiCau.thiXL .thiDe .ds .dS.sai{background:#fdeaed;color:#b3293c}
 
 /* ===== Gán ID ===== */
 .giThan { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 16px; align-items: start; } @media (max-width: 1000px) { .giThan { grid-template-columns: 1fr; } }
@@ -2944,7 +2960,7 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 		<header class="mdDau">
 			<div class="mdDauTen">
 				<span class="mdDauIco toIco" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.9 5.7 3.9 9s-1.4 6.4-3.9 9c-2.5-2.6-3.9-5.7-3.9-9S9.5 5.6 12 3z"/></svg></span>
-				<div><h2>Thi Online <span style="font-size:11px;font-weight:700;color:var(--luc,#2fcf8f);background:rgba(47,207,143,.14);padding:2px 9px;border-radius:99px;vertical-align:middle">b2.3</span></h2></div>
+				<div><h2>Thi Online <span style="font-size:11px;font-weight:700;color:var(--luc,#2fcf8f);background:rgba(47,207,143,.14);padding:2px 9px;border-radius:99px;vertical-align:middle">b2.4</span></h2></div>
 			</div>
 			<div class="mdDauNut"><button class="vt3NutChinh nho" type="button" id="toTao">+ Tạo phòng thi</button></div>
 		</header>
@@ -2970,12 +2986,12 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 					<div class="toLogo" id="toLogo" title="Bấm để tải logo"><span class="goi">＋<br>Logo</span></div>
 					<input type="file" id="toLogoFile" accept="image/*" hidden>
 					<div class="toTHO">
-						<input class="mdO" id="toTen1" maxlength="40" placeholder="Dòng 1 — VD: TOÁN THẦY KHOA (trống = KMath.edu)">
-						<input class="mdO" id="toTen2" maxlength="60" placeholder="Dòng 2 — VD: ThS. Trương Đăng Khoa (trống = Hệ thống Thi online)">
+						<input class="mdO" id="toTen1" maxlength="40" placeholder="Dòng 1 — VD: TOÁN THẦY KHOA">
+						<input class="mdO" id="toTen2" maxlength="60" placeholder="Dòng 2 — VD: ThS. Trương Đăng Khoa">
 						<input class="mdO" id="toLienHe" maxlength="40" placeholder="Kênh / liên hệ (tuỳ chọn) — VD: TikTok @KMath.edu">
 					</div>
 				</div>
-				<div class="toTHNut"><button class="vdNutNho" type="button" id="toLogoBo" hidden>✕ Bỏ logo</button><span class="vdGhi" style="margin:0">Logo vuông, tự thu về 256×256. Thông tin được nhớ cho lần tạo phòng sau.</span></div>
+				<div class="toTHNut"><button class="vdNutNho" type="button" id="toLogoBo" hidden>✕ Bỏ logo</button><span class="vdGhi" style="margin:0">Bỏ trống cả khung → HS thấy thương hiệu KMath.edu. Logo vuông, tự thu 256×256; thông tin được nhớ cho lần sau.</span></div>
 			</div>
 
 			<div class="toNhom2">
@@ -3007,9 +3023,9 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 			<label class="toF toFull" style="margin-top:14px"><span class="mdNhan">Nội dung đề — dán các câu <code>\begin{ex}…\end{ex}</code> (mỗi khối một câu)</span>
 				<textarea class="mdO" id="toSoan" rows="7" spellcheck="false" placeholder="Dán đề, hoặc nạp file .tex, hoặc kéo thả file vào đây."></textarea></label>
 			<div class="toNap">
-				<input type="file" id="toFile" accept=".tex,.txt" multiple hidden>
-				<button class="vdNutNho" type="button" id="toNapNut">📂 Nạp file .tex</button>
-				<span class="vdGhi">Chọn nhiều file — <b>mỗi file là một đề</b> (phát hành thành nhiều phòng).</span>
+				<input type="file" id="toFile" accept=".tex,.txt,.docx" multiple hidden>
+				<button class="vdNutNho" type="button" id="toNapNut">📂 Nạp file .tex / Word</button>
+				<span class="vdGhi">Nhận .tex và Word .docx (công thức MathType/Equation, đáp án gạch chân hoặc tô đỏ, câu trả lời ngắn ghi “Đáp số:” hoặc “KQ:”). Nhiều file — <b>mỗi file là một đề</b>.</span>
 			</div>
 			<div class="toDsFile" id="toDsFile" hidden></div>
 			<div class="toFormDay"><span class="vdGhi" id="toDem">0 câu</span>
@@ -9637,7 +9653,7 @@ ${de || "(đề bài nằm trong ảnh đính kèm)"}`;
 		// xem trước: dùng bộ in thử sẵn có (htmlDe) + vẽ TikZ dần
 		const boHinh = new Map();
 		async function xemTruoc(el, code, o) { o = o || {}; const T = bo(); if (!T || !T.docDe) { el.innerHTML = '<p class="mdTrong">Bộ đọc đề chưa sẵn sàng.</p>'; return; } if (!window.katex) { try { await napKatex(); } catch (e) { } }
-			const hinh = (code.match(/\\begin\{tikzpicture\}[\s\S]*?\\end\{tikzpicture\}/g) || []), ve = () => { ANH = { url: {}, tikz: hinh.map(h => boHinh.get(h) || null).map(x => x === null ? undefined : x) }; const r = htmlDe(code, Object.assign({ lg: false, gach: true, tieuDe: false, dsBang: false }, o)); el.innerHTML = r.h || '<p class="mdTrong">Không có câu hỏi.</p>'; return r; };
+			const hinh = (code.match(/\\begin\{tikzpicture\}[\s\S]*?\\end\{tikzpicture\}/g) || []), ve = () => { ANH = { url: o.anh || {}, tikz: hinh.map(h => boHinh.get(h) || null).map(x => x === null ? undefined : x) }; const r = htmlDe(code, Object.assign({ lg: false, gach: true, tieuDe: false, dsBang: false }, o)); el.innerHTML = r.h || '<p class="mdTrong">Không có câu hỏi.</p>'; return r; };
 			const kq = ve(); const can = hinh.filter(h => !boHinh.has(h)); if (!can.length || o.khongHinh) return kq;
 			for (const h of can) { if (!el.isConnected) return kq; try { const r = await T.veTikz(h, { doPhanGiai: 2 }); boHinh.set(h, r && !r.loi && (r.png || r.svg) ? { u: URL.createObjectURL(r.png ? new Blob([r.png], { type: "image/png" }) : new Blob([r.svg], { type: "image/svg+xml" })), w: r.wPt } : { u: null }); } catch (e) { boHinh.set(h, { u: null }); } ve(); }
 			return kq; }
@@ -10271,6 +10287,139 @@ function khoiDongThiOnline() {
 		}, 400);
 	});
 
+	// ---------- Nạp đề bằng file WORD (.docx) ----------
+	let HINH = {};                                  // ảnh cắt từ Word: tên → dataURL (lưu cùng phòng)
+	const W_NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
+	async function canZip() { if (window.JSZip) return; await new Promise((ok, loi) => { const sc = document.createElement("script"); sc.src = "https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"; sc.onload = ok; sc.onerror = () => loi(new Error("không tải được thư viện đọc Word")); document.head.appendChild(sc); }); }
+	const laDo = v => { if (!/^[0-9a-f]{6}$/i.test(v || "")) return false; const r = parseInt(v.slice(0, 2), 16), g = parseInt(v.slice(2, 4), 16), b = parseInt(v.slice(4, 6), 16); return r >= 0xA0 && g < 0x70 && b < 0x70; };
+	const chuThuong = t => String(t || "").normalize("NFC").toLowerCase().replace(/[^0-9a-zà-ỹđ ]+/g, " ").replace(/\s+/g, " ").trim();
+	// đọc từng đoạn Word thành dãy ký tự có cờ "đánh dấu" (gạch chân hoặc tô đỏ); công thức MathType = 1 ký tự "∎"
+	async function docDoanWord(buf) {
+		const zip = await window.JSZip.loadAsync(buf), xml = await zip.file("word/document.xml").async("string");
+		const doc = new DOMParser().parseFromString(xml, "application/xml"), at = (e, n) => e.getAttributeNS(W_NS, n) || e.getAttribute("w:" + n) || "";
+		const ps = [...doc.getElementsByTagNameNS(W_NS, "p")];
+		return ps.map(p => {
+			const ch = [];
+			for (const r of p.getElementsByTagNameNS(W_NS, "r")) {
+				let q = r.parentNode; while (q && !(q.localName === "p" && q.namespaceURI === W_NS)) q = q.parentNode; if (q !== p) continue;
+				const pr = [...r.childNodes].find(x => x.localName === "rPr"); let d = false;
+				if (pr) for (const x of pr.childNodes) { if (x.localName === "u" && at(x, "val") !== "none") d = true; if (x.localName === "color" && laDo(at(x, "val"))) d = true; if (x.localName === "highlight" && /red/i.test(at(x, "val"))) d = true; }
+				for (const x of r.childNodes) { if (x.localName === "t") for (const c of x.textContent) ch.push({ c, d }); else if (x.localName === "tab") ch.push({ c: " ", d }); else if (x.localName === "object") ch.push({ c: "∎", d }); }
+			}
+			const txt = ch.map(x => x.c).join("");
+			return { ch, txt, chu: chuThuong(txt.replace(/∎/g, " ")) };
+		});
+	}
+	// tìm nhãn A–D (tn) hoặc a)–d) (ds) trong vùng phương án, trả cờ đúng cho từng nhãn
+	function docNhan(ch, loai) {
+		const txt = ch.map(x => x.c).join(""), re = loai === "tn" ? /(^|[\s∎.;,])([A-D])\s*[.:)]/g : /(^|[\s∎.;,])([a-d])\s*\)/g;
+		const nhan = []; let m;
+		while ((m = re.exec(txt))) { const k = m.index + m[1].length, chu = m[2], so = loai === "tn" ? "ABCD".indexOf(chu) : "abcd".indexOf(chu); if (so === nhan.length) nhan.push({ k, het: re.lastIndex }); }
+		if (nhan.length !== 4) return null;
+		return nhan.map((n, i) => {
+			if (ch[n.k].d) return true;                                  // nhãn được gạch chân / tô đỏ
+			const toi = i < 3 ? nhan[i + 1].k : txt.length, noi = ch.slice(n.het, toi).filter(x => /[^\s.;,]/.test(x.c));
+			return noi.length > 0 && noi.filter(x => x.d).length / noi.length >= 0.6;   // hoặc phần lớn nội dung được đánh dấu
+		});
+	}
+	// gắn \True theo cờ cho 4 nhóm {…} sau \choice / \choiceTF
+	function datTrue(ex, lenh, co) {
+		const lg = ex.search(/\\loigiai\s*\{/), re = new RegExp("\\\\" + lenh + "(?![A-Za-z])\\s*(\\[[^\\]]*\\])?", "g"); let x;
+		while ((x = re.exec(ex))) {
+			if (lg >= 0 && x.index > lg) return ex;
+			let j = x.index + x[0].length; const g = [];
+			while (g.length < 4) { while (j < ex.length && /\s/.test(ex[j])) j++; if (ex[j] !== "{") break; let d = 0, e = j; for (; e < ex.length; e++) { if (ex[e] === "\\") { e++; continue; } if (ex[e] === "{") d++; else if (ex[e] === "}" && --d === 0) break; } g.push([j, e + 1]); j = e + 1; }
+			if (g.length !== 4) return ex;
+			let ra = ex.slice(0, g[0][0]);
+			g.forEach(([a, b], k) => { const t = ex.slice(a + 1, b - 1).replace(/^\s*\\True\s*/, ""); ra += "{" + (co[k] ? "\\True " : "") + t + "}" + (k < 3 ? ex.slice(b, g[k + 1][0]) : ""); });
+			return ra + ex.slice(g[3][1]);
+		}
+		return ex;
+	}
+	// TLN: "KQ: 67" / "Đáp số: 3,2" / "ĐS:" / "Đáp án:" → \shortans{…}
+	function suaTLN(ex) {
+		if (!/\\shortans/.test(ex)) return ex;
+		const m0 = ex.match(/\\shortans\s*(\[[^\]]*\])?\s*\{([^{}]*)\}/); if (m0 && m0[2].replace(/\$/g, "").trim()) return ex;
+		const lg = ex.search(/\\loigiai\s*\{/), than = lg >= 0 ? ex.slice(0, lg) : ex;
+		const RE = /(?:\\textbf\s*\{\s*)?(?:KQ|Kết quả|Đáp số|ĐS|Đáp án)\s*[:：]\s*\$?\s*([-+−]?[\d.,{}\\]+)\s*\$?\s*\}?/i;
+		let m = than.match(RE), trongLG = false; if (!m && lg >= 0) { m = ex.slice(lg).match(RE); trongLG = true; }
+		if (!m) return ex;
+		const so = m[1].replace(/\{,\}/g, ",").replace(/[{}\\]/g, "").replace(/−/g, "-").replace(/[.,;]+$/, "").trim();
+		if (!so) return ex;
+		if (!trongLG) ex = ex.replace(m[0], "").replace(/\n[ \t]*\n(?=[ \t]*\\shortans)/, "\n");
+		return ex.replace(/\\shortans\s*(\[[^\]]*\])?\s*\{[^{}]*\}/, "\\shortans{" + so + "}");
+	}
+	// nén ảnh → webp (tối đa 900px)
+	async function nenAnh(blob) {
+		const bm = await createImageBitmap(blob), k = Math.min(1, 900 / bm.width), c = document.createElement("canvas");
+		c.width = Math.max(1, Math.round(bm.width * k)); c.height = Math.max(1, Math.round(bm.height * k));
+		const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height); g.drawImage(bm, 0, 0, c.width, c.height);
+		let u = c.toDataURL("image/webp", 0.82); if (!/^data:image\/webp/.test(u)) u = c.toDataURL("image/jpeg", 0.85);
+		return { u, w: bm.width };
+	}
+	async function docWord(file) {
+		const T = typeof bo === "function" && bo();
+		if (!T || !T.wordSangLatex) throw new Error("bộ luật chưa có chức năng Word → LaTeX (cần bộ luật 9.1+)");
+		await canZip();
+		const buf = await file.arrayBuffer();
+		const r = await T.wordSangLatex(buf.slice(0), {}), W2 = T._w2t || {}, canhBao = [];
+		let tex = r.tex || "";
+		// --- hình: giữ dạng ẢNH, đặt đúng vị trí trong câu ---
+		const coMat = new Set((tex.match(/(\d+)/g) || []).map(x => +x.slice(1, -1)));
+		const hinh = (r.hinh || []).filter(h => coMat.has(h.so));
+		for (const h of hinh) if (h.tep) { try { h.bytes = await r.tepNhiPhan(h.tep); } catch (e) { } }
+		let kqH = new Map();
+		if (hinh.length && W2.xuLiHinh) { try { kqH = await W2.xuLiHinh(hinh, { cheDoAnh: true, khongAI: true, ai: null, soVong: 0, khongNho: true, ungVien: false, nguongKho: 0.8, hoiKhach: async ds => ds.map(() => "anh") }); } catch (e) { console.warn("xuLiHinh:", e); } }
+		const anh = {}, ma = Date.now().toString(36).slice(-4);
+		for (const h of hinh) {
+			const x = kqH.get(h); let blob = null;
+			try {
+				if (x && x.png) blob = new Blob([x.png], { type: "image/png" });
+				else if (x && typeof x.anh === "string" && /^data:/.test(x.anh)) blob = await (await fetch(x.anh)).blob();
+				else if (h.bytes && h.bytes.length) { const b8 = h.bytes; const png = b8[0] === 0x89 && b8[1] === 0x50, jpg = b8[0] === 0xFF && b8[1] === 0xD8;
+					if (png || jpg) blob = new Blob([b8], { type: png ? "image/png" : "image/jpeg" }); else if (W2.wmfSangPng) { const pg = await W2.wmfSangPng(b8); if (pg) blob = new Blob([pg], { type: "image/png" }); } }
+			} catch (e) { }
+			const vt = "" + h.so + "";
+			if (!blob) { const rong = !h.tep && (!h.ve || !Object.keys(h.ve).length); if (!rong) canhBao.push("Bỏ 1 hình không đọc được (định dạng lạ) — nên chèn hình dạng ảnh PNG/JPG."); tex = tex.split(vt).join(""); continue; }
+			try {
+				const n = await nenAnh(blob), ten = "w" + ma + h.so;
+				anh[ten] = n.u;
+				const cm = Math.max(2.5, Math.min(14, (x && x.wCm) || h.wCm || n.w / 37.8));
+				tex = tex.split(vt).join("\\includegraphics[width=" + cm.toFixed(1) + "cm]{" + ten + "}");
+			} catch (e) { canhBao.push("Bỏ 1 hình nén không được."); tex = tex.split(vt).join(""); }
+		}
+		tex = tex.replace(/[-]\d*[-]?/g, "").replace(/\\begin\{center\}\s*\\end\{center\}/g, "");
+		// --- đáp án đúng: gạch chân HOẶC tô đỏ (ở nhãn hoặc nội dung) ---
+		const exs = tex.match(/\\begin\{ex\}[\s\S]*?\\end\{ex\}/g) || [];
+		let doan = []; try { doan = await docDoanWord(buf.slice(0)); } catch (e) { canhBao.push("Không đọc được định dạng gạch chân/tô đỏ: " + e.message); }
+		let tu = 0; const moc = exs.map(ex => {           // dò đoạn mở đầu mỗi câu trong Word bằng chữ của đề
+			const than = ex.replace(/\\begin\{ex\}(%\[[^\]]*\])*/, "").split(/\\(?:choiceTF|choice|shortans|loigiai)\b/)[0];
+			const w = chuThuong(than.replace(/\$[^$]*\$/g, " ").replace(/\\[a-zA-Z]+/g, " ")).split(" ").filter(Boolean).slice(0, 6).join(" ");
+			if (!w) return -1;
+			for (let i = tu; i < doan.length; i++) if (doan[i].chu.includes(w) || (w.length > 12 && doan[i].chu.includes(w.slice(0, 18)))) { tu = i + 1; return i; }
+			return -1;
+		});
+		let soDA = 0;
+		tex = tex.replace(/\\begin\{ex\}[\s\S]*?\\end\{ex\}/g, ex => {
+			const k = exs.indexOf(ex), L = QB.loai(ex);
+			if ((L === "tn" || L === "ds") && moc[k] >= 0) {
+				let het = doan.length; for (let j = k + 1; j < moc.length; j++) if (moc[j] > moc[k]) { het = moc[j]; break; }
+				for (let i = moc[k] + 1; i < het; i++) if (/^\s*(lời giải|hướng dẫn|giải\b|đáp án\s*:)/i.test(doan[i].txt)) { het = i; break; }
+				const ch = []; for (let i = moc[k]; i < het; i++) { ch.push(...doan[i].ch); ch.push({ c: "\n", d: false }); }
+				const co = docNhan(ch, L);
+				if (co && co.some(Boolean)) ex = datTrue(ex, L === "tn" ? "choice" : "choiceTF", L === "tn" ? co.map((v, i) => i === co.indexOf(true)) : co);
+			}
+			if (L === "tln") ex = suaTLN(ex);
+			const coDA = L === "tn" ? /\\True/.test(ex) : L === "ds" ? /\\True/.test(ex) : L === "tln" ? /\\shortans\s*(\[[^\]]*\])?\s*\{\s*[^}\s]/.test(ex) : true;
+			if (coDA) soDA++;
+			return ex;
+		});
+		const de = (tex.match(/\\begin\{ex\}[\s\S]*?\\end\{ex\}/g) || []).join("\n\n");
+		const n = demCau(de);
+		if (soDA < n) canhBao.push((n - soDA) + " câu chưa có đáp án — kiểm tra gạch chân/tô đỏ, hoặc dòng “Đáp số:/KQ:” ở câu trả lời ngắn.");
+		return { noi: de, anh, soCau: n, soDA, soHinh: Object.keys(anh).length, canhBao };
+	}
+
 	// ---------- #5 Nạp file .tex (nhiều file = nhiều đề) ----------
 	let FILES = [], SUAID = null;
 	const tenTuFile = n => String(n || "").replace(/\.(tex|txt)$/i, "").replace(/[_-]+/g, " ").trim();
@@ -10283,21 +10432,31 @@ function khoiDongThiOnline() {
 		box.querySelectorAll("[data-bo]").forEach(b => b.addEventListener("click", () => { FILES.splice(+b.dataset.bo, 1); veDsFile(); }));
 	}
 	async function nhanFile(list) {
-		const ds = [...list].filter(f => /\.(tex|txt)$/i.test(f.name));
-		if (!ds.length) { nhac("⚠ Chỉ nhận file .tex hoặc .txt", "loi"); return; }
-		const doc = await Promise.all(ds.map(f => f.text().then(t => ({ ten: tenTuFile(f.name), noi: t, soCau: demCau(t) }))));
+		const ds = [...list].filter(f => /\.(tex|txt|docx)$/i.test(f.name));
+		if (!ds.length) { nhac("⚠ Chỉ nhận file .tex, .txt hoặc Word .docx", "loi"); return; }
+		const coWord = ds.some(f => /\.docx$/i.test(f.name));
+		if (coWord) bang("⏳ Đang đọc file Word, giải mã công thức và cắt hình…", "");
+		const doc = [], cb = [];
+		for (const f of ds) {
+			try {
+				if (/\.docx$/i.test(f.name)) { const w = await docWord(f); doc.push({ ten: tenTuFile(f.name), noi: w.noi, soCau: w.soCau, anh: w.anh, ghi: w.soCau + " câu · " + w.soHinh + " hình · đáp án " + w.soDA + "/" + w.soCau }); w.canhBao.forEach(x => cb.push(f.name + ": " + x)); }
+				else { const t = await f.text(); doc.push({ ten: tenTuFile(f.name), noi: t, soCau: demCau(t), anh: {} }); }
+			} catch (e) { cb.push(f.name + ": không đọc được — " + (e.message || e)); }
+		}
 		const tot = doc.filter(d => d.soCau > 0), bo = doc.length - tot.length;
-		if (!tot.length) { nhac("⚠ Không file nào có câu \\begin{ex}…\\end{ex}", "loi"); return; }
-		if (tot.length === 1 && tachNhieuDe(tot[0].noi)) { FILES = []; veDsFile(); nhanBienThe(tachNhieuDe(tot[0].noi), "file " + tot[0].ten); return; }
+		const duoi = (cb.length ? " ⚠ " + [...new Set(cb)].join(" · ") : "") + (bo ? " (bỏ qua " + bo + " file không có câu)" : "");
+		if (!tot.length) { nhac("⚠ Không file nào có câu hỏi." + duoi, "loi"); return; }
+		if (tot.length === 1 && !Object.keys(tot[0].anh).length && tachNhieuDe(tot[0].noi)) { FILES = []; veDsFile(); nhanBienThe(tachNhieuDe(tot[0].noi), "file " + tot[0].ten); return; }
 		if (tot.length === 1) {
-			FILES = []; veDsFile();
+			FILES = []; veDsFile(); HINH = Object.assign({}, tot[0].anh);
 			$t("toSoan").value = tot[0].noi; $t("toDem").textContent = tot[0].soCau + " câu";
 			if (!$t("toTen").value.trim()) $t("toTen").value = tot[0].ten;
-			nhac("✓ Đã nạp " + tot[0].ten + " · " + tot[0].soCau + " câu" + (bo ? " (bỏ qua " + bo + " file rỗng)" : ""), "ok");
+			BIENTHE = []; capDoi();
+			nhac("✓ Đã nạp " + tot[0].ten + " · " + (tot[0].ghi || tot[0].soCau + " câu") + "." + duoi, cb.length ? "loi" : "ok");
 		} else {
 			FILES = tot; veDsFile();
 			$t("toSoan").value = ""; $t("toDem").textContent = "0 câu";
-			nhac("✓ Đã nạp " + tot.length + " file — mỗi file sẽ thành 1 phòng thi" + (bo ? " (bỏ qua " + bo + " file rỗng)" : ""), "ok");
+			nhac("✓ Đã nạp " + tot.length + " file — mỗi file sẽ thành 1 phòng thi." + duoi, cb.length ? "loi" : "ok");
 		}
 	}
 	$t("toNapNut").addEventListener("click", () => $t("toFile").click());
@@ -10311,7 +10470,7 @@ function khoiDongThiOnline() {
 
 	// ---------- #3 Sửa phòng đã tạo ----------
 	function moSua(p) {
-		SUAID = p.id; FILES = []; veDsFile(); BIENTHE = Array.isArray(p.bienThe) ? p.bienThe.slice() : [];
+		SUAID = p.id; FILES = []; veDsFile(); BIENTHE = Array.isArray(p.bienThe) ? p.bienThe.slice() : []; HINH = Object.assign({}, p.hinhAnh || {});
 		$t("toForm").hidden = false;
 		$t("toTen").value = p.tenDe || ""; $t("toMon").value = p.mon || ""; $t("toLop").value = p.lop || "";
 		$t("toPhut").value = p.thoiLuong || 45; $t("toLan").value = p.soLan || 1;
@@ -10326,7 +10485,7 @@ function khoiDongThiOnline() {
 		bang("Đang sửa phòng · mã " + p.ma + " — sửa xong bấm “Lưu thay đổi”. Link và mã QR cũ giữ nguyên.", "");
 		$t("toForm").scrollIntoView({ behavior: "smooth", block: "start" });
 	}
-	function thoatSua() { SUAID = null; BIENTHE = []; capDoi(); const b = $t("toPhat"); if (b) b.textContent = "✦ Phát hành phòng thi"; }
+	function thoatSua() { SUAID = null; BIENTHE = []; HINH = {}; capDoi(); const b = $t("toPhat"); if (b) b.textContent = "✦ Phát hành phòng thi"; }
 
 	// ---------- #2 Xem trước đề (đúng giao diện HS) + biến thể đổi số ----------
 	const PHAN_XEM = [["tn", "PHẦN 1 · TRẮC NGHIỆM", "Chọn một đáp án đúng · mỗi câu 0,25 điểm", "xanh"],
@@ -10344,7 +10503,7 @@ function khoiDongThiOnline() {
 			card.insertAdjacentHTML("beforeend", '<div class="thiTln"><div class="thiOtp"><input disabled><input disabled><input disabled><input disabled></div></div>');
 		}
 	}
-	async function veGiayXem(ruot, deRaw) {
+	async function veGiayXem(ruot, deRaw, coDA, anh) {
 		ruot.innerHTML = '<div class="thiGiay"><div class="thiBanner"><h1>' + esc2($t("toTen").value.trim() || "Đề kiểm tra") + '</h1>'
 			+ '<span class="pill vang">⏱ ' + (+$t("toPhut").value || 45) + ' phút</span><span class="pill">📝 ' + demCau(deRaw) + ' câu hỏi</span></div>'
 			+ '<div class="thiRuot" id="toXemDs"></div></div>';
@@ -10358,18 +10517,19 @@ function khoiDongThiOnline() {
 			h.innerHTML = '<span class="stt">' + sp + '</span><span class="ten">' + ten + '</span><span class="ghi">' + ghi + '</span>';
 			ds.appendChild(h);
 			for (let j = 0; j < g.length; j++) {
-				const card = document.createElement("div"); card.className = "thiCau";
+				const card = document.createElement("div"); card.className = "thiCau" + (coDA ? " thiXL" : "");
 				const de = document.createElement("div"); de.className = "thiDe";
 				card.appendChild(de); ds.appendChild(card);
-				const kq = await QB.xemTruoc(de, g[j].raw, { lg: false, gach: false, tieuDe: false });
+				const kq = await QB.xemTruoc(de, g[j].raw, { lg: !!coDA, gach: !!coDA, tieuDe: false, anh: anh || HINH });
 				const c = ((kq && kq.de && kq.de.cau) || []).find(x => !x.phanMoi) || {};
 				const nhan = de.querySelector(".nhanCau"); if (nhan) nhan.textContent = "Câu " + (j + 1) + ".";
-				veDapAnXem(c.loai || g[j].loai, de, card);
+				if (!coDA) veDapAnXem(c.loai || g[j].loai, de, card);
 			}
 		}
 	}
 	async function moXemTruoc() {
 		const deRaw = $t("toSoan").value.trim() || (FILES[0] && FILES[0].noi) || "";
+		const anhXem = $t("toSoan").value.trim() ? HINH : ((FILES[0] && FILES[0].anh) || {});
 		if (!demCau(deRaw)) { nhac("⚠ Chưa có đề để xem trước", "loi"); return; }
 		if (!(typeof bo === "function" && bo() && bo().docDe)) { nhac("⚠ Bộ đọc đề chưa sẵn sàng — thử lại sau vài giây", "loi"); return; }
 		let lop = document.getElementById("toXemLop");
@@ -10386,14 +10546,17 @@ function khoiDongThiOnline() {
 				else { tt.textContent = "chỉ có đề gốc"; ruot.insertAdjacentHTML("afterbegin", '<div class="toKQ loi" style="margin:0 0 14px">⚠ Chưa sinh được đề đổi số: chưa câu nào trong đề này có <b>mẫu đổi số</b>. Vào tab <b>Công cụ → Đề tương tự</b>, nạp đề, lập mẫu cho từng câu rồi bấm <b>💾 Lưu</b>; quay lại đây sẽ có đủ 10 đề.</div>'); }
 			} catch (e) { tt.textContent = "lỗi sinh biến thể"; }
 		}
-		nut.innerHTML = nhan.map((t, i) => '<button class="bt' + (i ? "" : " on") + '" type="button" data-v="' + i + '">' + t + "</button>").join("") + '<button class="bt dong" type="button" id="toXemDong">✕ Đóng</button>';
+		let dangXem = 0, coDA = false;
+		nut.innerHTML = nhan.map((t, i) => '<button class="bt' + (i ? "" : " on") + '" type="button" data-v="' + i + '">' + t + "</button>").join("")
+			+ '<button class="bt da" type="button" id="toXemDA">✓ Hiện đáp án</button><button class="bt dong" type="button" id="toXemDong">✕ Đóng</button>';
 		nut.querySelector("#toXemDong").addEventListener("click", () => lop.classList.remove("mo"));
-		nut.querySelectorAll("[data-v]").forEach(b => b.addEventListener("click", async () => {
+		const ve = async () => { ruot.innerHTML = '<p class="vdGhi">Đang dựng đề…</p>'; await veGiayXem(ruot, DSD[dangXem], coDA, anhXem); };
+		nut.querySelector("#toXemDA").addEventListener("click", e => { coDA = !coDA; e.currentTarget.classList.toggle("on", coDA); ve(); });
+		nut.querySelectorAll("[data-v]").forEach(b => b.addEventListener("click", () => {
 			nut.querySelectorAll("[data-v]").forEach(z => z.classList.remove("on")); b.classList.add("on");
-			ruot.innerHTML = '<p class="vdGhi">Đang dựng đề…</p>';
-			await veGiayXem(ruot, DSD[+b.dataset.v]);
+			dangXem = +b.dataset.v; ve();
 		}));
-		await veGiayXem(ruot, DSD[0]);
+		await ve();
 	}
 	$t("toXem").addEventListener("click", () => moXemTruoc().catch(e => nhac("Lỗi xem trước: " + (e.message || e), "loi")));
 
@@ -10407,20 +10570,16 @@ function khoiDongThiOnline() {
 		const ds = txt.split(MOC_DE).map(x => x.trim()).filter(x => demCau(x) > 0);
 		return ds.length > 1 ? ds : null;
 	}
-	// kiểm 1 câu sinh ra có hợp lệ không (chống lỗi code / nhân đôi câu)
-	function cauHopLe(code, loaiGoc) {
+	// kiểm 1 câu sinh ra có hợp lệ không — dùng bộ kiểm SÂU của tab Đề tương tự (docDe: đủ phương án, đúng 1 đáp án, không lẫn đề…)
+	function lyDoCau(code, loaiGoc) {
 		try {
-			if (!code || !/\\begin\s*\{\s*ex\s*\}/.test(code)) return false;
-			if ((code.match(/\\begin\s*\{\s*ex\s*\}/g) || []).length !== 1) return false;
-			if ((code.match(/\\end\s*\{\s*ex\s*\}/g) || []).length !== 1) return false;
-			const t = QB.tachEx(code);
-			if (t.length !== 1) return false;
-			if (loaiGoc && QB.loai(t[0].than) !== loaiGoc) return false;
-			const T = (typeof bo === "function") && bo();
-			if (T && T.docDe) { const d = T.docDe(code); if (!d || !d.cau || d.cau.filter(c => !c.phanMoi).length !== 1) return false; }
-			return true;
-		} catch (e) { return false; }
+			const t = QB.tachEx(code); if (t.length !== 1) return "đọc ra " + t.length + " câu";
+			if (loaiGoc && QB.loai(t[0].than) !== loaiGoc) return "sai loại câu";
+			const TT = window.TDKMod && window.TDKMod.TT;
+			return TT && TT.kiemCauSinh ? TT.kiemCauSinh(code, loaiGoc) : "";
+		} catch (e) { return e.message || "lỗi"; }
 	}
+	const cauHopLe = (code, loaiGoc) => !lyDoCau(code, loaiGoc);
 	// kiểm cả 1 đề biến thể: đúng số câu, đúng thứ tự loại
 	function deHopLe(deRaw, loaiGoc) {
 		try { const t = QB.tachEx(deRaw); if (t.length !== loaiGoc.length) return false; return t.every((x, i) => QB.loai(x.than) === loaiGoc[i]); } catch (e) { return false; }
@@ -10495,17 +10654,31 @@ function khoiDongThiOnline() {
 		e.className = "toDoiTT ok"; e.textContent = "✓ " + r.bienThe.length + " đề biến thể · " + r.doi + "/" + r.tong + " câu thật sự đổi số (có mẫu: " + r.mauCo + ")." + loiBT(r);
 	});
 	function nhanBienThe(ds, nguon) {
-		const goc = QB.tachEx(ds[0]).map(x => QB.loai(x.than));
-		const tot = ds.filter(d => deHopLe(d, goc));
-		const e = $t("toDoiTT");
-		if (tot.length < 2) { e.className = "toDoiTT loi"; e.textContent = "⚠ Các đề không đồng nhất số câu/loại câu — không dùng làm biến thể được."; return; }
-		BIENTHE = tot;
-		if (!demCau($t("toSoan").value.trim())) $t("toSoan").value = tot[0];
+		if (!window.TDKMod || !window.TDKMod.TT) { try { if (typeof khoiDongDeTuongTu === "function") khoiDongDeTuongTu(); } catch (e) { } }
+		const goc = QB.tachEx(demCau($t("toSoan").value.trim()) ? $t("toSoan").value.trim() : ds[0]);
+		const loaiGoc = goc.map(x => QB.loai(x.than));
+		const e = $t("toDoiTT"); let thay = 0, boDe = 0; const ra = [];
+		ds.forEach(d => {
+			const t = QB.tachEx(d);
+			if (t.length !== goc.length || t.some((x, i) => QB.loai(x.than) !== loaiGoc[i])) { boDe++; return; }
+			const parts = t.map((x, i) => { if (cauHopLe(x.raw, loaiGoc[i])) return x.raw; thay++; return goc[i].raw; });
+			const dr = parts.join("\n\n");
+			if (!ra.includes(dr) && dr !== goc.map(x => x.raw).join("\n\n")) ra.push(dr);
+		});
+		if (!ra.length) { e.className = "toDoiTT loi"; e.textContent = "⚠ Không nhận được đề biến thể nào hợp lệ" + (boDe ? " (" + boDe + " đề lệch số câu/loại câu so với đề gốc)" : "") + "."; return; }
+		BIENTHE = ra;
+		if (!demCau($t("toSoan").value.trim())) $t("toSoan").value = goc.map(x => x.raw).join("\n\n");
 		$t("toDem").textContent = demCau($t("toSoan").value) + " câu";
 		$t("toDoiSo").checked = true; capDoi();
-		e.className = "toDoiTT ok"; e.textContent = "✓ Nhận " + tot.length + " đề biến thể từ " + nguon + (ds.length > tot.length ? " (bỏ " + (ds.length - tot.length) + " đề lệch cấu trúc)" : "") + ".";
+		e.className = "toDoiTT ok"; e.textContent = "✓ Nhận " + ra.length + " đề biến thể từ " + nguon + "." + (thay ? " " + thay + " câu sinh lỗi đã thay bằng câu gốc." : "") + (boDe ? " Bỏ " + boDe + " đề lệch cấu trúc." : "");
 	}
 
+
+	function kiemNang(o) {
+		const n = new Blob([JSON.stringify(o)]).size;
+		if (n > 950000) throw new Error("đề quá nặng (" + Math.round(n / 1024) + " KB, giới hạn ~950 KB) — bớt hình hoặc bớt số đề biến thể");
+		return o;
+	}
 	$t("toPhat").addEventListener("click", async () => {
 		const K = window.KFB;
 		if (!K || !K.db) { nhac("⚠ Firebase chưa sẵn sàng — đợi 1–2 giây rồi bấm lại", "loi"); return; }
@@ -10539,7 +10712,7 @@ function khoiDongThiOnline() {
 				const bt = await lamBT(deRaw);
 				bang("⏳ Đang lưu thay đổi…", "");
 				const cu = DS.find(x => x.id === SUAID) || {};
-				await K.updateDoc(K.doc(K.db, "phongThi", SUAID), Object.assign(chung(), layMaDe(cu), { tenDe, deRaw, bienThe: bt.bienThe, soCau: demCau(deRaw) }));
+				await K.updateDoc(K.doc(K.db, "phongThi", SUAID), kiemNang(Object.assign(chung(), layMaDe(cu), { tenDe, deRaw, bienThe: bt.bienThe, hinhAnh: HINH, soCau: demCau(deRaw) })));
 				nhac("✓ Đã lưu thay đổi — link & mã QR cũ giữ nguyên" + ghiChuBT(bt), "ok");
 				thoatSua(); setTimeout(() => { $t("toForm").hidden = true; }, 2000);
 			} else if (nhieu) {
@@ -10548,11 +10721,11 @@ function khoiDongThiOnline() {
 					const f = FILES[i];
 					bang("⏳ Đang tạo phòng " + (i + 1) + "/" + FILES.length + " — " + f.ten + "…", "");
 					const bt = await lamBT(f.noi), ma = maNgauNhien();
-					await K.addDoc(K.collection(K.db, "phongThi"), Object.assign(chung(), layMaDe(), {
+					await K.addDoc(K.collection(K.db, "phongThi"), kiemNang(Object.assign(chung(), layMaDe(), {
 						teacherId: u.uid, teacherName: u.displayName || u.email || "", ma,
-						tenDe: f.ten, deRaw: f.noi, bienThe: bt.bienThe, soCau: f.soCau,
+						tenDe: f.ten, deRaw: f.noi, bienThe: bt.bienThe, hinhAnh: f.anh || {}, soCau: f.soCau,
 						trangThai: "mo", soHS: 0, createdAt: K.serverTimestamp()
-					}));
+					})));
 					dsMa.push(ma);
 				}
 				FILES = []; veDsFile(); ["toTen", "toLop", "toSoan"].forEach(id => $t(id).value = ""); $t("toDem").textContent = "0 câu";
@@ -10563,12 +10736,12 @@ function khoiDongThiOnline() {
 				bang("⏳ Đang lưu lên Firebase…", "");
 				const ma = maNgauNhien();
 				const md = layMaDe();
-				await K.addDoc(K.collection(K.db, "phongThi"), Object.assign(chung(), md, {
+				await K.addDoc(K.collection(K.db, "phongThi"), kiemNang(Object.assign(chung(), md, {
 					teacherId: u.uid, teacherName: u.displayName || u.email || "", ma,
-					tenDe, deRaw, bienThe: bt.bienThe, soCau: demCau(deRaw),
+					tenDe, deRaw, bienThe: bt.bienThe, hinhAnh: HINH, soCau: demCau(deRaw),
 					trangThai: "mo", soHS: 0, createdAt: K.serverTimestamp()
-				}));
-				["toTen", "toLop", "toSoan", "toMaDe"].forEach(id => $t(id).value = ""); $t("toDem").textContent = "0 câu"; BIENTHE = []; capDoi();
+				})));
+				["toTen", "toLop", "toSoan", "toMaDe"].forEach(id => $t(id).value = ""); $t("toDem").textContent = "0 câu"; BIENTHE = []; HINH = {}; capDoi();
 				nhac("✓ Đã phát hành · mã đề " + md.maDe + (md.khoaMa ? " (HS phải nhập)" : "") + " · link: " + linkCua(ma) + ghiChuBT(bt), "ok");
 				setTimeout(() => { $t("toForm").hidden = true; }, 2500);
 			}
@@ -10795,14 +10968,18 @@ async function thiChay(ma) {
 	// ---- overlay ----
 	const ov = el("div"); ov.id = "thiOverlay"; document.body.appendChild(ov);
 	document.title = "Thi Online";
-	const LOGO_MAC = '<svg viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="kmG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD25E"/><stop offset="1" stop-color="#F08C00"/></linearGradient></defs><rect width="48" height="48" rx="13" fill="url(#kmG)"/><path d="M15.5 12v24" stroke="#17233a" stroke-width="5.6" stroke-linecap="round"/><path d="M30.5 12 19.5 24" stroke="#17233a" stroke-width="5.6" stroke-linecap="round"/><path d="m20.5 24.5 6.6 9.2 10.2-15.2" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M37.5 6.5l1.1 2.5 2.5 1.1-2.5 1.1-1.1 2.5-1.1-2.5-2.5-1.1 2.5-1.1z" fill="#fff"/></svg>';
+	// Thương hiệu: GV có điền thông tin → góc trái là GV, cụm KMath.edu xuống dưới khung "Đang giám sát"; GV bỏ trống → cụm KMath.edu ở góc trái
+	const LOGO_WEB = "data:image/webp;base64,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";
+	const coGV = t => !!(t && (t.ten1 || t.ten2 || t.logo || t.lienHe));
+	const khoiWeb = () => '<div class="logo web"><img src="' + LOGO_WEB + '" alt="KMath"></div><div class="th"><b class="kmw">KMath<i>.edu</i></b><span class="kms"><em></em>HỆ THỐNG THI ONLINE</span></div>';
 	const thuongHieu = r => {
-		const t = (r && r.thuongHieu) || {}, coTen = !!(t.ten1 || t.ten2);
-		const logo = t.logo ? '<div class="logo"><img src="' + esc2(t.logo) + '" alt="logo"></div>' : '<div class="logo mac">' + LOGO_MAC + "</div>";
-		const ten = coTen ? '<div class="th"><b>' + esc2(t.ten1 || "KMath.edu") + "</b><span>" + esc2(t.ten2 || "Hệ thống Thi online") + "</span></div>"
-			: '<div class="th"><b class="kmw">KMath<i>.edu</i></b><span class="kms"><em></em>HỆ THỐNG THI ONLINE</span></div>';
-		return logo + ten + (t.lienHe ? '<span class="thiTok">' + esc2(t.lienHe) + "</span>" : "");
+		const t = (r && r.thuongHieu) || {};
+		if (!coGV(t)) return khoiWeb();
+		return '<div class="logo' + (t.logo ? "" : " web") + '"><img src="' + esc2(t.logo || LOGO_WEB) + '" alt="logo"></div>'
+			+ '<div class="th">' + (t.ten1 ? "<b>" + esc2(t.ten1) + "</b>" : "") + (t.ten2 ? "<span>" + esc2(t.ten2) + "</span>" : "") + "</div>"
+			+ (t.lienHe ? '<span class="thiTok">' + esc2(t.lienHe) + "</span>" : "");
 	};
+	const webDuoi = r => coGV((r && r.thuongHieu) || {}) ? '<div class="thiWebDuoi">' + khoiWeb() + "</div>" : "";
 
 	let room, HS = {}, deRaw, CAU = [], DA = [], BLOCKS = [], VARIDX = 0, DANOP = false, TABROI = 0, dongHoID = 0, conLai = 0, TGBD = 0;
 
@@ -10882,7 +11059,7 @@ async function thiChay(ma) {
 			+ '<div class="thiChu"><span><i class="a"></i>Đang xem</span><span><i class="b"></i>Đã làm</span><span><i></i>Chưa</span></div></div>'
 			+ '<button class="thiNopTo" id="thiNop">Nộp bài</button>'
 			+ (cg.khoaTab ? '<div class="thiGiamSat"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6z"/></svg><div>Đang giám sát: rời khỏi trang <b>2 lần</b> sẽ tự động nộp bài.</div></div>' : "")
-			+ '<div class="thiCuoi">TOÁN THẦY KHOA · @KMath.edu</div></aside></div>';
+			+ webDuoi(room) + '</aside></div>';
 		veWatermark();
 		const dsEl = document.getElementById("thiDS"), biEl = document.getElementById("thiBi");
 		// #6: dựng đề ở vùng ẩn, chỉ hiện khi xong — đề và đồng hồ xuất hiện cùng lúc
@@ -10905,7 +11082,7 @@ async function thiChay(ma) {
 				const i = stt++;
 				const card = el("div", "thiCau"), de = el("div", "thiDe");
 				card.appendChild(de); kho.appendChild(card); theCau.push(card); BLOCKS.push(g[j].raw);
-				const kq = await QB.xemTruoc(de, g[j].raw, { lg: false, gach: false, tieuDe: false });
+				const kq = await QB.xemTruoc(de, g[j].raw, { lg: false, gach: false, tieuDe: false, anh: room.hinhAnh || {} });
 				const c = (kq && kq.de && kq.de.cau || []).find(x => !x.phanMoi) || (kq && kq.de && kq.de.cau || [])[0] || { loai: g[j].loai, dung: [], phuongAn: [] };
 				CAU.push({ loai: c.loai || g[j].loai, dung: (c.dung || []).slice(), dapSo: c.dapSo || "" });
 				const nhan = de.querySelector(".nhanCau"); if (nhan) nhan.textContent = "Câu " + (j + 1) + ".";
@@ -11057,7 +11234,7 @@ async function thiChay(ma) {
 			} else tt = '<span class="tt p">Chấm tay</span>';
 			dau.innerHTML = '<span class="n">Câu ' + (i + 1) + '</span><span class="lo" style="font-size:11.5px;color:#5a7290;font-weight:700">' + (tenLoai[c.loai] || "") + "</span>" + tt + ban;
 			card.appendChild(dau); card.appendChild(de); ds.appendChild(card);
-			await QB.xemTruoc(de, BLOCKS[i], { lg: xemLG, gach: true, tieuDe: false });
+			await QB.xemTruoc(de, BLOCKS[i], { lg: xemLG, gach: true, tieuDe: false, anh: room.hinhAnh || {} });
 			const nh = de.querySelector(".nhanCau"); if (nh) nh.remove();
 		}
 		const t = document.querySelector(".thiXemLai .thiTai"); if (t) t.remove();
@@ -11863,6 +12040,28 @@ async function thiChay(ma) {
 		// lamTron bỏ trống mà đáp án gốc có phần thập phân (vd 0,26) → làm tròn theo đúng số chữ số đó
 		const soLe = x => { const t = String(x == null ? "" : x).replace(/\$/g, "").replace(/\{,\}/g, ".").replace(/(\d),(\d)/g, "$1.$2"); const k = t.match(/^\s*-?\d+\.(\d+)\s*$/); return k ? String(k[1].length) : ""; };
 		const tronCua = m => m.lamTron != null && String(m.lamTron).trim() !== "" ? String(m.lamTron) : soLe(m.dapAnGoc);
+		// deBai chỉ là PHẦN ĐỀ: bỏ \begin{ex}, cắt mọi thứ từ \choice / \choiceTF / \shortans / \loigiai trở đi (AI hay chép lẫn vào)
+		function lamSachDeBai(t) { t = String(t || "").replace(/\\begin\s*\{ex\}\s*(%\[[^\]]*\])*/g, "").replace(/\\end\s*\{ex\}/g, ""); const k = t.search(/\\(choiceTF|choice|shortans|loigiai)\b/); return (k >= 0 ? t.slice(0, k) : t).replace(/\s+$/, ""); }
+		// KIỂM SÂU 1 câu sinh ra — trả "" nếu hợp lệ, ngược lại trả lý do
+		function kiemCauSinh(code, L) {
+			try {
+				code = String(code || "");
+				if ((code.match(/\\begin\s*\{\s*ex\s*\}/g) || []).length !== 1 || (code.match(/\\end\s*\{\s*ex\s*\}/g) || []).length !== 1) return "thừa/thiếu \\begin{ex}";
+				let d = 0; for (let i = 0; i < code.length; i++) { const c = code[i]; if (c === "\\") { i++; continue; } if (c === "%") { const n = code.indexOf("\n", i); if (n < 0) break; i = n; continue; } if (c === "{") d++; else if (c === "}" && --d < 0) return "ngoặc { } lệch"; } if (d) return "ngoặc { } lệch";
+				if ((code.replace(/\\\$/g, "").replace(/%[^\n]*/g, "").match(/\$/g) || []).length % 2) return "dấu $ lẻ";
+				if (/\{=|\bneu\s*\(|NaN|Infinity|undefined|\bnull\b/.test(code)) return "còn biểu thức chưa tính được (kiểm lại dapAn/nhieu)";
+				if ((code.match(/\\(choiceTF|choice|shortans)\b/g) || []).length > 1) return "phương án bị lặp (deBai chứa \\choice)";
+				const T = (typeof bo === "function" && bo()) || window.TDK; if (!T || !T.docDe) return "";
+				const cs = ((T.docDe(code) || {}).cau || []).filter(c => !c.phanMoi); if (cs.length !== 1) return "đọc ra " + cs.length + " câu";
+				const c = cs[0], pa = (c.phuongAn || []).map(x => String(x == null ? "" : x).trim());
+				if (L && c.loai !== L) return "sai loại câu (" + c.loai + ")";
+				if (/\\(choiceTF|choice|shortans)\b/.test(c.de || "")) return "phương án lẫn vào đề";
+				if (c.loai === "tn") { if (pa.length !== 4 || pa.some(x => !x || x === "...")) return "thiếu phương án"; if ((c.dung || []).filter(Boolean).length !== 1) return "không có đúng 1 đáp án đúng"; if (new Set(pa.map(x => x.replace(/\\True|\s+/g, ""))).size !== 4) return "phương án trùng nhau"; }
+				if (c.loai === "ds" && (pa.length !== 4 || pa.some(x => !x || x === "..."))) return "câu Đúng/Sai thiếu ý";
+				if (c.loai === "tln" && !String(c.dapSo || "").trim()) return "thiếu đáp số";
+				return "";
+			} catch (e) { return "lỗi đọc câu: " + (e.message || e); }
+		}
 		function thayTho(mau, bien) { return String(mau).replace(/\{(\+?)(=?)([^{}]+)\}/g, (m, dau, bang, bt) => { if (!bang && !(bt.trim() in bien)) return m; try { const v = soThuc(tinh(bt, bien)); if (typeof v !== "number" || !isFinite(v)) return m; const s = String(+v.toFixed(4)); return dau && v >= 0 ? "+" + s : s; } catch (e) { return m; } }); }
 		function thayHinh(mau, bien, tron) { return String(mau || "").replace(/\\begin\{tikzpicture\}[\s\S]*?\\end\{tikzpicture\}/g, tz => tz.split(/(\$[^$]*\$)/).map((p, i) => i % 2 ? thay(p, bien, tron) : thayTho(p, bien)).join("")); }
 		function thay(mau, bien, tron) { const D = "\u0001"; return String(mau).replace(/\{(\+?)(=?)([^{}]+)\}/g, (m, dau, bang, bt, vt, toan) => { if (!bang && (!(bt.trim() in bien) || /\\[A-Za-z]+\s*$/.test(toan.slice(Math.max(0, vt - 30), vt)))) return m; try { const v = tinh(bt, bien); let s = dinhDang(v, bang && !(laQ(v) && v.q === 1n) ? tron : ""); const sau = toan.slice(vt + m.length, vt + m.length + 8), heSo = /^([xyzt](?![A-Za-z])|\\(sqrt|sin|cos|tan|ln|log|pi)\b)/.test(sau), truoc = toan.slice(0, vt).replace(/\s+$/, ""); if (heSo && /[-+=(\[{,;]$|^$|\$$/.test(truoc)) { if (s === "1") s = ""; else if (s === "-1") s = "-"; } if (dau && s === "0" && !/^[\w\\({]/.test(sau)) return ""; return D + (dau && !/^-/.test(s) ? "+" + s : s); } catch (e) { return m; } }).replace(/\+\s*\u0001-/g, "-").replace(/-\s*\u0001-/g, "+").replace(/\u0001/g, ""); }
@@ -11875,7 +12074,8 @@ async function thiChay(ma) {
 		const nhieuTu = da => MD.tron(["-(" + da + ")", "(" + da + ")+1", "(" + da + ")-1", "2*(" + da + ")", "(" + da + ")/2", "(" + da + ")+2", "(" + da + ")-2", "3*(" + da + ")", "(" + da + ")+3"]);
 		const laChu = x => /\\|\$/.test(String(x || ""));
 		function bienDA(m, bien) { if ((m.loai === "tn" || m.loai === "tln" || !m.loai) && m.dapAn && !laChu(m.dapAn)) try { return Object.assign({}, bien, { dapAn: tinh(m.dapAn, bien) }); } catch (e) { } return bien; }
-		function motMau(m, bien, id) { const L = m.loai || "tn", tron = tronCua(m), de = thay(thayHinh(m.deBai, bien, tron), bien, tron), lg = m.loiGiai && m.loiGiai.trim() ? "\n\t\\loigiai{" + thay(thayHinh(m.loiGiai, bienDA(m, bien), tron), bienDA(m, bien), tron) + "}" : "", dau = "\\begin{ex}%[" + (id || "Mã ID") + "]\n\t" + de;
+		function motMau(m, bien, id) { const c = motMau0(m, bien, id); if (!c) return null; const loi = kiemCauSinh(c.code, m.loai || "tn"); motMau.loi = loi; if (loi) { motMau.cauTruc = true; return null; } return c; }
+		function motMau0(m, bien, id) { motMau.cauTruc = false; const L = m.loai || "tn", tron = tronCua(m), de = thay(thayHinh(lamSachDeBai(m.deBai), bien, tron), bien, tron), lg = m.loiGiai && m.loiGiai.trim() ? "\n\t\\loigiai{" + thay(thayHinh(m.loiGiai, bienDA(m, bien), tron), bienDA(m, bien), tron) + "}" : "", dau = "\\begin{ex}%[" + (id || "Mã ID") + "]\n\t" + de;
 			if (L === "tn") { const chu = laChu(m.dapAn), bao = x => /\$/.test(x) ? x : "$" + x + "$"; let sDa, nh = []; if (chu) { sDa = thay(m.dapAn, bien, tron); nh = (m.nhieu || []).map(x => thay(x, bien, tron)).filter(x => x.trim() && x !== sDa).slice(0, 3); } else { const da = tinh(m.dapAn, bien); sDa = dinhDang(da, tron); const b2 = Object.assign({}, bien, { dapAn: da }), co = new Set([sDa]); for (const bt of (m.nhieu && m.nhieu.length ? m.nhieu : nhieuTu(m.dapAn))) { if (nh.length >= 3) break; try { const s = laChu(bt) ? thay(bt, b2, tron) : dinhDang(tinh(bt, b2), tron); if (!co.has(s) && !/NaN|Infinity/.test(s)) { co.add(s); nh.push(s); } } catch (e) { } } } if (nh.length < 3) return null; const tat = [sDa].concat(nh), thu = MD.tron([0, 1, 2, 3]); return { code: dau + "\n\t\\choice\n" + thu.map(i => "\t{" + (i === 0 ? "\\True " : "") + bao(tat[i]) + "}").join("\n") + lg + "\n\\end{ex}", da: "ABCD"[thu.indexOf(0)] + " = " + sDa }; }
 			if (L === "ds") { const y = (m.nhieu || []).map(l => { const [nd, bt] = String(l).split("||"); return { nd: thay(nd.trim(), bien, tron), dung: bt && bt.trim() ? !!tinh(bt.trim(), bien) : true }; }); if (y.length !== 4) throw new Error("câu Đúng/Sai cần đúng 4 ý"); return { code: dau + "\n\t\\choiceTF\n" + y.map(x => "\t{" + (x.dung ? "\\True " : "") + x.nd + "}").join("\n") + lg + "\n\\end{ex}", da: y.map(x => x.dung ? "Đ" : "S").join("") }; }
 			if (L === "tln") { const v = tinh(m.dapAn, bien), s = dinhDangSo(v, tron); if (s.replace(/[-,/]/g, "").length > 4 || s.includes("/")) return null; return { code: dau + "\n\t\\par\\shortans[0]{$" + s + "$}" + lg + "\n\\end{ex}", da: s }; }
@@ -11884,8 +12084,8 @@ async function thiChay(ma) {
 		// sinh n câu khác nhau (khác cả bộ số gốc) — tranh: Set khoá bộ số cần tránh
 		function sinhMau(m, n, id, tranh) { const ts = docTS((m.thamSo || []).join("\n")), ra = [], daCo = new Set(tranh || []); let thu = 0, loi = "";
 			if (m.goc) try { const b = {}; Object.entries(m.goc).forEach(([k, v]) => { b[k] = tinh(String(v), b); }); ts.forEach(t => { if (t.bt) b[t.ten] = tinh(t.bt, b); }); daCo.add(khoaBien(b)); } catch (e) { }
-			while (ra.length < n && thu < n * 300) { thu++; try { const b = bocTS(ts); if (m.dieuKien && String(m.dieuKien).trim() && !tinh(m.dieuKien, b)) continue; const k = khoaBien(b); if (daCo.has(k)) continue; const c = motMau(m, b, id); if (!c) continue; daCo.add(k); c.khoa = k; ra.push(c); } catch (e) { loi = e.message; if (/chưa có|thiếu|lạ|cụt|không có hàm|thừa|lệch|cần đúng|chưa đúng/.test(loi)) break; } }
-			ra.loi = loi; return ra; }
+			let hong = 0; motMau.loi = ""; while (ra.length < n && thu < n * 300) { thu++; try { const b = bocTS(ts); if (m.dieuKien && String(m.dieuKien).trim() && !tinh(m.dieuKien, b)) continue; const k = khoaBien(b); if (daCo.has(k)) continue; const c = motMau(m, b, id); if (!c) { if (motMau.cauTruc && ++hong >= 25) { loi = motMau.loi; break; } continue; } hong = 0; daCo.add(k); c.khoa = k; ra.push(c); } catch (e) { loi = e.message; if (/chưa có|thiếu|lạ|cụt|không có hàm|thừa|lệch|cần đúng|chưa đúng/.test(loi)) break; } }
+			if (!ra.length && !loi && motMau.loi) loi = motMau.loi; ra.loi = loi; return ra; }
 		// kiểm tra mẫu: thay số gốc → đáp án gốc; sinh thử 8 câu
 		function soGoc(x) { try { const v = soThuc(tinh(texBT(x), {})); return isFinite(v); } catch (e) { return false; } }
 		function kiemMau(m) { const r = { ok: null, msg: "", so: 0 }; try { const L = m.loai || "tn";
@@ -12002,7 +12202,7 @@ async function thiChay(ma) {
 				else { cheDo("bam"); $g("ttGoc").value = r.raw; napCau(); }
 				dongBoForm(r.mau); $g("ttDA").value = r.mau.dapAn || ""; $g("ttDK").value = r.mau.dieuKien || ""; $g("ttTron").value = r.mau.lamTron || ""; S.tuSua = true; $g("ttNangCao").open = true; capKiem(); if (t.dataset.thu) sinh(); });
 		}
-		return { khoiDong, sinhMau, kiemMau, motMau, phanTich, demKho, _tinh: tinh, _thay: thay, _dinhDang: dinhDang, _texBT: texBT, _S: S, _nhanGem: nhanGem, _nhacGem: nhacGem };
+		return { khoiDong, sinhMau, kiemMau, motMau, phanTich, demKho, kiemCauSinh, lamSachDeBai, _tinh: tinh, _thay: thay, _dinhDang: dinhDang, _texBT: texBT, _S: S, _nhanGem: nhanGem, _nhacGem: nhacGem };
 	})();
 	function khoiDongDeTuongTu() { TT_API.khoiDong(); window.TDKMod = Object.assign(window.TDKMod || {}, { TT: TT_API }); }
 function khoiDongVanPhong() { KW_API.khoiDong(); }
