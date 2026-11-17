@@ -1482,6 +1482,27 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 #tabThiOnline .toDoiTT{margin-top:10px;font-size:12.5px;font-weight:700}
 #tabThiOnline .toDoiTT.ok{color:var(--luc,#2fcf8f)}
 #tabThiOnline .toDoiTT.loi{color:var(--do,#ff6b6b)}
+/* b2.3 */
+#tabThiOnline #toSoan{height:12cm;min-height:12cm;max-height:12cm;resize:none;overflow:auto}
+#tabThiOnline .toTuyChon{font-style:normal;font-weight:600;opacity:.6;text-transform:none;letter-spacing:0;margin-left:4px}
+#tabThiOnline .toTH{margin-top:12px;padding:14px 15px;border:1px solid var(--vien,#2c3850);border-radius:13px;background:var(--mat2,#0e1626)}
+#tabThiOnline .toTHLuoi{display:flex;gap:14px;align-items:stretch}
+#tabThiOnline .toLogo{width:92px;height:92px;flex:none;border-radius:20px;border:1.5px dashed var(--vien,#3a4a68);display:grid;place-items:center;cursor:pointer;overflow:hidden;background:rgba(255,255,255,.03);transition:.15s}
+#tabThiOnline .toLogo:hover{border-color:var(--vang,#f5b301)}
+#tabThiOnline .toLogo img{width:100%;height:100%;object-fit:cover}
+#tabThiOnline .toLogo .goi{font-size:12px;font-weight:700;text-align:center;color:var(--phu,#9aa7c2);line-height:1.4}
+#tabThiOnline .toTHO{flex:1;display:flex;flex-direction:column;gap:8px;min-width:0}
+#tabThiOnline .toTHNut{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px}
+@media(max-width:620px){#tabThiOnline .toTHLuoi{flex-direction:column}}
+/* logo mặc định KMath.edu */
+.thiTop .logo.mac{background:none;padding:0;box-shadow:0 6px 18px rgba(240,140,0,.35)}
+.thiTop .logo.mac svg{width:100%;height:100%;display:block}
+.thiTop .th .kmw{font:900 21px/1.05 "Be Vietnam Pro",sans-serif;color:#fff;letter-spacing:-.3px}
+.thiTop .th .kmw i{font-style:normal;color:#f5b301}
+.thiTop .th .kms{display:inline-flex;align-items:center;gap:7px;font-size:10.5px;font-weight:800;letter-spacing:2.2px;color:#8fb0d8;margin-top:4px}
+.thiTop .th .kms em{width:7px;height:7px;border-radius:50%;background:#2fcf8f;box-shadow:0 0 0 0 rgba(47,207,143,.6);animation:kmSong 2s infinite}
+@keyframes kmSong{0%{box-shadow:0 0 0 0 rgba(47,207,143,.55)}70%{box-shadow:0 0 0 7px rgba(47,207,143,0)}100%{box-shadow:0 0 0 0 rgba(47,207,143,0)}}
+.thiDN .loiMa{color:#ff8fa3;font-size:12.5px;font-weight:700;margin:-6px 0 10px;min-height:16px}
 
 /* ===== Gán ID ===== */
 .giThan { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 16px; align-items: start; } @media (max-width: 1000px) { .giThan { grid-template-columns: 1fr; } }
@@ -2923,7 +2944,7 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 		<header class="mdDau">
 			<div class="mdDauTen">
 				<span class="mdDauIco toIco" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.9 5.7 3.9 9s-1.4 6.4-3.9 9c-2.5-2.6-3.9-5.7-3.9-9S9.5 5.6 12 3z"/></svg></span>
-				<div><h2>Thi Online <span style="font-size:11px;font-weight:700;color:var(--luc,#2fcf8f);background:rgba(47,207,143,.14);padding:2px 9px;border-radius:99px;vertical-align:middle">b2.2</span></h2></div>
+				<div><h2>Thi Online <span style="font-size:11px;font-weight:700;color:var(--luc,#2fcf8f);background:rgba(47,207,143,.14);padding:2px 9px;border-radius:99px;vertical-align:middle">b2.3</span></h2></div>
 			</div>
 			<div class="mdDauNut"><button class="vt3NutChinh nho" type="button" id="toTao">+ Tạo phòng thi</button></div>
 		</header>
@@ -2933,6 +2954,7 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 			<div class="giThanh"><b>Tạo phòng thi mới</b><div class="giThanhNut"><button class="vdNutNho" type="button" id="toHuy">Huỷ</button></div></div>
 			<div class="toLuoi">
 				<label class="toF toFull"><span class="mdNhan">Tên đề thi *</span><input class="mdO" id="toTen" placeholder="VD: Kiểm tra giữa kỳ I — Toán 12"></label>
+				<label class="toF"><span class="mdNhan">Mã đề <i class="toTuyChon">tuỳ chọn</i></span><input class="mdO" id="toMaDe" maxlength="20" placeholder="Bỏ trống → tự sinh Kmath###" autocomplete="off"></label>
 				<label class="toF"><span class="mdNhan">Môn</span><input class="mdO" id="toMon" value="Toán"></label>
 				<label class="toF"><span class="mdNhan">Khối / Lớp</span><input class="mdO" id="toLop" placeholder="12"></label>
 				<label class="toF"><span class="mdNhan">Thời lượng (phút)</span><input class="mdO" id="toPhut" type="number" value="45" min="1"></label>
@@ -2940,7 +2962,21 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 				<label class="toF"><span class="mdNhan">Mở đề lúc</span><input class="mdO" id="toMo" type="datetime-local"></label>
 				<label class="toF"><span class="mdNhan">Đóng đề lúc</span><input class="mdO" id="toDong" type="datetime-local"></label>
 			</div>
-			<p class="vdGhi" style="margin:4px 0 2px">Ngoài khung giờ, link &amp; mã QR tự hết hiệu lực.</p>
+			<p class="vdGhi" style="margin:4px 0 2px">Ngoài khung giờ, link &amp; mã QR tự hết hiệu lực. Đặt <b>Mã đề</b> thì HS phải nhập đúng mới vào được; bỏ trống thì web tự sinh mã và HS vào thẳng.</p>
+
+			<div class="toTH">
+				<div class="mdNhan" style="margin-bottom:9px">Thông tin hiển thị cho học sinh</div>
+				<div class="toTHLuoi">
+					<div class="toLogo" id="toLogo" title="Bấm để tải logo"><span class="goi">＋<br>Logo</span></div>
+					<input type="file" id="toLogoFile" accept="image/*" hidden>
+					<div class="toTHO">
+						<input class="mdO" id="toTen1" maxlength="40" placeholder="Dòng 1 — VD: TOÁN THẦY KHOA (trống = KMath.edu)">
+						<input class="mdO" id="toTen2" maxlength="60" placeholder="Dòng 2 — VD: ThS. Trương Đăng Khoa (trống = Hệ thống Thi online)">
+						<input class="mdO" id="toLienHe" maxlength="40" placeholder="Kênh / liên hệ (tuỳ chọn) — VD: TikTok @KMath.edu">
+					</div>
+				</div>
+				<div class="toTHNut"><button class="vdNutNho" type="button" id="toLogoBo" hidden>✕ Bỏ logo</button><span class="vdGhi" style="margin:0">Logo vuông, tự thu về 256×256. Thông tin được nhớ cho lần tạo phòng sau.</span></div>
+			</div>
 
 			<div class="toNhom2">
 				<div><div class="mdNhan" style="margin-bottom:8px">Sau khi HS nộp</div>
@@ -2961,6 +2997,7 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 				<p class="vdGhi">Mỗi học sinh nhận ngẫu nhiên 1 trong 10 đề (cố định theo máy, không bấm lại để đổi). Lấy 10 đề từ tab <b>Công cụ → Đề tương tự</b> (Gemini đã viết sẵn prompt ở đó).</p>
 				<div class="nut">
 					<button class="vdNutNho" type="button" id="toDoiLay">📥 Lấy 10 đề từ “Đề tương tự”</button>
+					<button class="vdNutNho" type="button" id="toDoiGem">🤖 Lập mẫu bằng Gemini</button>
 					<button class="vdNutNho" type="button" id="toDoiSinh">⚙ Sinh từ mẫu trong Ngân hàng</button>
 					<button class="vdNutNho" type="button" id="toDoiBo" hidden>✕ Bỏ biến thể</button>
 				</div>
@@ -4281,7 +4318,10 @@ $("vao").addEventListener("keydown", e => {
 		if (!window.katex) return '<code>' + esc(tex) + '</code>';
 		try {
 			const T = bo(); let t2 = T && T._noiBo && T._noiBo.chuanBiTex ? T._noiBo.chuanBiTex(tex) : tex;
-			const ve = x => chuKieu(window.katex.renderToString(x, { output: "mathml", displayMode: !!hienThi, throwOnError: true, strict: "ignore", macros: Object.assign({}, MACRO) }));
+			const ve = x => chuKieu(window.katex.renderToString(x, { output: "mathml", displayMode: !!hienThi, throwOnError: true, strict: "ignore", macros: Object.assign({}, MACRO) })
+				// \left| \right| → KaTeX ra "∣"(U+2223) mà trình duyệt KHÔNG co giãn; đổi sang "|"/"‖" co giãn được
+				.replace(/<mo fence="true">∣<\/mo>/g, '<mo fence="true" stretchy="true" symmetric="true">|</mo>')
+				.replace(/<mo fence="true">∥<\/mo>/g, '<mo fence="true" stretchy="true" symmetric="true">‖</mo>'));
 			try { return ve(t2); } catch (e1) {
 				// sửa nhẹ (\left \right lệch cặp, ngoặc nhọn thiếu) rồi thử lại
 				for (const f of [T && T.suaNhe1, T && T.suaNhe2]) if (f) { try { return ve(f(t2)); } catch (e2) { } }
@@ -10193,6 +10233,44 @@ function khoiDongThiOnline() {
 	const maNgauNhien = () => { const c = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let s = ""; for (let i = 0; i < 6; i++) s += c[Math.floor(Math.random() * c.length)]; return s; };
 	const linkCua = ma => location.origin + location.pathname + "?thi=" + ma;
 
+	// ---------- Thông tin hiển thị (thương hiệu GV) + logo ----------
+	let LOGO = "";
+	const TH_KHOA = "kmath_to_thuonghieu";
+	function veLogo() { const b = $t("toLogo"); b.innerHTML = LOGO ? '<img src="' + LOGO + '" alt="logo">' : '<span class="goi">＋<br>Logo</span>'; $t("toLogoBo").hidden = !LOGO; }
+	function layTH() { return { ten1: $t("toTen1").value.trim(), ten2: $t("toTen2").value.trim(), lienHe: $t("toLienHe").value.trim(), logo: LOGO }; }
+	function datTH(o) { o = o || {}; $t("toTen1").value = o.ten1 || ""; $t("toTen2").value = o.ten2 || ""; $t("toLienHe").value = o.lienHe || ""; LOGO = o.logo || ""; veLogo(); }
+	function nhoTH() { try { localStorage.setItem(TH_KHOA, JSON.stringify(layTH())); } catch (e) { } }
+	try { datTH(JSON.parse(localStorage.getItem(TH_KHOA) || "{}")); } catch (e) { veLogo(); }
+	["toTen1", "toTen2", "toLienHe"].forEach(id => $t(id).addEventListener("change", nhoTH));
+	$t("toLogo").addEventListener("click", () => $t("toLogoFile").click());
+	$t("toLogoBo").addEventListener("click", () => { LOGO = ""; veLogo(); nhoTH(); });
+	$t("toLogoFile").addEventListener("change", e => {
+		const f = e.target.files && e.target.files[0]; e.target.value = ""; if (!f) return;
+		const rd = new FileReader();
+		rd.onload = () => { const im = new Image(); im.onload = () => {
+			const N = 256, c = document.createElement("canvas"); c.width = c.height = N; const g = c.getContext("2d");
+			const k = Math.max(N / im.width, N / im.height), w = im.width * k, h = im.height * k;
+			g.drawImage(im, (N - w) / 2, (N - h) / 2, w, h);
+			let u = c.toDataURL("image/webp", 0.9); if (!/^data:image\/webp/.test(u)) u = c.toDataURL("image/png");
+			LOGO = u; veLogo(); nhoTH();
+		}; im.onerror = () => nhac("⚠ Không đọc được ảnh logo", "loi"); im.src = rd.result; };
+		rd.readAsDataURL(f);
+	});
+	// mã đề: GV đặt → HS phải nhập đúng; bỏ trống → tự sinh Kmath + 3 số, HS vào thẳng
+	const maDeTuDong = () => "Kmath" + String(Math.floor(Math.random() * 1000)).padStart(3, "0");
+	function layMaDe(cu) { const v = $t("toMaDe").value.trim(); return v ? { maDe: v, khoaMa: true } : { maDe: cu && !cu.khoaMa && cu.maDe ? cu.maDe : maDeTuDong(), khoaMa: false }; }
+	// đưa đề sang tab Đề tương tự (② Cả đề qua Gemini) để lập mẫu
+	$t("toDoiGem").addEventListener("click", () => {
+		const deRaw = $t("toSoan").value.trim();
+		if (!demCau(deRaw)) { $t("toDoiTT").className = "toDoiTT loi"; $t("toDoiTT").textContent = "⚠ Chưa có đề trong ô soạn."; return; }
+		const nut = document.getElementById("nutTabDeTuongTu"); if (nut) nut.click();
+		setTimeout(() => {
+			const cd = document.querySelector('#ttCheDo [data-cd="gem"]'); if (cd) cd.click();
+			const ta = document.getElementById("ttGemDe"); if (ta) { ta.value = deRaw; ta.dispatchEvent(new Event("input", { bubbles: true })); ta.scrollIntoView({ behavior: "smooth", block: "center" }); }
+			if (typeof toast === "function") toast("Đã chuyển đề sang Đề tương tự: ① Copy prompt → Gemini → ③ Dán kết quả → 💾 Lưu các mẫu đạt. Xong quay lại Thi Online bấm ⚙ Sinh từ mẫu.");
+		}, 400);
+	});
+
 	// ---------- #5 Nạp file .tex (nhiều file = nhiều đề) ----------
 	let FILES = [], SUAID = null;
 	const tenTuFile = n => String(n || "").replace(/\.(tex|txt)$/i, "").replace(/[_-]+/g, " ").trim();
@@ -10242,6 +10320,8 @@ function khoiDongThiOnline() {
 		$t("toDiem").checked = cd.hienDiem !== false; $t("toDA").checked = !!cd.xemDapAn; $t("toLG").checked = !!cd.xemLoiGiai;
 		$t("toTronC").checked = !!cg.tronCau; $t("toTronD").checked = !!cg.tronDapAn; $t("toDoiSo").checked = !!cg.doiSo; $t("toKhoa").checked = !!cg.khoaTab;
 		$t("toSoan").value = p.deRaw || ""; $t("toDem").textContent = demCau(p.deRaw || "") + " câu"; capDoi();
+		$t("toMaDe").value = p.khoaMa ? (p.maDe || "") : "";
+		if (p.thuongHieu) datTH(p.thuongHieu);
 		$t("toPhat").textContent = "✦ Lưu thay đổi";
 		bang("Đang sửa phòng · mã " + p.ma + " — sửa xong bấm “Lưu thay đổi”. Link và mã QR cũ giữ nguyên.", "");
 		$t("toForm").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -10347,17 +10427,11 @@ function khoiDongThiOnline() {
 	}
 	// sinh 1 câu biến thể; nếu mẫu cho đáp án quá dài (tln) thì tự thử lại với lamTron thô hơn
 	function sinhCauBT(TT, m, id, used, loaiGoc) {
-		const ds = [m];
-		if ((m.loai || loaiGoc) === "tln") ["2", "1", "0"].forEach(t2 => { if (String(m.lamTron == null ? "" : m.lamTron) !== t2) ds.push(Object.assign({}, m, { lamTron: t2 })); });
-		let li = "";
-		for (const mm of ds) {
-			try {
-				const r = TT.sinhMau(mm, 1, id, used);
-				if (r && r[0] && cauHopLe(r[0].code, loaiGoc)) { used.add(r[0].khoa); return { code: r[0].code }; }
-				if (r && r.loi) li = r.loi;
-			} catch (e) { li = e.message; }
-		}
-		return { loi: li };
+		try {
+			const r = TT.sinhMau(m, 1, id, used);
+			if (r && r[0] && cauHopLe(r[0].code, loaiGoc)) { used.add(r[0].khoa); return { code: r[0].code }; }
+			return { loi: (r && r.loi) || "" };
+		} catch (e) { return { loi: e.message }; }
 	}
 	// sinh N biến thể từ MẪU đã lưu trong Ngân hàng (tab Đề tương tự)
 	async function sinhBienThe(deRaw, n) {
@@ -10366,8 +10440,9 @@ function khoiDongThiOnline() {
 		const exs = QB.tachEx(deRaw), loaiGoc = exs.map(x => QB.loai(x.than));
 		if (!TT || !TT.sinhMau) return { bienThe: [], mauCo: 0, tong: exs.length, hong: [], doi: 0 };
 		let all = []; try { all = await QB.dbTatCa(); } catch (e) { }
-		const mp = new Map(); all.forEach(r => { if (r.mau && r.mauOk !== false) mp.set(r.k, r.mau); });
-		const tpl = exs.map(x => mp.get(QB.bam(QB.vanTay(x.than))) || null);
+		const mp = new Map(); all.forEach(r => { if (r.mau) mp.set(r.k, r.mau); });
+		// kiểm mẫu TƯƠI bằng bộ kiểm mới (cờ mauOk cũ có thể đánh hỏng oan do chưa làm tròn)
+		const tpl = exs.map(x => { const m = mp.get(QB.bam(QB.vanTay(x.than))); if (!m) return null; try { return TT.kiemMau(m).ok === false ? null : m; } catch (e) { return null; } });
 		const mauCo = tpl.filter(Boolean).length;
 		if (!mauCo) return { bienThe: [], mauCo: 0, tong: exs.length, hong: [], doi: 0 };
 		const used = tpl.map(() => new Set()), out = [], hong = new Map(); const doiOk = new Set();
@@ -10443,7 +10518,9 @@ function khoiDongThiOnline() {
 			if (!demCau(deRaw)) { nhac("⚠ Đề chưa có câu hỏi \\begin{ex}…\\end{ex}", "loi"); return; }
 		}
 		const b = $t("toPhat"); b.disabled = true; b.textContent = SUAID ? "Đang lưu…" : "Đang phát hành…";
+		nhoTH();
 		const chung = () => ({
+			thuongHieu: layTH(),
 			mon: $t("toMon").value.trim(), lop: $t("toLop").value.trim(),
 			thoiLuong: +$t("toPhut").value || 45, soLan: +$t("toLan").value || 1,
 			moLuc: $t("toMo").value || "", dongLuc: $t("toDong").value || "",
@@ -10461,7 +10538,8 @@ function khoiDongThiOnline() {
 			if (SUAID) {
 				const bt = await lamBT(deRaw);
 				bang("⏳ Đang lưu thay đổi…", "");
-				await K.updateDoc(K.doc(K.db, "phongThi", SUAID), Object.assign(chung(), { tenDe, deRaw, bienThe: bt.bienThe, soCau: demCau(deRaw) }));
+				const cu = DS.find(x => x.id === SUAID) || {};
+				await K.updateDoc(K.doc(K.db, "phongThi", SUAID), Object.assign(chung(), layMaDe(cu), { tenDe, deRaw, bienThe: bt.bienThe, soCau: demCau(deRaw) }));
 				nhac("✓ Đã lưu thay đổi — link & mã QR cũ giữ nguyên" + ghiChuBT(bt), "ok");
 				thoatSua(); setTimeout(() => { $t("toForm").hidden = true; }, 2000);
 			} else if (nhieu) {
@@ -10470,7 +10548,7 @@ function khoiDongThiOnline() {
 					const f = FILES[i];
 					bang("⏳ Đang tạo phòng " + (i + 1) + "/" + FILES.length + " — " + f.ten + "…", "");
 					const bt = await lamBT(f.noi), ma = maNgauNhien();
-					await K.addDoc(K.collection(K.db, "phongThi"), Object.assign(chung(), {
+					await K.addDoc(K.collection(K.db, "phongThi"), Object.assign(chung(), layMaDe(), {
 						teacherId: u.uid, teacherName: u.displayName || u.email || "", ma,
 						tenDe: f.ten, deRaw: f.noi, bienThe: bt.bienThe, soCau: f.soCau,
 						trangThai: "mo", soHS: 0, createdAt: K.serverTimestamp()
@@ -10484,13 +10562,14 @@ function khoiDongThiOnline() {
 				const bt = await lamBT(deRaw);
 				bang("⏳ Đang lưu lên Firebase…", "");
 				const ma = maNgauNhien();
-				await K.addDoc(K.collection(K.db, "phongThi"), Object.assign(chung(), {
+				const md = layMaDe();
+				await K.addDoc(K.collection(K.db, "phongThi"), Object.assign(chung(), md, {
 					teacherId: u.uid, teacherName: u.displayName || u.email || "", ma,
 					tenDe, deRaw, bienThe: bt.bienThe, soCau: demCau(deRaw),
 					trangThai: "mo", soHS: 0, createdAt: K.serverTimestamp()
 				}));
-				["toTen", "toLop", "toSoan"].forEach(id => $t(id).value = ""); $t("toDem").textContent = "0 câu"; BIENTHE = []; capDoi();
-				nhac("✓ Đã phát hành · mã " + ma + " · link: " + linkCua(ma) + ghiChuBT(bt), "ok");
+				["toTen", "toLop", "toSoan", "toMaDe"].forEach(id => $t(id).value = ""); $t("toDem").textContent = "0 câu"; BIENTHE = []; capDoi();
+				nhac("✓ Đã phát hành · mã đề " + md.maDe + (md.khoaMa ? " (HS phải nhập)" : "") + " · link: " + linkCua(ma) + ghiChuBT(bt), "ok");
 				setTimeout(() => { $t("toForm").hidden = true; }, 2500);
 			}
 		} catch (e) {
@@ -10603,7 +10682,7 @@ function khoiDongThiOnline() {
 		let lop = document.getElementById("toTKLop");
 		if (!lop) { lop = document.createElement("div"); lop.id = "toTKLop"; document.body.appendChild(lop); }
 		lop.className = "mo";
-		lop.innerHTML = '<div class="hop"><div class="dau"><b>📊 Thống kê</b><span>' + esc2(p.tenDe || "") + '</span><span class="ma">' + esc2(p.ma) + '</span>'
+		lop.innerHTML = '<div class="hop"><div class="dau"><b>📊 Thống kê</b><span>' + esc2(p.tenDe || "") + '</span><span class="ma">' + esc2(p.maDe || p.ma) + '</span>'
 			+ '<div class="nut"><button class="vdNutNho" id="toTKXuat">⬇ Xuất Excel</button><button class="vdNutNho" id="toTKDong">✕ Đóng</button></div></div>'
 			+ '<div class="tk4" id="toTK4"></div><div class="bocBang" id="toTKBang"><p class="mdTrong">Đang tải…</p></div></div>';
 		lop.addEventListener("click", e => { if (e.target === lop) lop.classList.remove("mo"); });
@@ -10635,9 +10714,9 @@ function khoiDongThiOnline() {
 		if (!ds.length) { $t("toDs").innerHTML = '<p class="mdTrong">' + (DS.length ? "Không khớp tìm kiếm." : "Chưa có phòng thi nào. Bấm <b>+ Tạo phòng thi</b> để bắt đầu.") + '</p>'; return; }
 		$t("toDs").innerHTML = ds.map(p => {
 			const tt = p.trangThai === "dong" ? '<span class="toTT dong">Đã đóng</span>' : '<span class="toTT mo">Đang mở</span>';
-			const cg = []; if (p.chongGian) { if (p.chongGian.tronCau) cg.push("trộn câu"); if (p.chongGian.doiSo) cg.push("đổi số"); if (p.chongGian.khoaTab) cg.push("khoá tab"); }
+			const cg = []; if (p.chongGian) { if (p.chongGian.tronCau) cg.push("trộn câu"); if (p.chongGian.tronDapAn) cg.push("trộn đáp án"); if (p.chongGian.doiSo) cg.push("đổi số"); if (p.chongGian.khoaTab) cg.push("khoá tab"); }
 			return '<div class="toPhong"><span class="tt">' + p.soCau + '<br>câu</span>'
-				+ '<div><div class="ten">' + esc2(p.tenDe) + '</div><div class="meta"><span>Mã <b>' + esc2(p.ma) + '</b></span><span>' + (p.thoiLuong || 45) + ' phút</span>'
+				+ '<div><div class="ten">' + esc2(p.tenDe) + '</div><div class="meta"><span>Mã đề <b>' + esc2(p.maDe || p.ma) + '</b>' + (p.khoaMa ? ' 🔒' : '') + '</span><span>' + (p.thoiLuong || 45) + ' phút</span>'
 				+ (p.lop ? '<span>Lớp ' + esc2(p.lop) + '</span>' : '') + '<span>' + (p.soHS || 0) + ' lượt làm</span>' + (cg.length ? '<span>· ' + cg.join(", ") + '</span>' : '') + '</div></div>'
 				+ '<div style="display:flex;align-items:center;gap:10px">' + tt + '<div class="toPhongNut"><button class="vdNutNho" data-tk="' + p.id + '">📊 Thống kê</button><button class="vdNutNho" data-sua="' + p.id + '">Sửa</button><button class="vdNutNho" data-chep="' + esc2(p.ma) + '">Chép link</button><button class="vdNutNho toXoa" data-xoa="' + p.id + '">Xoá</button></div></div></div>';
 		}).join("");
@@ -10716,9 +10795,14 @@ async function thiChay(ma) {
 	// ---- overlay ----
 	const ov = el("div"); ov.id = "thiOverlay"; document.body.appendChild(ov);
 	document.title = "Thi Online";
-	const thuongHieu = r => '<div class="logo">' + (r && r.logoUrl ? '<img src="' + esc2(r.logoUrl) + '" alt="logo">' : "K") + '</div>'
-		+ '<div class="th"><b>TOÁN THẦY KHOA</b><span>ThS. Trương Đăng Khoa</span></div>'
-		+ '<span class="thiTok">♪ @KMath.edu</span>';
+	const LOGO_MAC = '<svg viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="kmG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD25E"/><stop offset="1" stop-color="#F08C00"/></linearGradient></defs><rect width="48" height="48" rx="13" fill="url(#kmG)"/><path d="M15.5 12v24" stroke="#17233a" stroke-width="5.6" stroke-linecap="round"/><path d="M30.5 12 19.5 24" stroke="#17233a" stroke-width="5.6" stroke-linecap="round"/><path d="m20.5 24.5 6.6 9.2 10.2-15.2" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M37.5 6.5l1.1 2.5 2.5 1.1-2.5 1.1-1.1 2.5-1.1-2.5-2.5-1.1 2.5-1.1z" fill="#fff"/></svg>';
+	const thuongHieu = r => {
+		const t = (r && r.thuongHieu) || {}, coTen = !!(t.ten1 || t.ten2);
+		const logo = t.logo ? '<div class="logo"><img src="' + esc2(t.logo) + '" alt="logo"></div>' : '<div class="logo mac">' + LOGO_MAC + "</div>";
+		const ten = coTen ? '<div class="th"><b>' + esc2(t.ten1 || "KMath.edu") + "</b><span>" + esc2(t.ten2 || "Hệ thống Thi online") + "</span></div>"
+			: '<div class="th"><b class="kmw">KMath<i>.edu</i></b><span class="kms"><em></em>HỆ THỐNG THI ONLINE</span></div>';
+		return logo + ten + (t.lienHe ? '<span class="thiTok">' + esc2(t.lienHe) + "</span>" : "");
+	};
 
 	let room, HS = {}, deRaw, CAU = [], DA = [], BLOCKS = [], VARIDX = 0, DANOP = false, TABROI = 0, dongHoID = 0, conLai = 0, TGBD = 0;
 
@@ -10736,14 +10820,19 @@ async function thiChay(ma) {
 				: conLuot <= 0 ? '<div class="canhBao">Bạn đã dùng hết lượt làm bài.' + (room.cheDo && room.cheDo.hienDiem && tt.diem != null ? ' Điểm gần nhất: <b>' + tt.diem + '</b>/10.' : '') + '</div>'
 					: '<label><span class="lb">Họ và tên <b style="color:#ff8080">*</b></span><input id="thiHoTen" placeholder="VD: Nguyễn Văn An" autocomplete="off"></label>'
 					+ '<div class="hang2"><label><span class="lb">Lớp <b style="color:#ff8080">*</b></span><input id="thiLop" placeholder="12A1" autocomplete="off"></label>'
-					+ '<label><span class="lb">Mã đề</span><input value="' + esc2(room.ma) + '" readonly style="opacity:.6"></label></div>'
+					+ (room.khoaMa ? '<label><span class="lb">Mã đề <b style="color:#ff8080">*</b></span><input id="thiMaNhap" placeholder="GV cung cấp" autocomplete="off"></label></div><div class="loiMa" id="thiLoiMa"></div>'
+						: '<label><span class="lb">Mã đề</span><input value="' + esc2(room.maDe || room.ma) + '" readonly style="opacity:.6"></label></div>')
 					+ '<button class="vao" id="thiVao" disabled>Vào thi →</button>')
 			+ '</div></div>';
 		if (loiGio || conLuot <= 0) return;
 		const ht = document.getElementById("thiHoTen"), lp = document.getElementById("thiLop"), vao = document.getElementById("thiVao");
-		const ok = () => { vao.disabled = !(ht.value.trim() && lp.value.trim()); };
-		ht.addEventListener("input", ok); lp.addEventListener("input", ok);
-		vao.addEventListener("click", () => { HS = { hoTen: ht.value.trim(), lop: lp.value.trim() }; batDau(); });
+		const mn = document.getElementById("thiMaNhap"), lm = document.getElementById("thiLoiMa");
+		const ok = () => { vao.disabled = !(ht.value.trim() && lp.value.trim() && (!mn || mn.value.trim())); if (lm) lm.textContent = ""; };
+		[ht, lp, mn].forEach(x => x && x.addEventListener("input", ok));
+		vao.addEventListener("click", () => {
+			if (mn && mn.value.trim().toLowerCase() !== String(room.maDe || "").trim().toLowerCase()) { lm.textContent = "Mã đề không đúng — hỏi lại giáo viên."; mn.focus(); return; }
+			HS = { hoTen: ht.value.trim(), lop: lp.value.trim() }; batDau();
+		});
 		ht.focus();
 	}
 
@@ -10759,7 +10848,7 @@ async function thiChay(ma) {
 		if (room.chongGian && room.chongGian.doiSo && Array.isArray(room.bienThe) && room.bienThe.length) {
 			VARIDX = Math.floor(bam32(DEV + "|" + room.ma + "|var")() * room.bienThe.length); deRaw = room.bienThe[VARIDX] || deRaw;
 		}
-		const cg = room.chongGian || {}, rnd = bam32(DEV + "|" + room.ma);
+		const cg = room.chongGian || {}, rnd = bam32(DEV + "|" + room.ma + "|" + Date.now() + "|" + Math.random()); // trộn MỚI mỗi lần vào thi
 		const items = QB.tachEx(deRaw).map(x => ({ raw: x.raw, loai: QB.loai(x.than) }));
 		return PHAN.map(ph => {
 			let g = items.filter(it => it.loai === ph.k);
@@ -10786,7 +10875,7 @@ async function thiChay(ma) {
 			+ '<div class="thiChipHS">' + esc2(HS.hoTen) + ' <i>' + esc2(HS.lop) + '</i><span class="av">' + esc2((HS.hoTen.trim().split(/\s+/).pop() || "?")[0].toUpperCase()) + '</span></div></div></div>'
 			+ '<div class="thiTrang"><div class="thiGiay"><div class="thiBanner"><h1>' + esc2(room.tenDe || "Đề kiểm tra") + '</h1>'
 			+ '<span class="pill vang">⏱ ' + (room.thoiLuong || 45) + ' phút</span><span class="pill">📝 ' + tongCau + ' câu hỏi</span><span class="pill">🧩 ' + soPhan + ' phần</span>'
-			+ '<span class="maDe"># Mã đề ' + esc2(room.ma) + '</span></div><div class="thiRuot" id="thiDS"></div></div>'
+			+ '<span class="maDe"># Mã đề ' + esc2(room.maDe || room.ma) + '</span></div><div class="thiRuot" id="thiDS"></div></div>'
 			+ '<aside class="thiBen">'
 			+ '<div class="thiThe"><div class="dong1"><span>Đã làm</span><b id="thiDem">0 / ' + tongCau + '</b></div><div class="thiThanh"><i id="thiTien"></i></div>'
 			+ '<div class="nhan">DANH SÁCH CÂU</div><div class="thiBi" id="thiBi"></div>'
@@ -11770,6 +11859,12 @@ async function thiChay(ma) {
 		const thapPhan = (x, n) => { let s = n == null ? String(+x.toPrecision(10)) : x.toFixed(n); if (n == null && /e/.test(s)) s = x.toFixed(6); if (n == null) s = s.replace(/(\.\d*?)0+$/, "$1").replace(/\.$/, ""); return s.replace(".", "{,}"); };
 		function dinhDang(v, tron) { if (typeof v === "boolean") return v ? "đúng" : "sai"; if (tron !== "" && tron != null) return thapPhan(soThuc(v), +tron); if (laQ(v)) { if (v.q === 1n) return String(v.p); return (v.p < 0n ? "-" : "") + "\\dfrac{" + (v.p < 0n ? -v.p : v.p) + "}{" + v.q + "}"; } return thapPhan(v); }
 		const dinhDangSo = (v, tron) => tron !== "" && tron != null ? thapPhan(soThuc(v), +tron).replace("{,}", ",") : laQ(v) ? (v.q === 1n ? String(v.p) : String(v.p) + "/" + v.q) : String(+soThuc(v).toPrecision(8)).replace(".", ",");
+		// Số trong hình TikZ: toạ độ/tuỳ chọn cần số thập phân dấu CHẤM (2.5, không phải 2{,}5 hay \dfrac) — nhãn $…$ giữ định dạng toán
+		// lamTron bỏ trống mà đáp án gốc có phần thập phân (vd 0,26) → làm tròn theo đúng số chữ số đó
+		const soLe = x => { const t = String(x == null ? "" : x).replace(/\$/g, "").replace(/\{,\}/g, ".").replace(/(\d),(\d)/g, "$1.$2"); const k = t.match(/^\s*-?\d+\.(\d+)\s*$/); return k ? String(k[1].length) : ""; };
+		const tronCua = m => m.lamTron != null && String(m.lamTron).trim() !== "" ? String(m.lamTron) : soLe(m.dapAnGoc);
+		function thayTho(mau, bien) { return String(mau).replace(/\{(\+?)(=?)([^{}]+)\}/g, (m, dau, bang, bt) => { if (!bang && !(bt.trim() in bien)) return m; try { const v = soThuc(tinh(bt, bien)); if (typeof v !== "number" || !isFinite(v)) return m; const s = String(+v.toFixed(4)); return dau && v >= 0 ? "+" + s : s; } catch (e) { return m; } }); }
+		function thayHinh(mau, bien, tron) { return String(mau || "").replace(/\\begin\{tikzpicture\}[\s\S]*?\\end\{tikzpicture\}/g, tz => tz.split(/(\$[^$]*\$)/).map((p, i) => i % 2 ? thay(p, bien, tron) : thayTho(p, bien)).join("")); }
 		function thay(mau, bien, tron) { const D = "\u0001"; return String(mau).replace(/\{(\+?)(=?)([^{}]+)\}/g, (m, dau, bang, bt, vt, toan) => { if (!bang && (!(bt.trim() in bien) || /\\[A-Za-z]+\s*$/.test(toan.slice(Math.max(0, vt - 30), vt)))) return m; try { const v = tinh(bt, bien); let s = dinhDang(v, bang && !(laQ(v) && v.q === 1n) ? tron : ""); const sau = toan.slice(vt + m.length, vt + m.length + 8), heSo = /^([xyzt](?![A-Za-z])|\\(sqrt|sin|cos|tan|ln|log|pi)\b)/.test(sau), truoc = toan.slice(0, vt).replace(/\s+$/, ""); if (heSo && /[-+=(\[{,;]$|^$|\$$/.test(truoc)) { if (s === "1") s = ""; else if (s === "-1") s = "-"; } if (dau && s === "0" && !/^[\w\\({]/.test(sau)) return ""; return D + (dau && !/^-/.test(s) ? "+" + s : s); } catch (e) { return m; } }).replace(/\+\s*\u0001-/g, "-").replace(/-\s*\u0001-/g, "+").replace(/\u0001/g, ""); }
 		// ---------- tham số ----------
 		function docTS(text) { return String(text || "").split(/\r?\n|;/).map(l => l.replace(/\(.*?\)\s*$/, "").trim()).filter(l => l && !l.startsWith("#")).map(l => { const m = l.match(/^([A-Za-z_]\w*)\s*=\s*(.+)$/); if (!m) throw new Error("dòng tham số chưa đúng: " + l); const [, ten, v] = m, r = v.match(/^(-?\d+(?:\.\d+)?)\s*\.\.\s*(-?\d+(?:\.\d+)?)(?:\s*(?:buoc|bước|step)\s*(\d+(?:\.\d+)?))?$/i), ds = v.match(/^\[(.+)\]$/); return r ? { ten, tu: +r[1], den: +r[2], buoc: +(r[3] || 1) } : ds ? { ten, ds: ds[1].split(",").map(x => x.trim()) } : { ten, bt: v }; }); }
@@ -11780,7 +11875,7 @@ async function thiChay(ma) {
 		const nhieuTu = da => MD.tron(["-(" + da + ")", "(" + da + ")+1", "(" + da + ")-1", "2*(" + da + ")", "(" + da + ")/2", "(" + da + ")+2", "(" + da + ")-2", "3*(" + da + ")", "(" + da + ")+3"]);
 		const laChu = x => /\\|\$/.test(String(x || ""));
 		function bienDA(m, bien) { if ((m.loai === "tn" || m.loai === "tln" || !m.loai) && m.dapAn && !laChu(m.dapAn)) try { return Object.assign({}, bien, { dapAn: tinh(m.dapAn, bien) }); } catch (e) { } return bien; }
-		function motMau(m, bien, id) { const L = m.loai || "tn", tron = m.lamTron == null ? "" : String(m.lamTron), de = thay(m.deBai, bien, tron), lg = m.loiGiai && m.loiGiai.trim() ? "\n\t\\loigiai{" + thay(m.loiGiai, bienDA(m, bien), tron) + "}" : "", dau = "\\begin{ex}%[" + (id || "Mã ID") + "]\n\t" + de;
+		function motMau(m, bien, id) { const L = m.loai || "tn", tron = tronCua(m), de = thay(thayHinh(m.deBai, bien, tron), bien, tron), lg = m.loiGiai && m.loiGiai.trim() ? "\n\t\\loigiai{" + thay(thayHinh(m.loiGiai, bienDA(m, bien), tron), bienDA(m, bien), tron) + "}" : "", dau = "\\begin{ex}%[" + (id || "Mã ID") + "]\n\t" + de;
 			if (L === "tn") { const chu = laChu(m.dapAn), bao = x => /\$/.test(x) ? x : "$" + x + "$"; let sDa, nh = []; if (chu) { sDa = thay(m.dapAn, bien, tron); nh = (m.nhieu || []).map(x => thay(x, bien, tron)).filter(x => x.trim() && x !== sDa).slice(0, 3); } else { const da = tinh(m.dapAn, bien); sDa = dinhDang(da, tron); const b2 = Object.assign({}, bien, { dapAn: da }), co = new Set([sDa]); for (const bt of (m.nhieu && m.nhieu.length ? m.nhieu : nhieuTu(m.dapAn))) { if (nh.length >= 3) break; try { const s = laChu(bt) ? thay(bt, b2, tron) : dinhDang(tinh(bt, b2), tron); if (!co.has(s) && !/NaN|Infinity/.test(s)) { co.add(s); nh.push(s); } } catch (e) { } } } if (nh.length < 3) return null; const tat = [sDa].concat(nh), thu = MD.tron([0, 1, 2, 3]); return { code: dau + "\n\t\\choice\n" + thu.map(i => "\t{" + (i === 0 ? "\\True " : "") + bao(tat[i]) + "}").join("\n") + lg + "\n\\end{ex}", da: "ABCD"[thu.indexOf(0)] + " = " + sDa }; }
 			if (L === "ds") { const y = (m.nhieu || []).map(l => { const [nd, bt] = String(l).split("||"); return { nd: thay(nd.trim(), bien, tron), dung: bt && bt.trim() ? !!tinh(bt.trim(), bien) : true }; }); if (y.length !== 4) throw new Error("câu Đúng/Sai cần đúng 4 ý"); return { code: dau + "\n\t\\choiceTF\n" + y.map(x => "\t{" + (x.dung ? "\\True " : "") + x.nd + "}").join("\n") + lg + "\n\\end{ex}", da: y.map(x => x.dung ? "Đ" : "S").join("") }; }
 			if (L === "tln") { const v = tinh(m.dapAn, bien), s = dinhDangSo(v, tron); if (s.replace(/[-,/]/g, "").length > 4 || s.includes("/")) return null; return { code: dau + "\n\t\\par\\shortans[0]{$" + s + "$}" + lg + "\n\\end{ex}", da: s }; }
@@ -11794,7 +11889,7 @@ async function thiChay(ma) {
 		// kiểm tra mẫu: thay số gốc → đáp án gốc; sinh thử 8 câu
 		function soGoc(x) { try { const v = soThuc(tinh(texBT(x), {})); return isFinite(v); } catch (e) { return false; } }
 		function kiemMau(m) { const r = { ok: null, msg: "", so: 0 }; try { const L = m.loai || "tn";
-				if (m.goc && (L === "tn" || L === "tln") && m.dapAnGoc != null && String(m.dapAnGoc).trim() !== "" && !laChu(m.dapAn) && soGoc(m.dapAnGoc)) { const b = {}; Object.entries(m.goc).forEach(([k, v]) => { b[k] = tinh(String(v), b); }); docTS((m.thamSo || []).join("\n")).forEach(t => { if (t.bt) b[t.ten] = tinh(t.bt, b); }); const v = tinh(m.dapAn, b), g = tinh(texBT(m.dapAnGoc), {}), ok = Math.abs(soThuc(v) - soThuc(g)) < 1e-6 * Math.max(1, Math.abs(soThuc(g)));
+				if (m.goc && (L === "tn" || L === "tln") && m.dapAnGoc != null && String(m.dapAnGoc).trim() !== "" && !laChu(m.dapAn) && soGoc(m.dapAnGoc)) { const b = {}; Object.entries(m.goc).forEach(([k, v]) => { b[k] = tinh(String(v), b); }); docTS((m.thamSo || []).join("\n")).forEach(t => { if (t.bt) b[t.ten] = tinh(t.bt, b); }); const v = tinh(m.dapAn, b), g = tinh(texBT(m.dapAnGoc), {}), tr = tronCua(m), vv = tr !== "" ? +soThuc(v).toFixed(+tr) : soThuc(v), ok = Math.abs(vv - soThuc(g)) < 1e-6 * Math.max(1, Math.abs(soThuc(g)));
 					r.ok = ok; r.msg = ok ? "✓ Thay số gốc ra đúng đáp án gốc (" + dinhDangSo(v, "") + ")" : "⚠ Thay số gốc ra " + dinhDangSo(v, "") + " ≠ đáp án gốc " + m.dapAnGoc; }
 				const thu = sinhMau(m, 8, ""); r.so = thu.length; if (!thu.length) { r.ok = false; r.msg = "⚠ Chưa sinh được câu nào" + (thu.loi ? ": " + thu.loi : " — nới khoảng tham số/điều kiện"); } else if (r.ok === null) r.msg = "✓ Sinh thử được " + thu.length + "/8 câu"; }
 			catch (e) { r.ok = false; r.msg = "⚠ " + e.message; } return r; }
