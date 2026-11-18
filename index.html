@@ -2287,7 +2287,6 @@ select option,select optgroup{background:#0F172A!important;color:#E2E8F0!importa
 				<div class="kcThanh kcKinh">
 					<button type="button" class="kcThuongHieuNho" id="kcVeDau" aria-label="KMath — trang chính"><img src="logo-neon.png" alt=""><span class="kcDo">KMath</span></button>
 					<nav class="kcTabs" aria-label="Chức năng">
-						<button type="button" class="kcTab">Chuẩn hoá code LaTeX</button>
 						<button type="button" class="kcTab">Vẽ hình TikZ</button>
 						<button type="button" class="kcTab">Công cụ</button>
 						<button type="button" class="kcTab">Lớp học</button>
@@ -2299,7 +2298,7 @@ select option,select optgroup{background:#0F172A!important;color:#E2E8F0!importa
 					<button type="button" class="kcMenu" id="kcNutMenu" aria-label="Mở menu" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
 				</div>
 				<nav class="kcMenuDT kcKinh" id="kcMenuDT" aria-label="Chức năng">
-					<button type="button">Chuẩn hoá code LaTeX</button><button type="button">Vẽ hình TikZ</button><button type="button">Công cụ</button><button type="button">Lớp học</button><button type="button">Đề thi</button><button type="button">Văn phòng</button><button type="button">Tạo video</button>
+					<button type="button">Vẽ hình TikZ</button><button type="button">Công cụ</button><button type="button">Lớp học</button><button type="button">Đề thi</button><button type="button">Văn phòng</button><button type="button">Tạo video</button>
 				</nav>
 			</header>
 
@@ -2386,8 +2385,7 @@ select option,select optgroup{background:#0F172A!important;color:#E2E8F0!importa
 	<!-- MÀN HÌNH 4: công cụ -->
 	<section id="manCongCu" hidden>
 	<div class="tabKhung"><nav class="tabChinh" role="tablist" aria-label="Chức năng">
-		<button type="button" role="tab" id="nutTabChuan" aria-selected="true" aria-controls="tabChuan"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14"/></svg><span>Chuẩn hoá code</span> <small>LaTeX</small></button>
-		<button type="button" role="tab" class="nutNhom" id="nhomCongCu" data-nhom="CongCu" aria-selected="false" aria-haspopup="true" aria-expanded="false" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg><span>Công cụ</span><em id="nhomCongCuCon"></em><i aria-hidden="true"></i></button>
+		<button type="button" role="tab" class="nutNhom" id="nhomCongCu" data-nhom="CongCu" aria-selected="true" aria-haspopup="true" aria-expanded="false"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg><span>Công cụ</span><em id="nhomCongCuCon"></em><i aria-hidden="true"></i></button>
 		<button type="button" role="tab" class="nutNhom" id="nhomVeHinh" data-nhom="VeHinh" aria-selected="false" aria-haspopup="true" aria-expanded="false" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19 7-7 3 3-7 7z"/><path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18z"/><circle cx="11" cy="11" r="2"/></svg><span>Vẽ hình TikZ</span><em id="nhomVeHinhCon"></em><i aria-hidden="true"></i></button>
 		<button type="button" role="tab" class="nutNhom" id="nhomLopHoc" data-nhom="LopHoc" aria-selected="false" aria-haspopup="true" aria-expanded="false" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg><span>Lớp học</span><em id="nhomLopHocCon"></em><i aria-hidden="true"></i></button>
 		<button type="button" role="tab" class="nutNhom" id="nhomDeThi" data-nhom="DeThi" aria-selected="false" aria-haspopup="true" aria-expanded="false" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6l1 3H8z"/><rect x="4" y="5" width="16" height="16" rx="2"/><path d="m8 13 2.5 2.5L16 10"/></svg><span>Đề thi</span><em id="nhomDeThiCon"></em><i aria-hidden="true"></i></button>
@@ -2396,6 +2394,7 @@ select option,select optgroup{background:#0F172A!important;color:#E2E8F0!importa
 		<button type="button" role="tab" id="nutTabKPado" aria-selected="false" aria-controls="tabKPado" tabindex="-1" class="kpNutTab"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="2.5"/><ellipse cx="12" cy="12" rx="10" ry="4"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/></svg><span>K-Pado</span></button>
 	</nav>
 	<div class="tabMenu" id="conCongCu" role="tablist" aria-label="Công cụ chuyển đổi" hidden>
+		<button type="button" role="tab" id="nutTabChuan" aria-selected="true" aria-controls="tabChuan"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14"/></svg><span>Chuẩn hoá code</span></button>
 		<button type="button" role="tab" id="nutTabPdfTex" aria-selected="false" aria-controls="tabPdfTex" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M10 13l-2 2 2 2M14 13l2 2-2 2"/></svg><span>PDF → LaTeX</span></button>
 		<button type="button" role="tab" id="nutTabPdfWord" aria-selected="false" aria-controls="tabPdfWord" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg><span>PDF → Word</span></button>
 		<button type="button" role="tab" id="nutTabTexWord" aria-selected="false" aria-controls="tabTexWord" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m7 9 1.6 6L10 11l1.4 4L13 9M15 9h3"/></svg><span>LaTeX → Word</span></button>
@@ -3162,7 +3161,7 @@ select option,select optgroup{background:#0F172A!important;color:#E2E8F0!importa
 		<header class="mdDau">
 			<div class="mdDauTen">
 				<span class="mdDauIco kpIco" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="10" ry="4"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/></svg></span>
-				<div><h2>K-Pado <small class="kpNhan">AI độc quyền KMath</small></h2><p>Giải toán → LaTeX chuẩn <b>ex_test</b>, dựng <b>TikZ từ ảnh</b>, sinh <b>câu tương tự</b> — kết quả tự chạy qua bộ luật chuẩn hoá.</p></div>
+				<div><h2>K-Pado <small class="kpNhan">AI độc quyền KMath</small></h2></div>
 			</div>
 			<div class="mdDauNut"><span class="kpLuot" id="kpLuot">Đang kiểm tra lượt…</span></div>
 		</header>
@@ -3204,7 +3203,7 @@ select option,select optgroup{background:#0F172A!important;color:#E2E8F0!importa
 
 				<div class="kpCongTac">
 					<label class="vdCong" id="kpLGHop"><input type="checkbox" id="kpLG" checked><i aria-hidden="true"></i>Kèm lời giải chi tiết</label>
-					<label class="vdCong kpVDC"><input type="checkbox" id="kpVDC"><i aria-hidden="true"></i>Chế độ VDC (suy nghĩ sâu) · 2 lượt</label>
+					<label class="vdCong kpVDC"><input type="checkbox" id="kpVDC"><i aria-hidden="true"></i>Chế độ VIP (suy nghĩ sâu)</label>
 				</div>
 				<button type="button" class="nut chinh kpChay" id="kpChay">✦ Hỏi K-Pado</button>
 				<p class="kpTT" id="kpTT" role="status"></p>
@@ -4121,7 +4120,7 @@ function khoiDongKPado() {
 		$p("kpChe").querySelectorAll("button").forEach(x => x.setAttribute("aria-selected", x === b));
 		document.querySelectorAll("#tabKPado [data-o]").forEach(o => o.hidden = o.dataset.o !== che);
 		$p("kpLGHop").hidden = che === "vision";
-		$p("kpChay").textContent = che === "vision" ? "✦ Dựng TikZ · 2 lượt" : che === "similar" ? "✦ Sinh câu tương tự" : "✦ Hỏi K-Pado";
+		$p("kpChay").textContent = che === "vision" ? "✦ Dựng TikZ" : che === "similar" ? "✦ Sinh câu tương tự" : "✦ Hỏi K-Pado";
 	});
 	// --- ảnh: chọn / kéo thả / dán; thu về cạnh dài 1600px ---
 	function nhanAnh(f) {
@@ -4195,7 +4194,7 @@ function khoiDongKPado() {
 			let ttVe = "";
 			if (/\\begin\{tikzpicture\}/.test(ketQua)) { const v = await veThuVaSua(ketQua); ketQua = v.ma; anhVe = v.anh; ttVe = v.tt; }
 			const bc = r.baoCao || {};
-			$p("kpBC").innerHTML = "Bộ luật: <b>" + (bc.daSua || 0) + "</b> chỗ đã chuẩn hoá" + (bc.canSuaTay ? " · <span style='color:#FCD34D'>" + bc.canSuaTay + " chỗ cần sửa tay</span>" : "") + (bc.catNgang ? " · <span style='color:#FCA5A5'>kết quả bị cắt ngang — bật VDC hoặc rút gọn đề</span>" : "") + " · " + Math.round((Date.now() - t0) / 1000) + " giây";
+			$p("kpBC").innerHTML = "Bộ luật: <b>" + (bc.daSua || 0) + "</b> chỗ đã chuẩn hoá" + (bc.canSuaTay ? " · <span style='color:#FCD34D'>" + bc.canSuaTay + " chỗ cần sửa tay</span>" : "") + (bc.catNgang ? " · <span style='color:#FCA5A5'>kết quả bị cắt ngang — bật Chế độ VIP hoặc rút gọn đề</span>" : "") + " · " + Math.round((Date.now() - t0) / 1000) + " giây";
 			["kpCopy", "kpSangGan", "kpSangChuan", "kpXemTho"].forEach(id => $p(id).disabled = false);
 			tt((ttVe || "Xong.") + (bc.loiBoLuat ? " (Bộ luật lỗi: " + bc.loiBoLuat + ")" : ""));
 			await veKQ();
@@ -4331,9 +4330,10 @@ window.KFB = { db, auth, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, 
 window.KFB.veTikzThu = async ma => {
 	if (!boMay || typeof boMay.veTikz !== "function") return { ok: false, log: "Bộ vẽ hình chưa sẵn sàng." };
 	try {
-		const r = await Promise.race([boMay.veTikz(ma, { doPhanGiai: 1 }), new Promise(ok => setTimeout(() => ok({ loi: true, loiTxt: "quá 30 giây không vẽ xong" }), 30000))]);
-		if (r && !r.loi && (r.png || r.svg)) return { ok: true, png: r.png || "", svg: r.svg || "" };
-		return { ok: false, log: String((r && (r.log || r.loiTxt)) || "không vẽ được").slice(-3000) };
+		const r = await Promise.race([boMay.veTikz(ma, { doPhanGiai: 2 }), new Promise(ok => setTimeout(() => ok({ loi: true, loiTxt: "quá 90 giây không vẽ xong" }), 90000))]);
+		const url = (d, kieu) => !d ? "" : typeof d === "string" && /^(data:|blob:)/.test(d) ? d : typeof d === "string" && kieu === "image/png" ? "data:image/png;base64," + d : URL.createObjectURL(new Blob([d], { type: kieu }));
+		if (r && !r.loi && (r.png || r.svg)) return { ok: true, png: url(r.png, "image/png"), svg: url(r.svg, "image/svg+xml") };
+		return { ok: false, log: String((r && (r.log || (typeof r.loi === "string" && r.loi) || r.loiTxt)) || "không vẽ được").slice(-3000) };
 	} catch (e) { return { ok: false, log: String(e && e.message || e).slice(-3000) }; }
 };
 const KPADO_URL = "https://kpado.dangkhoa08352708.workers.dev";   // ← địa chỉ Worker K-Pado
@@ -4371,7 +4371,7 @@ window.KFB.kpado = async (ten, data) => {
 		const kh = [...t.matchAll(/```[a-zA-Z]*\s*\n([\s\S]*?)```/g)].map(m => m[1].trim()); if (kh.length) t = kh.join("\n\n");
 		const vt = t.search(/\\begin\{(ex|tikzpicture)\}/); if (vt > 0) t = t.slice(vt);
 		if (meta.che === "tikz") { const m = t.match(/\\begin\{tikzpicture\}[\s\S]*?\\end\{tikzpicture\}/); if (m) t = m[0]; }
-		if (!t) throw new Error("K-Pado không trả về mã LaTeX" + (lyDo ? " (" + lyDo + ")" : "") + ". Thử lại hoặc bật Chế độ VDC.");
+		if (!t) throw new Error("K-Pado không trả về mã LaTeX" + (lyDo ? " (" + lyDo + ")" : "") + ". Thử lại hoặc bật Chế độ VIP.");
 		j = { ...meta, tho: t.trim(), catNgang: lyDo === "MAX_TOKENS" };
 	} else {
 		j = await res.json().catch(() => ({}));
@@ -4943,7 +4943,7 @@ $("vao").addEventListener("keydown", e => {
 
 	/* ---------- tab ngang ---------- */
 	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"], ["nutTabVeHinh", "tabVeHinh"], ["nutTabVeThucTe", "tabVeThucTe"], ["nutTabVeTuY", "tabVeTuY"], ["nutTabKhoAnh", "tabKhoAnh"], ["nutTabVideo", "tabVideo"], ["nutTabKPado", "tabKPado"], ["nutTabGoiTen", "tabGoiTen"], ["nutTabChinhPhuc", "tabChinhPhuc"], ["nutTabThiOnline", "tabThiOnline"], ["nutTabGanID", "tabGanID"], ["nutTabNganHang", "tabNganHang"], ["nutTabTaoDe", "tabTaoDe"], ["nutTabDeTuongTu", "tabDeTuongTu"], ["nutTabVanPhong", "tabVanPhong"]];
-	const NHOM_TAB = { CongCu: ["nutTabPdfTex", "nutTabPdfWord", "nutTabTexWord", "nutTabWordTex"], VeHinh: ["nutTabVeHinh", "nutTabVeThucTe", "nutTabVeTuY", "nutTabKhoAnh"], LopHoc: ["nutTabGoiTen", "nutTabChinhPhuc", "nutTabThiOnline"], DeThi: ["nutTabGanID", "nutTabNganHang", "nutTabTaoDe", "nutTabDeTuongTu"] };
+	const NHOM_TAB = { CongCu: ["nutTabChuan", "nutTabPdfTex", "nutTabPdfWord", "nutTabTexWord", "nutTabWordTex"], VeHinh: ["nutTabVeHinh", "nutTabVeThucTe", "nutTabVeTuY", "nutTabKhoAnh"], LopHoc: ["nutTabGoiTen", "nutTabChinhPhuc", "nutTabThiOnline"], DeThi: ["nutTabGanID", "nutTabNganHang", "nutTabTaoDe", "nutTabDeTuongTu"] };
 	const dongMenuTab = () => Object.keys(NHOM_TAB).forEach(k => { $("con" + k).hidden = true; $("nhom" + k).setAttribute("aria-expanded", "false"); });
 	function capNhatNhom(nut) { dongMenuTab(); Object.entries(NHOM_TAB).forEach(([k, ds]) => { const on = ds.includes(nut), b = $("nhom" + k); b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1; $("nhom" + k + "Con").textContent = on ? $(nut).textContent.replace(/^Vẽ hình TikZ\s*/, "").trim() : ""; }); }
 	function moMenuTab(k) { const m = $("con" + k), b = $("nhom" + k), mo = m.hidden; dongMenuTab(); if (!mo) return; const kh = b.closest(".tabKhung").getBoundingClientRect(), r = b.getBoundingClientRect(); m.style.left = Math.max(0, Math.min(r.left - kh.left, kh.width - 300)) + "px"; m.hidden = false; b.setAttribute("aria-expanded", "true"); }
