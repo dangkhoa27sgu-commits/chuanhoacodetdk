@@ -4330,7 +4330,7 @@ window.KFB.veTikzThu = async ma => {
 		return { ok: false, log: String((r && (r.log || r.loiTxt)) || "không vẽ được").slice(-3000) };
 	} catch (e) { return { ok: false, log: String(e && e.message || e).slice(-3000) }; }
 };
-const KPADO_URL = "https://kpado.TEN-CUA-ANH.workers.dev";   // ← địa chỉ Worker K-Pado
+const KPADO_URL = "https://kpado.dangkhoa08352708.workers.dev";   // ← địa chỉ Worker K-Pado
 window.KFB.kpado = async (ten, data) => {
 	const u = auth.currentUser;
 	if (!u) throw new Error("Chưa đăng nhập.");
