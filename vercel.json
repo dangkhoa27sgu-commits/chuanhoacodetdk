@@ -1,0 +1,8 @@
+{
+  "regions": ["iad1"],
+  "functions": { "api/proxy.js": { "maxDuration": 300 } },
+  "rewrites": [
+    { "source": "/(v1beta/.*)", "destination": "/api/proxy?path=$1" },
+    { "source": "/", "destination": "/api/proxy" }
+  ]
+}
