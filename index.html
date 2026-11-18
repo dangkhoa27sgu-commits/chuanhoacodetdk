@@ -2215,6 +2215,45 @@ select option,select optgroup{background:#0F172A!important;color:#E2E8F0!importa
 .tdBangDau{background:#081026!important}
 </style>
 
+<style id="kpadoCss">
+/* ===== K-Pado ===== */
+.kp{display:flex;flex-direction:column;gap:14px}
+.kp .kpIco{background:linear-gradient(135deg,#E8001C,#7C3AED)!important;color:#fff}
+.kp .kpIco svg{fill:none;stroke:currentColor;stroke-width:1.6}
+.kpNhan{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:999px;margin-left:8px;vertical-align:middle;color:#FDE68A;background:rgba(250,204,21,.12);border:1px solid rgba(250,204,21,.35)}
+.kpLuot{font:600 13px var(--f-code,monospace);padding:7px 12px;border-radius:999px;border:1px solid rgba(94,235,255,.35);color:#CFFAFE;background:rgba(94,235,255,.08);white-space:nowrap}
+.kpLuot.het{border-color:rgba(248,113,113,.5);color:#FCA5A5;background:rgba(239,68,68,.1)}
+.kpChe{align-self:flex-start}
+.kpLuoi{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:16px;align-items:start}
+.kpVao,.kpRa{display:flex;flex-direction:column;gap:12px;padding:18px!important}
+.kpVao [data-o]:not([hidden]){display:flex;flex-direction:column;gap:10px}
+.kpChe button[aria-selected="true"]{color:#ECFEFF!important;background:rgba(94,235,255,.12)!important;box-shadow:inset 0 0 0 1px rgba(94,235,255,.35),0 0 18px -6px rgba(94,235,255,.8)}
+.kpNhanO{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--phu)}
+.kpO{width:100%;min-height:260px;resize:vertical;font:14px/1.7 var(--f-code,monospace);white-space:pre-wrap}
+.kpKQ{min-height:420px;white-space:pre}
+.kpHang{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.kpHang input[type=text]{flex:1 1 160px}
+.kpPhu{font-size:12px;color:var(--phu)}
+.kpTha{display:grid;place-items:center;min-height:220px;padding:14px;border-radius:14px;border:2px dashed rgba(94,235,255,.35);background:rgba(2,6,18,.5);cursor:pointer;text-align:center;color:var(--phu);transition:.2s}
+.kpTha:hover,.kpTha.keo{border-color:#5EEBFF;box-shadow:0 0 26px -8px rgba(94,235,255,.8);color:#fff}
+.kpTha img{max-width:100%;max-height:320px;border-radius:8px;background:#fff}
+.kpCongTac{display:flex;flex-wrap:wrap;gap:10px 18px}
+.kpVDC{color:#FCD34D}
+.kpChay{height:52px;font-size:16px!important;letter-spacing:.04em}
+.kpChay.dang{pointer-events:none;opacity:.75}
+.kpChay.dang::before{content:"";display:inline-block;width:14px;height:14px;margin-right:8px;vertical-align:-2px;border-radius:50%;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;animation:kpXoay .8s linear infinite}
+@keyframes kpXoay{to{transform:rotate(360deg)}}
+.kpTT{margin:0;min-height:20px;font-size:13px;color:var(--phu)}
+.kpTT.loi{color:#FCA5A5}
+.kpRaDau{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.kpBC{font-size:12.5px;color:var(--phu)}
+.kpBC b{color:#6EE7B7}
+.kpTrang{min-height:420px;max-height:70vh;overflow:auto;border-radius:12px;background:var(--giay,#fff);color:var(--giayChu,#111);padding:18px 22px}
+.kpTrong{margin:150px 0;text-align:center;color:var(--phu);font-size:14px}
+.kpNutRa{display:flex;flex-wrap:wrap;gap:8px}
+@media (max-width:1000px){.kpLuoi{grid-template-columns:1fr}}
+</style>
+
 </head>
 <body>
 <div class="kmNen" aria-hidden="true"><div class="kmNen__anh"></div><div class="kmNen__mo"></div><div class="kmNen__phu"></div><canvas id="kmNenSao"></canvas></div>
@@ -2352,6 +2391,7 @@ select option,select optgroup{background:#0F172A!important;color:#E2E8F0!importa
 		<button type="button" role="tab" class="nutNhom" id="nhomDeThi" data-nhom="DeThi" aria-selected="false" aria-haspopup="true" aria-expanded="false" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6l1 3H8z"/><rect x="4" y="5" width="16" height="16" rx="2"/><path d="m8 13 2.5 2.5L16 10"/></svg><span>Đề thi</span><em id="nhomDeThiCon"></em><i aria-hidden="true"></i></button>
 		<button type="button" role="tab" id="nutTabVanPhong" aria-selected="false" aria-controls="tabVanPhong" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 12h18"/></svg><span>Văn Phòng</span></button>
 		<button type="button" role="tab" id="nutTabVideo" aria-selected="false" aria-controls="tabVideo" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="15" height="14" rx="2.5"/><path d="m17.5 10 4-2.5v9l-4-2.5"/><path d="m8.5 9.5 4 2.5-4 2.5z"/></svg><span>Tạo video</span></button>
+		<button type="button" role="tab" id="nutTabKPado" aria-selected="false" aria-controls="tabKPado" tabindex="-1" class="kpNutTab"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="2.5"/><ellipse cx="12" cy="12" rx="10" ry="4"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/></svg><span>K-Pado</span></button>
 	</nav>
 	<div class="tabMenu" id="conCongCu" role="tablist" aria-label="Công cụ chuyển đổi" hidden>
 		<button type="button" role="tab" id="nutTabPdfTex" aria-selected="false" aria-controls="tabPdfTex" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M10 13l-2 2 2 2M14 13l2 2-2 2"/></svg><span>PDF → LaTeX</span></button>
@@ -3115,6 +3155,77 @@ select option,select optgroup{background:#0F172A!important;color:#E2E8F0!importa
 		</div>
 	</div>
 </section>
+<section class="manTab" id="tabKPado" role="tabpanel" aria-labelledby="nutTabKPado" hidden>
+	<div class="kp">
+		<header class="mdDau">
+			<div class="mdDauTen">
+				<span class="mdDauIco kpIco" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="10" ry="4"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/></svg></span>
+				<div><h2>K-Pado <small class="kpNhan">AI độc quyền KMath</small></h2><p>Giải toán → LaTeX chuẩn <b>ex_test</b>, dựng <b>TikZ từ ảnh</b>, sinh <b>câu tương tự</b> — kết quả tự chạy qua bộ luật chuẩn hoá.</p></div>
+			</div>
+			<div class="mdDauNut"><span class="kpLuot" id="kpLuot">Đang kiểm tra lượt…</span></div>
+		</header>
+
+		<div class="vdSeg kpChe" id="kpChe" role="tablist">
+			<button type="button" role="tab" data-che="math" aria-selected="true">∑ Giải toán</button>
+			<button type="button" role="tab" data-che="vision" aria-selected="false">🖼 Ảnh → TikZ</button>
+			<button type="button" role="tab" data-che="similar" aria-selected="false">⧉ Câu tương tự</button>
+		</div>
+
+		<div class="kpLuoi">
+			<section class="mdThe kpVao">
+				<!-- Giải toán -->
+				<div data-o="math">
+					<label class="kpNhanO" for="kpDe">Đề bài</label>
+					<textarea id="kpDe" class="kpO" spellcheck="false" placeholder="Dán đề bài (chữ hoặc LaTeX). Ví dụ: Tìm m để hàm số y = x^3 - 3mx^2 + 3(m^2-1)x có cực đại, cực tiểu…"></textarea>
+					<div class="kpHang"><span class="kpNhanO">Dạng câu</span>
+						<select id="kpKieu"><option value="tu">Giữ dạng của đề</option><option value="tn">Trắc nghiệm 4 PA</option><option value="ds">Đúng / Sai</option><option value="tln">Trả lời ngắn</option><option value="tuluan">Tự luận</option></select>
+					</div>
+				</div>
+				<!-- Ảnh → TikZ -->
+				<div data-o="vision" hidden>
+					<label class="kpTha" id="kpTha" tabindex="0">
+						<input type="file" id="kpAnh" accept="image/png,image/jpeg,image/webp" hidden>
+						<img id="kpAnhXem" alt="" hidden>
+						<span id="kpThaChu">Kéo thả, bấm chọn hoặc <b>Ctrl+V</b> dán ảnh hình vẽ</span>
+					</label>
+					<label class="kpNhanO" for="kpGhiChu">Ghi chú cho K-Pado (tuỳ chọn)</label>
+					<input type="text" id="kpGhiChu" placeholder="vd: hình chóp S.ABCD, SA vuông góc đáy; giữ tỉ lệ như ảnh">
+				</div>
+				<!-- Câu tương tự -->
+				<div data-o="similar" hidden>
+					<div class="kpHang"><label class="kpNhanO" for="kpID">Tìm theo ID trong Ngân hàng</label>
+						<input type="text" id="kpID" placeholder="vd: 2D1H3-1"><button type="button" class="nut" id="kpTimID">Lấy câu</button></div>
+					<label class="kpNhanO" for="kpMau">Câu mẫu (\begin{ex} … \end{ex})</label>
+					<textarea id="kpMau" class="kpO" spellcheck="false" placeholder="Dán câu mẫu hoặc lấy theo ID ở trên"></textarea>
+					<div class="kpHang"><span class="kpNhanO">Số câu</span><select id="kpSoLuong"><option>1</option><option>2</option><option>3</option></select><span class="kpPhu">1 lượt / câu</span></div>
+				</div>
+
+				<div class="kpCongTac">
+					<label class="vdCong" id="kpLGHop"><input type="checkbox" id="kpLG" checked><i aria-hidden="true"></i>Kèm lời giải chi tiết</label>
+					<label class="vdCong kpVDC"><input type="checkbox" id="kpVDC"><i aria-hidden="true"></i>Chế độ VDC (suy nghĩ sâu) · 2 lượt</label>
+				</div>
+				<button type="button" class="nut chinh kpChay" id="kpChay">✦ Hỏi K-Pado</button>
+				<p class="kpTT" id="kpTT" role="status"></p>
+			</section>
+
+			<section class="mdThe kpRa">
+				<div class="kpRaDau">
+					<div class="vdSeg" id="kpXemChe" role="tablist"><button type="button" data-xem="de" aria-selected="true">📄 Bản in</button><button type="button" data-xem="ma" aria-selected="false">{ } Mã LaTeX</button></div>
+					<span class="kpBC" id="kpBC"></span>
+				</div>
+				<div class="kpTrang" id="kpTrang"><p class="kpTrong">Kết quả của K-Pado hiện ở đây — đã chạy qua bộ luật chuẩn hoá.</p></div>
+				<textarea id="kpKQ" class="kpO kpKQ" spellcheck="false" hidden></textarea>
+				<div class="kpNutRa">
+					<button type="button" class="nut" id="kpCopy" disabled>Copy</button>
+					<button type="button" class="nut" id="kpSangGan" disabled>➜ Gán ID &amp; vào Ngân hàng</button>
+					<button type="button" class="nut" id="kpSangChuan" disabled>Mở trong Chuẩn hoá</button>
+					<button type="button" class="nut" id="kpXemTho" disabled title="Mã gốc AI trả về, trước khi chuẩn hoá">Xem mã thô</button>
+				</div>
+			</section>
+		</div>
+	</div>
+</section>
+
 <section class="manTab" id="tabGoiTen" role="tabpanel" aria-labelledby="nutTabGoiTen" hidden>
 	<div class="gt">
 		<header class="mdDau">
@@ -3983,6 +4094,98 @@ Lớp: ...</textarea></div>
 </dialog>
 <div class="toast" id="toast" role="status"></div>
 <script>
+/* ===== K-Pado: giao diện (gọi backend qua window.KFB.kpado — cầu nối trong module Firebase) ===== */
+function khoiDongKPado() {
+	const $p = id => document.getElementById(id);
+	const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+	const tt = (m, loi) => { const e = $p("kpTT"); e.textContent = m; e.classList.toggle("loi", !!loi); };
+	const goi = (ten, data) => { if (!window.KFB || !window.KFB.kpado) throw new Error("Chưa kết nối máy chủ K-Pado."); return window.KFB.kpado(ten, data); };
+	const capLuot = r => { if (!r || r.han == null) return; const e = $p("kpLuot"); e.textContent = "Gói " + ({ thuong: "Thường", vip: "VIP", admin: "Quản trị" }[r.goi] || r.goi) + " · còn " + (r.goi === "admin" ? "∞" : r.conLai + "/" + r.han) + " lượt hôm nay"; e.classList.toggle("het", r.goi !== "admin" && r.conLai <= 0); };
+	goi("kpadoTrangThai", {}).then(capLuot).catch(e => { $p("kpLuot").textContent = e.message || "Không xem được lượt"; $p("kpLuot").classList.add("het"); });
+	if (khoiDongKPado.daMo) return;
+	khoiDongKPado.daMo = true;
+
+	let che = "math", ketQua = "", tho = "", anh = null, xem = "de";
+	// --- đổi chế độ ---
+	$p("kpChe").addEventListener("click", e => {
+		const b = e.target.closest("button"); if (!b) return; che = b.dataset.che;
+		$p("kpChe").querySelectorAll("button").forEach(x => x.setAttribute("aria-selected", x === b));
+		document.querySelectorAll("#tabKPado [data-o]").forEach(o => o.hidden = o.dataset.o !== che);
+		$p("kpLGHop").hidden = che === "vision";
+		$p("kpChay").textContent = che === "vision" ? "✦ Dựng TikZ · 2 lượt" : che === "similar" ? "✦ Sinh câu tương tự" : "✦ Hỏi K-Pado";
+	});
+	// --- ảnh: chọn / kéo thả / dán; thu về cạnh dài 1600px ---
+	function nhanAnh(f) {
+		if (!f || !/^image\/(png|jpe?g|webp)$/.test(f.type)) { tt("Chỉ nhận ảnh PNG, JPG, WEBP.", true); return; }
+		const img = new Image(), url = URL.createObjectURL(f);
+		img.onload = () => {
+			const k = Math.min(1, 1600 / Math.max(img.width, img.height)), c = document.createElement("canvas");
+			c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+			const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, 0, 0, c.width, c.height);
+			const d = c.toDataURL("image/jpeg", 0.92); anh = { data: d.split(",")[1], mime: "image/jpeg" };
+			$p("kpAnhXem").src = d; $p("kpAnhXem").hidden = false; $p("kpThaChu").hidden = true; URL.revokeObjectURL(url);
+			tt("Ảnh " + c.width + "×" + c.height + " sẵn sàng.");
+		};
+		img.src = url;
+	}
+	$p("kpAnh").addEventListener("change", e => nhanAnh(e.target.files[0]));
+	const tha = $p("kpTha");
+	tha.addEventListener("dragover", e => { e.preventDefault(); tha.classList.add("keo"); });
+	tha.addEventListener("dragleave", () => tha.classList.remove("keo"));
+	tha.addEventListener("drop", e => { e.preventDefault(); tha.classList.remove("keo"); nhanAnh(e.dataTransfer.files[0]); });
+	document.addEventListener("paste", e => {
+		if ($p("tabKPado").hidden || che !== "vision") return;
+		const f = [...(e.clipboardData || {}).files || []].find(x => x.type.startsWith("image/")); if (f) { e.preventDefault(); nhanAnh(f); }
+	});
+	// --- lấy câu mẫu theo ID từ Ngân hàng (IndexedDB trên máy) ---
+	$p("kpTimID").addEventListener("click", async () => {
+		const id = $p("kpID").value.trim().replace(/^%?\[|\]$/g, ""); if (!id) return;
+		try {
+			const ds = (await QB.dbTatCa()) || [], c = ds.filter(r => (r.id || "").toUpperCase() === id.toUpperCase());
+			if (!c.length) { tt("Ngân hàng không có câu ID " + id + ".", true); return; }
+			$p("kpMau").value = c[Math.floor(Math.random() * c.length)].raw; tt("Đã lấy 1/" + c.length + " câu có ID " + id + ".");
+		} catch (e) { tt("Không đọc được Ngân hàng: " + (e.message || e), true); }
+	});
+	// --- hiển thị kết quả ---
+	async function veKQ() {
+		$p("kpKQ").value = ketQua;
+		$p("kpTrang").hidden = xem !== "de"; $p("kpKQ").hidden = xem !== "ma";
+		if (xem !== "de" || !ketQua) return;
+		const code = /\\begin\{ex\}/.test(ketQua) ? ketQua : "\\begin{ex}\n\\begin{center}\n" + ketQua + "\n\\end{center}\n\\end{ex}";
+		try { await QB.xemTruoc($p("kpTrang"), code, { lg: true, gach: true, tieuDe: false }); }
+		catch (e) { $p("kpTrang").innerHTML = '<pre style="white-space:pre-wrap">' + esc(ketQua) + "</pre>"; }
+	}
+	$p("kpXemChe").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; xem = b.dataset.xem; $p("kpXemChe").querySelectorAll("button").forEach(x => x.setAttribute("aria-selected", x === b)); veKQ(); });
+	$p("kpKQ").addEventListener("input", () => { ketQua = $p("kpKQ").value; });
+	// --- gọi K-Pado ---
+	$p("kpChay").addEventListener("click", async () => {
+		const vdc = $p("kpVDC").checked, loiGiai = $p("kpLG").checked;
+		let ten, data;
+		if (che === "math") { const de = $p("kpDe").value.trim(); if (!de) { tt("Nhập đề bài trước.", true); return; } ten = "kpadoMath"; data = { de, kieu: $p("kpKieu").value, loiGiai, vdc }; }
+		else if (che === "vision") { if (!anh) { tt("Chọn hoặc dán ảnh trước.", true); return; } ten = "kpadoVisionTikz"; data = { anh: anh.data, mime: anh.mime, ghiChu: $p("kpGhiChu").value.trim(), vdc }; }
+		else { const cau = $p("kpMau").value.trim(); if (!cau) { tt("Dán hoặc lấy câu mẫu trước.", true); return; } ten = "kpadoGenSimilar"; data = { cau, soLuong: +$p("kpSoLuong").value, loiGiai, vdc }; }
+		const nut = $p("kpChay"); nut.classList.add("dang"); tt(vdc ? "K-Pado đang suy nghĩ sâu (có thể mất 1–2 phút)…" : "K-Pado đang làm việc…");
+		const t0 = Date.now();
+		try {
+			const r = await goi(ten, data);
+			ketQua = r.ketQua; tho = r.tho; capLuot(r);
+			const bc = r.baoCao || {};
+			$p("kpBC").innerHTML = "Bộ luật: <b>" + (bc.daSua || 0) + "</b> chỗ đã chuẩn hoá" + (bc.canSuaTay ? " · <span style='color:#FCD34D'>" + bc.canSuaTay + " chỗ cần sửa tay</span>" : "") + (bc.catNgang ? " · <span style='color:#FCA5A5'>kết quả bị cắt ngang — bật VDC hoặc rút gọn đề</span>" : "") + " · " + Math.round((Date.now() - t0) / 1000) + " giây";
+			["kpCopy", "kpSangGan", "kpSangChuan", "kpXemTho"].forEach(id => $p(id).disabled = false);
+			tt("Xong." + (bc.loiBoLuat ? " (Bộ luật lỗi: " + bc.loiBoLuat + " — đang hiện mã gốc)" : ""));
+			await veKQ();
+		} catch (e) { tt(e.message || String(e), true); }
+		finally { nut.classList.remove("dang"); }
+	});
+	// --- nút thao tác ---
+	$p("kpCopy").addEventListener("click", () => navigator.clipboard.writeText(ketQua).then(() => tt("Đã copy."), () => { $p("kpKQ").hidden = false; $p("kpKQ").select(); tt("Bấm Ctrl+C để copy."); }));
+	$p("kpSangGan").addEventListener("click", () => { localStorage.setItem("tdk_gi_ma", JSON.stringify(ketQua)); $p("nhomDeThi").click(); setTimeout(() => $p("nutTabGanID").click(), 50); });
+	$p("kpSangChuan").addEventListener("click", () => { $p("vao").value = ketQua; $p("vao").dispatchEvent(new Event("input")); $p("nutTabChuan").click(); });
+	$p("kpXemTho").addEventListener("click", () => { xem = "ma"; $p("kpXemChe").querySelectorAll("button").forEach(x => x.setAttribute("aria-selected", x.dataset.xem === "ma")); $p("kpKQ").hidden = false; $p("kpTrang").hidden = true; $p("kpKQ").value = tho; tt("Đang xem mã thô (chưa chuẩn hoá). Bấm 📄 Bản in để quay lại kết quả."); });
+}
+</script>
+
+<script>
 /* Master Layout: đưa thanh Tab lên header (giữ nguyên nút, id, sự kiện) + sao nền */
 (function () {
 	const kh = document.querySelector("header.dau > .khung"), tk = document.getElementById("taiKhoan"), tab = document.querySelector("#manCongCu .tabKhung");
@@ -4088,6 +4291,7 @@ Lớp: ...</textarea></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, signInAnonymously, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, increment, serverTimestamp, writeBatch, collection, addDoc, getDocs, query, where, orderBy, limit, onSnapshot, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { firebaseConfig, EMAIL_QUAN_TRI, LIEN_HE } from "./cauhinh.js";
@@ -4098,6 +4302,8 @@ const db = getFirestore(app);
 // ===== Cầu nối Firebase cho module Thi Online (dùng collection/query/realtime) =====
 window.KFB = { db, auth, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, where, orderBy, limit, onSnapshot, serverTimestamp, writeBatch, increment, arrayUnion, signInAnonymously,
 	uid: () => auth.currentUser && auth.currentUser.uid, taiKhoan: () => auth.currentUser };
+const fns = getFunctions(app, "asia-southeast1");
+window.KFB.kpado = (ten, data) => httpsCallable(fns, ten, { timeout: 200000 })(data).then(r => r.data);
 let boMay = null;   // bộ luật, chỉ tải được khi tài khoản đã duyệt
 const $ = id => document.getElementById(id);
 
@@ -4655,7 +4861,7 @@ $("vao").addEventListener("keydown", e => {
 	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 12.3.";
 
 	/* ---------- tab ngang ---------- */
-	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"], ["nutTabVeHinh", "tabVeHinh"], ["nutTabVeThucTe", "tabVeThucTe"], ["nutTabVeTuY", "tabVeTuY"], ["nutTabKhoAnh", "tabKhoAnh"], ["nutTabVideo", "tabVideo"], ["nutTabGoiTen", "tabGoiTen"], ["nutTabChinhPhuc", "tabChinhPhuc"], ["nutTabThiOnline", "tabThiOnline"], ["nutTabGanID", "tabGanID"], ["nutTabNganHang", "tabNganHang"], ["nutTabTaoDe", "tabTaoDe"], ["nutTabDeTuongTu", "tabDeTuongTu"], ["nutTabVanPhong", "tabVanPhong"]];
+	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"], ["nutTabVeHinh", "tabVeHinh"], ["nutTabVeThucTe", "tabVeThucTe"], ["nutTabVeTuY", "tabVeTuY"], ["nutTabKhoAnh", "tabKhoAnh"], ["nutTabVideo", "tabVideo"], ["nutTabKPado", "tabKPado"], ["nutTabGoiTen", "tabGoiTen"], ["nutTabChinhPhuc", "tabChinhPhuc"], ["nutTabThiOnline", "tabThiOnline"], ["nutTabGanID", "tabGanID"], ["nutTabNganHang", "tabNganHang"], ["nutTabTaoDe", "tabTaoDe"], ["nutTabDeTuongTu", "tabDeTuongTu"], ["nutTabVanPhong", "tabVanPhong"]];
 	const NHOM_TAB = { CongCu: ["nutTabPdfTex", "nutTabPdfWord", "nutTabTexWord", "nutTabWordTex"], VeHinh: ["nutTabVeHinh", "nutTabVeThucTe", "nutTabVeTuY", "nutTabKhoAnh"], LopHoc: ["nutTabGoiTen", "nutTabChinhPhuc", "nutTabThiOnline"], DeThi: ["nutTabGanID", "nutTabNganHang", "nutTabTaoDe", "nutTabDeTuongTu"] };
 	const dongMenuTab = () => Object.keys(NHOM_TAB).forEach(k => { $("con" + k).hidden = true; $("nhom" + k).setAttribute("aria-expanded", "false"); });
 	function capNhatNhom(nut) { dongMenuTab(); Object.entries(NHOM_TAB).forEach(([k, ds]) => { const on = ds.includes(nut), b = $("nhom" + k); b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1; $("nhom" + k + "Con").textContent = on ? $(nut).textContent.replace(/^Vẽ hình TikZ\s*/, "").trim() : ""; }); }
@@ -4675,6 +4881,7 @@ $("vao").addEventListener("keydown", e => {
 		if (nut === "nutTabVeThucTe") khoiDongVHT();
 		if (nut === "nutTabVeTuY") khoiDongTuY();
 		if (nut === "nutTabVideo") khoiDongVideo();
+		if (nut === "nutTabKPado" && typeof khoiDongKPado === "function") khoiDongKPado();
 		if (nut === "nutTabGoiTen") khoiDongGoiTen();
 		if (nut === "nutTabChinhPhuc") khoiDongChinhPhuc();
 		if (nut === "nutTabThiOnline") khoiDongThiOnline();
