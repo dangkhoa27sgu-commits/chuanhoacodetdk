@@ -4103,9 +4103,14 @@ function khoiDongKPado() {
 	const $p = id => document.getElementById(id);
 	const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 	const tt = (m, loi) => { const e = $p("kpTT"); e.textContent = m; e.classList.toggle("loi", !!loi); };
-	const goi = (ten, data) => { if (!window.KFB || !window.KFB.kpado) throw new Error("Chưa kết nối máy chủ K-Pado."); return window.KFB.kpado(ten, data); };
+	// chờ module Firebase + đăng nhập sẵn sàng (trang có thể mở thẳng tab K-Pado trước khi đăng nhập xong)
+	const sanSang = async () => { for (let i = 0; i < 100; i++) { if (window.KFB && window.KFB.kpado && window.KFB.uid && window.KFB.uid()) return; await new Promise(r => setTimeout(r, 200)); } throw new Error("Chưa đăng nhập xong — tải lại trang."); };
+	const goi = async (ten, data) => { await sanSang(); return window.KFB.kpado(ten, data); };
 	const capLuot = r => { if (!r || r.han == null) return; const e = $p("kpLuot"); e.textContent = "Gói " + ({ thuong: "Thường", vip: "VIP", admin: "Quản trị" }[r.goi] || r.goi) + " · còn " + (r.goi === "admin" ? "∞" : r.conLai + "/" + r.han) + " lượt hôm nay"; e.classList.toggle("het", r.goi !== "admin" && r.conLai <= 0); };
-	goi("kpadoTrangThai", {}).then(capLuot).catch(e => { $p("kpLuot").textContent = e.message || "Không xem được lượt"; $p("kpLuot").classList.add("het"); });
+	$p("kpLuot").textContent = "Đang kiểm tra lượt…"; $p("kpLuot").classList.remove("het");
+	Promise.race([goi("kpadoTrangThai", {}), new Promise((_, no) => setTimeout(() => no(new Error("Máy chủ K-Pado không phản hồi.")), 25000))])
+		.then(r => { if (!r || r.han == null) throw new Error("Máy chủ trả dữ liệu lạ: " + JSON.stringify(r).slice(0, 80)); capLuot(r); })
+		.catch(e => { $p("kpLuot").textContent = "⚠ " + (e.message || "Không xem được lượt"); $p("kpLuot").title = e.message || ""; $p("kpLuot").classList.add("het"); });
 	if (khoiDongKPado.daMo) return;
 	khoiDongKPado.daMo = true;
 
