@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="vi">
+<html lang="vi" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -2106,12 +2106,105 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
 @media (prefers-reduced-motion:reduce){.kc .kcAnh,.kc .kcLogo,.kc .kcDo,.kc .kcTenTG,.kc .kcVao,.kc .kcH{animation:none!important}.kc .kcH{display:none}}
 </style>
 
+<style id="kmMasterCss">
+/* =====================================================================
+   KMath — MASTER LAYOUT "VŨ TRỤ" (áp cho mọi Tab sau khi đăng nhập)
+   1) Bảng màu  2) Nền  3) Header  4) Thành phần dùng chung
+   ===================================================================== */
+/* 1) BẢNG MÀU — ghi đè biến của web, mọi công cụ tự đổi theo */
+:root,:root[data-theme="dark"],:root[data-theme="light"]{
+  --nen:#050C24;--mat:rgba(10,18,42,.62);--mat2:rgba(16,26,56,.72);--chu:#E2E8F0;--phu:#94A3B8;
+  --vien:rgba(148,163,184,.20);--vien2:rgba(148,163,184,.32);--navy:#050C24;
+  --vang:#5EEBFF;--vangnhat:rgba(94,235,255,.12);--code:rgba(2,6,18,.72);
+  --xanh:#6EE7B7;--xanhnhat:rgba(16,185,129,.15);--do:#FCA5A5;--donhat:rgba(239,68,68,.15);
+  --giay:#1F2631;--giayChu:#E6E2D8;--mucCau:#93A9FF;--mucDung:#F0938B;
+  --bong:0 1px 2px rgba(0,0,0,.3),0 18px 40px -20px rgba(0,0,0,.8);
+  --km-cyan:#5EEBFF;--km-do:#E8001C;color-scheme:dark}
+body{background:transparent!important;color:var(--chu)}
+
+/* 2) NỀN: ảnh vũ trụ + kính mờ + phủ tối */
+.kmNen{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;background:radial-gradient(ellipse 70% 60% at 50% 50%,#0A1A3F 0%,#050C24 55%,#020617 100%)}
+.kmNen__anh{position:absolute;inset:4% 3%;background:url("nen-vutru-4k.jpg") center/cover;-webkit-mask-image:radial-gradient(ellipse 52% 52% at 50% 50%,#000 55%,transparent 100%);mask-image:radial-gradient(ellipse 52% 52% at 50% 50%,#000 55%,transparent 100%)}
+.kmNen__mo{position:absolute;inset:0;backdrop-filter:blur(10px) saturate(130%);-webkit-backdrop-filter:blur(10px) saturate(130%)}
+.kmNen__phu{position:absolute;inset:0;background:linear-gradient(180deg,rgba(2,6,23,.82) 0%,rgba(2,6,23,.64) 30%,rgba(2,6,23,.70) 100%),radial-gradient(ellipse 80% 70% at 50% 40%,transparent 40%,rgba(2,6,23,.6) 100%)}
+.kmNen canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.55}
+
+/* 3) HEADER kính mờ dính trên cùng: logo · tab · tài khoản */
+header.dau{position:sticky;top:0;z-index:70;background:none!important;padding:12px clamp(10px,2vw,24px) 0}
+header.dau>.khung{max-width:1560px;display:flex!important;flex-wrap:nowrap;align-items:center!important;gap:12px!important;padding:8px 10px 8px 14px!important;border-radius:16px;
+  background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.02)),rgba(6,12,32,.6);border:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(22px) saturate(160%);-webkit-backdrop-filter:blur(22px) saturate(160%);box-shadow:0 24px 60px -28px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.12)}
+header.dau .vach{display:none}
+.kmLogoDau{display:flex;align-items:center;gap:8px;flex-shrink:0;padding-right:6px;cursor:default}
+.kmLogoDau img{width:38px;height:38px;object-fit:contain;filter:drop-shadow(0 0 4px rgba(255,0,40,.95)) drop-shadow(0 0 12px rgba(220,0,30,.7));transition:filter .3s}
+.kmLogoDau .kmLogoChu{display:flex;flex-direction:column;line-height:1}
+.kmLogoDau .ten{margin:0;font:800 24px/1 "Exo 2",sans-serif!important;color:var(--km-do)!important;text-shadow:0 0 4px rgba(255,0,40,.9),0 0 14px rgba(230,0,30,.85),0 0 32px rgba(200,0,25,.6);transition:text-shadow .3s}
+.kmLogoDau .ten b{color:inherit!important;font-weight:inherit}
+.kmLogoDau .mota{margin:4px 0 0!important;font:700 9.5px/1 "Exo 2",sans-serif!important;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;color:#E9FDFF!important;text-shadow:0 0 6px rgba(94,235,255,.8),0 0 14px rgba(56,189,248,.45)}
+.kmLogoDau:hover img{filter:drop-shadow(0 0 6px rgba(255,0,40,1)) drop-shadow(0 0 20px rgba(235,0,30,1)) drop-shadow(0 0 40px rgba(210,0,25,.8))}
+.kmLogoDau:hover .ten{text-shadow:0 0 6px rgba(255,0,40,1),0 0 20px rgba(235,0,30,1),0 0 48px rgba(210,0,25,.9)}
+header.dau .tabKhung{flex:1;min-width:0;display:flex;justify-content:center}
+body:has(#manCongCu[hidden]) header.dau .tabKhung{display:none}
+header.dau .tabChinh{margin:0!important;border:0!important;justify-content:flex-start;max-width:100%}
+.tabChinh>button{position:relative;border:0!important;border-radius:12px;padding:10px 13px!important;color:#CBD5E1!important;font-weight:500!important;font-size:14.5px!important;transition:color .25s,background-color .25s,text-shadow .25s,box-shadow .25s}
+.tabChinh>button small{color:#94A3B8!important}
+.tabChinh>button::after{content:"";position:absolute;left:13px;right:13px;bottom:3px;height:2px;border-radius:2px;background:linear-gradient(90deg,#22D3EE,#5EEBFF);box-shadow:0 0 8px #5EEBFF,0 0 18px rgba(94,235,255,.7);transform:scaleX(0);transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.tabChinh>button:hover{color:#fff!important;background:rgba(94,235,255,.07);text-shadow:0 0 8px rgba(186,230,253,1),0 0 20px rgba(94,235,255,.75);box-shadow:inset 0 0 0 1px rgba(94,235,255,.25),0 0 22px -6px rgba(94,235,255,.8)}
+.tabChinh>button:hover::after{transform:scaleX(.5)}
+.tabChinh>button[aria-selected="true"]{color:#ECFEFF!important;background:rgba(94,235,255,.08);text-shadow:0 0 10px rgba(94,235,255,.95),0 0 24px rgba(56,189,248,.55)}
+.tabChinh>button[aria-selected="true"]::after{transform:scaleX(1)}
+.tabChinh>button:hover .icoTab,.tabChinh>button[aria-selected="true"] .icoTab{color:var(--km-cyan)!important;opacity:1;filter:drop-shadow(0 0 6px var(--km-cyan))}
+.tabMenu{background:linear-gradient(145deg,rgba(255,255,255,.08),rgba(255,255,255,.02)),rgba(6,12,32,.92)!important;border:1px solid rgba(94,235,255,.22)!important;backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);box-shadow:0 30px 60px -20px rgba(0,0,0,.9),0 0 30px -12px rgba(94,235,255,.5)!important}
+.tabMenu button .icoTab{color:var(--km-cyan)!important}
+.tabMenu button:hover{background:rgba(94,235,255,.08)!important;text-shadow:0 0 10px rgba(94,235,255,.8);box-shadow:inset 0 0 0 1px rgba(94,235,255,.25)}
+.tabMenu button[aria-selected="true"]{background:linear-gradient(90deg,rgba(94,235,255,.2),rgba(94,235,255,.05))!important;box-shadow:inset 3px 0 0 var(--km-cyan)!important}
+.taiKhoan{flex-shrink:0;margin-left:0!important;gap:8px!important;color:#CBD5E1!important}
+.taiKhoan img{width:28px!important;height:28px!important;box-shadow:0 0 0 2px rgba(94,235,255,.35)}
+.taiKhoan #emailNd{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}
+.taiKhoan .nut{height:36px;padding:0 12px!important;border-radius:10px!important;background:rgba(255,255,255,.04)!important;border:1px solid rgba(255,255,255,.12)!important;color:#CBD5E1!important}
+.taiKhoan #nutThoat:hover{color:#FCA5A5!important;border-color:rgba(248,113,113,.55)!important;box-shadow:0 0 16px -4px rgba(248,113,113,.7)!important}
+
+/* 4) THÀNH PHẦN DÙNG CHUNG */
+.khung{max-width:1560px!important}
+/* Panel kính */
+.oCode,.bang,.cdO,.manHinh,.cuon{border-radius:16px!important;border:1px solid rgba(255,255,255,.12)!important;background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.015) 60%),var(--mat)!important;box-shadow:0 24px 60px -30px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.1);transition:border-color .35s,box-shadow .35s}
+.oCode:hover,.bang:hover,.cdO:hover{border-color:rgba(94,235,255,.28)!important;box-shadow:0 24px 60px -30px rgba(0,0,0,.9),0 0 40px -18px rgba(94,235,255,.6),inset 0 1px 0 rgba(255,255,255,.1)}
+/* Nút */
+.nut{border-radius:10px!important;background:rgba(255,255,255,.04)!important;border:1px solid rgba(255,255,255,.14)!important;color:var(--chu)!important;transition:transform .2s cubic-bezier(.3,1.6,.5,1),box-shadow .25s,border-color .25s,background-color .25s,text-shadow .25s}
+.nut:hover{transform:translateY(-2px);color:#fff!important;border-color:rgba(94,235,255,.7)!important;background:rgba(94,235,255,.10)!important;text-shadow:0 0 10px rgba(94,235,255,.9);box-shadow:0 0 0 1px rgba(94,235,255,.25),0 0 26px -4px rgba(94,235,255,.9)}
+.nut:active{transform:translateY(0) scale(.97)}
+.nut.chinh,.vt3NutChinh{position:relative;overflow:hidden;border:0!important;color:#fff!important;background:linear-gradient(100deg,#8B0000,#E8001C 45%,#FF5A3C 100%)!important;background-size:170% 100%!important;background-position:0 0!important;
+  box-shadow:0 8px 22px -10px rgba(255,40,20,.8),inset 0 1px 0 rgba(255,255,255,.25)!important;transition:background-position .5s,transform .2s cubic-bezier(.3,1.6,.5,1),box-shadow .3s!important}
+.nut.chinh:hover,.vt3NutChinh:hover{background-position:100% 0!important;transform:translateY(-2px);text-shadow:none;filter:none;box-shadow:0 10px 15px -3px rgba(239,68,68,.5),0 0 24px rgba(255,60,30,.75),0 0 60px -6px rgba(255,60,30,.8)!important}
+/* Ô nhập kiểu console */
+input[type=text],input[type=number],input[type=email],input[type=search],input[type=password],input[type=url],input:not([type]),select,textarea{
+  background:rgba(2,6,18,.72)!important;color:#C7D7E4!important;border:1px solid rgba(148,163,184,.22)!important;border-radius:10px!important;box-shadow:inset 0 2px 10px rgba(0,0,0,.5);caret-color:var(--km-cyan);transition:border-color .2s,box-shadow .2s}
+textarea{color:#CFE7F2!important}
+input::placeholder,textarea::placeholder{color:#55657A!important}
+input:focus,select:focus,textarea:focus{outline:none!important;border-color:rgba(94,235,255,.6)!important;box-shadow:inset 0 2px 10px rgba(0,0,0,.5),0 0 0 3px rgba(94,235,255,.12),0 0 24px -8px rgba(94,235,255,.7)!important}
+#manDangNhap input.kcIn{border-radius:12px!important}
+/* Tab con trong từng công cụ: rê vào thì sáng */
+#manCongCu [role="tab"]:not(.tabChinh>button):not(.tabMenu button){transition:color .2s,text-shadow .2s,box-shadow .2s,background-color .2s}
+#manCongCu [role="tab"]:not(.tabChinh>button):not(.tabMenu button):hover{color:#fff!important;text-shadow:0 0 10px rgba(94,235,255,.85);box-shadow:inset 0 0 0 1px rgba(94,235,255,.3),0 0 20px -6px rgba(94,235,255,.85)}
+.nutHD:hover{box-shadow:0 0 0 1px rgba(250,204,21,.5),0 0 22px -4px rgba(250,204,21,.8)!important}
+.toast{background:rgba(6,12,32,.92)!important;color:#E2E8F0!important;border:1px solid rgba(94,235,255,.3);box-shadow:0 0 24px -6px rgba(94,235,255,.6);backdrop-filter:blur(12px)}
+::selection{background:rgba(94,235,255,.3)}
+*{scrollbar-color:rgba(94,235,255,.35) transparent}
+/* Màn hình hẹp */
+#manCongCu{padding-top:16px}
+@media (max-width:1900px){.taiKhoan #emailNd{display:none}}
+@media (max-width:1560px){.kmLogoDau .mota{display:none}.tabChinh>button{padding:10px 10px!important;font-size:14px!important}.tabChinh>button small{display:none}}
+@media (max-width:1100px){header.dau>.khung{flex-wrap:wrap}header.dau .tabKhung{order:3;flex-basis:100%;justify-content:flex-start}.taiKhoan{margin-left:auto!important}.taiKhoan #emailNd{display:none}}
+@media (prefers-reduced-motion:reduce){.nut,.tabChinh>button{transition:none!important}}
+</style>
+
 </head>
 <body>
+<div class="kmNen" aria-hidden="true"><div class="kmNen__anh"></div><div class="kmNen__mo"></div><div class="kmNen__phu"></div><canvas id="kmNenSao"></canvas></div>
+
 <header class="dau">
 	<div class="khung">
-		<h1 class="ten">K<b>Math</b></h1>
-		<p class="mota">Nền tảng soạn &amp; quản lý đề thi Toán</p>
+		<div class="kmLogoDau"><img src="logo-neon.png" alt="Logo KMath"><div class="kmLogoChu"><h1 class="ten">KMath</h1><p class="mota">Hệ sinh thái giáo dục thông minh</p></div></div>
 		<div class="taiKhoan" id="taiKhoan" hidden>
 			<img id="anh" alt="" referrerpolicy="no-referrer">
 			<span id="emailNd"></span>
@@ -3872,6 +3965,25 @@ Lớp: ...</textarea></div>
 	</form>
 </dialog>
 <div class="toast" id="toast" role="status"></div>
+<script>
+/* Master Layout: đưa thanh Tab lên header (giữ nguyên nút, id, sự kiện) + sao nền */
+(function () {
+	const kh = document.querySelector("header.dau > .khung"), tk = document.getElementById("taiKhoan"), tab = document.querySelector("#manCongCu .tabKhung");
+	if (kh && tk && tab) kh.insertBefore(tab, tk);
+	const cv = document.getElementById("kmNenSao"); if (!cv) return;
+	const c = cv.getContext("2d");
+	function ve() {
+		const d = Math.min(devicePixelRatio || 1, 2), w = innerWidth, h = innerHeight;
+		cv.width = w * d; cv.height = h * d; c.setTransform(d, 0, 0, d, 0, 0);
+		for (let i = 0, n = Math.round(w * h / 4000); i < n; i++) {
+			c.fillStyle = "rgba(210,235,255," + (.25 + Math.random() * .5).toFixed(2) + ")";
+			c.beginPath(); c.arc(Math.random() * w, Math.random() * h, Math.random() * .8 + .2, 0, 6.2832); c.fill();
+		}
+	}
+	ve(); let t; addEventListener("resize", () => { clearTimeout(t); t = setTimeout(ve, 200); });
+})();
+</script>
+
 <script>
 /* ===== Cổng đăng nhập vũ trụ: hiệu ứng giao diện (không đụng Firebase) ===== */
 (function () {
