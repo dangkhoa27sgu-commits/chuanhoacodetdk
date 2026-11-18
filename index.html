@@ -2216,6 +2216,7 @@ select option,select optgroup{background:#0F172A!important;color:#E2E8F0!importa
 </style>
 
 
+
 <style id="kpadoCss">
 /* ===== K-Pado ===== */
 .kp{display:flex;flex-direction:column;gap:14px}
@@ -3228,6 +3229,7 @@ select option,select optgroup{background:#0F172A!important;color:#E2E8F0!importa
 </section>
 
 
+
 <section class="manTab" id="tabGoiTen" role="tabpanel" aria-labelledby="nutTabGoiTen" hidden>
 	<div class="gt">
 		<header class="mdDau">
@@ -4121,10 +4123,10 @@ function khoiDongKPado() {
 		if (!f || !/^image\/(png|jpe?g|webp)$/.test(f.type)) { tt("Chỉ nhận ảnh PNG, JPG, WEBP.", true); return; }
 		const img = new Image(), url = URL.createObjectURL(f);
 		img.onload = () => {
-			const k = Math.min(1, 1600 / Math.max(img.width, img.height)), c = document.createElement("canvas");
+			const k = Math.min(1, 1280 / Math.max(img.width, img.height)), c = document.createElement("canvas");
 			c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
 			const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, 0, 0, c.width, c.height);
-			const d = c.toDataURL("image/jpeg", 0.92); anh = { data: d.split(",")[1], mime: "image/jpeg" };
+			const d = c.toDataURL("image/jpeg", 0.85); anh = { data: d.split(",")[1], mime: "image/jpeg" };
 			$p("kpAnhXem").src = d; $p("kpAnhXem").hidden = false; $p("kpThaChu").hidden = true; URL.revokeObjectURL(url);
 			tt("Ảnh " + c.width + "×" + c.height + " sẵn sàng.");
 		};
@@ -4201,6 +4203,7 @@ function khoiDongKPado() {
 	$p("kpXemTho").addEventListener("click", () => { xem = "ma"; $p("kpXemChe").querySelectorAll("button").forEach(x => x.setAttribute("aria-selected", x.dataset.xem === "ma")); $p("kpKQ").hidden = false; $p("kpTrang").hidden = true; $p("kpKQ").value = tho; tt("Đang xem mã thô (chưa chuẩn hoá). Bấm 📄 Bản in để quay lại kết quả."); });
 }
 </script>
+
 
 
 <script>
@@ -4309,7 +4312,6 @@ function khoiDongKPado() {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, signInAnonymously, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, increment, serverTimestamp, writeBatch, collection, addDoc, getDocs, query, where, orderBy, limit, onSnapshot, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { firebaseConfig, EMAIL_QUAN_TRI, LIEN_HE } from "./cauhinh.js";
@@ -4320,7 +4322,6 @@ const db = getFirestore(app);
 // ===== Cầu nối Firebase cho module Thi Online (dùng collection/query/realtime) =====
 window.KFB = { db, auth, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, where, orderBy, limit, onSnapshot, serverTimestamp, writeBatch, increment, arrayUnion, signInAnonymously,
 	uid: () => auth.currentUser && auth.currentUser.uid, taiKhoan: () => auth.currentUser };
-const fns = getFunctions(app, "asia-southeast1");
 window.KFB.veTikzThu = async ma => {
 	if (!boMay || typeof boMay.veTikz !== "function") return { ok: false, log: "Bộ vẽ hình chưa sẵn sàng." };
 	try {
@@ -4329,7 +4330,24 @@ window.KFB.veTikzThu = async ma => {
 		return { ok: false, log: String((r && (r.log || r.loiTxt)) || "không vẽ được").slice(-3000) };
 	} catch (e) { return { ok: false, log: String(e && e.message || e).slice(-3000) }; }
 };
-window.KFB.kpado = (ten, data) => httpsCallable(fns, ten, { timeout: 200000 })(data).then(r => r.data);
+const KPADO_URL = "https://kpado.TEN-CUA-ANH.workers.dev";   // ← địa chỉ Worker K-Pado
+window.KFB.kpado = async (ten, data) => {
+	const u = auth.currentUser;
+	if (!u) throw new Error("Chưa đăng nhập.");
+	const tok = await u.getIdToken();
+	let res;
+	try { res = await fetch(KPADO_URL.replace(/\/+$/, "") + "/" + ten, { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + tok }, body: JSON.stringify(data || {}) }); }
+	catch (e) { throw new Error("Không kết nối được máy chủ K-Pado. Kiểm tra mạng hoặc địa chỉ Worker."); }
+	const j = await res.json().catch(() => ({}));
+	if (!res.ok) throw new Error(j.loi || ("Máy chủ K-Pado lỗi " + res.status));
+	if (j.tho) {                                  // chuẩn hoá bằng bộ luật ngay trên máy
+		if (boMay && typeof boMay.chuanHoa === "function") {
+			try { const c = boMay.chuanHoa(j.tho, {}); j.ketQua = c.ketQua || j.tho; j.baoCao = { daSua: (c.nhatKi || []).length, canSuaTay: (c.canhBao || []).length, phienBanBoLuat: c.phienBan, catNgang: !!j.catNgang }; }
+			catch (e) { j.ketQua = j.tho; j.baoCao = { daSua: 0, canSuaTay: 0, loiBoLuat: String(e && e.message || e), catNgang: !!j.catNgang }; }
+		} else { j.ketQua = j.tho; j.baoCao = { daSua: 0, canSuaTay: 0, loiBoLuat: "Bộ luật chưa tải xong", catNgang: !!j.catNgang }; }
+	}
+	return j;
+};
 let boMay = null;   // bộ luật, chỉ tải được khi tài khoản đã duyệt
 const $ = id => document.getElementById(id);
 
