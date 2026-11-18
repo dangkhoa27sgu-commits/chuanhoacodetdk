@@ -12005,9 +12005,12 @@ async function thiChay(ma) {
 			b.innerHTML = '<span class="giTuNHIco">🏦</span><div><b>Đang gán ID cho ' + nguonNH.length + ' câu từ Ngân hàng</b><small>' + du + "/" + ds.length + ' câu đã có ID — gán xong bấm cập nhật, câu trong Ngân hàng được sửa ID tại chỗ (không tạo câu mới).</small></div><button type="button" class="vt3NutChinh nho" id="giVeNH">✔ Cập nhật vào Ngân hàng</button><button type="button" class="vdNutNho" id="giBoNH" title="Bỏ liên kết (code vẫn giữ)">×</button>'; }
 		function nhanNH(recs) { khoiDong(); const ta = $g("giMa"); if (ta.value.trim() && !nguonNH) { hoan.push(ta.value); $g("giHoan").disabled = false; }
 			nguonNH = recs.map(r => ({ k: r.k, r })); ta.value = recs.map(r => r.raw.trim()).join("\n\n"); MD.ghiLS("tdk_gi_ma", ta.value); ds = []; sel = 0; loc = "tat"; docMa(); tt("Đã nhận " + recs.length + " câu từ Ngân hàng. Bấm vào từng câu để gán ID (bật “Lời giải” để xem cách giải), hoặc dùng Gán tự động."); }
-		async function luuNH() { const src = maRa(), cs = QB.tachEx(src); if (!cs.length) return; const ALL = await QB.dbTatCa(), theoK = new Map(ALL.map(r => [r.k, r])), lienKet = nguonNH || [], dungRoi = new Set(); let sua = 0, moi = 0, giu = 0; const ghi = [], xoa = [];
+		async function luuNH() { const src = maRa(), cs = QB.tachEx(src); if (!cs.length) return; const ALL = await QB.dbTatCa(), theoK = new Map(ALL.map(r => [r.k, r])), lienKet = nguonNH || [], dungRoi = new Set();
+			ALL.forEach(r => { try { const x = QB.tachEx(r.raw)[0]; if (!x) return; const k2 = QB.bam(QB.vanTay(x.than)); if (!theoK.has(k2)) theoK.set(k2, r); } catch (e) { } }); let sua = 0, moi = 0, giu = 0; const ghi = [], xoa = [];
 			cs.forEach((x, i) => { const r = QB.taoBanGhi(x.raw, x.than, x.ids, "Gán ID " + new Date().toLocaleDateString("vi-VN")); let cu = theoK.get(r.k); if (!cu && lienKet.length === cs.length && lienKet[i] && !dungRoi.has(lienKet[i].k)) { cu = theoK.get(lienKet[i].k); if (cu) xoa.push(cu.k); }
-				if (cu) { dungRoi.add(cu.k); if (cu.raw === r.raw && cu.id === r.id) { giu++; return; } ghi.push(Object.assign({}, cu, { raw: r.raw, id: r.id, lop: r.lop, mon: r.mon, chuong: r.chuong, muc: r.muc, bai: r.bai, dang: r.dang, loai: r.loai, tom: r.tom, coHinh: r.coHinh, k: r.k, so: r.so })); sua++; } else { ghi.push(r); moi++; } });
+				if (!cu && lienKet.length && lienKet[i] && !dungRoi.has(lienKet[i].k)) { const c2 = theoK.get(lienKet[i].k); if (c2 && QB.bam(QB.vanTay(x.than, true)) === c2.so) cu = c2; }
+				if (cu && dungRoi.has(cu.k)) cu = null;
+				if (cu) { dungRoi.add(cu.k); if (cu.k !== r.k) xoa.push(cu.k); if (cu.raw === r.raw && cu.id === r.id) { giu++; return; } ghi.push(Object.assign({}, cu, { raw: r.raw, id: r.id, lop: r.lop, mon: r.mon, chuong: r.chuong, muc: r.muc, bai: r.bai, dang: r.dang, loai: r.loai, tom: r.tom, coHinh: r.coHinh, k: r.k, so: r.so })); sua++; } else { ghi.push(r); moi++; } });
 			if (xoa.length) await QB.dbXoa(xoa.filter(k => !ghi.some(r => r.k === k))); if (ghi.length) await QB.dbGhi(ghi);
 			toast((sua ? "Đã cập nhật ID " + sua + " câu" : "") + (moi ? (sua ? " · " : "") + "thêm " + moi + " câu mới" : "") + (!sua && !moi ? "Ngân hàng đã khớp, không có gì thay đổi" : "") + (giu && (sua || moi) ? " · " + giu + " câu không đổi" : ""));
 			const con = cs.filter(x => !QB.docID(x.id || "", ctNow())).length; if (nguonNH && !con) { nguonNH = null; veNH(); } return { sua, moi }; }
@@ -12336,7 +12339,7 @@ async function thiChay(ma) {
 					if (k === "game") dongBoGame();
 					if (k === "saoluu") saoLuu();
 					if (k === "xuat") { const d = locDs(); if (!d.length) return; taiVe(new Blob([xuatTex(d)], { type: "text/plain" }), "cau-hoi-" + d.length + ".tex"); }
-					if (k === "gan") { const d = ALL.filter(c => !c.lop); if (!d.length) { toast("Mọi câu đều đã có ID"); return; } localStorage.setItem("tdk_gi_ma", JSON.stringify(d.map(c => c.raw).join("\n\n"))); toast("Đã chuyển " + d.length + " câu sang tab Gán ID — gán xong bấm “Đưa vào Ngân hàng”"); if (typeof chonTab === "function") { $("nhomDeThi").click(); setTimeout(() => $("nutTabGanID").click(), 50); } }
+					if (k === "gan") { /*vaGanID*/ const d = ALL.filter(c => !c.lop); if (!d.length) { toast("Mọi câu đều đã có ID"); return; } sangGan(d); toast("Đã chuyển " + d.length + " câu sang tab Gán ID — gán xong bấm “✔ Cập nhật vào Ngân hàng”"); }
 						if (k === "kiem") await batchKiem(false);
 						if (k === "chuanlo") await batchKiem(true);
 					if (k === "xoahet") { if (!confirm("XOÁ TOÀN BỘ " + ALL.length + " câu trong ngân hàng? Nên Sao lưu trước. Không thể hoàn tác.")) return; await QB.dbXoaHet(); chon.clear(); await napLai(); } });
