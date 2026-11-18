@@ -4188,6 +4188,7 @@ function khoiDongKPado() {
 		else { const cau = $p("kpMau").value.trim(); if (!cau) { tt("Dán hoặc lấy câu mẫu trước.", true); return; } ten = "kpadoGenSimilar"; data = { cau, soLuong: +$p("kpSoLuong").value, loiGiai, vdc }; }
 		const nut = $p("kpChay"); nut.classList.add("dang"); tt(vdc ? "K-Pado đang suy nghĩ sâu (có thể mất 1–2 phút)…" : "K-Pado đang làm việc…");
 		const t0 = Date.now();
+		if (window.KFB) window.KFB.kpadoTienDo = n => tt("K-Pado đang viết… " + n + " ký tự");
 		try {
 			const r = await goi(ten, data);
 			ketQua = r.ketQua; tho = r.tho; anhVe = null; capLuot(r);
@@ -4343,8 +4344,39 @@ window.KFB.kpado = async (ten, data) => {
 	let res;
 	try { res = await fetch(KPADO_URL.replace(/\/+$/, "") + "/" + ten, { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + tok }, body: JSON.stringify(data || {}) }); }
 	catch (e) { throw new Error("Không kết nối được máy chủ K-Pado. Kiểm tra mạng hoặc địa chỉ Worker."); }
-	const j = await res.json().catch(() => ({}));
-	if (!res.ok) throw new Error(j.loi || ("Máy chủ K-Pado lỗi " + res.status));
+	let j;
+	if (res.ok && (res.headers.get("Content-Type") || "").includes("text/event-stream")) {
+		// đọc luồng Gemini từng đoạn (tránh lỗi 524 quá giờ chờ)
+		const rd = res.body.getReader(), dec = new TextDecoder(); let dem = "", chu = "", meta = {}, lyDo = "", loiLuong = "";
+		const xuLy = khoi => {
+			let ev = "", dl = "";
+			khoi.split("\n").forEach(d => { if (d.startsWith("event:")) ev = d.slice(6).trim(); else if (d.startsWith("data:")) dl += d.slice(5).trim(); });
+			if (!dl) return;
+			let o; try { o = JSON.parse(dl); } catch (e) { return; }
+			if (ev === "meta") { meta = o; return; }
+			if (ev === "loi" || o.error) { loiLuong = o.loi || (o.error && o.error.message) || "lỗi luồng"; return; }
+			const c = (o.candidates || [])[0] || {};
+			((c.content || {}).parts || []).forEach(p => { if (p.text && !p.thought) chu += p.text; });
+			if (c.finishReason) lyDo = c.finishReason;
+			if (typeof window.KFB.kpadoTienDo === "function") window.KFB.kpadoTienDo(chu.length);
+		};
+		for (;;) {
+			const { done, value } = await rd.read(); if (done) break;
+			dem += dec.decode(value, { stream: true }).replace(/\r\n/g, "\n");
+			let k; while ((k = dem.indexOf("\n\n")) >= 0) { xuLy(dem.slice(0, k)); dem = dem.slice(k + 2); }
+		}
+		if (dem.trim()) xuLy(dem);
+		if (loiLuong && !chu) throw new Error("Gemini: " + loiLuong);
+		let t = chu.trim();
+		const kh = [...t.matchAll(/```[a-zA-Z]*\s*\n([\s\S]*?)```/g)].map(m => m[1].trim()); if (kh.length) t = kh.join("\n\n");
+		const vt = t.search(/\\begin\{(ex|tikzpicture)\}/); if (vt > 0) t = t.slice(vt);
+		if (meta.che === "tikz") { const m = t.match(/\\begin\{tikzpicture\}[\s\S]*?\\end\{tikzpicture\}/); if (m) t = m[0]; }
+		if (!t) throw new Error("K-Pado không trả về mã LaTeX" + (lyDo ? " (" + lyDo + ")" : "") + ". Thử lại hoặc bật Chế độ VDC.");
+		j = { ...meta, tho: t.trim(), catNgang: lyDo === "MAX_TOKENS" };
+	} else {
+		j = await res.json().catch(() => ({}));
+		if (!res.ok) throw new Error(j.loi || ("Máy chủ K-Pado lỗi " + res.status));
+	}
 	if (j.tho) {                                  // chuẩn hoá bằng bộ luật ngay trên máy
 		if (boMay && typeof boMay.chuanHoa === "function") {
 			try { const c = boMay.chuanHoa(j.tho, {}); j.ketQua = c.ketQua || j.tho; j.baoCao = { daSua: (c.nhatKi || []).length, canSuaTay: (c.canhBao || []).length, phienBanBoLuat: c.phienBan, catNgang: !!j.catNgang }; }
