@@ -2215,6 +2215,7 @@ select option,select optgroup{background:#0F172A!important;color:#E2E8F0!importa
 .tdBangDau{background:#081026!important}
 </style>
 
+
 <style id="kpadoCss">
 /* ===== K-Pado ===== */
 .kp{display:flex;flex-direction:column;gap:14px}
@@ -3226,6 +3227,7 @@ select option,select optgroup{background:#0F172A!important;color:#E2E8F0!importa
 	</div>
 </section>
 
+
 <section class="manTab" id="tabGoiTen" role="tabpanel" aria-labelledby="nutTabGoiTen" hidden>
 	<div class="gt">
 		<header class="mdDau">
@@ -4105,7 +4107,7 @@ function khoiDongKPado() {
 	if (khoiDongKPado.daMo) return;
 	khoiDongKPado.daMo = true;
 
-	let che = "math", ketQua = "", tho = "", anh = null, xem = "de";
+	let che = "math", ketQua = "", tho = "", anh = null, anhVe = null, xem = "de";
 	// --- đổi chế độ ---
 	$p("kpChe").addEventListener("click", e => {
 		const b = e.target.closest("button"); if (!b) return; che = b.dataset.che;
@@ -4146,11 +4148,24 @@ function khoiDongKPado() {
 			$p("kpMau").value = c[Math.floor(Math.random() * c.length)].raw; tt("Đã lấy 1/" + c.length + " câu có ID " + id + ".");
 		} catch (e) { tt("Không đọc được Ngân hàng: " + (e.message || e), true); }
 	});
+	// --- vẽ thử TikZ, lỗi thì nhờ K-Pado sửa (tối đa 2 lần, không tốn lượt) ---
+	async function veThuVaSua(ma) {
+		if (!window.KFB || !window.KFB.veTikzThu) return { ma, anh: null, tt: "" };
+		for (let lan = 0; lan <= 2; lan++) {
+			tt(lan ? "Hình lỗi — K-Pado đang sửa (lần " + lan + "/2)…" : "Đang vẽ thử hình…");
+			const r = await window.KFB.veTikzThu(ma);
+			if (r.ok) return { ma, anh: r.png || r.svg, tt: lan ? "✓ Vẽ được sau " + lan + " lần sửa." : "✓ Vẽ được ngay." };
+			if (lan === 2) return { ma, anh: null, tt: "⚠ Vẫn chưa vẽ được: " + String(r.log || "").slice(-200) };
+			try { const f = await goi("kpadoSuaTikz", { ma, loi: r.log || "" }); ma = f.ketQua; }
+			catch (e) { return { ma, anh: null, tt: "⚠ Không sửa được: " + (e.message || e) }; }
+		}
+	}
 	// --- hiển thị kết quả ---
 	async function veKQ() {
 		$p("kpKQ").value = ketQua;
 		$p("kpTrang").hidden = xem !== "de"; $p("kpKQ").hidden = xem !== "ma";
 		if (xem !== "de" || !ketQua) return;
+		if (anhVe) { $p("kpTrang").innerHTML = '<div style="text-align:center"><img src="' + anhVe + '" alt="Hình K-Pado vẽ" style="max-width:100%"></div>'; return; }
 		const code = /\\begin\{ex\}/.test(ketQua) ? ketQua : "\\begin{ex}\n\\begin{center}\n" + ketQua + "\n\\end{center}\n\\end{ex}";
 		try { await QB.xemTruoc($p("kpTrang"), code, { lg: true, gach: true, tieuDe: false }); }
 		catch (e) { $p("kpTrang").innerHTML = '<pre style="white-space:pre-wrap">' + esc(ketQua) + "</pre>"; }
@@ -4168,11 +4183,13 @@ function khoiDongKPado() {
 		const t0 = Date.now();
 		try {
 			const r = await goi(ten, data);
-			ketQua = r.ketQua; tho = r.tho; capLuot(r);
+			ketQua = r.ketQua; tho = r.tho; anhVe = null; capLuot(r);
+			let ttVe = "";
+			if (/\\begin\{tikzpicture\}/.test(ketQua)) { const v = await veThuVaSua(ketQua); ketQua = v.ma; anhVe = v.anh; ttVe = v.tt; }
 			const bc = r.baoCao || {};
 			$p("kpBC").innerHTML = "Bộ luật: <b>" + (bc.daSua || 0) + "</b> chỗ đã chuẩn hoá" + (bc.canSuaTay ? " · <span style='color:#FCD34D'>" + bc.canSuaTay + " chỗ cần sửa tay</span>" : "") + (bc.catNgang ? " · <span style='color:#FCA5A5'>kết quả bị cắt ngang — bật VDC hoặc rút gọn đề</span>" : "") + " · " + Math.round((Date.now() - t0) / 1000) + " giây";
 			["kpCopy", "kpSangGan", "kpSangChuan", "kpXemTho"].forEach(id => $p(id).disabled = false);
-			tt("Xong." + (bc.loiBoLuat ? " (Bộ luật lỗi: " + bc.loiBoLuat + " — đang hiện mã gốc)" : ""));
+			tt((ttVe || "Xong.") + (bc.loiBoLuat ? " (Bộ luật lỗi: " + bc.loiBoLuat + ")" : ""));
 			await veKQ();
 		} catch (e) { tt(e.message || String(e), true); }
 		finally { nut.classList.remove("dang"); }
@@ -4184,6 +4201,7 @@ function khoiDongKPado() {
 	$p("kpXemTho").addEventListener("click", () => { xem = "ma"; $p("kpXemChe").querySelectorAll("button").forEach(x => x.setAttribute("aria-selected", x.dataset.xem === "ma")); $p("kpKQ").hidden = false; $p("kpTrang").hidden = true; $p("kpKQ").value = tho; tt("Đang xem mã thô (chưa chuẩn hoá). Bấm 📄 Bản in để quay lại kết quả."); });
 }
 </script>
+
 
 <script>
 /* Master Layout: đưa thanh Tab lên header (giữ nguyên nút, id, sự kiện) + sao nền */
@@ -4303,6 +4321,14 @@ const db = getFirestore(app);
 window.KFB = { db, auth, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, addDoc, getDocs, query, where, orderBy, limit, onSnapshot, serverTimestamp, writeBatch, increment, arrayUnion, signInAnonymously,
 	uid: () => auth.currentUser && auth.currentUser.uid, taiKhoan: () => auth.currentUser };
 const fns = getFunctions(app, "asia-southeast1");
+window.KFB.veTikzThu = async ma => {
+	if (!boMay || typeof boMay.veTikz !== "function") return { ok: false, log: "Bộ vẽ hình chưa sẵn sàng." };
+	try {
+		const r = await Promise.race([boMay.veTikz(ma, { doPhanGiai: 1 }), new Promise(ok => setTimeout(() => ok({ loi: true, loiTxt: "quá 30 giây không vẽ xong" }), 30000))]);
+		if (r && !r.loi && (r.png || r.svg)) return { ok: true, png: r.png || "", svg: r.svg || "" };
+		return { ok: false, log: String((r && (r.log || r.loiTxt)) || "không vẽ được").slice(-3000) };
+	} catch (e) { return { ok: false, log: String(e && e.message || e).slice(-3000) }; }
+};
 window.KFB.kpado = (ten, data) => httpsCallable(fns, ten, { timeout: 200000 })(data).then(r => r.data);
 let boMay = null;   // bộ luật, chỉ tải được khi tài khoản đã duyệt
 const $ = id => document.getElementById(id);
