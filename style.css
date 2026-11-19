@@ -2142,6 +2142,7 @@ textarea.mdO { height: auto; padding: 10px 12px; resize: vertical; font-family: 
    ===================================================================== */
 /* 1) BẢNG MÀU — ghi đè biến của web, mọi công cụ tự đổi theo */
 :root,:root[data-theme="dark"],:root[data-theme="light"]{
+  --f-ui:"Be Vietnam Pro",system-ui,sans-serif;--f-code:"JetBrains Mono",Consolas,monospace;
   --nen:#050C24;--mat:rgba(10,18,42,.62);--mat2:rgba(16,26,56,.72);--chu:#E2E8F0;--phu:#94A3B8;
   --vien:rgba(148,163,184,.20);--vien2:rgba(148,163,184,.32);--navy:#050C24;
   --vang:#5EEBFF;--vangnhat:rgba(94,235,255,.12);--code:rgba(2,6,18,.72);
