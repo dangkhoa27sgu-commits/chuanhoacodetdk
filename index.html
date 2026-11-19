@@ -8809,6 +8809,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 ["<b>Ctrl+V</b> dán ảnh chụp ngay trong tab Tạo video (hoặc kéo thả / bấm <b>＋ Chọn ảnh</b>) — web lưu ảnh tạm thành <code>hinh_1</code>, <code>hinh_2</code>… (xem, Thay, Xoá ở dải ảnh dưới ô kịch bản) và tự chèn một dòng lệnh tại con trỏ.", "chenhinh(1.5->0.75 | giua | 3 | 5 | phóng to, thu nhỏ, di chuyển lên trên): hinh_1"],
 ["Cú pháp <code>chenhinh(cỡ_to->cỡ_nhỏ | vị trí | giây phóng to | giây thu nhỏ | hiệu ứng): tên_ảnh</code>. <b>Cỡ</b> 0.3–3 (1 = rộng nửa khung): <code>1.6->0.7</code> (hoặc <code>1.6/0.7</code>) = lúc hiện ra cỡ 1.6, lúc thu nhỏ cỡ 0.7. Chỉ ghi một số như <code>1.2</code> vẫn chạy như cũ.", "chenhinh(1.6->0.7 | giữa | 3 | 5 | phóng to, thu nhỏ, di chuyển lên trên): hinh_1"],
 ["<b>Vị trí</b>: giữa / trên / dưới (có dấu hay không đều được) hoặc toạ độ tâm ảnh theo % khung <code>50;30</code>. <b>Giây phóng to</b>: thời gian ảnh hiện to — nội dung phía sau chờ hết khoảng này (+0,8 giây chuyển). <b>Giây thu nhỏ</b> = 0: giữ tới hết trang (<code>===</code>) hoặc hết video.", "chenhinh(1 | tren | 0 | 0 | ): hinh_2"],
+			["<b>Hẹn giờ hiện ảnh</b>: thêm ô <code>@giây</code> (đặt ở cuối trong ngoặc) — ảnh hiện sau đúng số giây đó, tính từ lúc bắt đầu đọc câu <code>&gt;&gt;</code> ngay trên. Hoặc đặt <code>cho: n</code> ngay trước dòng <code>chenhinh</code> — ảnh (và các hiệu ứng viết sau trong cùng câu) chờ thêm n giây.", ">> Cùng xem đề bài nhé.\nchenhinh(1.5->0.75 | giua | 3 | 5 | phóng to, thu nhỏ, di chuyển lên trên | @2.5): hinh_1\n\n>> Đề bài như sau.\ncho: 2\nchenhinh(1.5->0.75 | giua | 3 | 5 | phóng to, thu nhỏ, di chuyển lên trên): hinh_1"],
 ["<b>Hiệu ứng</b> ghép bằng dấu phẩy: <code>phóng to</code> (hiện to, nền tối), <code>thu nhỏ</code>, <code>di chuyển lên trên</code> / <code>di chuyển xuống dưới</code>; để trống = ảnh tĩnh. Khi ảnh lên trên hoặc xuống dưới, phần lời giải tự dồn và thu gọn theo cỡ nhỏ — chữ không bao giờ bị ảnh che.", "chenhinh(2->0.8 | giua | 4 | 0 | phóng to, di chuyển lên trên): hinh_1"],
 			["<b>Sticker nhân vật chibi</b>: bấm nút <b>☺ Sticker</b> chọn 1 trong 12 nhân vật (chao, cuoi, tuyetvoi, colen, nghingoi, ngacnhien, buon, chitro…). Dạng: <code>sticker: tên | lời thoại | giây</code>.", "sticker: tuyetvoi | Chuẩn luôn! | 3"],
 			["<b>Cỡ &amp; vị trí sticker</b> trong ngoặc: cỡ <b>to</b>/<b>nho</b> hoặc số 0.5–2; vị trí <b>trai</b>/<b>phai</b>/<b>giua</b>, <b>nang</b>/<b>ha</b>.", "sticker: colen (to phai) | Cố lên nào!\nsticker: nghingoi (nho trai nang) | Hmm…"],
@@ -8861,7 +8862,9 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 					const so = m[2].match(/(\d+(?:[.,]\d+)?)\s*(?:s|giây|giay)?\b/i), tu = boDauVD(m[2].replace(/(\d+(?:[.,]\d+)?)\s*(?:s|giây|giay)?\b/i, "")), ck = tu ? CHUYEN_AL[tu] : "";
 					if (tu && !ck) kb.canhBao.push("dòng " + (i + 1) + ": chưa có kiểu chuyển “" + m[2].trim() + "” — dùng kiểu mặc định");
 					moiCanh(l[0] === "=" || !kb.canh.length, so ? +so[1].replace(",", ".") : 0, ck); continue; }
-				if ((m = l.match(/^chenhinh\s*\(([^)]*)\)\s*:\s*(.*)$/i))) { if (!doan) moiDoan(""); doan.viec.push({ k: "chenhinh", ts: m[1], v: m[2].trim(), dong: i + 1, luc: null }); continue; }
+				if ((m = l.match(/^chenhinh\s*\(([^)]*)\)\s*:\s*(.*)$/i))) {
+					let luc = null; const ts = m[1].split("|").filter(z => { const q = z.match(/^\s*@\s*(\d+(?:[.,]\d+)?)\s*(?:s|giây|giay)?\s*$/i); if (q) { luc = +q[1].replace(",", "."); return false; } return true; }).join("|");
+					if (!doan) moiDoan(""); doan.viec.push({ k: "chenhinh", ts, v: m[2].trim(), dong: i + 1, luc }); continue; }
 				if (l.startsWith(">>")) { const t = l.slice(2).trim(); if (doan && !doan.viec.length && doan.loi) doan.loi += " " + t; else moiDoan(t, i + 1); continue; }
 				if ((m = l.match(/^([a-zA-Z]+)\s*(?:\(\s*([^)]*)\))?\s*:\s*([\s\S]*)$/)) && KHOA.includes(m[1].toLowerCase())) {
 					const k = m[1].toLowerCase(), thamSo = m[2] || "", so = thamSo.replace(/@\s*\d+(?:[.,]\d+)?/, " ").match(/\d+(?:[.,]\d+)?/), luc = (thamSo.match(/@\s*(\d+(?:[.,]\d+)?)/) || [])[1], thamSo2 = thamSo.replace(/@\s*\d+(?:[.,]\d+)?/, " "), tu = thamSo2.replace(/[\d.,]+/g, " ").split(/\s+/).map(boDauVD).filter(Boolean), tile = so ? kep(+so[0].replace(",", ".") || 1, 0.4, 2.5) : 1; let toc = 0, vaos = [], la = []; tu.forEach(w => { if (TOC_AL[w]) toc = TOC_AL[w]; else if (VAO_AL[w]) { const vv = VAO_AL[w]; if (!vaos.includes(vv)) vaos.push(vv); } else la.push(w); }); const vao = vaos.find(x => VAO_CHUYENDONG.has(x)) || vaos[0] || ""; let v = m[3].trim();
@@ -9378,7 +9381,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 							if (!anh) { S.canhBao.push("dòng " + v.dong + ": chưa có ảnh “" + (ten || "?") + "” — dán ảnh (Ctrl+V) trong tab Tạo video hoặc bấm Dán ở dải ảnh"); continue; }
 							const h = Object.assign(docThamCH(v.ts, v.dong), { bmp: anh.bmp, t0: tA, trang, ten }), coChuyen = h.thuNho || h.len || h.xuong, chan = (h.phongTo || coChuyen) ? h.d1 + (coChuyen ? CH_CHUYEN : 0) : 0;
 							tl.ch.push(h); lechCH += chan; tCuoi = Math.max(tCuoi, tA + chan); continue; }
-						if (v.k === "cho") { them += Math.max(0, parseFloat(String(v.v).replace(",", ".")) || 1); continue; }
+						if (v.k === "cho") { const n = Math.max(0, parseFloat(String(v.v).replace(",", ".")) || 1); them += n; lechCH += n; continue; }
 						if (v.k === "trang") { T = Math.max(T, tA); sangTrang(tA, CHUYEN_AL[boDauVD(v.v)] || ""); continue; }
 						let e;
 						try { e = await taoPhanTu(v, { cw, u, doc }); } catch (err) { S.canhBao.push("dòng " + v.dong + ": " + (err.message || err) + " — đã bỏ qua"); continue; }
