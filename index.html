@@ -4123,6 +4123,58 @@ function khoiDongKPado() {
 		$p("kpChay").textContent = che === "vision" ? "✦ Dựng TikZ" : che === "similar" ? "✦ Sinh câu tương tự" : "✦ Hỏi K-Pado";
 	});
 	// --- ảnh: chọn / kéo thả / dán; thu về cạnh dài 1600px ---
+	// phủ lưới toạ độ đỏ (gốc dưới-trái, rộng 12 đơn vị) để AI đọc toạ độ chính xác
+	function phuLuoi(c) {
+		const W = 12, k = c.width / W, H = Math.round(c.height / k * 100) / 100, o = document.createElement("canvas");
+		o.width = c.width; o.height = c.height; const g = o.getContext("2d"); g.drawImage(c, 0, 0);
+		const fs = Math.max(11, Math.round(k * 0.28));
+		g.font = "bold " + fs + "px sans-serif"; g.lineJoin = "round";
+		for (let x = 0; x <= W; x++) { const X = Math.round(x * k); g.strokeStyle = x % 5 ? "rgba(255,40,40,.32)" : "rgba(255,40,40,.6)"; g.lineWidth = x % 5 ? 1 : 1.6; g.beginPath(); g.moveTo(X, 0); g.lineTo(X, c.height); g.stroke(); }
+		for (let y = 0; y <= H; y++) { const Y = Math.round(c.height - y * k); g.strokeStyle = y % 5 ? "rgba(255,40,40,.32)" : "rgba(255,40,40,.6)"; g.lineWidth = y % 5 ? 1 : 1.6; g.beginPath(); g.moveTo(0, Y); g.lineTo(c.width, Y); g.stroke(); }
+		const chu = (t, X, Y) => { g.lineWidth = 3; g.strokeStyle = "#fff"; g.strokeText(t, X, Y); g.fillStyle = "#E00000"; g.fillText(t, X, Y); };
+		for (let x = 1; x < W; x++) chu(String(x), x * k + 2, c.height - 3);
+		for (let y = 1; y < H; y++) chu(String(y), 2, c.height - y * k - 2);
+		return { W, H, luoi: o.toDataURL("image/jpeg", 0.85).split(",")[1] };
+	}
+	// đồ nét (Potrace có sẵn trong bộ luật) các minh hoạ người/vật AI đã khoanh vùng → TikZ thuần, đặt đúng chỗ bằng scope
+	const W2KP = () => { const T = window.__TDK || window.TDK; return T && T._w2t; };
+	const so2 = v => String(Math.round(v * 100) / 100);
+	function docTranh(tho) { const m = /%\s*KPADO-TRANH:\s*(\[[^\n]*\])/.exec(String(tho || "")); if (!m) return []; try { const a = JSON.parse(m[1]); return Array.isArray(a) ? a.filter(o => o && Array.isArray(o.hop) && o.hop.length === 4 && o.hop.every(v => isFinite(+v))) : []; } catch (e) { return []; } }
+	const boDongTranh = ma => String(ma || "").replace(/^[ \t]*%\s*KPADO-TRANH:.*\n?/m, "");
+	// bỏ các mảnh nét chạm mép khung (trục, nhãn lọt vào) — chỉ giữ hình chính lớn nhất và các chi tiết nằm trọn bên trong
+	function lamSachVien(cc) {
+		const w = cc.width, h = cc.height, g = cc.getContext("2d"), im = g.getImageData(0, 0, w, h), d = im.data, n = w * h, nhan = new Int32Array(n).fill(-1);
+		const toi = i => d[4 * i] * .3 + d[4 * i + 1] * .59 + d[4 * i + 2] * .11 < 150, cum = [];
+		for (let i = 0; i < n; i++) {
+			if (nhan[i] >= 0 || !toi(i)) continue;
+			const id = cum.length, st = [i], ds = []; nhan[i] = id; let cham = false;
+			while (st.length) { const q = st.pop(), x = q % w, y = (q / w) | 0; ds.push(q); if (!x || !y || x === w - 1 || y === h - 1) cham = true;
+				for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= w || Y >= h) continue; const t = Y * w + X; if (nhan[t] < 0 && toi(t)) { nhan[t] = id; st.push(t); } } }
+			cum.push({ ds, cham });
+		}
+		if (cum.length < 2) return;
+		const lon = cum.reduce((x, y) => y.ds.length > x.ds.length ? y : x);
+		cum.forEach(c => { if (c !== lon && c.cham) c.ds.forEach(q => { d[4 * q] = d[4 * q + 1] = d[4 * q + 2] = 255; }); });
+		g.putImageData(im, 0, 0);
+	}
+	async function doNetTranh(ds, a) {
+		const W2 = W2KP(); if (!W2 || typeof W2.doPotrace !== "function" || !a || !a.c) return [];
+		const k = a.c.width / a.W, ra = [];
+		for (const o of ds.slice(0, 6)) {
+			let [x1, y1, x2, y2] = o.hop.map(Number); if (x1 > x2) [x1, x2] = [x2, x1]; if (y1 > y2) [y1, y2] = [y2, y1];
+			x1 = Math.max(0, x1 - 0.08); y1 = Math.max(0, y1 - 0.08); x2 = Math.min(a.W, x2 + 0.08); y2 = Math.min(a.H, y2 + 0.08);
+			const px = Math.round(x1 * k), py = Math.round((a.H - y2) * k), pw = Math.round((x2 - x1) * k), ph = Math.round((y2 - y1) * k);
+			if (pw < 8 || ph < 8) continue;
+			const cc = document.createElement("canvas"); cc.width = pw; cc.height = ph; const g = cc.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, pw, ph); g.drawImage(a.c, px, py, pw, ph, 0, 0, pw, ph); lamSachVien(cc);
+			try {
+				const v = await W2.doPotrace(cc, { wCm: x2 - x1, soMau: 2 });
+				if (v && v.lenh && v.lenh.length) ra.push("% ---- " + String(o.ten || "minh hoạ").replace(/[\n%]/g, " ") + " (đồ nét tự động từ ảnh) ----\n\\begin{scope}[shift={(" + so2(x1) + "," + so2(y1) + ")}]\n" + v.lenh.join("\n") + "\n\\end{scope}");
+			} catch (e) { }
+		}
+		return ra;
+	}
+	const chenTruocKet = (ma, them) => { const i = ma.lastIndexOf("\\end{tikzpicture}"); return i < 0 ? ma : ma.slice(0, i) + them.join("\n") + "\n" + ma.slice(i); };
+	async function anhB64(url, max) { const im = new Image(); im.src = url; await im.decode(); const k = Math.min(1, (max || 1024) / Math.max(im.width, im.height)), c = document.createElement("canvas"); c.width = Math.round(im.width * k); c.height = Math.round(im.height * k); const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height); g.drawImage(im, 0, 0, c.width, c.height); return c.toDataURL("image/jpeg", 0.85).split(",")[1]; }
 	function nhanAnh(f) {
 		if (!f || !/^image\/(png|jpe?g|webp)$/.test(f.type)) { tt("Chỉ nhận ảnh PNG, JPG, WEBP.", true); return; }
 		const img = new Image(), url = URL.createObjectURL(f);
@@ -4130,7 +4182,7 @@ function khoiDongKPado() {
 			const k = Math.min(1, 1280 / Math.max(img.width, img.height)), c = document.createElement("canvas");
 			c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
 			const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, 0, 0, c.width, c.height);
-			const d = c.toDataURL("image/jpeg", 0.85); anh = { data: d.split(",")[1], mime: "image/jpeg" };
+			const d = c.toDataURL("image/jpeg", 0.85); anh = { data: d.split(",")[1], mime: "image/jpeg", c, ...phuLuoi(c) };
 			$p("kpAnhXem").src = d; $p("kpAnhXem").hidden = false; $p("kpThaChu").hidden = true; URL.revokeObjectURL(url);
 			tt("Ảnh " + c.width + "×" + c.height + " sẵn sàng.");
 		};
@@ -4183,7 +4235,7 @@ function khoiDongKPado() {
 		const vdc = $p("kpVDC").checked, loiGiai = $p("kpLG").checked;
 		let ten, data;
 		if (che === "math") { const de = $p("kpDe").value.trim(); if (!de) { tt("Nhập đề bài trước.", true); return; } ten = "kpadoMath"; data = { de, kieu: $p("kpKieu").value, loiGiai, vdc }; }
-		else if (che === "vision") { if (!anh) { tt("Chọn hoặc dán ảnh trước.", true); return; } ten = "kpadoVisionTikz"; data = { anh: anh.data, mime: anh.mime, ghiChu: $p("kpGhiChu").value.trim(), vdc }; }
+		else if (che === "vision") { if (!anh) { tt("Chọn hoặc dán ảnh trước.", true); return; } ten = "kpadoVisionTikz"; data = { anh: anh.data, mime: anh.mime, luoi: anh.luoi, W: anh.W, H: anh.H, ghiChu: $p("kpGhiChu").value.trim(), vdc }; }
 		else { const cau = $p("kpMau").value.trim(); if (!cau) { tt("Dán hoặc lấy câu mẫu trước.", true); return; } ten = "kpadoGenSimilar"; data = { cau, soLuong: +$p("kpSoLuong").value, loiGiai, vdc }; }
 		const nut = $p("kpChay"); nut.classList.add("dang"); tt(vdc ? "K-Pado đang suy nghĩ sâu (có thể mất 1–2 phút)…" : "K-Pado đang làm việc…");
 		const t0 = Date.now();
@@ -4192,7 +4244,23 @@ function khoiDongKPado() {
 			const r = await goi(ten, data);
 			ketQua = r.ketQua; tho = r.tho; anhVe = null; capLuot(r);
 			let ttVe = "";
-			if (/\\begin\{tikzpicture\}/.test(ketQua)) { const v = await veThuVaSua(ketQua); ketQua = v.ma; anhVe = v.anh; ttVe = v.tt; }
+			if (che === "vision" && /\\begin\{tikzpicture\}/.test(ketQua)) {
+				const tranh = docTranh(r.tho); ketQua = boDongTranh(ketQua);
+				let v = await veThuVaSua(ketQua); ketQua = v.ma; anhVe = v.anh; ttVe = v.tt;
+				if (vdc && v.anh) {                                   // Chế độ VIP: so ảnh gốc với ảnh vừa vẽ rồi tự sửa
+					try {
+						tt("Chế độ VIP: K-Pado đang soi hình vừa vẽ và tự sửa…");
+						const r2 = await goi("kpadoSoiTikz", { anh: anh.data, mime: anh.mime, luoi: anh.luoi, W: anh.W, H: anh.H, anhVe: await anhB64(v.anh, 1024), ma: ketQua });
+						if (/\\begin\{tikzpicture\}/.test(r2.ketQua || "")) { const v2 = await veThuVaSua(boDongTranh(r2.ketQua)); if (v2.anh) { ketQua = v2.ma; anhVe = v2.anh; ttVe = "✓ Đã soi và sửa lại hình (Chế độ VIP)."; } }
+					} catch (e) { ttVe += " (Bước soi hình bỏ qua: " + (e.message || e) + ")"; }
+				}
+				if (tranh.length && anhVe) {                          // đồ nét người/vật rồi ghép vào đúng toạ độ
+					tt("Đang đồ nét " + tranh.length + " minh hoạ từ ảnh…");
+					const sc = await doNetTranh(tranh, anh);
+					if (sc.length) { const full = chenTruocKet(ketQua, sc), vf = await window.KFB.veTikzThu(full); if (vf.ok) { ketQua = full; anhVe = vf.png || vf.svg; ttVe += " · Đã ghép " + sc.length + " minh hoạ đồ nét."; } else ttVe += " · Ghép minh hoạ bị lỗi, chỉ giữ phần toán."; }
+				}
+			}
+			else if (/\\begin\{tikzpicture\}/.test(ketQua)) { const v = await veThuVaSua(ketQua); ketQua = v.ma; anhVe = v.anh; ttVe = v.tt; }
 			const bc = r.baoCao || {};
 			$p("kpBC").innerHTML = "Bộ luật: <b>" + (bc.daSua || 0) + "</b> chỗ đã chuẩn hoá" + (bc.canSuaTay ? " · <span style='color:#FCD34D'>" + bc.canSuaTay + " chỗ cần sửa tay</span>" : "") + (bc.catNgang ? " · <span style='color:#FCA5A5'>kết quả bị cắt ngang — bật Chế độ VIP hoặc rút gọn đề</span>" : "") + " · " + Math.round((Date.now() - t0) / 1000) + " giây";
 			["kpCopy", "kpSangGan", "kpSangChuan", "kpXemTho"].forEach(id => $p(id).disabled = false);
