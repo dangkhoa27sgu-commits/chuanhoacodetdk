@@ -2193,6 +2193,9 @@ header.dau .tabChinh{margin:0!important;border:0!important;justify-content:flex-
 input[type=text],input[type=number],input[type=email],input[type=search],input[type=password],input[type=url],input:not([type]),select,textarea{
   background:rgba(2,6,18,.72)!important;color:#C7D7E4!important;border:1px solid rgba(148,163,184,.22)!important;border-radius:10px!important;box-shadow:inset 0 2px 10px rgba(0,0,0,.5);caret-color:var(--km-cyan);transition:border-color .2s,box-shadow .2s}
 textarea{color:#CFE7F2!important}
+/* Ô kịch bản video: chữ + nền trong suốt để lớp tô màu cú pháp (#vdKBTo) phía sau hiện ra */
+#vdKB{background:transparent!important;color:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;caret-color:#5EEBFF!important}
+#vdKB::selection{color:transparent!important;background:rgba(94,235,255,.28)!important}
 input::placeholder,textarea::placeholder{color:#55657A!important}
 input:focus,select:focus,textarea:focus{outline:none!important;border-color:rgba(94,235,255,.6)!important;box-shadow:inset 0 2px 10px rgba(0,0,0,.5),0 0 0 3px rgba(94,235,255,.12),0 0 24px -8px rgba(94,235,255,.7)!important}
 #manDangNhap input.kcIn{border-radius:12px!important}
@@ -8730,14 +8733,15 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		];
 		const CHEN = CHEN_NHOM.reduce((a, g) => a.concat(g[1]), []);
 		const HDSD = [
-			{ nhom: "🖼 Chèn hình (ảnh chụp đề)" },
+			{ nhom: "🖼 Chèn ảnh" },
 			["<b>Ctrl+V</b> dán ảnh chụp ngay trong tab Tạo video (hoặc kéo thả vào ô kịch bản) — web lưu ảnh thành <code>hinh_1</code>, <code>hinh_2</code>… (xem ở dải ảnh dưới ô kịch bản) và tự chèn dòng lệnh tại con trỏ.", "chenhinh(1.2 | giua | 3 | 5 | phóng to, thu nhỏ, di chuyển lên trên): hinh_1"],
 			["Cú pháp <code>chenhinh(kích thước | vị trí | giây phóng to | giây thu nhỏ | hiệu ứng): tên_ảnh</code>. Kích thước 0.3–3 (1 = nửa khung). Vị trí: giữa / trên / dưới hoặc toạ độ % <code>50;30</code>. Giây thu nhỏ = 0: giữ tới hết trang hoặc hết video.", "chenhinh(1 | trên | 0 | 0 | ): hinh_2"],
 			["Hiệu ứng ghép bằng dấu phẩy: <code>phóng to</code> (hiện to, nền tối), <code>thu nhỏ</code>, <code>di chuyển lên trên</code> / <code>di chuyển xuống dưới</code>. Khi ảnh lên trên, lời giải tự dồn xuống — không bao giờ bị che.", "chenhinh(1.5 | giữa | 4 | 0 | phóng to, di chuyển lên trên): hinh_1"],
 			{ nhom: "① Ba ký hiệu gốc" },
 			["Mỗi dòng là một hiệu ứng <code>tên: nội dung</code>. Dòng <code>&gt;&gt;</code> là <b>lời đọc</b>; các hiệu ứng viết ngay dưới sẽ hiện trong lúc đọc câu đó.", ">> Đạo hàm bằng ba x bình phương trừ ba.\ndong: $f'(x)=3x^2-3$"],
 			["<code>---</code> sang cảnh mới (giữ màn hình) · <code>===</code> sang trang mới (xoá màn hình).", "dong: Bước 1\n===\n>> Sang lời giải."],
-			["Đầu video: <code>tieude:</code> tiêu đề · <code>phan:</code> mục lục (ngăn bằng <code>|</code>). Giữa video <code>tieude: ẩn</code> để ẩn.", "tieude: TÌM [vang]GTLN[/]\nphan: Đề | Giải | Kết luận"],
+			["Đầu video: <code>tieude:</code> tiêu đề · <code>phan:</code> mục lục (ngăn bằng <code>|</code>). Giữa video <code>tieude: ẩn</code> để ẩn. Tiêu đề <b>giữ nguyên chữ hoa/thường</b> như anh gõ.", "tieude: TÌM [vang]GTLN[/] của hàm số\nphan: Đề | Giải | Kết luận"],
+			["Tiêu đề nhiều dòng: ngăn dòng bằng <code>|</code>. Cỡ chung đặt trong ngoặc sau <code>tieude</code> (0.5–3). Mỗi dòng có thể thêm ở cuối <code>(cỡ, in đậm / in nghiêng)</code> — cỡ của dòng ưu tiên hơn cỡ chung. Ngoặc thường trong câu (vd <code>(Đề minh hoạ)</code>) vẫn hiện bình thường.", "tieude(1.1): [vang]CỰC TRỊ[/] hàm bậc ba (1.3, in đậm) | Bài toán chứa tham số $m$ (0.8, in nghiêng)"],
 			{ nhom: "② Các loại dòng" },
 			["<b>de</b> đề bài · <b>dong</b> dòng chữ/công thức · <b>ct</b> công thức lớn · <b>khung</b> khung kết quả · <b>hoi</b> câu hỏi · <b>sai</b>/<b>dung</b> · <b>nhan</b> nhãn · <b>meo</b> giấy nhớ · <b>cho: n</b> dừng n giây · <b>muc: n</b> sáng mục n.", "khung: $x=\\pm2$\nhoi: Bước tiếp theo?\ncho: 1.5"],
 			{ nhom: "③ Công thức & màu" },
@@ -8887,11 +8891,25 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		// ---------- dàn dòng chữ + công thức, ngắt dòng theo bề rộng ----------
 		const boc = tex => "$" + tex + "$";
 		const ctxDo = document.createElement("canvas").getContext("2d");
-		async function danDong(s, o) { // o: {co, nang, mauChu, pxPt, wMax, giua}
-			const manh = tachMau(s), muc = [];
+		// tách tiêu đề theo dấu | (bỏ qua | trong $…$); đuôi "(1.2, in nghiêng)" chỉ được hiểu là tuỳ chọn khi MỌI mục đều là cỡ 0.5–3 hoặc kiểu chữ
+		function tachDongTD(s) {
+			const ds = []; let cur = "", toan = false;
+			for (let i = 0; i < s.length; i++) { const c = s[i]; if (c === "$" && s[i - 1] !== "\\") toan = !toan; if (c === "|" && !toan) { ds.push(cur); cur = ""; } else cur += c; }
+			ds.push(cur);
+			const bd = x => String(x).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/\s+/g, " ").trim();
+			return ds.map(z => z.trim()).filter(Boolean).map(z => {
+				const L = { chu: z, co: 0, dam: false, nghieng: false, coKieu: false }, m = z.match(/\(([^()$]*)\)\s*$/); if (!m) return L;
+				const tk = m[1].split(/[,;]/).map(bd).filter(Boolean); let ok = tk.length > 0; const o = { co: 0, dam: false, nghieng: false };
+				tk.forEach(t => { const so = parseFloat(t.replace(",", ".")); if (/^\d+(?:[.,]\d+)?$/.test(t) && so >= 0.5 && so <= 3) o.co = so; else if (/^(in dam|dam|bold|b)$/.test(t)) o.dam = true; else if (/^(in nghieng|nghieng|italic|i)$/.test(t)) o.nghieng = true; else ok = false; });
+				if (!ok) return L;
+				return Object.assign(L, o, { chu: z.slice(0, m.index).trim(), coKieu: o.dam || o.nghieng });
+			});
+		}
+		async function danDong(s, o) { // o: {co, nang, nghieng, mauChu, pxPt, wMax, giua}
+			const manh = tachMau(s), muc = [], phong = (o.nghieng ? "italic " : "") + o.nang + " " + o.co + "px " + FONT;
 			for (const m of manh) {
 				if (m.toan) { const a = await napToan(boc("\\displaystyle " + (m.mau ? "\\textcolor[HTML]{" + hexTeX(m.mau) + "}{" + m.nd + "}" : m.nd)), o.pxPt, o.mauToan || o.mauChu); const sc = Math.min(1, o.wMax / a.w); muc.push({ toan: true, a, w: a.w * sc, h: a.h * sc }); }
-				else m.nd.split(/(\s+)/).forEach(t => { if (!t) return; ctxDo.font = o.nang + " " + o.co + "px " + FONT; muc.push({ toan: false, chu: t, mau: m.mau || o.mauChu, w: ctxDo.measureText(t).width, h: o.co, trang: /^\s+$/.test(t) }); });
+				else m.nd.split(/(\s+)/).forEach(t => { if (!t) return; ctxDo.font = phong; muc.push({ toan: false, chu: t, mau: m.mau || o.mauChu, w: ctxDo.measureText(t).width, h: o.co, trang: /^\s+$/.test(t), f: phong, co: o.co }); });
 			}
 			const dong = []; let cur = [], cw = 0;
 			muc.forEach(x => { if (cw + x.w > o.wMax && cur.length && !x.trang && !(!x.toan && /^[,.;:!?)\]…]/.test(x.chu))) { dong.push(cur); cur = []; cw = 0; } if (x.trang && !cur.length) return; cur.push(x); cw += x.w; });
@@ -8905,7 +8923,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			dd.dong.forEach(l => {
 				const xL = dd.o.trai ? x0 : x0 + (rong - l.w) / 2, cy = y0 + l.y + l.h / 2, phan = kep((p * tong - daVe) / (l.w || 1), 0, 1); daVe += l.w; if (phan <= 0) return;
 				ctx.save(); ctx.beginPath(); ctx.rect(xL - 4, y0 + l.y - 20, l.w * phan + 8, l.h + 40); ctx.clip();
-				let x = xL; l.d.forEach(m => { if (m.toan) ctx.drawImage(m.a.c, x, cy - m.h / 2, m.w, m.h); else if (!m.trang) { ctx.font = dd.o.nang + " " + dd.o.co + "px " + FONT; ctx.fillStyle = m.mau; ctx.textBaseline = "middle"; ctx.fillText(m.chu, x, cy + dd.o.co * 0.04); } x += m.w; });
+				let x = xL; l.d.forEach(m => { if (m.toan) ctx.drawImage(m.a.c, x, cy - m.h / 2, m.w, m.h); else if (!m.trang) { ctx.font = m.f || (dd.o.nang + " " + dd.o.co + "px " + FONT); ctx.fillStyle = m.mau; ctx.textBaseline = "middle"; ctx.fillText(m.chu, x, cy + (m.co || dd.o.co) * 0.04); } x += m.w; });
 				ctx.restore();
 			});
 		}
@@ -9247,7 +9265,17 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			const cx0 = khung.x + 54 * u, cw = khung.w - 108 * u, giong = $v("vdGiong").value, bao = opt.bao || (() => { });
 			try { await document.fonts.load("800 44px " + FONT); await document.fonts.load("900 60px " + FONT); } catch (e) { }
 			// tiêu đề
-			const veTD = async (s, sc) => { sc = sc || 1; return s && !/^(ẩn|an|tắt|tat|không|khong|none|-)$/i.test(s.trim()) ? await danDong(hoa(s), { co: (doc ? 64 : 56) * u * sc, nang: "900", mauChu: CHU, pxPt: 6.2 * sc, wMax: cw - (doc ? 60 : 300) * u }) : null; };
+			// tieude(cỡ chung): dòng 1 (cỡ, in đậm/in nghiêng) | dòng 2 (…) — giữ nguyên chữ hoa/thường như đã gõ
+			const veTD = async (s, sc) => {
+				if (!s || /^(ẩn|an|tắt|tat|không|khong|none|-)$/i.test(s.trim())) return null;
+				const ra = { dong: [], w: 0, h: 0, o: null }; let y = 0;
+				for (const L of tachDongTD(s)) {
+					const k = L.co || sc || 1, co = (doc ? 64 : 56) * u * k;
+					const dd = await danDong(L.chu, { co, nang: L.coKieu ? (L.dam ? "900" : "500") : "900", nghieng: !!L.nghieng, mauChu: CHU, pxPt: 6.2 * k, wMax: cw - (doc ? 60 : 300) * u });
+					if (!ra.o) ra.o = dd.o; dd.dong.forEach(l => ra.dong.push(Object.assign({}, l, { y: l.y + y }))); ra.w = Math.max(ra.w, dd.w); y += dd.h + co * 0.22;
+				}
+				if (!ra.dong.length) return null; ra.h = y - ((ra.o && ra.o.co) || 0) * 0.22; return ra;
+			};
 			const yTD = khung.y + (doc ? 118 : 40) * u;
 			const td0 = await veTD(kb.tieude, kb.tieudeTile);
 			const coPhan = kb.phan.length > 0, hPhan = coPhan ? 64 * u : 0;
