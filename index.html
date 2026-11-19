@@ -8918,7 +8918,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		const CHEN_NHOM = [
 			["🎬 Cảnh & chuyển trang", [["Cảnh mới", "---\n>> "], ["Trang mới (xoá màn hình)", "===\n>> "], ["Trang: chuyển trượt", "=== truot\n>> "], ["Trang: chuyển xoay", "=== xoay\n>> "], ["Trang: vòng tròn", "=== tron\n>> "], ["Trang: rèm sáo", "=== rem\n>> "], ["Trang: nhoè mờ", "=== nhoe\n>> "]]],
 			["🗣️ Lời đọc & tiêu đề", [["Lời đọc", ">> "], ["Tiêu đề", "tieude: [vang]TỪ KHOÁ[/] NỘI DUNG"], ["Mục lục", "phan: Phần 1 | Phần 2 | Phần 3"], ["Chuyển mục", "muc: 2"]]],
-			["🧮 Phím Casio", [["Dãy phím (phím tắt)", "casio: MENU 9 2 2 ="], ["Dãy phím (macro casiovn)", "casio(1.2): \\shiftk \\calck \\equalk"], ["Phím ngay trong chữ", "dong: Bấm \\shiftk \\calck \\equalk"]]],
+			["🧮 Phím Casio", [["Dãy phím (phím tắt)", "casio: MENU 9 2 2 ="], ["Dãy phím có hẹn giờ", "casio(1 | sau 1 | hiện 3 | giữ 5): MENU 9 2 2 ="], ["Dãy phím (macro casiovn)", "casio(1.2): \\shiftk \\calck \\equalk"], ["Phím ngay trong chữ", "dong: Bấm \\shiftk \\calck \\equalk"]]],
 			["🖼 Chèn hình", [["Ảnh: to giữa → thu nhỏ lên trên", "chenhinh(1.5->0.75 | giua | 3 | 0 | phóng to, thu nhỏ, di chuyển lên trên): hinh_1"], ["Ảnh tĩnh ở trên", "chenhinh(1 | tren | 0 | 0 | ): hinh_1"], ["Ảnh to giữa màn hình", "chenhinh(1.8 | giua | 5 | 0 | phóng to): hinh_1"]]],
 			["➗ Nội dung toán", [["Đề bài", "de: Giải phương trình $x^2-4=0$"], ["Dòng chữ + công thức", "dong: TỬ: $\\sqrt{x-3}=0\\iff x=3$"], ["Công thức lớn", "ct: \\int_0^1 x^2\\,dx=\\dfrac13"], ["Khung kết quả (bút chì)", "khung: $\\Leftrightarrow m=12$"], ["Đồ thị", "dothi: y=1/(x-1) ; x=-2..5 ; y=-3..3 ; lo=2 ; chu=CHÚ THÍCH"], ["Hình TikZ", "hinh:\n\\begin{tikzpicture}\n\\draw (0,0)--(3,0)--(1,2)--cycle;\n\\end{tikzpicture}"]]],
 			["💡 Tương tác & nhấn mạnh", [["Câu hỏi gợi mở", "hoi: Bước tiếp theo nên làm gì?\ncho: 1.5"], ["Giấy nhớ mẹo", "meo: MẸO QUEN TAY | Dòng 1 | [do]Dòng 2[/]"], ["Cách làm SAI", "sai: Cộng thẳng $30+20=50$"], ["Cách làm ĐÚNG", "dung: $50-10=40$"], ["Nhãn nhấn mạnh", "nhan: [vang]ĐẾM 2 LẦN[/]"], ["Chữ thường", "chu: Ghi chú thêm…"], ["Dừng (giây)", "cho: 1.5"]]],
@@ -8952,7 +8952,8 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			["<b>Sticker nhân vật chibi</b>: bấm nút <b>☺ Sticker</b> chọn 1 trong 12 nhân vật (chao, cuoi, tuyetvoi, colen, nghingoi, ngacnhien, buon, chitro…). Dạng: <code>sticker: tên | lời thoại | giây</code>.", "sticker: tuyetvoi | Chuẩn luôn! | 3"],
 			["<b>Cỡ &amp; vị trí sticker</b> trong ngoặc: cỡ <b>to</b>/<b>nho</b> hoặc số 0.5–2; vị trí <b>trai</b>/<b>phai</b>/<b>giua</b>, <b>nang</b>/<b>ha</b>.", "sticker: colen (to phai) | Cố lên nào!\nsticker: nghingoi (nho trai nang) | Hmm…"],
 			{ nhom: "Phím máy tính Casio", ico: "🧮", mau: "#fb923c" },
-			["Lệnh <code>casio(cỡ | kiểu): dãy phím</code> — các phím hiện <b>lần lượt</b>, nhấn nảy nhẹ và loé sáng (xem thử và MP4 giống hệt). <b>Cỡ</b> 0.4–3 (mặc định 1). <b>Kiểu</b>: <code>mũi tên</code> (mặc định, có mũi tên mảnh giữa các phím) hoặc <code>không mũi tên</code>. Thêm <code>nhanh</code> / <code>chậm</code> để đổi tốc độ, <code>@giây</code> để hẹn giờ. Dòng sau chờ bấm xong mới hiện.", "casio: MENU 9 2 2 =\ncasio(1.3 | không mũi tên | chậm): SHIFT CALC ="],
+			["Lệnh <code>casio(cỡ | kiểu): dãy phím</code> — các phím hiện <b>lần lượt</b>, nhấn nảy nhẹ và loé sáng (xem thử và MP4 giống hệt). <b>Cỡ</b> 0.4–3 (mặc định 1). <b>Kiểu</b>: <code>mũi tên</code> (mặc định, có mũi tên mảnh giữa các phím) hoặc <code>không mũi tên</code>. Thêm <code>nhanh</code> / <code>chậm</code> để đổi tốc độ. Dòng sau chờ bấm xong mới hiện.", "casio: MENU 9 2 2 =\ncasio(1.3 | không mũi tên | chậm): SHIFT CALC ="],
+			["<b>Điều khiển thời gian</b> (thêm vào trong ngoặc, ngăn bằng <code>|</code>): <code>sau 2</code> = chờ 2 giây rồi mới hiện · <code>@2</code> = hiện ở giây thứ 2 kể từ lúc bắt đầu đọc câu <code>&gt;&gt;</code> · <code>hiện 3</code> = bấm hết cả dãy phím trong đúng 3 giây · <code>giữ 5</code> = bấm xong giữ trên màn hình 5 giây rồi mờ dần biến mất (không ghi <code>giữ</code> = hiện tới hết trang). Chỗ trống của dãy phím vẫn được giữ, các dòng khác không bị xô lệch.", "casio(1.2 | sau 2 | hiện 3 | giữ 5): MENU 9 2 2 =\ncasio(@1.5 | giữ 4): \\shiftk \\calck \\equalk"],
 			["<b>Phím tắt</b> (không phân biệt hoa/thường, ngăn bằng dấu cách hoặc dấu phẩy): SHIFT · ALPHA · MENU · MODE · OPTN · ON · AC · DEL · CALC · ENG · STO · RCL · UP DOWN LEFT RIGHT · INT · X (VAR) · FRAC · SQRT · x2 · ^ · x-1 · LOGAB · LOG · LN · SIN · COS · TAN · DMS · (-) · ( · ) · SD · X10 · ANS · M+ · số 0–9 (gõ liền <code>922</code> cũng được) · . + - * / =", "casio: SHIFT CALC =\ncasio: FRAC 1 DOWN 3 RIGHT + SQRT 2 ="],
 			["<b>Macro casiovn.sty</b> (Lê Đình Mẫn) dùng được trong lệnh <code>casio:</code> và <b>ngay trong chữ</b> của <code>dong:</code>, <code>de:</code>, <code>khung:</code>… — hiện thành phím nhỏ cùng dòng chữ. Trong công thức <code>$…$</code> thì hiện thành ô chữ. Bản in K-Pado cũng tự vẽ các macro này thành phím.", "dong: Bấm \\shiftk \\calck \\equalk để giải phương trình.\ncasio: \\menuk \\ninek \\twok \\twok \\equalk"],
 			["Bấm <b>⌨ Phím Casio</b> dưới ô kịch bản để mở bàn phím giống fx-580VN X — bấm phím nào chèn macro phím đó tại con trỏ; <b>＋ Dòng casio:</b> chèn sẵn một dòng lệnh.", "casio(1 | mũi tên): "],
@@ -9007,8 +9008,8 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 					if (tu && !ck) kb.canhBao.push("dòng " + (i + 1) + ": chưa có kiểu chuyển “" + m[2].trim() + "” — dùng kiểu mặc định");
 					moiCanh(l[0] === "=" || !kb.canh.length, so ? +so[1].replace(",", ".") : 0, ck); continue; }
 				if ((m = l.match(/^casio\s*(?:\(([^)]*)\))?\s*:\s*(.*)$/i))) {
-					let luc = null, toc = null; const ts = String(m[1] || "").split("|").filter(z => { const q = z.match(/^\s*@\s*(\d+(?:[.,]\d+)?)\s*(?:s|giây|giay)?\s*$/i); if (q) { luc = +q[1].replace(",", "."); return false; } const b = z.trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); if (/^nhanh$/.test(b)) { toc = 0.6; return false; } if (/^cham$/.test(b)) { toc = 1.6; return false; } return true; }).join("|");
-					if (!doan) moiDoan(""); doan.viec.push({ k: "casio", ts, v: m[2].trim(), dong: i + 1, luc, toc }); continue; }
+					let luc = null, toc = null, cho = 0; const ts = String(m[1] || "").split("|").filter(z => { const q = z.match(/^\s*@\s*(\d+(?:[.,]\d+)?)\s*(?:s|giây|giay)?\s*$/i); if (q) { luc = +q[1].replace(",", "."); return false; } const b = z.trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d"); if (/^nhanh$/.test(b)) { toc = 0.6; return false; } if (/^cham$/.test(b)) { toc = 1.6; return false; } const q2 = b.match(/^(?:sau|tre|doi|cho)\s*(\d+(?:[.,]\d+)?)\s*(?:s|giay)?$/); if (q2) { cho = +q2[1].replace(",", "."); return false; } return true; }).join("|");
+					if (!doan) moiDoan(""); doan.viec.push({ k: "casio", ts, v: m[2].trim(), dong: i + 1, luc, toc, cho }); continue; }
 				if ((m = l.match(/^chenhinh\s*\(([^)]*)\)\s*:\s*(.*)$/i))) {
 					let luc = null; const ts = m[1].split("|").filter(z => { const q = z.match(/^\s*@\s*(\d+(?:[.,]\d+)?)\s*(?:s|giây|giay)?\s*$/i); if (q) { luc = +q[1].replace(",", "."); return false; } return true; }).join("|");
 					if (!doan) moiDoan(""); doan.viec.push({ k: "chenhinh", ts, v: m[2].trim(), dong: i + 1, luc }); continue; }
@@ -9516,7 +9517,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 					const hd = d.viec.filter(v => !["muc", "tieude", "cho", "trang", "sticker", "chenhinh"].includes(v.k)), gian = hd.length ? Math.max(0.6 * tocMD, Math.min(NHIP.gianMax, V * 0.92 / hd.length)) : 0; let i = 0, tCuoi = S0, them = 0, lechCH = 0;
 					for (const v of d.viec) {
 						bao("Đang dựng hiệu ứng " + (++xong) + "/" + tongViec + "…", 0.6 + 0.4 * xong / tongViec);
-						const tA = v.luc != null ? S0 + v.luc : S0 + 0.08 + i * gian + lechCH; tl.moc.push({ dong: v.dong, t: tA + 0.6 });
+						const tA = (v.luc != null ? S0 + v.luc : S0 + 0.08 + i * gian + lechCH) + (v.cho || 0); tl.moc.push({ dong: v.dong, t: tA + 0.6 });
 						if (v.k === "muc") { tl.muc.push({ t: tA, i: Math.max(1, parseInt(v.v) || 1) - 1 }); continue; }
 						if (v.k === "tieude") { tdHien = await veTD(v.v, v.tile); tl.td.push({ t: tA, dd: tdHien }); if (!trang.pt || !trang.pt.length) y = yDau(); continue; }
 						if (v.k === "sticker") { const ph = v.v.split("|").map(z => z.trim()); const tham = docThamSticker(ph[0]); let loai = STK[boDauVD(tham.ten)]; if (!loai) { loai = "cuoi"; S.canhBao.push("dòng " + v.dong + ": chưa có sticker “" + tham.ten + "” — dùng sticker cười"); }
@@ -9537,10 +9538,10 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 						if (v.k === "trang") { T = Math.max(T, tA); sangTrang(tA, CHUYEN_AL[boDauVD(v.v)] || ""); continue; }
 						let e;
 						try { e = await taoPhanTu(v, { cw, u, doc }); } catch (err) { S.canhBao.push("dòng " + v.dong + ": " + (err.message || err) + " — đã bỏ qua"); continue; }
-						e.d *= v.toc || tocMD; e.dong = v.dong; e.vao = v.vao || ($v("vdSinhDong").checked && VAO_TU_DONG[v.k] ? VAO_TU_DONG[v.k][tl.pt.length % VAO_TU_DONG[v.k].length] : ""); e.vaos = (v.vaos && v.vaos.length) ? v.vaos : (e.vao ? [e.vao] : []);
+						if (!e.coDinh) e.d *= v.toc || tocMD; e.dong = v.dong; e.vao = v.vao || ($v("vdSinhDong").checked && VAO_TU_DONG[v.k] ? VAO_TU_DONG[v.k][tl.pt.length % VAO_TU_DONG[v.k].length] : ""); e.vaos = (v.vaos && v.vaos.length) ? v.vaos : (e.vao ? [e.vao] : []);
 						if (y + e.h > yDay && trang.pt.length) { const lui = sangTrang(tA); e.t0 = tA + lui; } else e.t0 = tA;
 						e.x = cx0; e.y = y; e.w = cw; y += e.h + 30 * u; trang.pt.push(e); tl.pt.push(e); tCuoi = Math.max(tCuoi, e.t0 + Math.min(e.d, 0.7)); i++;
-						if (e.loai === "casio") { lechCH += Math.max(0, e.d - 0.7); tCuoi = Math.max(tCuoi, e.t0 + e.d); }
+						if (e.loai === "casio") { lechCH += (v.cho || 0) + Math.max(0, e.d - 0.7); tCuoi = Math.max(tCuoi, e.t0 + e.d + (e.giu ? e.giu + 0.45 : 0)); }
 					}
 					T = Math.max(S0 + V + NHIP.nghi, tCuoi + NHIP.cho) + them; if (them) tl.choVung.push([T - them - 0.1, T]); tl.hoat.push([S0, S0 + V, d.dong]);
 				}
@@ -9576,8 +9577,8 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			if (k === "meo") { const ph = s.split("|").map(x => x.trim()).filter(Boolean), DM = Object.assign({}, D, { co: 42 * u, nang: "800", mauChu: "#2a1f08", pxPt: 5.3 * u, wMax: cw * 0.86 - 80 * u }); const td = await danDong(hoa(ph[0] || "MẸO"), Object.assign({}, DM, { co: 50 * u, nang: "900" })), ds = []; for (const p of ph.slice(1)) ds.push(await danDong(p, DM)); const h = 60 * u + td.h + ds.reduce((a, b) => a + b.h + 22 * u, 0) + 40 * u; return { loai: "meo", td, ds, h, d: 0.7 + 0.5 * ds.length }; }
 			if (k === "casio") {
 				if (!window.KCasio) throw new Error("chưa nạp bộ phím Casio");
-				let co = 1, mui = true; const bd = z => z.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/\s+/g, " ").trim();
-				String(v.ts || "").split("|").map(z => z.trim()).filter(Boolean).forEach(z => { const b = bd(z), so = parseFloat(z.replace(",", ".")); if (/^\d+(?:[.,]\d+)?$/.test(z)) co = kep(so, 0.4, 3); else if (/^(khong mui ten|khong mui|khongmui|trong|khong|none)$/.test(b)) mui = false; else if (/^(mui ten|mui|arrow)$/.test(b)) mui = true; else S.canhBao.push("dòng " + v.dong + ": casio chưa hiểu tuỳ chọn “" + z + "”"); });
+				let co = 1, mui = true, hien = 0, giu = 0; const bd = z => z.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/\s+/g, " ").trim();
+				String(v.ts || "").split("|").map(z => z.trim()).filter(Boolean).forEach(z => { const b = bd(z), so = parseFloat(z.replace(",", ".")), qh = b.match(/^(?:hien|hien trong|xuat hien|bam)\s*(\d+(?:[.,]\d+)?)\s*(?:s|giay)?$/), qg = b.match(/^(?:giu|giu trong|mat sau|het sau)\s*(\d+(?:[.,]\d+)?)\s*(?:s|giay)?$/); if (qh) hien = Math.max(0.2, +qh[1].replace(",", ".")); else if (qg) giu = Math.max(0, +qg[1].replace(",", ".")); else if (/^\d+(?:[.,]\d+)?$/.test(z)) co = kep(so, 0.4, 3); else if (/^(khong mui ten|khong mui|khongmui|trong|khong|none)$/.test(b)) mui = false; else if (/^(mui ten|mui|arrow)$/.test(b)) mui = true; else S.canhBao.push("dòng " + v.dong + ": casio chưa hiểu tuỳ chọn “" + z + "”"); });
 				const { ds, loi } = window.KCasio.tach(s); if (loi.length) S.canhBao.push("dòng " + v.dong + ": casio chưa hiểu phím “" + loi.join(" ") + "” — xem 💡 Hướng dẫn → Phím máy tính Casio");
 				if (!ds.length) throw new Error("lệnh casio chưa có phím nào");
 				const hk = 86 * o.u * co, gap = 13 * o.u * co, aw = mui ? 26 * o.u * co : 0, wMax = cw - 60 * o.u, hang = []; let cur = { ds: [], w: 0 };
@@ -9585,7 +9586,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 					if (cur.ds.length && cur.w + them + kw > wMax) { hang.push(cur); cur = { ds: [], w: 0 }; }
 					const dau = cur.ds.length ? gap + aw + gap : 0; cur.ds.push({ i, c, kw, x: cur.w + dau, xm: cur.ds.length && mui ? cur.w + gap + aw / 2 : null }); cur.w += dau + kw; }
 				if (cur.ds.length) hang.push(cur);
-				return { loai: "casio", hang, n: ds.length, hk, co, h: hang.length * hk * 1.3 + 16 * o.u, d: Math.max(0.9, ds.length * 0.34) };
+				return { loai: "casio", hang, n: ds.length, hk, co, h: hang.length * hk * 1.3 + 16 * o.u, d: hien || Math.max(0.9, ds.length * 0.34), coDinh: !!hien, giu };
 			}
 			if (k === "dothi") { const g = docDoThi(s), gw = Math.min(cw * 0.9, o.doc ? cw * 0.9 : 980 * u), gh = Math.min(gw * 0.68, 620 * u); return { loai: "dothi", g, gw, gh, h: gh + 80 * u, d: 2.4 }; }
 			if (k === "hinh") { const a = await napHinh(s, cw * 0.86, o.doc ? 760 * u : 600 * u); return { loai: "hinh", a, h: a.h + 10 * u, d: 0.9 }; }
@@ -9711,7 +9712,8 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			tl.trang.forEach((tr, k) => { if (t < tr.t0 - 0.01 || t > tr.t1 + CT) return; ctx.save(); const sau = tl.trang[k + 1];
 				if (t > tr.t1) apChuyen(ctx, tl, (sau && sau.vao) || "mo", (t - tr.t1) / CT, false, k + 1); else if (k && tr.vao && t < tr.t0 + CT) apChuyen(ctx, tl, tr.vao, 1 - (t - tr.t0) / CT, true, k);
 				donNoiDungCH(ctx, tl, t, tr);
-				tr.pt.forEach(e => { if (t < e.t0) return; e._t = t - e.t0; vePhanTu(ctx, e, kep((t - e.t0) / e.d, 0, 1), u); }); ctx.restore(); });
+				tr.pt.forEach(e => { if (t < e.t0) return; let a = 1; if (e.giu > 0) { const tH = e.t0 + e.d + e.giu; if (t >= tH + 0.45) return; if (t > tH) a = 1 - (t - tH) / 0.45; }
+					e._t = t - e.t0; if (a < 1) { ctx.save(); ctx.globalAlpha *= a; vePhanTu(ctx, e, kep((t - e.t0) / e.d, 0, 1), u); ctx.restore(); } else vePhanTu(ctx, e, kep((t - e.t0) / e.d, 0, 1), u); }); ctx.restore(); });
 			tl.dan.forEach(d => veDan(ctx, d, t, u));
 			veChenHinh(ctx, tl, t);
 			// phụ đề
