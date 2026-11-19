@@ -866,16 +866,19 @@ dialog.hopAI::backdrop { background: rgba(14, 19, 26, .55); }
 .vdCong input:focus-visible + i { outline: 2px solid var(--vt-ac); outline-offset: 2px; }
 .vdBat { display: flex !important; flex-wrap: wrap; gap: 12px 24px; }
 .vdLuoi2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 16px; align-items: start; }
-.vdAD { display: grid; gap: 12px; }
-.vdADTha { min-height: 120px; display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer; }
-.vdADTha img { max-width: 100%; max-height: 220px; border-radius: 8px; background: #fff; }
-.vdADNut { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.vdADSo { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px 12px; }
-.vdADSo label { display: grid; gap: 5px; font-size: 12px; font-weight: 600; color: var(--vt-phu); min-width: 0; }
-.vdADSo label > span { display: flex; justify-content: space-between; gap: 4px; } .vdADSo output { color: var(--vt-chu); font-weight: 700; }
-.vdADSo .vdO { width: 100%; box-sizing: border-box; }
-#vdCanvas.keoAD { cursor: grab; } #vdCanvas.dangKeoAD { cursor: grabbing; }
-@media (max-width: 700px) { .vdADSo { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.vdCH { margin-top: 10px; border: 1px dashed var(--vt-vien); border-radius: 12px; padding: 10px 12px; display: grid; gap: 8px; }
+.vdCH.keo { border-color: var(--vt-ac); background: rgba(79,179,255,.06); }
+.vdCHDau { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; } .vdCHDau b { font-size: 13px; }
+.vdCHGoi { flex: 1; min-width: 200px; font-size: 12px; color: var(--vt-phu); } .vdCHGoi code, .vdCHHD code { padding: 1px 5px; border-radius: 5px; background: var(--vt-nen2); border: 1px solid var(--vt-vien); font: 11.5px var(--f-code, monospace); }
+.vdCHDs { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; }
+.vdCHTrong { font-size: 12px; color: var(--vt-phu); padding: 6px 0; }
+.vdCHMuc { flex: 0 0 auto; width: 132px; display: grid; gap: 5px; padding: 6px; border: 1px solid var(--vt-vien); border-radius: 10px; background: var(--vt-nen2); }
+.vdCHMuc img { width: 100%; height: 74px; object-fit: contain; background: #fff; border-radius: 6px; }
+.vdCHMuc b { font: 700 12px var(--f-code, monospace); color: var(--vt-ac); text-align: center; }
+.vdCHMuc.thieu { border-color: #f59e0b; } .vdCHMuc .vdCHNut { display: flex; gap: 4px; } .vdCHMuc .vdCHNut button { flex: 1; padding: 3px 0; font-size: 11px; }
+.vdCHHD summary { cursor: pointer; font-size: 12.5px; font-weight: 700; color: var(--vt-ac); }
+.vdCHHD .vdCHBang { margin: 8px 0 0; font-size: 12.5px; line-height: 1.6; color: var(--vt-chu); } .vdCHHD ol { margin: 6px 0 0 18px; padding: 0; } .vdCHHD li { margin: 3px 0; }
+.vdCHHD pre { margin: 6px 0; padding: 8px 10px; border-radius: 8px; background: var(--vt-nen2); border: 1px solid var(--vt-vien); font: 12px/1.5 var(--f-code, monospace); white-space: pre-wrap; }
 .vdLuoi2 label { display: grid; gap: 6px; font-size: 12.5px; font-weight: 600; color: var(--vt-phu); min-width: 0; }
 .vdLuoi2 label > span { display: flex; justify-content: space-between; } .vdLuoi2 output { color: var(--vt-chu); font-weight: 700; }
 .vdLuoi2 input[type=range], .vdDieuKhien input[type=range] { accent-color: var(--vt-ac); width: 100%; }
@@ -2984,6 +2987,28 @@ select option,select optgroup{background:#0F172A!important;color:#E2E8F0!importa
 						<textarea id="vdKB" spellcheck="false" aria-label="Kịch bản" placeholder="Bấm “AI viết kịch bản”, hoặc tự viết:&#10;&#10;tieude: [vang]TỪ KHOÁ[/] NỘI DUNG&#10;---&#10;>> Lời đọc câu thứ nhất.&#10;de: Đề bài có $công thức$&#10;sticker: wow | Ơ kìa!&#10;=== truot&#10;>> Lời đọc tiếp theo.&#10;dong: BƯỚC 1: $x^2-4=0$&#10;khung(1.2): $x=\pm 2$"></textarea>
 					</div>
 					<div class="vdSoanChan"><span id="vdDongSo">Dòng 1</span><span>Đặt con trỏ vào một dòng — khung xem thử nhảy tới đúng hiệu ứng đó.</span></div>
+					<div class="vdCH" id="vdCHHop">
+						<div class="vdCHDau"><b>🖼 Ảnh chèn vào video</b><span class="vdCHGoi"><b>Ctrl+V</b> dán ảnh chụp ngay trong tab này (hoặc kéo thả vào đây) — web lưu ảnh thành <code>hinh_1</code>, <code>hinh_2</code>… và tự thêm dòng <code>chenhinh(…)</code> tại con trỏ.</span><button class="vdNutNho" type="button" id="vdCHThem">＋ Chọn ảnh</button><input type="file" id="vdCHTep" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden></div>
+						<div class="vdCHDs" id="vdCHDs"><span class="vdCHTrong">Chưa có ảnh nào.</span></div>
+						<details class="vdCHHD">
+							<summary>Hướng dẫn lệnh chenhinh</summary>
+							<div class="vdCHBang">
+								<pre>chenhinh(kích thước | vị trí | giây phóng to | giây thu nhỏ | hiệu ứng): tên_ảnh</pre>
+								<ol>
+									<li><b>Kích thước</b>: hệ số từ <code>0.3</code> đến <code>3</code> (1 = rộng nửa khung nội dung). Ví dụ <code>1.2</code>.</li>
+									<li><b>Vị trí</b>: <code>giữa</code>, <code>trên</code>, <code>dưới</code> (có dấu hay không dấu đều được), hoặc toạ độ tâm ảnh theo % khung hình <code>50;30</code> (ngang;dọc — dùng dấu chấm phẩy).</li>
+									<li><b>Giây phóng to</b>: thời gian ảnh hiện to ở vị trí đã chọn. Nội dung phía sau chờ hết khoảng này (và 0,8 giây chuyển) mới hiện.</li>
+									<li><b>Giây thu nhỏ</b>: thời gian ảnh ở trạng thái thu nhỏ; <code>0</code> = giữ tới hết trang (gặp <code>===</code>) hoặc hết video.</li>
+									<li><b>Hiệu ứng</b>: <code>phóng to</code>, <code>thu nhỏ</code>, <code>di chuyển lên trên</code> (thêm: <code>di chuyển xuống dưới</code>) — ghép bằng dấu phẩy, chạy theo thứ tự phóng to → thu nhỏ → di chuyển. Để trống ô này = ảnh tĩnh.</li>
+								</ol>
+								<pre>&gt;&gt; Cùng đọc đề bài nhé.
+chenhinh(1.2 | giữa | 3 | 0 | phóng to, thu nhỏ, di chuyển lên trên): hinh_1
+&gt;&gt; Ta có phương trình quỹ đạo…
+dong: $z=-\dfrac{1}{2}x^2+2x+3$</pre>
+								<p>Khi ảnh lên trên (hoặc xuống dưới), phần lời giải tự dồn và thu gọn để không bị che. Có thể dùng nhiều lệnh <code>chenhinh</code> trong một kịch bản. Xem thử và MP4 xuất ra giống hệt nhau. Ảnh chỉ lưu tạm trong phiên làm việc — tải lại trang thì bấm “Dán” ở ô ảnh đang thiếu để nạp lại đúng tên cũ.</p>
+							</div>
+						</details>
+					</div>
 				</div>
 
 				<!-- 2. GIỌNG ĐỌC -->
@@ -3122,34 +3147,6 @@ select option,select optgroup{background:#0F172A!important;color:#E2E8F0!importa
 
 				<!-- 4. HIỆU ỨNG -->
 				<div class="vdPanel" data-panel="hinh" hidden>
-					<div class="vdMuc vdAD" id="vdADHop">
-						<div class="vdMucDau"><b>Ảnh đề bài trên video</b><label class="vdCong"><input type="checkbox" id="vdADBat" checked><i aria-hidden="true"></i>Hiện ảnh</label></div>
-						<label class="vdTha vdADTha" id="vdADTha" tabindex="0">
-							<input type="file" id="vdADTep" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
-							<img id="vdADXem" alt="Ảnh đề bài" hidden>
-							<span id="vdADChu"><b>Ctrl+V</b> dán ảnh chụp đề · kéo thả · hoặc bấm để chọn</span>
-						</label>
-						<div class="vdADNut">
-							<button class="vdNutAI" type="button" id="vdADMau" title="Đề hiện to ở giữa, rồi thu nhỏ trượt lên trên; lời giải tự dồn xuống dưới"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8z"/></svg>Đề ở giữa → thu lên trên</button>
-							<button class="vdNutNho" type="button" id="vdADLayDe" title="Dùng ảnh đề đã dán ở thẻ Kịch bản">Lấy ảnh ở thẻ Kịch bản</button>
-							<button class="vdNutNho" type="button" id="vdADThay">Thay ảnh</button>
-							<button class="vdNutNho" type="button" id="vdADXoa">Xoá</button>
-						</div>
-						<div class="vdLuoi2">
-							<label><span>Cỡ lúc ở giữa <output id="vdADCo1So">90%</output></span><input type="range" id="vdADCo1" min="30" max="100" step="1" value="90"></label>
-							<label><span>Cỡ sau khi thu <output id="vdADCo2So">55%</output></span><input type="range" id="vdADCo2" min="15" max="100" step="1" value="55"></label>
-						</div>
-						<div class="vdMucDau"><b>Vị trí sau khi thu</b><div class="vdSeg" id="vdADViTri"><button type="button" data-vt="giua">Giữa</button><button type="button" data-vt="tren">Trên</button><button type="button" data-vt="duoi">Dưới</button></div></div>
-						<div class="vdADSo">
-							<label><span>Lệch X (px)</span><input class="vdO" type="number" id="vdADDx" step="5" value="0"></label>
-							<label><span>Lệch Y (px)</span><input class="vdO" type="number" id="vdADDy" step="5" value="0"></label>
-							<label><span>Bắt đầu (giây)</span><input class="vdO" type="number" id="vdADBD" min="0" step="0.1" value="2"></label>
-							<label><span>Giữ ở giữa (giây)</span><input class="vdO" type="number" id="vdADGiu" min="0" step="0.1" value="3"></label>
-							<label><span>Chuyển cảnh <output id="vdADChuyenSo">0.8 s</output></span><input type="range" id="vdADChuyen" min="0.5" max="1" step="0.05" value="0.8"></label>
-							<label><span>Hiện trong (giây, 0 = đến hết)</span><input class="vdO" type="number" id="vdADHien" min="0" step="0.5" value="0"></label>
-						</div>
-						<p class="vdGhi">Kéo thẳng ảnh trên khung xem thử để dời vị trí. Khi ảnh thu lên trên (hoặc xuống dưới), phần lời giải tự dồn và thu gọn để không bị che. Xem trước và video MP4 xuất ra giống hệt nhau.</p>
-					</div>
 					<div class="vdMuc">
 						<b>Khổ video</b>
 						<div class="vdKhoDs" data-cho="vdKho">
@@ -4162,6 +4159,8 @@ function khoiDongKPado() {
 		}
 	};
 	try { window.KFB && window.KFB.kpadoPing && window.KFB.kpadoPing(); } catch (e) { }
+	// Lõi câu hỏi (dàn trang, cấu trúc ID, bảng mã) nằm ở khối script chính — lấy qua window.TDKMod.QB, không cần mở tab Ngân hàng
+	const layQB = async () => { for (let i = 0; i < 60; i++) { const q = window.TDKMod && window.TDKMod.QB; if (q && q.tachEx && q.xemTruoc) return q; await new Promise(ok => setTimeout(ok, 150)); } return null; };
 	if (window.KFB) window.KFB.kpadoThuLai = n => tt("Kết nối chậm — K-Pado tự thử lại (lần " + n + "/2)…");
 	const capLuot = r => { if (!r || r.han == null) return; const e = $p("kpLuot"); e.textContent = "Gói " + ({ thuong: "Thường", vip: "VIP", admin: "Quản trị" }[r.goi] || r.goi) + " · còn " + (r.goi === "admin" ? "∞" : r.conLai + "/" + r.han) + " lượt hôm nay"; e.classList.toggle("het", r.goi !== "admin" && r.conLai <= 0); };
 	$p("kpLuot").textContent = "Đang kiểm tra lượt…"; $p("kpLuot").classList.remove("het");
@@ -4258,6 +4257,7 @@ function khoiDongKPado() {
 	$p("kpTimID").addEventListener("click", async () => {
 		const id = $p("kpID").value.trim().replace(/^%?\[|\]$/g, ""); if (!id) return;
 		try {
+			const QB = await layQB(); if (!QB) { tt("Bộ câu hỏi chưa tải xong — thử lại sau vài giây.", true); return; }
 			const ds = (await QB.dbTatCa()) || [], c = ds.filter(r => (r.id || "").toUpperCase() === id.toUpperCase());
 			if (!c.length) { tt("Ngân hàng không có câu ID " + id + ".", true); return; }
 			$p("kpMau").value = c[Math.floor(Math.random() * c.length)].raw; tt("Đã lấy 1/" + c.length + " câu có ID " + id + ".");
@@ -4279,7 +4279,7 @@ function khoiDongKPado() {
 	const docJSONKP = t => { t = String(t || "").replace(/```json|```/g, ""); const a = t.indexOf("["), b = t.lastIndexOf("]"); if (a < 0 || b < a) throw new Error("AI trả lời không đúng dạng"); return JSON.parse(t.slice(a, b + 1)); };
 	// --- gán ID tự động theo đúng bảng mã + cấu trúc ID đang dùng ở Gán ID / Ngân hàng ---
 	async function ganIDTuDong(ma) {
-		if (typeof QB === "undefined" || !QB.tachEx) return { ma, n: 0, ly: "Ngân hàng chưa sẵn sàng" };
+		const QB = await layQB(); if (!QB) return { ma, n: 0, ly: "bộ câu hỏi chưa tải xong" };
 		const ct = QB.docCT(), cay = QB.phanCay(QB.docCay());
 		if (!cay.ds.length) return { ma, n: 0, ly: "chưa có bảng mã (mở ⚙ Cấu trúc ID ở tab Gán ID)" };
 		const ds = QB.tachEx(ma), can = ds.filter(x => !QB.docID(x.id || "", ct));
@@ -4328,9 +4328,12 @@ function khoiDongKPado() {
 		const code = /\\begin\{ex\}/.test(ketQua) ? ketQua : "\\begin{ex}\n\\begin{center}\n" + ketQua + "\n\\end{center}\n\\end{ex}";
 		const T = $p("kpTrang"); T.classList.add("kpPdf");
 		T.innerHTML = '<div class="kpPdfThanh"><button type="button" class="vdNutNho" data-z="-">−</button><span class="kpZoom" id="kpZoom"></span><button type="button" class="vdNutNho" data-z="+">+</button><button type="button" class="vdNutNho" data-z="vua" title="Vừa khung">⤢ Vừa khung</button><button type="button" class="vdNutNho" data-z="in" title="In hoặc lưu thành PDF">🖨 In / Lưu PDF</button></div><div class="kpPdfVung"><div class="kpGiay" id="kpGiay"><p class="kpTrong" style="color:#666">Đang dàn trang…</p></div></div>';
-		const G = $p("kpGiay");
-		try { await QB.xemTruoc(G, code, { lg: true, gach: true, tieuDe: false }); }
-		catch (e) { G.innerHTML = '<pre style="white-space:pre-wrap">' + esc(ketQua) + "</pre>"; }
+		const G = $p("kpGiay"), QB = await layQB();
+		if (!QB) { G.innerHTML = '<p class="kpTrong" style="color:#666">Bộ dàn trang chưa tải xong — bấm lại “📄 Bản in” sau vài giây, hoặc xem thẻ “{ } Mã LaTeX”.</p>'; return; }
+		// Bản in chỉ hiện kết quả đã dàn trang: bỏ mọi dòng chú thích % (kể cả %! SỬA TAY, %[ID]); ID được hiện riêng thành nhãn
+		const banIn = code.replace(/(^|[^\\])%[^\n]*/g, "$1").replace(/\n{3,}/g, "\n\n");
+		try { await QB.xemTruoc(G, banIn, { lg: true, gach: true, tieuDe: false }); }
+		catch (e) { G.innerHTML = '<p class="kpTrong" style="color:#b91c1c">Không dàn trang được: ' + esc(e.message || e) + ' — xem thẻ “{ } Mã LaTeX”.</p>'; return; }
 		// ID chỉ là dòng chú thích %[...] trong mã; trên Bản in hiện thành nhãn để kiểm tra
 		try { const ct = QB.docCT(), ids = QB.tachEx(code).map(x => QB.docID(x.id || "", ct) ? x.id : ""); G.querySelectorAll("article.cau").forEach((el, i) => { const id = ids[i]; const nh = document.createElement("div"); nh.className = "kpIDNhan" + (id ? "" : " chua"); nh.textContent = id ? "ID: " + id : "Chưa có ID"; el.prepend(nh); }); } catch (e) { }
 		datZoom(kpZoom);
@@ -8719,6 +8722,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		const CHEN_NHOM = [
 			["🎬 Cảnh & chuyển trang", [["Cảnh mới", "---\n>> "], ["Trang mới (xoá màn hình)", "===\n>> "], ["Trang: chuyển trượt", "=== truot\n>> "], ["Trang: chuyển xoay", "=== xoay\n>> "], ["Trang: vòng tròn", "=== tron\n>> "], ["Trang: rèm sáo", "=== rem\n>> "], ["Trang: nhoè mờ", "=== nhoe\n>> "]]],
 			["🗣️ Lời đọc & tiêu đề", [["Lời đọc", ">> "], ["Tiêu đề", "tieude: [vang]TỪ KHOÁ[/] NỘI DUNG"], ["Mục lục", "phan: Phần 1 | Phần 2 | Phần 3"], ["Chuyển mục", "muc: 2"]]],
+			["🖼 Chèn hình", [["Ảnh: phóng to → thu nhỏ → lên trên", "chenhinh(1.2 | giua | 3 | 0 | phóng to, thu nhỏ, di chuyển lên trên): hinh_1"], ["Ảnh tĩnh ở trên", "chenhinh(1 | tren | 0 | 0 | ): hinh_1"], ["Ảnh to giữa màn hình", "chenhinh(1.8 | giua | 5 | 0 | phóng to): hinh_1"]]],
 			["➗ Nội dung toán", [["Đề bài", "de: Giải phương trình $x^2-4=0$"], ["Dòng chữ + công thức", "dong: TỬ: $\\sqrt{x-3}=0\\iff x=3$"], ["Công thức lớn", "ct: \\int_0^1 x^2\\,dx=\\dfrac13"], ["Khung kết quả (bút chì)", "khung: $\\Leftrightarrow m=12$"], ["Đồ thị", "dothi: y=1/(x-1) ; x=-2..5 ; y=-3..3 ; lo=2 ; chu=CHÚ THÍCH"], ["Hình TikZ", "hinh:\n\\begin{tikzpicture}\n\\draw (0,0)--(3,0)--(1,2)--cycle;\n\\end{tikzpicture}"]]],
 			["💡 Tương tác & nhấn mạnh", [["Câu hỏi gợi mở", "hoi: Bước tiếp theo nên làm gì?\ncho: 1.5"], ["Giấy nhớ mẹo", "meo: MẸO QUEN TAY | Dòng 1 | [do]Dòng 2[/]"], ["Cách làm SAI", "sai: Cộng thẳng $30+20=50$"], ["Cách làm ĐÚNG", "dung: $50-10=40$"], ["Nhãn nhấn mạnh", "nhan: [vang]ĐẾM 2 LẦN[/]"], ["Chữ thường", "chu: Ghi chú thêm…"], ["Dừng (giây)", "cho: 1.5"]]],
 			["✨ Hiệu ứng động (CapCut)", [["Bay lên", "dong(bay): "], ["Bung ra", "khung(bung): $$"], ["Rơi nảy", "hoi(nay): "], ["Rung lắc", "sai(rung): $$"], ["Phát sáng", "dong(sang): "], ["Zoom-đấm", "dong(zoomdam): "], ["Nhún nảy", "dong(nhun): "], ["Loé sáng", "dong(chop): "], ["Glitch RGB", "dong(glitch): "], ["Gõ chữ", "dong(danhmay): "], ["Đa HU: sáng + rung", "khung(sang rung): $$"]]],
@@ -8726,6 +8730,10 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 		];
 		const CHEN = CHEN_NHOM.reduce((a, g) => a.concat(g[1]), []);
 		const HDSD = [
+			{ nhom: "🖼 Chèn hình (ảnh chụp đề)" },
+			["<b>Ctrl+V</b> dán ảnh chụp ngay trong tab Tạo video (hoặc kéo thả vào ô kịch bản) — web lưu ảnh thành <code>hinh_1</code>, <code>hinh_2</code>… (xem ở dải ảnh dưới ô kịch bản) và tự chèn dòng lệnh tại con trỏ.", "chenhinh(1.2 | giua | 3 | 5 | phóng to, thu nhỏ, di chuyển lên trên): hinh_1"],
+			["Cú pháp <code>chenhinh(kích thước | vị trí | giây phóng to | giây thu nhỏ | hiệu ứng): tên_ảnh</code>. Kích thước 0.3–3 (1 = nửa khung). Vị trí: giữa / trên / dưới hoặc toạ độ % <code>50;30</code>. Giây thu nhỏ = 0: giữ tới hết trang hoặc hết video.", "chenhinh(1 | trên | 0 | 0 | ): hinh_2"],
+			["Hiệu ứng ghép bằng dấu phẩy: <code>phóng to</code> (hiện to, nền tối), <code>thu nhỏ</code>, <code>di chuyển lên trên</code> / <code>di chuyển xuống dưới</code>. Khi ảnh lên trên, lời giải tự dồn xuống — không bao giờ bị che.", "chenhinh(1.5 | giữa | 4 | 0 | phóng to, di chuyển lên trên): hinh_1"],
 			{ nhom: "① Ba ký hiệu gốc" },
 			["Mỗi dòng là một hiệu ứng <code>tên: nội dung</code>. Dòng <code>&gt;&gt;</code> là <b>lời đọc</b>; các hiệu ứng viết ngay dưới sẽ hiện trong lúc đọc câu đó.", ">> Đạo hàm bằng ba x bình phương trừ ba.\ndong: $f'(x)=3x^2-3$"],
 			["<code>---</code> sang cảnh mới (giữ màn hình) · <code>===</code> sang trang mới (xoá màn hình).", "dong: Bước 1\n===\n>> Sang lời giải."],
@@ -8797,6 +8805,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 					const so = m[2].match(/(\d+(?:[.,]\d+)?)\s*(?:s|giây|giay)?\b/i), tu = boDauVD(m[2].replace(/(\d+(?:[.,]\d+)?)\s*(?:s|giây|giay)?\b/i, "")), ck = tu ? CHUYEN_AL[tu] : "";
 					if (tu && !ck) kb.canhBao.push("dòng " + (i + 1) + ": chưa có kiểu chuyển “" + m[2].trim() + "” — dùng kiểu mặc định");
 					moiCanh(l[0] === "=" || !kb.canh.length, so ? +so[1].replace(",", ".") : 0, ck); continue; }
+				if ((m = l.match(/^chenhinh\s*\(([^)]*)\)\s*:\s*(.*)$/i))) { if (!doan) moiDoan(""); doan.viec.push({ k: "chenhinh", ts: m[1], v: m[2].trim(), dong: i + 1, luc: null }); continue; }
 				if (l.startsWith(">>")) { const t = l.slice(2).trim(); if (doan && !doan.viec.length && doan.loi) doan.loi += " " + t; else moiDoan(t, i + 1); continue; }
 				if ((m = l.match(/^([a-zA-Z]+)\s*(?:\(\s*([^)]*)\))?\s*:\s*([\s\S]*)$/)) && KHOA.includes(m[1].toLowerCase())) {
 					const k = m[1].toLowerCase(), thamSo = m[2] || "", so = thamSo.replace(/@\s*\d+(?:[.,]\d+)?/, " ").match(/\d+(?:[.,]\d+)?/), luc = (thamSo.match(/@\s*(\d+(?:[.,]\d+)?)/) || [])[1], thamSo2 = thamSo.replace(/@\s*\d+(?:[.,]\d+)?/, " "), tu = thamSo2.replace(/[\d.,]+/g, " ").split(/\s+/).map(boDauVD).filter(Boolean), tile = so ? kep(+so[0].replace(",", ".") || 1, 0.4, 2.5) : 1; let toc = 0, vaos = [], la = []; tu.forEach(w => { if (TOC_AL[w]) toc = TOC_AL[w]; else if (VAO_AL[w]) { const vv = VAO_AL[w]; if (!vaos.includes(vv)) vaos.push(vv); } else la.push(w); }); const vao = vaos.find(x => VAO_CHUYENDONG.has(x)) || vaos[0] || ""; let v = m[3].trim();
@@ -9257,7 +9266,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			const NHIP = { gon: { dau: 1.5, nghi: 0.15, cho: 0.25, gianMax: 1.6 }, vua: { dau: 2.1, nghi: 0.35, cho: 0.4, gianMax: 3 }, thong: { dau: 2.4, nghi: 0.6, cho: 0.6, gianMax: 9 } }[$v("vdNhip").value] || { dau: 1.5, nghi: 0.15, cho: 0.25, gianMax: 1.6 };
 			let T = moDau ? NHIP.dau : 0.3; if (td0) tl.td.push({ t: moDau ? Math.max(0.9, NHIP.dau - 0.4) : 0, dd: td0 });
 			let tdHien = td0; const yDau = () => yTD + (tdHien ? tdHien.h + 34 * u : 0) + (coPhan ? hPhan + 28 * u : 0), yDay = khung.y + khung.h - (coPhu ? 230 : 70) * u;
-			let trang = { t0: T, t1: Infinity, vao: "" }, y = yDau(); tl.trang.push(trang); tl.yND = y; tl.yDay = yDay;
+			let trang = { t0: T, t1: Infinity, vao: "" }, y = yDau(); tl.trang.push(trang); tl.yND = y; tl.yDay = yDay; tl.ch = [];
 			const chuyenMD = $v("vdChuyen").value || "mo", tocMD = TOC_AL[$v("vdToc").value] || 1;
 			const sangTrang = (t, kieu) => { if (!trang.pt || !trang.pt.length) { trang.t0 = t; if (kieu) trang.vao = kieu; y = yDau(); return 0; } trang.t1 = t; trang = { t0: t + CT * 0.55, t1: Infinity, pt: [], vao: kieu || chuyenMD }; tl.trang.push(trang); y = yDau(); return CT * 0.55; };
 			trang.pt = [];
@@ -9269,10 +9278,10 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 				for (const d of c.doan) {
 					if (d.am) d.am = catLangCau(d.am); const V = d.am ? d.am.dai : (d.loi ? uocLuong(locNhanTho(d.loi)) : 0), S0 = T; if (d.dong) tl.moc.push({ dong: d.dong, t: S0 + 0.05 });
 					if (d.loi) { tl.phu.push({ t0: S0, t1: S0 + V + 0.2, chu: locNhanTho(d.loi) }); if (d.am) tl.giong.push({ t: S0, am: d.am }); }
-					const hd = d.viec.filter(v => !["muc", "tieude", "cho", "trang", "sticker"].includes(v.k)), gian = hd.length ? Math.max(0.6 * tocMD, Math.min(NHIP.gianMax, V * 0.92 / hd.length)) : 0; let i = 0, tCuoi = S0, them = 0;
+					const hd = d.viec.filter(v => !["muc", "tieude", "cho", "trang", "sticker", "chenhinh"].includes(v.k)), gian = hd.length ? Math.max(0.6 * tocMD, Math.min(NHIP.gianMax, V * 0.92 / hd.length)) : 0; let i = 0, tCuoi = S0, them = 0, lechCH = 0;
 					for (const v of d.viec) {
 						bao("Đang dựng hiệu ứng " + (++xong) + "/" + tongViec + "…", 0.6 + 0.4 * xong / tongViec);
-						const tA = v.luc != null ? S0 + v.luc : S0 + 0.08 + i * gian; tl.moc.push({ dong: v.dong, t: tA + 0.6 });
+						const tA = v.luc != null ? S0 + v.luc : S0 + 0.08 + i * gian + lechCH; tl.moc.push({ dong: v.dong, t: tA + 0.6 });
 						if (v.k === "muc") { tl.muc.push({ t: tA, i: Math.max(1, parseInt(v.v) || 1) - 1 }); continue; }
 						if (v.k === "tieude") { tdHien = await veTD(v.v, v.tile); tl.td.push({ t: tA, dd: tdHien }); if (!trang.pt || !trang.pt.length) y = yDau(); continue; }
 						if (v.k === "sticker") { const ph = v.v.split("|").map(z => z.trim()); const tham = docThamSticker(ph[0]); let loai = STK[boDauVD(tham.ten)]; if (!loai) { loai = "cuoi"; S.canhBao.push("dòng " + v.dong + ": chưa có sticker “" + tham.ten + "” — dùng sticker cười"); }
@@ -9284,6 +9293,11 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 								tl.dan.push({ t0: t0s, dai, anh: loai, w, h: hgt, cx, yBot, chu: ph[1] || "", phai: giua ? (tl.dan.length % 2 === 0) : phai, wMax: khung.w * 0.5 }); continue; }
 							const r = (doc ? 92 : 80) * u * tham.scale; // dự phòng sticker vector
 							tl.dan.push({ t0: t0s, dai, loai, chu: ph[1] || "", phai, r, x: phai ? khung.x + khung.w - r - 46 * u : khung.x + r + 46 * u, y: yDay - r - 10 * u + tham.dy * khung.h, wMax: khung.w - 2 * r - 160 * u }); continue; }
+						if (v.k === "chenhinh") {
+							const ten = v.v.replace(/\s+/g, "").toLowerCase(), anh = S.hinhCH && S.hinhCH.get(ten);
+							if (!anh) { S.canhBao.push("dòng " + v.dong + ": chưa có ảnh “" + (ten || "?") + "” — dán ảnh (Ctrl+V) trong tab Tạo video hoặc bấm Dán ở dải ảnh"); continue; }
+							const h = Object.assign(docThamCH(v.ts, v.dong), { bmp: anh.bmp, t0: tA, trang, ten }), coChuyen = h.thuNho || h.len || h.xuong, chan = (h.phongTo || coChuyen) ? h.d1 + (coChuyen ? CH_CHUYEN : 0) : 0;
+							tl.ch.push(h); lechCH += chan; tCuoi = Math.max(tCuoi, tA + chan); continue; }
 						if (v.k === "cho") { them += Math.max(0, parseFloat(String(v.v).replace(",", ".")) || 1); continue; }
 						if (v.k === "trang") { T = Math.max(T, tA); sangTrang(tA, CHUYEN_AL[boDauVD(v.v)] || ""); continue; }
 						let e;
@@ -9298,7 +9312,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			}
 			trang.t1 = T + 0.1; tl.ketThuc = T + 0.1;
 			// tìm khoảng "chết": không lời đọc, không hiệu ứng mới, không sticker, không chuyển trang
-			{ const vung = tl.hoat.slice(); tl.pt.forEach(e => vung.push([e.t0, e.t0 + e.d, e.dong])); tl.dan.forEach(z => vung.push([z.t0, z.t0 + z.dai])); tl.trang.forEach(z => vung.push([z.t0 - CT, z.t0 + CT])); tl.choVung.forEach(z => vung.push(z)); tl.td.forEach(z => vung.push([z.t, z.t + 0.8]));
+			{ const vung = tl.hoat.slice(); tl.pt.forEach(e => vung.push([e.t0, e.t0 + e.d, e.dong])); tl.dan.forEach(z => vung.push([z.t0, z.t0 + z.dai])); tl.trang.forEach(z => vung.push([z.t0 - CT, z.t0 + CT])); tl.choVung.forEach(z => vung.push(z)); (tl.ch || []).forEach(h => vung.push([h.t0, h.t0 + h.d1 + CH_CHUYEN])); tl.td.forEach(z => vung.push([z.t, z.t + 0.8]));
 				vung.sort((a, b) => a[0] - b[0]); let den = moDau ? NHIP.dau : 0.3; tl.chet = [];
 				for (const z of vung) { if (z[0] - den > 1.0) tl.chet.push({ a: den, b: z[0], dong: z[2] || 0 }); den = Math.max(den, z[1]); } if (tl.ketThuc - den > 1.0) tl.chet.push({ a: den, b: tl.ketThuc, dong: 0 }); }
 			// căn giữa theo chiều dọc nội dung mỗi trang (dồn lên trên một chút)
@@ -9436,10 +9450,10 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			// nội dung theo trang
 			tl.trang.forEach((tr, k) => { if (t < tr.t0 - 0.01 || t > tr.t1 + CT) return; ctx.save(); const sau = tl.trang[k + 1];
 				if (t > tr.t1) apChuyen(ctx, tl, (sau && sau.vao) || "mo", (t - tr.t1) / CT, false, k + 1); else if (k && tr.vao && t < tr.t0 + CT) apChuyen(ctx, tl, tr.vao, 1 - (t - tr.t0) / CT, true, k);
-				donNoiDung(ctx, tl, t, tr);
+				donNoiDungCH(ctx, tl, t, tr);
 				tr.pt.forEach(e => { if (t < e.t0) return; e._t = t - e.t0; vePhanTu(ctx, e, kep((t - e.t0) / e.d, 0, 1), u); }); ctx.restore(); });
 			tl.dan.forEach(d => veDan(ctx, d, t, u));
-			veAnhDe(ctx, tl, t);
+			veChenHinh(ctx, tl, t);
 			// phụ đề
 			if ($v("vdPhuDe").checked) { const ph = tl.phu.find(z => t >= z.t0 && t <= z.t1); if (ph) { const tu = ph.chu.split(/\s+/), nhom = []; for (let i = 0; i < tu.length; i += 11) nhom.push(tu.slice(i, i + 11).join(" ")); const k = kep((t - ph.t0) / (ph.t1 - ph.t0), 0, 0.999), s2 = nhom[Math.floor(k * nhom.length)]; ctx.save(); ctx.font = "700 " + 32 * u + "px " + FONT; const tw = Math.min(ctx.measureText(s2).width, khung.w - 120 * u), bh = 62 * u, by = khung.y + khung.h - (tl.doc ? 150 : 90) * u; bo2(ctx, W / 2 - tw / 2 - 28 * u, by, tw + 56 * u, bh, 16 * u); ctx.fillStyle = "rgba(0,0,0,.55)"; ctx.fill(); ctx.fillStyle = "#fff"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(s2, W / 2, by + bh / 2 + 1, khung.w - 120 * u); ctx.restore(); } }
 			ctx.restore();
@@ -9477,92 +9491,102 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			finally { if (coGiong) { $v("vdDung").disabled = false; tien(null); } }
 		}
 		$v("vdDung").addEventListener("click", () => dungLai(true));
-		// ---------- ảnh đề bài trên video: giữa → thu lên trên / xuống dưới ----------
-		var AD = Object.assign({ bat: true, batDau: 2, giu: 3, chuyen: 0.8, hien: 0, co1: 90, co2: 55, viTri: "tren", dx: 0, dy: 0 }, (() => { try { return JSON.parse(localStorage.getItem("tdk_vd_anhde") || "{}"); } catch (e) { return {}; } })());
-		var adAnh = null;   // var: veKhung có thể chạy trước khi khối này khởi tạo
-		const luuAD = () => { try { localStorage.setItem("tdk_vd_anhde", JSON.stringify(AD)); } catch (e) { } };
-		function adKhung(tl, t) {
-			if (!adAnh || !AD.bat || !tl) return null;
-			const t0 = +AD.batDau || 0; if (t < t0) return null;
-			const tHet = AD.hien > 0 ? t0 + +AD.hien : Infinity, qAn = t > tHet ? kep((t - tHet) / 0.4, 0, 1) : 0; if (qAn >= 1) return null;
-			const u = tl.u, cw = tl.khung.w - 108 * u, yA = tl.yND || tl.khung.y + 220 * u, yB = tl.yDay || tl.khung.y + tl.khung.h - 70 * u, hV = yB - yA, ar = adAnh.height / adAnh.width;
-			let w1 = cw * AD.co1 / 100; if (w1 * ar > hV * 0.92) w1 = hV * 0.92 / ar;
-			let w2 = cw * AD.co2 / 100; const hMax = AD.viTri === "giua" ? hV * 0.92 : hV * 0.5; if (w2 * ar > hMax) w2 = hMax / ar;
-			const h1 = w1 * ar, h2 = w2 * ar, x1 = tl.W / 2 - w1 / 2, y1 = (yA + yB) / 2 - h1 / 2;
-			const x2 = tl.W / 2 - w2 / 2 + (+AD.dx || 0) * u, y2 = (AD.viTri === "tren" ? yA : AD.viTri === "duoi" ? yB - h2 : (yA + yB) / 2 - h2 / 2) + (+AD.dy || 0) * u;
-			const q = emIO(kep((t - t0 - (+AD.giu || 0)) / Math.max(0.1, +AD.chuyen || 0.8), 0, 1)), qVao = em((t - t0) / 0.45);
-			return { x: x1 + (x2 - x1) * q, y: y1 + (y2 - y1) * q, w: w1 + (w2 - w1) * q, h: h1 + (h2 - h1) * q, q, qAn, qVao, x2, y2, w2, h2, yA, yB };
+		// ---------- chèn hình: chenhinh(kích thước | vị trí | giây phóng to | giây thu nhỏ | hiệu ứng): hinh_n ----------
+		S.hinhCH = S.hinhCH || new Map();
+		var CH_CHUYEN = 0.8;   // var: dung()/veKhung có thể chạy trước khi khối này khởi tạo
+		function bdCH(s) { return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/\s+/g, " ").trim(); }
+		function docThamCH(ts, dong) {
+			const p = String(ts || "").split("|").map(z => z.trim()), so = (z, md) => { const v = parseFloat(String(z == null ? "" : z).replace(",", ".")); return isFinite(v) ? v : md; }, bao = m => S.canhBao.push("dòng " + dong + ": " + m);
+			const kt0 = so(p[0], 1), kt = kep(kt0, 0.3, 3); if (kt !== kt0) bao("kích thước " + kt0 + " ngoài 0.3–3, dùng " + kt);
+			let vt = "giua"; const v0 = bdCH(p[1] || "giua"), xy = v0.match(/^(-?\d+(?:\.\d+)?)\s*[;,]\s*(-?\d+(?:\.\d+)?)$/);
+			if (xy) vt = { x: kep(+xy[1], 0, 100), y: kep(+xy[2], 0, 100) };
+			else if (/^(giua|o giua|center|chinh giua)$/.test(v0)) vt = "giua"; else if (/^(tren|o tren|top|phia tren)$/.test(v0)) vt = "tren"; else if (/^(duoi|o duoi|bottom|phia duoi)$/.test(v0)) vt = "duoi";
+			else bao("chưa hiểu vị trí “" + (p[1] || "") + "” — dùng giữa");
+			const h = { kt, vt, d1: Math.max(0, so(p[2], 3)), d2: Math.max(0, so(p[3], 0)), phongTo: false, thuNho: false, len: false, xuong: false };
+			const hu = p.length >= 5 ? bdCH(p.slice(4).join(",")) : "phong to, thu nho, di chuyen len tren";
+			hu.split(/\s*(?:,|;|\+|->|→|>)\s*/).filter(Boolean).forEach(z => {
+				if (/phong to|zoom ?in|phongto/.test(z)) h.phongTo = true; else if (/thu nho|zoom ?out|thunho/.test(z)) h.thuNho = true;
+				else if (/len tren|^len$|move ?up|di chuyen len/.test(z)) h.len = true; else if (/xuong duoi|^xuong$|move ?down|di chuyen xuong/.test(z)) h.xuong = true;
+				else if (!/^(khong|none|tinh)$/.test(z)) bao("chưa hiểu hiệu ứng “" + z + "” — dùng: phóng to, thu nhỏ, di chuyển lên trên");
+			});
+			if (h.len && h.xuong) h.xuong = false;
+			return h;
 		}
-		// dồn + thu gọn nội dung của trang để không bị ảnh đề che (biến đổi đều, chữ/công thức không vỡ)
-		function donNoiDung(ctx, tl, t, tr) {
-			const k = adKhung(tl, t); if (!k || AD.viTri === "giua" || !tr.pt || !tr.pt.length) return;
-			const m = k.q * (1 - k.qAn); if (m <= 0) return;
-			const u = tl.u, gap = 26 * u, y0 = Math.min(...tr.pt.map(e => e.y)), yb = Math.max(...tr.pt.map(e => e.y + e.h)), cao = Math.max(1, yb - y0);
-			if (AD.viTri === "tren") {
-				const A = y0 + Math.max(0, k.y2 + k.h2 + gap - y0) * m, s = Math.min(1, (k.yB - A) / cao);
-				ctx.translate(tl.W / 2, A); ctx.scale(s, s); ctx.translate(-tl.W / 2, -y0);
-			} else {
-				const L = k.yB - Math.max(0, k.yB - (k.y2 - gap)) * m, s = Math.min(1, (L - y0) / cao);
-				ctx.translate(tl.W / 2, y0); ctx.scale(s, s); ctx.translate(-tl.W / 2, -y0);
-			}
+		// khung ảnh tại thời điểm t (dùng chung cho xem thử và xuất MP4)
+		function khungCH(tl, h, t) {
+			if (!h || !h.bmp || t < h.t0) return null;
+			const coChuyen = h.thuNho || h.len || h.xuong, tA1 = h.t0 + h.d1, tB = tA1 + (coChuyen ? CH_CHUYEN : 0);
+			const tHet = h.d2 > 0 ? (coChuyen ? tB : tA1) + h.d2 : (h.trang && isFinite(h.trang.t1) ? h.trang.t1 : (tl.ketThuc || tl.tong || Infinity));
+			const qAn = t > tHet ? kep((t - tHet) / 0.4, 0, 1) : 0; if (qAn >= 1) return null;
+			const u = tl.u, cw = tl.khung.w - 108 * u, yA = tl.yND || tl.khung.y + 220 * u, yB = tl.yDay || tl.khung.y + tl.khung.h - 70 * u, hV = yB - yA, ar = h.bmp.height / h.bmp.width;
+			const vua = (w, tiLe) => Math.max(40 * u, Math.min(w, cw * 0.98, hV * tiLe / ar)), coBan = cw * 0.5 * h.kt;
+			const vtB = h.len ? "tren" : h.xuong ? "duoi" : h.vt, bien = v => v === "tren" || v === "duoi";
+			const wA = h.phongTo ? vua(Math.max(coBan, cw * 0.94), 0.9) : vua(coBan, bien(h.vt) ? 0.5 : 0.92);
+			const wB = vua(h.thuNho ? (h.phongTo ? coBan : coBan * 0.6) : wA, bien(vtB) ? 0.5 : 0.92);
+			const dat = (v, w) => { const hh = w * ar; return v === "tren" ? { x: tl.W / 2 - w / 2, y: yA } : v === "duoi" ? { x: tl.W / 2 - w / 2, y: yB - hh } : v && v.x != null ? { x: v.x / 100 * tl.W - w / 2, y: v.y / 100 * tl.H - hh / 2 } : { x: tl.W / 2 - w / 2, y: (yA + yB) / 2 - hh / 2 }; };
+			const pA = dat(h.vt, wA), pB = dat(vtB, wB), q = coChuyen ? emIO((t - tA1) / CH_CHUYEN) : 0, qVao = em((t - h.t0) / 0.5), w = wA + (wB - wA) * q;
+			return { x: pA.x + (pB.x - pA.x) * q, y: pA.y + (pB.y - pA.y) * q, w, h: w * ar, q, qAn, qVao, toi: h.phongTo ? (1 - q) * qVao * (1 - qAn) : 0, mode: bien(vtB) ? vtB : "", m: (coChuyen ? q : qVao) * (1 - qAn), yTren: pB.y, yDuoi: pB.y + wB * ar, yA, yB };
 		}
-		function veAnhDe(ctx, tl, t) {
-			const k = adKhung(tl, t); if (!k) return;
-			const u = tl.u, a = k.qVao * (1 - k.qAn), toi = (1 - k.q) * a;
-			ctx.save();
-			if (toi > 0.01) { ctx.fillStyle = "rgba(4,8,18," + (0.62 * toi).toFixed(3) + ")"; ctx.fillRect(0, 0, tl.W, tl.H); }   // làm tối nền khi đề đang ở giữa
-			ctx.globalAlpha *= a;
-			const sc = 0.9 + 0.1 * k.qVao, cxA = k.x + k.w / 2, cyA = k.y + k.h / 2; ctx.translate(cxA, cyA); ctx.scale(sc, sc); ctx.translate(-cxA, -cyA);
-			const p = 14 * u; bo2(ctx, k.x - p, k.y - p, k.w + 2 * p, k.h + 2 * p, 18 * u);
-			ctx.shadowColor = "rgba(0,0,0,.45)"; ctx.shadowBlur = 28 * u; ctx.fillStyle = "#fff"; ctx.fill(); ctx.shadowBlur = 0;
-			ctx.lineWidth = 3 * u; ctx.strokeStyle = VIEN; ctx.stroke();
-			ctx.drawImage(adAnh, k.x, k.y, k.w, k.h);
-			ctx.restore();
+		// dồn + thu gọn nội dung trang để không bị ảnh che (biến đổi đều, chữ/công thức không vỡ)
+		function donNoiDungCH(ctx, tl, t, tr) {
+			if (!tl.ch || !tl.ch.length || !tr.pt || !tr.pt.length) return;
+			const u = tl.u, gap = 26 * u, y0 = Math.min(...tr.pt.map(e => e.y)), yb = Math.max(...tr.pt.map(e => e.y + e.h)), cao = Math.max(1, yb - y0); let A = y0, L = tl.yDay || yb, co = false;
+			tl.ch.forEach(h => { const k = khungCH(tl, h, t); if (!k || !k.mode || k.m <= 0) return; co = true;
+				if (k.mode === "tren") A = Math.max(A, y0 + Math.max(0, k.yDuoi + gap - y0) * k.m); else L = Math.min(L, k.yB - Math.max(0, k.yB - (k.yTren - gap)) * k.m); });
+			if (!co) return;
+			const s = Math.min(1, Math.max(0.2, (L - A) / cao)); ctx.translate(tl.W / 2, A); ctx.scale(s, s); ctx.translate(-tl.W / 2, -y0);
 		}
-		const veLaiAD = () => { luuAD(); if (S.tl) veTai(S.t); };
-		function capADForm() {
-			$v("vdADBat").checked = !!AD.bat; $v("vdADCo1").value = AD.co1; $v("vdADCo1So").textContent = AD.co1 + "%"; $v("vdADCo2").value = AD.co2; $v("vdADCo2So").textContent = AD.co2 + "%";
-			$v("vdADDx").value = Math.round(AD.dx); $v("vdADDy").value = Math.round(AD.dy); $v("vdADBD").value = AD.batDau; $v("vdADGiu").value = AD.giu; $v("vdADChuyen").value = AD.chuyen; $v("vdADChuyenSo").textContent = (+AD.chuyen).toFixed(2).replace(/0$/, "") + " s"; $v("vdADHien").value = AD.hien;
-			$v("vdADViTri").querySelectorAll("button").forEach(b => b.setAttribute("aria-selected", b.dataset.vt === AD.viTri));
+		function veChenHinh(ctx, tl, t) {
+			(tl.ch || []).forEach(h => { const k = khungCH(tl, h, t); if (!k) return;
+				const u = tl.u, a = k.qVao * (1 - k.qAn); ctx.save();
+				if (k.toi > 0.01) { ctx.fillStyle = "rgba(4,8,18," + (0.62 * k.toi).toFixed(3) + ")"; ctx.fillRect(0, 0, tl.W, tl.H); }   // làm tối nền khi ảnh đang phóng to
+				ctx.globalAlpha *= a;
+				const sc = h.phongTo ? 0.3 + 0.7 * k.qVao : 0.92 + 0.08 * k.qVao, cxA = k.x + k.w / 2, cyA = k.y + k.h / 2; ctx.translate(cxA, cyA); ctx.scale(sc, sc); ctx.translate(-cxA, -cyA);
+				const p = 14 * u; bo2(ctx, k.x - p, k.y - p, k.w + 2 * p, k.h + 2 * p, 18 * u);
+				ctx.shadowColor = "rgba(0,0,0,.45)"; ctx.shadowBlur = 28 * u; ctx.fillStyle = "#fff"; ctx.fill(); ctx.shadowBlur = 0; ctx.lineWidth = 3 * u; ctx.strokeStyle = VIEN; ctx.stroke();
+				ctx.drawImage(h.bmp, k.x, k.y, k.w, k.h); ctx.restore(); });
 		}
-		async function datAnhDe(nguon) {
+		// ---- dán / chọn ảnh → kho tạm hinh_n (không đưa base64 vào kịch bản) + chèn dòng lệnh tại con trỏ ----
+		const DONG_CH = id => "chenhinh(1.2 | giua | 3 | 5 | phóng to, thu nhỏ, di chuyển lên trên): " + id;
+		let viTriKB = null; ["keyup", "click", "input", "select"].forEach(ev => $v("vdKB").addEventListener(ev, () => { viTriKB = [$v("vdKB").selectionStart, $v("vdKB").selectionEnd]; }));
+		function taoIdCH() { let n = 0; S.hinhCH.forEach((_, k) => { const m = k.match(/^hinh_(\d+)$/); if (m) n = Math.max(n, +m[1]); }); ($v("vdKB").value.match(/\bhinh_(\d+)\b/g) || []).forEach(z => { n = Math.max(n, +z.slice(5)); }); return "hinh_" + (n + 1); }
+		function chenDongCH(id) {
+			const ta = $v("vdKB"), the = document.querySelector('#tabVideo [data-the="kb"]'); if (the && the.getAttribute("aria-selected") !== "true") the.click();
+			const [a, b] = viTriKB || [ta.value.length, ta.value.length], dau = ta.value.slice(0, a), sau = ta.value.slice(b);
+			ta.setRangeText((dau && !dau.endsWith("\n") ? "\n" : "") + DONG_CH(id) + (sau && !sau.startsWith("\n") ? "\n" : ""), a, b, "end");
+			viTriKB = [ta.selectionStart, ta.selectionEnd]; ta.focus(); ta.dispatchEvent(new Event("input"));
+		}
+		function veDsCH() {
+			const goi = new Set(($v("vdKB").value.match(/chenhinh\s*\([^)]*\)\s*:\s*\S+/gi) || []).map(z => z.split(":").pop().trim().toLowerCase())), ds = [...S.hinhCH.entries()];
+			[...goi].filter(id => !S.hinhCH.has(id)).forEach(id => ds.push([id, null]));
+			$v("vdCHDs").innerHTML = ds.length ? ds.map(([id, a]) => '<div class="vdCHMuc' + (a ? "" : " thieu") + '" data-id="' + esc(id) + '">' + (a ? '<img src="' + a.url + '" alt="' + esc(id) + '">' : '<div style="height:74px;display:grid;place-items:center;font-size:11px;color:#f59e0b;text-align:center">Chưa có ảnh<br>(kịch bản đang gọi)</div>') + "<b>" + esc(id) + '</b><div class="vdCHNut">' + (a ? '<button type="button" class="vdNutNho" data-l="chen" title="Chèn thêm 1 dòng chenhinh cho ảnh này">Chèn</button>' : "") + '<button type="button" class="vdNutNho" data-l="thay">' + (a ? "Thay" : "Dán") + "</button>" + (a ? '<button type="button" class="vdNutNho" data-l="xoa">Xoá</button>' : "") + "</div></div>").join("") : '<span class="vdCHTrong">Chưa có ảnh nào.</span>';
+		}
+		async function themHinhCH(blob, idSan) {
+			if (!blob || !/^image\//.test(blob.type)) return;
 			try {
-				const blob = typeof nguon === "string" ? await (await fetch(nguon)).blob() : nguon; if (!blob || !/^image\//.test(blob.type)) { toast("Chỉ nhận ảnh PNG, JPG, WEBP"); return; }
-				adAnh = await createImageBitmap(blob);
-				const url = URL.createObjectURL(blob); $v("vdADXem").src = url; $v("vdADXem").hidden = false; $v("vdADChu").hidden = true;
-				AD.bat = true; capADForm(); veLaiAD(); toast("Đã thêm ảnh đề vào video" + (S.tl ? "" : " — bấm Dựng để xem"));
+				const bmp = await createImageBitmap(blob), id = idSan || taoIdCH(), cu = S.hinhCH.get(id); if (cu) URL.revokeObjectURL(cu.url);
+				S.hinhCH.set(id, { bmp, url: URL.createObjectURL(blob) }); veDsCH();
+				if (idSan) { $v("vdKB").dispatchEvent(new Event("input")); toast("Đã nạp ảnh " + id); } else { chenDongCH(id); toast("Đã thêm " + id + " và chèn dòng chenhinh"); }
 			} catch (e) { toast("Không đọc được ảnh: " + (e.message || e)); }
 		}
-		$v("vdADTep").addEventListener("change", e => { if (e.target.files[0]) datAnhDe(e.target.files[0]); e.target.value = ""; });
-		$v("vdADThay").addEventListener("click", () => $v("vdADTep").click());
-		$v("vdADXoa").addEventListener("click", () => { adAnh = null; $v("vdADXem").hidden = true; $v("vdADXem").removeAttribute("src"); $v("vdADChu").hidden = false; veLaiAD(); });
-		$v("vdADLayDe").addEventListener("click", () => { const im = $v("vdAnhDeImg"); if (im && im.src && !$v("vdAnhDe").hidden) datAnhDe(im.src); else toast("Thẻ Kịch bản chưa có ảnh đề — dán ảnh trực tiếp vào đây (Ctrl+V)"); });
-		const thaAD = $v("vdADTha");
-		thaAD.addEventListener("dragover", e => { e.preventDefault(); thaAD.classList.add("keo"); });
-		thaAD.addEventListener("dragleave", () => thaAD.classList.remove("keo"));
-		thaAD.addEventListener("drop", e => { e.preventDefault(); thaAD.classList.remove("keo"); const f = [...(e.dataTransfer.files || [])].find(x => x.type.startsWith("image/")); if (f) datAnhDe(f); });
-		$v("vdManHinh").addEventListener("dragover", e => { if ([...(e.dataTransfer.items || [])].some(x => x.type.startsWith("image/"))) e.preventDefault(); });
-		$v("vdManHinh").addEventListener("drop", e => { const f = [...(e.dataTransfer.files || [])].find(x => x.type.startsWith("image/")); if (f) { e.preventDefault(); e.stopPropagation(); datAnhDe(f); } }, true);
-		// Ctrl+V ở bất kỳ đâu trong tab Tạo video (riêng ô Đề bài cho AI giữ chức năng cũ)
+		let idThay = null;
+		$v("vdCHThem").addEventListener("click", () => { idThay = null; $v("vdCHTep").setAttribute("multiple", ""); $v("vdCHTep").click(); });
+		$v("vdCHTep").addEventListener("change", async e => { const fs = [...e.target.files]; e.target.value = ""; if (idThay) { const id = idThay; idThay = null; await themHinhCH(fs[0], id); return; } for (const f of fs) await themHinhCH(f); });
+		$v("vdCHDs").addEventListener("click", e => { const b = e.target.closest("[data-l]"); if (!b) return; const id = b.closest("[data-id]").dataset.id;
+			if (b.dataset.l === "chen") chenDongCH(id);
+			else if (b.dataset.l === "thay") { idThay = id; $v("vdCHTep").removeAttribute("multiple"); $v("vdCHTep").click(); }
+			else if (b.dataset.l === "xoa") { const a = S.hinhCH.get(id); if (a) URL.revokeObjectURL(a.url); S.hinhCH.delete(id); veDsCH(); $v("vdKB").dispatchEvent(new Event("input")); toast("Đã xoá ảnh " + id + " — dòng chenhinh gọi ảnh này sẽ được bỏ qua"); } });
+		const hopCH = $v("vdCHHop");
+		[hopCH, $v("vdKB")].forEach(el => { el.addEventListener("dragover", e => { if ([...(e.dataTransfer.items || [])].some(x => x.type.startsWith("image/"))) { e.preventDefault(); hopCH.classList.add("keo"); } }); el.addEventListener("dragleave", () => hopCH.classList.remove("keo"));
+			el.addEventListener("drop", async e => { const fs = [...(e.dataTransfer.files || [])].filter(x => x.type.startsWith("image/")); hopCH.classList.remove("keo"); if (!fs.length) return; e.preventDefault(); for (const f of fs) await themHinhCH(f); }); });
+		// Ctrl+V ảnh ở bất kỳ đâu trong tab Tạo video (riêng ô Đề bài cho AI giữ chức năng cũ)
 		document.addEventListener("paste", e => {
 			if ($v("tabVideo").hidden || (e.target && e.target.id === "vdDe")) return;
-			const f = [...((e.clipboardData || {}).files || [])].find(x => x.type.startsWith("image/")); if (f) { e.preventDefault(); datAnhDe(f); }
+			const f = [...((e.clipboardData || {}).files || [])].find(x => x.type.startsWith("image/")); if (!f) return;
+			e.preventDefault(); themHinhCH(f);
 		});
-		$v("vdADBat").addEventListener("change", () => { AD.bat = $v("vdADBat").checked; veLaiAD(); });
-		[["vdADCo1", "co1"], ["vdADCo2", "co2"], ["vdADChuyen", "chuyen"]].forEach(([id, k]) => $v(id).addEventListener("input", () => { AD[k] = +$v(id).value; capADForm(); veLaiAD(); }));
-		[["vdADDx", "dx"], ["vdADDy", "dy"], ["vdADBD", "batDau"], ["vdADGiu", "giu"], ["vdADHien", "hien"]].forEach(([id, k]) => $v(id).addEventListener("input", () => { const v = parseFloat($v(id).value); AD[k] = isFinite(v) ? (k === "dx" || k === "dy" ? v : Math.max(0, v)) : 0; veLaiAD(); }));
-		$v("vdADViTri").addEventListener("click", e => { const b = e.target.closest("[data-vt]"); if (!b) return; AD.viTri = b.dataset.vt; AD.dx = 0; AD.dy = 0; capADForm(); veLaiAD(); });
-		$v("vdADMau").addEventListener("click", () => {
-			Object.assign(AD, { bat: true, batDau: S.tl && S.tl.moDau === false ? 0.3 : ($v("vdMoDau").checked ? 2 : 0.3), giu: 3, chuyen: 0.8, hien: 0, co1: 92, co2: 55, viTri: "tren", dx: 0, dy: 0 });
-			capADForm(); veLaiAD(); if (!adAnh) toast("Đã đặt hiệu ứng — dán ảnh đề (Ctrl+V) để áp dụng"); else if (S.tl) { const chay = S.chay; dungPhat(); veTai(Math.max(0, AD.batDau - 0.2)); if (chay) phat(); }
-		});
-		// kéo ảnh trực tiếp trên khung xem thử → đổi lệch X/Y của vị trí sau khi thu
-		let keoAD = null; const toaDo = e => { const b = cv.getBoundingClientRect(); return { x: (e.clientX - b.left) * cv.width / b.width, y: (e.clientY - b.top) * cv.height / b.height }; };
-		cv.addEventListener("pointermove", e => { if (keoAD) { const p = toaDo(e), u = S.tl.u; AD.dx = keoAD.dx + (p.x - keoAD.x) / u; AD.dy = keoAD.dy + (p.y - keoAD.y) / u; $v("vdADDx").value = Math.round(AD.dx); $v("vdADDy").value = Math.round(AD.dy); veTai(S.t); return; } const k = S.tl && adKhung(S.tl, S.t), p = toaDo(e); cv.classList.toggle("keoAD", !!(k && p.x >= k.x && p.x <= k.x + k.w && p.y >= k.y && p.y <= k.y + k.h)); });
-		cv.addEventListener("pointerdown", e => { const k = S.tl && adKhung(S.tl, S.t); if (!k) return; const p = toaDo(e); if (p.x < k.x || p.x > k.x + k.w || p.y < k.y || p.y > k.y + k.h) return; e.preventDefault(); if (S.chay) dungPhat(); keoAD = { x: p.x, y: p.y, dx: +AD.dx || 0, dy: +AD.dy || 0 }; cv.setPointerCapture(e.pointerId); cv.classList.add("dangKeoAD"); });
-		const thaKeo = () => { if (!keoAD) return; keoAD = null; cv.classList.remove("dangKeoAD"); luuAD(); };
-		cv.addEventListener("pointerup", thaKeo); cv.addEventListener("pointercancel", thaKeo);
-		capADForm();
+		$v("vdKB").addEventListener("input", () => { clearTimeout(veDsCH.h); veDsCH.h = setTimeout(veDsCH, 300); });
+		veDsCH();
 		$v("vdLuuKB").addEventListener("click", () => {
 			const kb = $v("vdKB").value; if (!kb.trim()) { toast("Kịch bản đang trống"); return; }
 			const td = ((kb.match(/^\s*tieude\s*:\s*(.+)$/mi) || [])[1] || "kich-ban").replace(/\[\/?[a-z]*\]|\$[^$]*\$/gi, "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, "").toLowerCase().slice(0, 50) || "kich-ban";
