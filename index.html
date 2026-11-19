@@ -4104,7 +4104,17 @@ function khoiDongKPado() {
 	const tt = (m, loi) => { const e = $p("kpTT"); e.textContent = m; e.classList.toggle("loi", !!loi); };
 	// chờ module Firebase + đăng nhập sẵn sàng (trang có thể mở thẳng tab K-Pado trước khi đăng nhập xong)
 	const sanSang = async () => { for (let i = 0; i < 100; i++) { if (window.KFB && window.KFB.kpado && window.KFB.uid && window.KFB.uid()) return; await new Promise(r => setTimeout(r, 200)); } throw new Error("Chưa đăng nhập xong — tải lại trang."); };
-	const goi = async (ten, data) => { await sanSang(); return window.KFB.kpado(ten, data); };
+	const goi = async (ten, data) => {
+		await sanSang();
+		try { return await window.KFB.kpado(ten, data); }
+		catch (e) {
+			if (!/quá tải|503|high demand/i.test(e.message || "")) throw e;
+			// Google quá tải mọi model → tự đợi 30 giây rồi thử lại 1 lần (lượt đã được hoàn lại)
+			for (let g = 30; g > 0; g--) { tt("Máy chủ Google đang quá tải — K-Pado tự thử lại sau " + g + " giây…"); await new Promise(ok => setTimeout(ok, 1000)); }
+			tt("K-Pado đang thử lại…");
+			return window.KFB.kpado(ten, data);
+		}
+	};
 	const capLuot = r => { if (!r || r.han == null) return; const e = $p("kpLuot"); e.textContent = "Gói " + ({ thuong: "Thường", vip: "VIP", admin: "Quản trị" }[r.goi] || r.goi) + " · còn " + (r.goi === "admin" ? "∞" : r.conLai + "/" + r.han) + " lượt hôm nay"; e.classList.toggle("het", r.goi !== "admin" && r.conLai <= 0); };
 	$p("kpLuot").textContent = "Đang kiểm tra lượt…"; $p("kpLuot").classList.remove("het");
 	Promise.race([goi("kpadoTrangThai", {}), new Promise((_, no) => setTimeout(() => no(new Error("Máy chủ K-Pado không phản hồi.")), 25000))])
