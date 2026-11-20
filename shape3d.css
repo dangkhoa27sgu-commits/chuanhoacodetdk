@@ -218,3 +218,63 @@
 @media (prefers-reduced-motion: reduce) { #tabHinh3D .h3NutQuay[aria-pressed="true"] .h3Cham { animation: none; } }
 @media (max-width: 1180px) { #tabHinh3D .h3Dock .h3NutDock { padding: 0 8px; } }
 @media (max-width: 760px) { #tabHinh3D .h3HudDuoi { flex-direction: column; align-items: stretch; } #tabHinh3D .h3Dock { flex-wrap: wrap; justify-content: center; } #tabHinh3D .h3Zoom { flex-direction: row; justify-content: flex-end; } }
+
+/* ===== bản 2.1: khung vẽ rộng hơn, thanh công cụ một hàng, dựng thêm, đặt hệ trục ===== */
+#tabHinh3D .h3Vung { grid-template-columns: 248px minmax(0,1fr) 340px; height: clamp(640px, calc(100vh - 150px), 1040px); transition: grid-template-columns .25s ease; }
+#tabHinh3D .h3Vung.thuGon { grid-template-columns: 0 minmax(0,1fr) 340px; column-gap: 0; }
+#tabHinh3D .h3Vung.thuGon .h3San { margin-right: 14px; }
+#tabHinh3D .h3Vung.thuGon .h3Chon { visibility: hidden; border-width: 0; padding: 0; }
+@media (prefers-reduced-motion: reduce) { #tabHinh3D .h3Vung { transition: none; } }
+#tabHinh3D .h3HudTrai { display: flex; gap: 8px; align-items: flex-start; min-width: 0; }
+#tabHinh3D .h3NutVuong { width: 32px; height: 32px; flex: none; display: grid; place-items: center; padding: 0; border-radius: 9px; border: 1px solid var(--h3-vien2); background: rgba(2,6,23,.62); color: var(--h3-phu); }
+#tabHinh3D .h3NutVuong svg { width: 17px; height: 17px; }
+#tabHinh3D .h3NutVuong:hover, #tabHinh3D .h3NutVuong[aria-pressed="true"] { color: var(--h3-ac); border-color: var(--h3-acVien); }
+#tabHinh3D .h3Zoom { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); z-index: 1; display: flex; flex-direction: column; gap: 5px; align-items: flex-end; }
+#tabHinh3D .h3Zoom button svg { width: 15px; height: 15px; }
+#tabHinh3D .h3Zoom button { display: grid; place-items: center; padding: 0; }
+#tabHinh3D .h3Dock { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 2; max-width: calc(100% - 24px); flex-wrap: wrap; justify-content: center; row-gap: 4px; }
+#tabHinh3D .h3NutDock { width: 32px; padding: 0; justify-content: center; }
+#tabHinh3D .h3Vach { width: 1px; height: 22px; background: var(--h3-vien2); flex: none; }
+#tabHinh3D .h3MauHT { width: 16px; height: 16px; border-radius: 50%; display: block; box-shadow: 0 0 0 2px rgba(255,255,255,.75), 0 0 0 3px rgba(2,6,23,.6); }
+#tabHinh3D .h3ThanhNho { display: flex; align-items: center; gap: 6px; height: 30px; padding: 0 9px 0 3px; border-radius: 9px; background: rgba(148,163,184,.08); }
+#tabHinh3D .h3ThanhNho[hidden] { display: none; }
+#tabHinh3D .h3ThanhNho label { font-size: 12px; font-weight: 700; color: var(--h3-phu); }
+#tabHinh3D .h3ThanhNho input { width: clamp(70px, 8vw, 110px); accent-color: var(--h3-ac); margin: 0; }
+#tabHinh3D .h3ThanhNho output { font-size: 12px; font-weight: 700; color: var(--h3-ac); min-width: 2.9em; text-align: right; font-variant-numeric: tabular-nums; }
+#tabHinh3D .h3ThanhNho button { width: 25px; height: 25px; border-radius: 7px; border: 1px solid var(--h3-acVien); background: var(--h3-acNhat); color: var(--h3-ac); display: grid; place-items: center; padding: 0; }
+#tabHinh3D .h3ThanhNho button svg { width: 12px; height: 12px; }
+#tabHinh3D .h3ThanhNho input:disabled, #tabHinh3D .h3ThanhNho button:disabled { opacity: .4; cursor: not-allowed; }
+#tabHinh3D .h3BangMau { position: absolute; left: 50%; bottom: 60px; transform: translateX(-50%); z-index: 3; display: flex; align-items: center; gap: 7px; padding: 8px 11px; border-radius: 12px; background: rgba(2,6,23,.92); border: 1px solid var(--h3-acVien); box-shadow: 0 14px 30px -12px rgba(0,0,0,.8); }
+#tabHinh3D .h3BangMau[hidden] { display: none; }
+#tabHinh3D .h3BangMau button { width: 24px; height: 24px; border-radius: 50%; border: 2px solid rgba(255,255,255,.2); padding: 0; }
+#tabHinh3D .h3BangMau button[aria-pressed="true"] { border-color: #fff; box-shadow: 0 0 0 2px var(--h3-ac); }
+#tabHinh3D .h3BangMau .h3Tay { display: grid; place-items: center; background: var(--h3-code); color: var(--h3-phu); }
+#tabHinh3D .h3BangMau .h3Tay svg { width: 13px; height: 13px; }
+#tabHinh3D .h3BangMau span { font-size: 12px; color: var(--h3-phu); margin-left: 3px; white-space: nowrap; }
+#tabHinh3D .h3San.giay .h3BangMau { background: rgba(255,255,255,.96); }
+#tabHinh3D .h3BangTab button { font-size: 11.5px; padding: 0 2px; }
+/* dựng thêm */
+#tabHinh3D .h3DongDung { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+#tabHinh3D .h3NhanNho { font-size: 11.5px; font-weight: 600; color: var(--h3-phu); }
+#tabHinh3D .h3DongTen { align-items: center; }
+#tabHinh3D .h3DongTen input { width: 64px; height: 34px; border-radius: 9px; border: 1px solid var(--h3-vien2); background: var(--h3-code); padding: 0 9px; outline: none; font-family: var(--h3-toan); font-style: italic; font-weight: 700; font-size: 15px; box-sizing: border-box; }
+#tabHinh3D .h3DongTen input:focus { border-color: var(--h3-acVien); }
+#tabHinh3D .h3NutNhoChinh { height: 34px; padding: 0 18px; font-size: 13px; margin-left: auto; }
+#tabHinh3D textarea.h3Lenh { height: 104px; white-space: pre-wrap; font-size: 12px; }
+#tabHinh3D .h3DsDung { display: flex; flex-direction: column; gap: 5px; }
+#tabHinh3D .h3DongPhu { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 6px 6px 10px; border-radius: 9px; background: rgba(245,158,11,.08); border: 1px solid rgba(245,158,11,.35); font-size: 12.5px; }
+#tabHinh3D .h3DongPhu span { font-family: var(--h3-toan); font-style: italic; font-size: 14px; }
+#tabHinh3D .h3DongPhu button { border: 0; background: none; color: var(--h3-phu); font-size: 16px; line-height: 1; padding: 2px 6px; border-radius: 6px; }
+#tabHinh3D .h3DongPhu button:hover { color: #FCA5A5; }
+/* đặt hệ trục */
+#tabHinh3D .h3HopGoc { display: grid; gap: 10px; padding: 11px 12px; border-radius: 12px; border: 1px solid var(--h3-acVien); background: linear-gradient(135deg, rgba(94,235,255,.08), rgba(94,235,255,.02)); }
+#tabHinh3D .h3HopGoc h3 { margin: 0; }
+#tabHinh3D .h3TrangThai { margin: 0; font-size: 12.5px; color: var(--h3-phu); }
+#tabHinh3D .h3TrangThai b { color: #ECFEFF; }
+#tabHinh3D .h3GoiYNut { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 6px; }
+#tabHinh3D .h3GoiYNut > span { font-size: 11.5px; color: var(--h3-mo); }
+#tabHinh3D .h3GoiYNut .h3NutNho { height: auto; min-height: 24px; padding: 3px 8px; text-align: left; white-space: normal; }
+#tabHinh3D .h3ToaDo[hidden] { display: none; }
+@media (max-width: 1180px) { #tabHinh3D .h3Vung { grid-template-columns: 240px minmax(0,1fr); } #tabHinh3D .h3Vung.thuGon { grid-template-columns: 0 minmax(0,1fr); } }
+@media (max-width: 760px) { #tabHinh3D .h3Vung, #tabHinh3D .h3Vung.thuGon { grid-template-columns: minmax(0,1fr); } #tabHinh3D .h3Dock { bottom: 8px; } #tabHinh3D .h3SegNho button span { display: none; } }
+#tabHinh3D .h3Dock, #tabHinh3D .h3BangMau { left: 12px; right: 12px; transform: none; width: max-content; margin: 0 auto; }

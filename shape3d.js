@@ -4,7 +4,7 @@
 (() => {
 "use strict";
 const K = window.KHinh3D; if (!K) return;
-const { MUC, MUC_ID, TEN_NHOM, B, ICO, MAU_F, MAU, so, boDau, qMul, qAxis, qNorm, qToMat, slerp, dot } = K;
+const { MUC, MUC_ID, TEN_NHOM, B, ICO, MAU_F, MAU, so, boDau, qMul, qAxis, qNorm, qToMat, slerp, dot, TEN_LOAI_PHU } = K;
 const $ = id => document.getElementById("h3_" + id);
 const giamDong = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
@@ -15,8 +15,8 @@ const eIO = u => u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
 const st = {
   id: "chop4", nhom: "dadien", tim: "", P: {}, PTheo: {}, mauTheo: {}, hoanTac: {},
   neo: "tamDay", off: [0, 0, 0], oxyz: false, luoiOxy: false, che: "dac", khuat: true, nhan: true, phu: true, luoiMat: false, giay: false, doDam: 1,
-  mauHT: "#5EEBFF", tay: false, doMo: .45, but: false, hover: -1, loi: "", frame: null, moT: 0, diemHien: {}, keoGan: null,
-  cheDo: "xoay", giuDung: false, tuXoay: false, nhanh: false, quay: null
+  mauHT: "#F59E0B", tay: false, doMo: .45, but: true, hover: -1, loi: "", frame: null, moT: 0, diemHien: {}, keoGan: null,
+  cheDo: "xoay", giuDung: true, tuXoay: false, nhanh: false, quay: null, phuTheo: {}, neoTheo: {}
 };
 const cam = { q: [1, 0, 0, 0], xien: null, zoom: 60, px: 0, py: 0, anim: null, vx: 0, vy: 0 };
 let canh = null, daDung = false, cv, ctx, sk, dpr = 1, choVe = false, moAnim = null, quetAnim = null, henNet = 0, tLan = 0;
@@ -29,7 +29,7 @@ const ICO_CHAY = '<path d="M8 5v14l11-7z"/>', ICO_DUNG = '<path d="M7 5h3.5v14H7
 const KHUNG = `
 <div class="vt3 h3">
   <header class="vt3Dau"><div class="vt3Ten"><h2>Hình 3D</h2></div></header>
-  <div class="h3Vung">
+  <div class="h3Vung" id="h3_vung">
     <aside class="h3Khoi h3Chon" aria-label="Chọn hình">
       <div class="h3Tim">${SVG('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>', 2)}
         <input id="h3_tim" type="search" placeholder="Hình chóp,..." autocomplete="off" aria-label="Tìm hình"></div>
@@ -42,50 +42,72 @@ const KHUNG = `
       <p class="h3ChuThich" id="h3_chuThich"></p>
     </aside>
     <section class="h3Khoi h3San" id="h3_san" aria-label="Khung vẽ 3D">
-      <canvas id="h3_cv" tabindex="0" aria-label="Hình 3D. Kéo để xoay tự do, Shift hoặc chuột phải để dời hình, cuộn để phóng to, phím mũi tên để xoay."></canvas>
+      <canvas id="h3_cv" tabindex="0" aria-label="Hình 3D. Kéo để xoay, Shift hoặc chuột phải để dời hình, cuộn để phóng to, bấm vào một mặt để tô màu."></canvas>
       <div class="h3Loi" id="h3_loiHinh" hidden></div>
       <div class="h3Hud h3HudTren">
-        <div class="h3HudTen"><b id="h3_tenHinh"></b><span id="h3_tomTat"></span></div>
+        <div class="h3HudTrai">
+          <button type="button" class="h3NutVuong" id="h3_nThuGon" aria-pressed="false" title="Thu gọn / mở danh mục hình (mở rộng khung vẽ)">${SVG('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/><path d="m15 10-2 2 2 2"/>', 1.8)}</button>
+          <div class="h3HudTen"><b id="h3_tenHinh"></b><span id="h3_tomTat"></span></div>
+        </div>
         <div class="h3GocNhin" role="group" aria-label="Góc nhìn">
-          <button type="button" data-goc="sgk" class="dang" title="Phép chiếu song song xiên như hình vẽ SGK">Chuẩn SGK</button><button type="button" data-goc="vuong" title="Phép chiếu vuông góc, nhìn nghiêng">Vuông góc 3D</button><button type="button" data-goc="truoc">Mặt trước</button><button type="button" data-goc="tren">Từ trên xuống</button>
+          <button type="button" data-goc="sgk" class="dang" title="Như hình vẽ trong SGK">Chuẩn SGK</button><button type="button" data-goc="vuong" title="Phép chiếu vuông góc, nhìn nghiêng">Vuông góc 3D</button><button type="button" data-goc="truoc">Mặt trước</button><button type="button" data-goc="tren">Từ trên xuống</button>
         </div>
       </div>
-      <div class="h3Hud h3HudDuoi">
-        <div class="h3CotTrai">
-          <div class="h3GoiY" id="h3_goiY">Kéo: xoay tự do 360° · Shift / chuột phải: dời hình · Cuộn, chụm: phóng to</div>
-          <div class="h3Thanh" id="h3_quet" hidden>
-            <button type="button" id="h3_nQuet" aria-label="Chạy quét tạo khối" title="Chạy quét tạo khối">${SVG(ICO_CHAY, 2)}</button>
-            <label for="h3_oQuet">Góc quét tạo khối</label><input type="range" id="h3_oQuet" min="1" max="360" step="1" value="360"><output id="h3_vQuet" for="h3_oQuet">360°</output>
-          </div>
-          <div class="h3Thanh" id="h3_moPhang" hidden>
-            <button type="button" id="h3_nMoChay" aria-label="Trải phẳng" title="Trải phẳng">${SVG(ICO_CHAY, 2)}</button>
-            <label for="h3_oMo">Trải phẳng / Gấp hình</label><input type="range" id="h3_oMo" min="0" max="100" step="1" value="0"><output id="h3_vMo" for="h3_oMo">0%</output>
-          </div>
+      <div class="h3Zoom"><button type="button" id="h3_nOxyz" class="h3NutOxyz" aria-pressed="false" title="Ẩn / hiện hệ trục Oxyz">Oxyz</button><button type="button" id="h3_phongTo" aria-label="Phóng to" title="Phóng to">+</button><button type="button" id="h3_thuNho" aria-label="Thu nhỏ" title="Thu nhỏ">−</button><button type="button" id="h3_nVua" aria-label="Vừa khung" title="Vừa khung">${SVG('<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>', 2)}</button></div>
+      <div class="h3BangMau" id="h3_bangMauNhanh" hidden></div>
+      <div class="h3Dock" role="toolbar" aria-label="Công cụ khung vẽ">
+        <div class="h3SegNho" role="group" aria-label="Chế độ chuột">
+          <button type="button" id="h3_cdXoay" aria-pressed="true" title="Kéo để xoay hình">${SVG('<path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4h-4"/>', 2)}<span>Xoay</span></button><button type="button" id="h3_cdDoi" aria-pressed="false" title="Kéo để dời hình">${SVG('<path d="M12 3v18M3 12h18M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3"/>', 1.8)}<span>Dời</span></button>
         </div>
-        <div class="h3Dock" role="toolbar" aria-label="Công cụ khung vẽ">
-          <div class="h3SegNho" role="group" aria-label="Chế độ chuột">
-            <button type="button" id="h3_cdXoay" aria-pressed="true" title="Kéo để xoay hình">${SVG('<path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4h-4"/>', 2)}Xoay</button><button type="button" id="h3_cdDoi" aria-pressed="false" title="Kéo để dời hình">${SVG('<path d="M12 3v18M3 12h18M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3"/>', 1.8)}Dời</button>
-          </div>
-          <button type="button" class="h3NutDock" id="h3_nTuXoay" aria-pressed="false" title="Tự xoay quanh trục đứng">${SVG('<path d="M4 12a8 3.5 0 1 0 16 0"/><path d="M20 12a8 3.5 0 0 0-11-3.3"/><path d="M9 6l-.5 2.8L11.3 9"/>', 1.8)}Tự xoay</button>
-          <button type="button" class="h3NutDock" id="h3_nDatLai" title="Đặt lại góc nhìn và khung hình">${SVG('<path d="M4 4v6h6"/><path d="M5 15a8 8 0 1 0 2-8.5L4 10"/>', 1.8)}Đặt lại</button>
-          <button type="button" class="h3NutQuay" id="h3_nQuay" title="Quay video mọi thao tác trong khung vẽ"><i class="h3Cham"></i><span id="h3_chuQuay">Quay video</span></button>
+        <button type="button" class="h3NutDock" id="h3_nTuXoay" aria-pressed="false" title="Tự xoay quanh trục đứng">${SVG('<path d="M4 12a8 3.5 0 1 0 16 0"/><path d="M20 12a8 3.5 0 0 0-11-3.3"/><path d="M9 6l-.5 2.8L11.3 9"/>', 1.8)}</button>
+        <button type="button" class="h3NutDock" id="h3_nDatLai" title="Đặt lại góc nhìn và khung hình">${SVG('<path d="M4 4v6h6"/><path d="M5 15a8 8 0 1 0 2-8.5L4 10"/>', 1.8)}</button>
+        <button type="button" class="h3NutDock" id="h3_nMau" aria-pressed="false" title="Chọn màu tô — bấm vào một mặt trên hình để tô"><i class="h3MauHT" id="h3_mauHT"></i></button>
+        <span class="h3Vach"></span>
+        <div class="h3ThanhNho" id="h3_moPhang" hidden title="Trải phẳng / Gấp hình">
+          <button type="button" id="h3_nMoChay" aria-label="Trải phẳng">${SVG(ICO_CHAY, 2)}</button>
+          <label for="h3_oMo">Trải</label><input type="range" id="h3_oMo" min="0" max="100" step="1" value="0"><output id="h3_vMo" for="h3_oMo">0%</output>
         </div>
-        <div class="h3Zoom"><button type="button" id="h3_nOxyz" class="h3NutOxyz" aria-pressed="false" title="Ẩn / hiện hệ trục Oxyz">Oxyz</button><button type="button" id="h3_phongTo" aria-label="Phóng to">+</button><button type="button" id="h3_thuNho" aria-label="Thu nhỏ">−</button></div>
+        <div class="h3ThanhNho" id="h3_quet" hidden title="Góc quét tạo khối tròn xoay">
+          <button type="button" id="h3_nQuet" aria-label="Chạy quét tạo khối">${SVG(ICO_CHAY, 2)}</button>
+          <label for="h3_oQuet">Quét</label><input type="range" id="h3_oQuet" min="1" max="360" step="1" value="360"><output id="h3_vQuet" for="h3_oQuet">360°</output>
+        </div>
+        <span class="h3Vach"></span>
+        <button type="button" class="h3NutQuay" id="h3_nQuay" title="Quay video mọi thao tác trong khung vẽ"><i class="h3Cham"></i><span id="h3_chuQuay">Quay</span></button>
       </div>
       <div class="h3Chip" id="h3_chipMat" hidden></div>
     </section>
     <aside class="h3Khoi h3Bang" aria-label="Bảng điều khiển">
       <div class="h3Seg h3BangTab" role="tablist" id="h3_bangTab">
-        <button type="button" role="tab" data-th="thamSo" aria-selected="true">Tham số</button><button type="button" role="tab" data-th="oxyz" aria-selected="false">Oxyz</button><button type="button" role="tab" data-th="toMau" aria-selected="false">Tô màu</button><button type="button" role="tab" data-th="xuat" aria-selected="false">Hiển thị &amp; Xuất</button>
+        <button type="button" role="tab" data-th="thamSo" aria-selected="true">Tham số</button><button type="button" role="tab" data-th="dung" aria-selected="false">Dựng thêm</button><button type="button" role="tab" data-th="oxyz" aria-selected="false">Oxyz</button><button type="button" role="tab" data-th="toMau" aria-selected="false">Tô màu</button><button type="button" role="tab" data-th="xuat" aria-selected="false">Xuất</button>
       </div>
       <div class="h3Than">
         <section data-th="thamSo"><div id="h3_dsThamSo" class="h3Truong" style="gap:12px"></div><div class="h3TheTich" id="h3_theTich"></div></section>
+        <section data-th="dung" hidden>
+          <p class="h3Ghi">Dựng thêm điểm phụ (có tên hiện trên hình) và đường phụ. Đường nào bị che tự vẽ nét đứt, có cả trong mã TikZ.</p>
+          <div class="h3Truong"><label for="h3_dLoai">Dựng</label><select id="h3_dLoai">
+            <option value="trung">Trung điểm của đoạn thẳng</option><option value="trongTam">Trọng tâm (tam giác / tứ diện)</option><option value="tamNgoai">Tâm đường tròn ngoại tiếp tam giác</option>
+            <option value="chia">Điểm chia đoạn thẳng theo tỉ số</option><option value="chieuMP">Hình chiếu của điểm lên mặt phẳng</option><option value="chieuDT">Hình chiếu của điểm lên đường thẳng</option>
+            <option value="giao">Giao điểm hai đường thẳng</option><option value="doan">Nối hai điểm (đường phụ)</option></select></div>
+          <div class="h3DongDung" id="h3_dDiem"></div>
+          <div class="h3HangNut h3DongTen"><label class="h3NhanNho" for="h3_dTen" id="h3_dTenNhan">Tên điểm mới</label><input type="text" id="h3_dTen" maxlength="4" autocomplete="off"><label class="h3NhanNho" for="h3_dK" id="h3_dKNhan" hidden>Tỉ số</label><input type="text" id="h3_dK" value="1/2" hidden aria-label="Tỉ số chia"><button type="button" class="h3NutChinh h3NutNhoChinh" id="h3_nDung">Thêm</button></div>
+          <p class="h3Ghi" id="h3_dMoTa"></p>
+          <div class="h3Truong"><label for="h3_dLenh">Hoặc gõ lệnh nhanh (mỗi dòng một lệnh)</label>
+            <textarea class="h3Ma h3Lenh" id="h3_dLenh" spellcheck="false" placeholder="M = trung điểm SA&#10;G = trọng tâm SBC&#10;H = hình chiếu S lên ABC&#10;I = giao AC và BD&#10;K = chia SB 1/3&#10;nối MG, SH"></textarea>
+            <div class="h3HangNut"><button type="button" class="h3Nut" id="h3_nLenh">Dựng theo lệnh</button><button type="button" class="h3Nut" id="h3_nXoaDung">Xoá hết điểm phụ</button></div></div>
+          <p class="h3LoiMuc" id="h3_dLoi" role="alert" hidden></p>
+          <h3>Đã dựng</h3><div class="h3DsDung" id="h3_dsDung"></div>
+        </section>
         <section data-th="oxyz" hidden>
           <label class="h3Bat"><input type="checkbox" id="h3_oOxyz"><span>Hiện hệ trục Oxyz</span></label>
           <label class="h3Bat"><input type="checkbox" id="h3_oLuoi"><span>Lưới mặt phẳng Oxy (ô đơn vị)</span></label>
-          <p class="h3Ghi">Hệ trục tay phải, <b>Oz hướng lên</b>; ở góc chuẩn SGK: Ox chéo ra phía trước, Oy sang phải. Phần trục nằm trong khối tự vẽ nét đứt.</p>
-          <h3>Gắn gốc O vào</h3><div id="h3_dsNeo" class="h3DsNeo" role="radiogroup" aria-label="Vị trí gốc O"></div>
-          <div class="h3ToaDo"><label>x₀<input type="number" id="h3_x0" step="0.5" value="0"></label><label>y₀<input type="number" id="h3_y0" step="0.5" value="0"></label><label>z₀<input type="number" id="h3_z0" step="0.5" value="0"></label></div>
+          <div class="h3HopGoc">
+            <h3>Đặt hệ trục vào hình</h3>
+            <p class="h3Ghi">Chọn điểm làm <b>gốc O</b> và cạnh chỉ hướng <b>trục Ox</b>. Trục Oz luôn hướng lên, trục Oy vuông góc Ox nằm ngang. Toạ độ mọi điểm bên dưới tính theo hệ trục này.</p>
+            <div class="h3Hai"><div class="h3Truong"><label for="h3_oGoc">Gốc O tại điểm</label><select id="h3_oGoc"></select></div>
+              <div class="h3Truong"><label for="h3_oTrucX">Trục Ox theo hướng</label><select id="h3_oTrucX"></select></div></div>
+            <div class="h3GoiYNeo" id="h3_goiYNeo"></div>
+            <div class="h3ToaDo" id="h3_hopToaDo" hidden><label>x₀<input type="number" id="h3_x0" step="0.5" value="0"></label><label>y₀<input type="number" id="h3_y0" step="0.5" value="0"></label><label>z₀<input type="number" id="h3_z0" step="0.5" value="0"></label></div>
+          </div>
           <h3>Toạ độ điểm</h3>
           <div class="h3HangNhap"><input type="text" id="h3_oDiem" list="h3_dsTenDiem" placeholder="Tên điểm (vd: C) hoặc M(1; 2; 3)" autocomplete="off" aria-label="Nhập tên điểm hoặc điểm mới"><button type="button" class="h3Nut" id="h3_nDiem">Hiện</button></div>
           <datalist id="h3_dsTenDiem"></datalist>
@@ -95,12 +117,12 @@ const KHUNG = `
           <details class="h3BangDiem" open><summary>Toạ độ các điểm trên hình <button type="button" class="h3NutNho" id="h3_nXoaDiem">Bỏ đánh dấu</button></summary><div id="h3_bangDiem"></div></details>
         </section>
         <section data-th="toMau" hidden>
-          <label class="h3Bat"><input type="checkbox" id="h3_oBut"><span><b>Bút tô</b>: bấm thẳng vào một mặt trên hình để tô (kéo vẫn xoay bình thường)</span></label>
+          <p class="h3Ghi"><b>Cách tô:</b> chọn màu rồi <b>bấm thẳng vào mặt</b> trên hình (bấm lại cùng màu để bỏ). Kéo chuột vẫn xoay bình thường. Nút tròn màu ở thanh dưới khung vẽ cũng mở nhanh bảng màu.</p>
           <div class="h3OMau" id="h3_oMau" role="group" aria-label="Chọn màu"></div>
           <div class="h3Truong"><div class="h3DongNhan"><label for="h3_oDoMo">Độ đậm màu</label><output id="h3_vDoMo">45%</output></div><input type="range" id="h3_oDoMo" min="10" max="100" step="5" value="45"></div>
+          <label class="h3Bat"><input type="checkbox" id="h3_oBut" checked><span>Bấm vào mặt để tô (tắt nếu chỉ muốn xoay)</span></label>
           <h3>Các mặt của khối</h3><div id="h3_dsMat" class="h3DsMat"></div>
           <div class="h3HangNut"><button type="button" class="h3Nut" id="h3_nHoan">Hoàn tác</button><button type="button" class="h3Nut" id="h3_nXoaMau">Xóa hết màu</button></div>
-          <p class="h3Ghi">Mặt cong được gom thành mặt logic (đáy, mặt xung quanh, mặt cắt…), bấm một lần là tô cả mặt.</p>
         </section>
         <section data-th="xuat" hidden>
           <h3>Chế độ hiển thị</h3>
@@ -108,9 +130,9 @@ const KHUNG = `
           <div class="h3Truong"><div class="h3DongNhan"><label for="h3_oDoDam">Độ đậm nét vẽ</label><output id="h3_vDoDam">100%</output></div><input type="range" id="h3_oDoDam" min="60" max="180" step="10" value="100"></div>
           <label class="h3Bat"><input type="checkbox" id="h3_oKhuat" checked><span>Nét khuất vẽ nét đứt (chuẩn SGK)</span></label>
           <label class="h3Bat"><input type="checkbox" id="h3_oNhan" checked><span>Nhãn đỉnh, tên điểm (tự tránh đè nét)</span></label>
-          <label class="h3Bat"><input type="checkbox" id="h3_oPhu" checked><span>Đường phụ (đường cao, tâm, đường chéo)</span></label>
+          <label class="h3Bat"><input type="checkbox" id="h3_oPhu" checked><span>Đường phụ, ký hiệu góc vuông</span></label>
           <label class="h3Bat"><input type="checkbox" id="h3_oLuoiMat"><span>Đường lưới trên mặt cong</span></label>
-          <label class="h3Bat"><input type="checkbox" id="h3_oGiuDung"><span>Giữ Oz thẳng đứng khi xoay (tắt = xoay tự do mọi hướng)</span></label>
+          <label class="h3Bat"><input type="checkbox" id="h3_oGiuDung" checked><span>Giữ Oz thẳng đứng khi xoay (đường cao luôn thẳng đứng; tắt = xoay tự do)</span></label>
           <label class="h3Bat"><input type="checkbox" id="h3_oGiay"><span>Xem trên nền giấy in (nền trắng, nét đen)</span></label>
           <h3>Xuất</h3>
           <button type="button" class="h3NutChinh" id="h3_nTikz">Tạo mã TikZ từ góc nhìn này</button>
@@ -130,7 +152,7 @@ function bao(t) { let b = $("bao"); if (!b) { b = document.createElement("div");
 
 /* ================= Dựng cảnh ================= */
 function dungCanh() {
-  try { canh = K.dungCanh({ id: st.id, P: st.P, neo: st.neo, off: st.off, moT: st.moT }); st.neo = canh.neo; st.loi = ""; if (st.moT > 0 && !canh.mo) st.moT = 0; return true; }
+  try { canh = K.dungCanh({ id: st.id, P: st.P, neo: st.neoTheo[st.id], off: st.off, moT: st.moT, phu: st.phuTheo[st.id] }); st.neo = canh.neo; st.loi = ""; if (st.moT > 0 && !canh.mo) st.moT = 0; return true; }
   catch (e) { st.loi = e.message; return false; }
 }
 const tuyChon = () => ({ giay: st.giay, che: st.che, khuat: st.khuat, nhan: st.nhan, phu: st.phu, luoiMat: st.luoiMat, oxyz: st.oxyz, luoiOxy: st.luoiOxy, hover: st.hover, mau: mauHT(), diem: layDiem(), doDam: st.doDam, nhanh: st.nhanh, xien: !!cam.xien });
@@ -172,10 +194,10 @@ function giuTam(doi) {
   doi(); const M1 = K.maTranChieu(cam.q, cam.xien);
   cam.px += (x0 - dot(M1.r0, c)) * cam.zoom; cam.py -= (y0 - dot(M1.r1, c)) * cam.zoom;
 }
-function xoayCam(dx, dy) { const k = .0085; giuTam(() => {
+function xoayCam(dx, dy) { const k = .0085; if (cam.xien && st.giuDung) dy = 0; /* góc SGK: chỉ quay quanh trục đứng để đường cao luôn thẳng đứng */ giuTam(() => {
   cam.q = st.giuDung ? qNorm(qMul(qAxis([1, 0, 0], dy * k), qMul(cam.q, qAxis([0, 0, 1], dx * k)))) : qNorm(qMul(qAxis([1, 0, 0], dy * k), qMul(qAxis([0, 1, 0], dx * k), cam.q))); }); }
 function xoayQuanhOz(a) { giuTam(() => { cam.q = qNorm(qMul(cam.q, qAxis([0, 0, 1], a))); }); }
-const vuaKhung = (q, xien) => canh ? K.vuaKhung(canh, q, sk.clientWidth || 600, sk.clientHeight || 500, { oxyz: st.oxyz, moT: st.moT, diem: layDiem(), xien, leX: 130, leY: 330, dy: -62 }) : { zoom: cam.zoom, px: 0, py: 0 };
+const vuaKhung = (q, xien) => canh ? K.vuaKhung(canh, q, sk.clientWidth || 600, sk.clientHeight || 500, { oxyz: st.oxyz, moT: st.moT, diem: layDiem(), xien, leX: 120, leY: 190, dy: -14 }) : { zoom: cam.zoom, px: 0, py: 0 };
 function denGoc(ten, tucThi) {
   let q1 = cam.q, xien = cam.xien;
   if (ten !== "giu") { const g = K.camGoc(ten, canh); q1 = g.q; xien = g.xien; sk.querySelectorAll(".h3GocNhin button").forEach(b => b.classList.toggle("dang", b.dataset.goc === ten)); }
@@ -204,7 +226,7 @@ function ganSuKien() {
     if (ptr.size === 1) { const tn = e.button === 0 && !e.shiftKey ? tayNamGan(e.clientX - r.left, e.clientY - r.top) : null;
       keo = { x0: e.clientX, y0: e.clientY, x: e.clientX, y: e.clientY, doi: e.button === 1 || e.button === 2 || e.shiftKey || st.cheDo === "doi", dich: false, nut: e.button, vx: 0, vy: 0, t: performance.now(), nang: tn, giaTri: tn ? +st.P[tn.k] : 0 }; }
     else if (ptr.size === 2) { const [a, b] = [...ptr.values()]; chum = { d: Math.hypot(a.x - b.x, a.y - b.y), mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2 }; if (keo) keo.dich = true; }
-    sk.classList.add("keo"); $("goiY").hidden = true;
+    sk.classList.add("keo"); $("bangMauNhanh").hidden = true; $("nMau").setAttribute("aria-pressed", "false");
   });
   cv.addEventListener("pointermove", e => {
     const r = cv.getBoundingClientRect();
@@ -244,6 +266,9 @@ function ganSuKien() {
     else if (e.key === "-") zoomTai(sk.clientWidth / 2, sk.clientHeight / 2, 1 / 1.15);
     else if (e.key === "0") denGoc("sgk");
   });
+  $("nVua").onclick = () => denGoc("giu");
+  $("nThuGon").onclick = () => { const v = $("vung").classList.toggle("thuGon"); $("nThuGon").setAttribute("aria-pressed", v); setTimeout(() => denGoc("giu"), 60); };
+  $("nMau").onclick = () => { const b = $("bangMauNhanh"); b.hidden = !b.hidden; $("nMau").setAttribute("aria-pressed", !b.hidden); if (!b.hidden) datBut(true); };
   $("phongTo").onclick = () => zoomTai(sk.clientWidth / 2, sk.clientHeight / 2, 1.2);
   $("thuNho").onclick = () => zoomTai(sk.clientWidth / 2, sk.clientHeight / 2, 1 / 1.2);
   sk.querySelectorAll(".h3GocNhin button").forEach(b => b.onclick = () => denGoc(b.dataset.goc));
@@ -264,7 +289,7 @@ function capNhatHover(x, y) {
     if (g !== st.hover || chip.hidden !== (g < 0)) {
       st.hover = g;
       if (g < 0) chip.hidden = true;
-      else { const m = mauHT()[g] || canh.g[g].mau; chip.innerHTML = '<i style="background:' + (m ? m.c : "#B0C4E0") + '"></i>' + esc(canh.g[g].ten) + (st.but ? " · bấm để tô" : ""); chip.hidden = false; }
+      else { const m = mauHT()[g] || canh.g[g].mau; chip.innerHTML = '<i style="background:' + (m ? m.c : "#B0C4E0") + '"></i>' + esc(canh.g[g].ten) + (st.but ? (mauHT()[g] ? " · bấm để đổi / bỏ màu" : " · bấm để tô") : ""); chip.hidden = false; }
       document.querySelectorAll("#h3_dsMat .h3DongMat").forEach(d => d.classList.toggle("dangChi", +d.dataset.g === g));
       yeuCau();
     }
@@ -316,9 +341,14 @@ function dungQuay() {
 
 /* ================= Tô màu ================= */
 function luuHoanTac() { (st.hoanTac[st.id] || (st.hoanTac[st.id] = [])).push(JSON.stringify(mauHT())); if (st.hoanTac[st.id].length > 60) st.hoanTac[st.id].shift(); }
-function toMat(g, xoa) { if (g < 0) return; luuHoanTac(); const m = mauHT(); if (xoa || st.tay) delete m[g]; else m[g] = { c: st.mauHT, a: st.doMo }; veDsMat(); yeuCau(); }
-function toTaiDiem(x, y) { const F = st.frame; if (!F) return; const g = F.chon(x * dpr, y * dpr); if (g >= 0) { toMat(g); bao((st.tay ? "Đã xóa màu: " : "Đã tô: ") + canh.g[g].ten); } }
+function toMat(g, xoa) { if (g < 0) return false; luuHoanTac(); const m = mauHT(); let bo = xoa || st.tay || (m[g] && m[g].c === st.mauHT && Math.abs(m[g].a - st.doMo) < .01); if (bo) delete m[g]; else m[g] = { c: st.mauHT, a: st.doMo }; veDsMat(); yeuCau(); return !bo; }
+function toTaiDiem(x, y) { const F = st.frame; if (!F) return; const g = F.chon(x * dpr, y * dpr); if (g >= 0) { const to = toMat(g); bao((to ? "Đã tô: " : "Đã bỏ màu: ") + canh.g[g].ten + (to ? " — bấm lại để bỏ" : "")); } }
 function veBangMau() {
+  $("mauHT").style.background = st.tay ? "repeating-linear-gradient(45deg,#94a3b8 0 3px,transparent 3px 6px)" : st.mauHT;
+  const nhanh = $("bangMauNhanh");
+  nhanh.innerHTML = MAU.map(c => '<button type="button" data-c="' + c + '" style="background:' + c + '" aria-label="Màu ' + c + '" aria-pressed="' + (!st.tay && st.mauHT === c) + '"></button>').join("") + '<button type="button" class="h3Tay" data-tay="1" aria-pressed="' + st.tay + '" title="Tẩy: bấm vào mặt để bỏ màu">' + SVG('<path d="m7 21-4-4 11-11 7 7-7 7z"/><path d="M7 21h13"/>', 2) + "</button><span>Bấm vào mặt trên hình để tô</span>";
+  nhanh.querySelectorAll("[data-c]").forEach(b => b.onclick = () => { st.mauHT = b.dataset.c; st.tay = false; datBut(true); veBangMau(); });
+  nhanh.querySelector("[data-tay]").onclick = () => { st.tay = !st.tay; datBut(true); veBangMau(); };
   const box = $("oMau");
   box.innerHTML = MAU.map(c => '<button type="button" data-c="' + c + '" style="background:' + c + '" aria-label="Màu ' + c + '" aria-pressed="' + (!st.tay && st.mauHT === c) + '"></button>').join("")
     + '<input type="color" id="h3_mauRieng" value="' + st.mauHT + '" aria-label="Chọn màu khác" title="Chọn màu khác">'
@@ -327,7 +357,7 @@ function veBangMau() {
   $("mauRieng").oninput = e => { st.mauHT = e.target.value; st.tay = false; datBut(true); veBangMau(); };
   $("nTay").onclick = () => { st.tay = !st.tay; datBut(true); veBangMau(); };
 }
-function datBut(v) { st.but = v; $("oBut").checked = v; sk.classList.toggle("butTo", v); }
+function datBut(v) { st.but = v; $("oBut").checked = v; }
 function veDsMat() {
   const box = $("dsMat"); if (!canh) { box.innerHTML = ""; return; } const m = mauHT();
   box.innerHTML = canh.g.map((g, i) => { const c = m[i] || g.mau, rieng = !!m[i];
@@ -357,6 +387,7 @@ function chonHinh(id, dauTien) {
   const m = MUC_ID[id]; if (!m || !m.dung) return;
   st.id = id; st.P = st.PTheo[id] || (st.PTheo[id] = K.macDinh(id)); st.moT = 0; moAnim = null; quetAnim = null;
   if (!dungCanh()) { hienLoi(); return; }
+  if (!$("vung").querySelector('[data-th="dung"]').hidden) veDungThem();
   $("oMo").value = 0; $("vMo").textContent = "0%"; capThanh(); capNutMo(); capNutQuet();
   veDsHinh(); veThamSo(); veNeo(); veDsMat(); capNhatTen(); hienLoi();
   denGoc("sgk", dauTien);
@@ -397,7 +428,7 @@ function capNhatThamSoNhanh(k) { const s = $("ts_" + k); if (s) { s.value = st.P
 function doiThamSo(veLaiBang, vuaKhungLai, doiGoc) {
   const soMat = canh ? canh.g.length : 0, ok = dungCanh(), o = document.querySelector("#h3_dsThamSo input.h3Ham");
   if (ok) { if (veLaiBang) veThamSo(); else veTheTich(); veNeo(); if (canh.g.length !== soMat || veLaiBang) veDsMat(); capNhatTen(); capThanh();
-    if (doiGoc) denGoc("sgk"); else if (vuaKhungLai) denGoc("giu");
+    if (doiGoc) denGoc("sgk"); else if (vuaKhungLai || st.moT > 0) denGoc("giu", !vuaKhungLai);
     if (o) { o.classList.remove("sai"); const p = o.parentElement.querySelector(".h3LoiMuc"); if (p) p.remove(); } }
   else if (o) { o.classList.add("sai"); let p = o.parentElement.querySelector(".h3LoiMuc"); if (!p) { p = document.createElement("p"); p.className = "h3LoiMuc"; p.setAttribute("role", "alert"); o.parentElement.appendChild(p); } p.textContent = st.loi; }
   else bao(st.loi);
@@ -419,12 +450,24 @@ function capNutQuet() { const b = $("nQuet"), chay = !!quetAnim; b.innerHTML = S
 
 /* ================= Oxyz, toạ độ điểm ================= */
 function veNeo() {
-  const box = $("dsNeo");
-  box.innerHTML = canh.neoDs.map(n => '<label><input type="radio" name="h3neo" value="' + n.k + '"' + (n.k === st.neo ? " checked" : "") + "><span>" + esc(n.ten) + "</span></label>").join("");
-  box.querySelectorAll("input").forEach(r => r.onchange = () => { st.neo = r.value; dungCanh(); veDsMat(); veDsDiem(); denGoc("giu"); khoaToaDo(); });
-  khoaToaDo(); veDsDiem();
+  const neo = canh.neo, ten = tenCacDiem(), sG = $("oGoc"), sX = $("oTrucX");
+  let goc = "k:" + neo, huong = "";
+  if (neo.startsWith("diem:")) { const [a, b] = neo.slice(5).split(">"); goc = "d:" + a; huong = b || ""; }
+  const ds = canh.neoDs.filter(n => !(n.k === "tuChon"));
+  sG.innerHTML = (ten.length ? '<optgroup label="Điểm có tên trên hình">' + ten.map(t => '<option value="d:' + esc(t) + '">Điểm ' + esc(t) + "</option>").join("") + "</optgroup>" : "")
+    + '<optgroup label="Vị trí khác">' + ds.map(n => '<option value="k:' + n.k + '">' + esc(n.ten) + "</option>").join("") + '<option value="k:tuChon">Dời gốc theo toạ độ tự nhập</option></optgroup>';
+  sG.value = goc; if (sG.value !== goc) sG.selectedIndex = 0;
+  if (goc.startsWith("d:")) { const g = goc.slice(2); sX.disabled = false;
+    sX.innerHTML = '<option value="">Giữ hướng mặc định của hình</option>' + ten.filter(t => t !== g).map(t => '<option value="' + esc(t) + '">Hướng ' + esc(g) + " → " + esc(t) + " (" + esc(g + t) + " ≡ Ox)</option>").join(""); sX.value = huong; }
+  else { sX.innerHTML = '<option value="">Theo hướng mặc định</option>'; sX.disabled = true; }
+  const moTa = goc.startsWith("d:") ? "Gốc O ≡ " + goc.slice(2) + (huong ? ", tia " + goc.slice(2) + huong + " là tia Ox" : "") : (canh.neoDs.find(n => n.k === neo) || {}).ten || "";
+  $("goiYNeo").innerHTML = '<p class="h3TrangThai">Đang dùng: <b>' + esc(moTa) + "</b></p>" + (canh.neoDs.length > 2 ? '<div class="h3GoiYNut"><span>Gợi ý nhanh:</span>' + ds.filter(n => n.k !== "trongTam").map(n => '<button type="button" class="h3NutNho" data-neo="' + n.k + '">' + esc(n.ten) + "</button>").join("") + "</div>" : "");
+  $("goiYNeo").querySelectorAll("[data-neo]").forEach(b => b.onclick = () => datNeo(b.dataset.neo));
+  $("hopToaDo").hidden = neo !== "tuChon";
+  veDsDiem();
 }
-function khoaToaDo() { const t = st.neo === "tuChon"; ["x0", "y0", "z0"].forEach(id => $(id).disabled = !t); }
+function datNeo(k) { st.neoTheo[st.id] = k; st.neo = k; dungCanh(); veNeo(); veDsMat(); if (!st.oxyz) datOxyz(true); else denGoc("giu"); bao("Đã đặt lại hệ trục Oxyz — xem trục trên hình"); }
+function khoaToaDo() {}
 function datOxyz(v) { st.oxyz = v; $("oOxyz").checked = v; $("nOxyz").setAttribute("aria-pressed", v); denGoc("giu"); }
 function tenCacDiem() { const ds = []; (canh ? canh.nhan0 : []).forEach(([n]) => { if (!ds.includes(n)) ds.push(n); }); return ds; }
 function baoLoiDiem(t) { const e = $("loiDiem"); e.textContent = t || ""; e.hidden = !t; }
@@ -458,6 +501,76 @@ function veDsDiem() {
   $("ghiMo").hidden = !(canh.coMo && st.moT > 0);
 }
 
+
+/* ================= Dựng thêm điểm phụ, đường phụ ================= */
+const NHAN_O = { trung: ["Đầu mút thứ nhất", "Đầu mút thứ hai"], trongTam: ["Đỉnh 1", "Đỉnh 2", "Đỉnh 3", "Đỉnh 4 (tứ diện, có thể bỏ)"], tamNgoai: ["Đỉnh 1", "Đỉnh 2", "Đỉnh 3"],
+  chia: ["Từ điểm", "Đến điểm"], chieuMP: ["Điểm cần chiếu", "Mặt phẳng qua điểm", "… điểm", "… điểm"], chieuDT: ["Điểm cần chiếu", "Đường thẳng qua điểm", "… điểm"],
+  giao: ["Đường thứ nhất qua", "… và", "Đường thứ hai qua", "… và"], doan: ["Nối từ", "đến"] };
+const MO_TA = { trung: "M là trung điểm đoạn thẳng nối hai điểm.", trongTam: "G là trọng tâm tam giác (hoặc tứ diện nếu chọn đủ 4 đỉnh).", tamNgoai: "Tâm đường tròn ngoại tiếp tam giác (cách đều 3 đỉnh).",
+  chia: "M thuộc đoạn XY với XM = k·XY (vd k = 1/3 hoặc 2/3).", chieuMP: "Chân đường vuông góc hạ từ điểm xuống mặt phẳng — tự vẽ đường cao và ký hiệu góc vuông.", chieuDT: "Chân đường vuông góc hạ từ điểm xuống đường thẳng — tự vẽ đoạn vuông góc.",
+  giao: "Giao điểm của hai đường thẳng cùng nằm trong một mặt phẳng (vd AC và BD).", doan: "Vẽ thêm đoạn thẳng phụ; phần bị che tự thành nét đứt." };
+const TEN_GOI_Y = "MNPQKEFIJHGTUVXYZRL".split("");
+const dsPhu = () => st.phuTheo[st.id] || (st.phuTheo[st.id] = []);
+function tenMoi() { const co = new Set(tenCacDiem()); return TEN_GOI_Y.find(t => !co.has(t)) || TEN_GOI_Y.map(t => t + "1").find(t => !co.has(t)) || "M"; }
+function docTiSo(t) { t = String(t).trim().replace(",", "."); const m = t.match(/^(-?\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)$/); const v = m ? +m[1] / +m[2] : +t; return isFinite(v) ? v : NaN; }
+function moTaPhu(d) { const ds = d.ds.join(""); switch (d.loai) {
+  case "trung": return d.ten + " = trung điểm " + ds; case "trongTam": return d.ten + " = trọng tâm " + ds; case "tamNgoai": return d.ten + " = tâm đường tròn ngoại tiếp " + ds;
+  case "chia": return d.ten + " ∈ " + ds + ", " + d.ds[0] + d.ten + " = " + d.kChu + "·" + ds; case "chieuMP": return d.ten + " = hình chiếu của " + d.ds[0] + " lên (" + d.ds.slice(1).join("") + ")";
+  case "chieuDT": return d.ten + " = hình chiếu của " + d.ds[0] + " lên " + d.ds.slice(1).join(""); case "giao": return d.ten + " = " + d.ds[0] + d.ds[1] + " ∩ " + d.ds[2] + d.ds[3]; default: return "Nối " + ds; } }
+function veDungThem() {
+  if (!canh) return; const loai = $("dLoai").value, nh = NHAN_O[loai], ten = tenCacDiem(), cu = [...$("dDiem").querySelectorAll("select")].map(s => s.value);
+  $("dDiem").innerHTML = nh.map((n, i) => '<label class="h3Truong"><span class="h3NhanNho">' + esc(n) + '</span><select data-i="' + i + '">' + (loai === "trongTam" && i === 3 ? '<option value="">— bỏ qua —</option>' : "") + ten.map(t => '<option value="' + esc(t) + '">' + esc(t) + "</option>").join("") + "</select></label>").join("");
+  const sel = [...$("dDiem").querySelectorAll("select")];
+  sel.forEach((s, i) => { if (cu[i] != null && [...s.options].some(o => o.value === cu[i])) s.value = cu[i]; else if (!(loai === "trongTam" && i === 3)) s.selectedIndex = Math.min(i, s.options.length - 1); });
+  const coTen = loai !== "doan"; $("dTen").hidden = !coTen; $("dTenNhan").hidden = !coTen; if (coTen && (!$("dTen").value || ten.includes($("dTen").value))) $("dTen").value = tenMoi();
+  $("dK").hidden = $("dKNhan").hidden = loai !== "chia"; $("dMoTa").textContent = MO_TA[loai];
+  $("dsDung").innerHTML = dsPhu().length ? dsPhu().map((d, i) => '<div class="h3DongPhu"><span>' + esc(moTaPhu(d)) + '</span><button type="button" data-xp="' + i + '" aria-label="Xoá">×</button></div>').join("") : '<p class="h3Ghi">Chưa có điểm, đường phụ nào.</p>';
+  $("dsDung").querySelectorAll("[data-xp]").forEach(b => b.onclick = () => { const ds = dsPhu(), d = ds[+b.dataset.xp];
+    const phuThuoc = d.ten && ds.some((x, j) => j > +b.dataset.xp && x.ds.includes(d.ten)); if (phuThuoc) { baoLoiDung("Còn điểm/đường khác dựng từ " + d.ten + " — hãy xoá chúng trước."); return; }
+    ds.splice(+b.dataset.xp, 1); capNhatPhu(); });
+}
+function baoLoiDung(t) { const e = $("dLoi"); e.textContent = t || ""; e.hidden = !t; }
+function themPhu(defs) {
+  const ds = dsPhu(), n0 = ds.length; baoLoiDung("");
+  for (const d of defs) {
+    if (d.ten && tenCacDiem().concat(ds.slice(n0).map(x => x.ten)).includes(d.ten)) { baoLoiDung("Tên " + d.ten + " đã có trên hình — hãy đặt tên khác."); ds.length = n0; return false; }
+    ds.push(d);
+  }
+  if (!dungCanh() || canh.loiPhu.length) { const loi = canh && canh.loiPhu.length ? canh.loiPhu.join(" · ") : st.loi; ds.length = n0; dungCanh(); baoLoiDung("Chưa dựng được: " + loi); return false; }
+  capNhatPhu(); bao("Đã dựng: " + defs.map(moTaPhu).join("; ")); return true;
+}
+function capNhatPhu() { dungCanh(); if (st.moT > 0) K.apDungMo(canh, st.moT); veDungThem(); veNeo(); veDsDiem(); yeuCau(); }
+function dungTuForm() {
+  const loai = $("dLoai").value, ds = [...$("dDiem").querySelectorAll("select")].map(s => s.value).filter(Boolean);
+  if (new Set(ds).size !== ds.length) { baoLoiDung("Các điểm được chọn phải khác nhau."); return; }
+  const d = { loai, ds };
+  if (loai !== "doan") { const t = $("dTen").value.trim(); if (!/^[A-Z][A-Za-z0-9]*'*$/.test(t)) { baoLoiDung("Tên điểm bắt đầu bằng chữ in hoa, vd M, N, G, H1, A'."); return; } d.ten = t; }
+  if (loai === "chia") { const k = docTiSo($("dK").value); if (!isFinite(k)) { baoLoiDung("Tỉ số k chưa đúng, vd 1/3 hoặc 0,25."); return; } d.k = k; d.kChu = $("dK").value.trim(); }
+  if (themPhu([d])) $("dTen").value = tenMoi();
+}
+/* lệnh nhanh: "M = trung điểm SA", "G = trọng tâm SBC", "H = hình chiếu S lên ABC", "I = giao AC và BD", "K = chia SB 1/3", "nối MG, SH" */
+const tachTen = s => s.match(/[A-Z][0-9]*'*/g) || [];
+function docLenh(txt) {
+  const out = [], loi = [];
+  String(txt).split(/\n|;/).map(x => x.trim()).filter(Boolean).forEach(dong => {
+    let m = dong.match(/^([A-Z][A-Za-z0-9]*'*)\s*=\s*(.+)$/), ten = null, than = dong;
+    if (m) { ten = m[1]; than = m[2]; }
+    const tk = than.split(/[\s,]+/).filter(Boolean), tu = boDau(tk.filter(t => !/^[A-Z][A-Z0-9']*$/.test(t) && !/^-?\d/.test(t)).join(" ")), nhom = tk.filter(t => /^[A-Z][A-Z0-9']*$/.test(t)).map(tachTen), so1 = tk.find(t => /^-?\d/.test(t));
+    const P = nhom.flat();
+    if (!ten && /^noi|^ve doan|^duong phu/.test(tu)) { nhom.forEach(g => { if (g.length === 2) out.push({ loai: "doan", ds: g }); else loi.push("“" + dong + "”: mỗi đoạn cần đúng 2 điểm (vd nối MG, SH)"); }); return; }
+    if (!ten) { loi.push("“" + dong + "”: thiếu tên điểm mới (vd M = trung điểm SA)"); return; }
+    let d = null;
+    if (/trung diem/.test(tu) && P.length === 2) d = { loai: "trung", ds: P };
+    else if (/trong tam/.test(tu) && (P.length === 3 || P.length === 4 || P.length === 2)) d = { loai: "trongTam", ds: P };
+    else if (/^tam/.test(tu) && P.length === 3) d = { loai: "tamNgoai", ds: P };
+    else if (/(hinh chieu|chan duong cao|chan duong vuong goc)/.test(tu) && (P.length === 4 || P.length === 3)) d = { loai: P.length === 4 ? "chieuMP" : "chieuDT", ds: P };
+    else if (/giao/.test(tu) && P.length === 4) d = { loai: "giao", ds: P };
+    else if (/(chia|thuoc|ti so)/.test(tu) && P.length === 2 && so1) { const k = docTiSo(so1); if (isFinite(k)) d = { loai: "chia", ds: P, k, kChu: so1 }; }
+    if (!d) { loi.push("“" + dong + "”: chưa hiểu — xem các mẫu trong ô"); return; }
+    d.ten = ten; out.push(d);
+  });
+  return { out, loi };
+}
 /* ================= Trải phẳng ================= */
 function datMo(t, tuAnim) {
   t = Math.max(0, Math.min(1, t)); if (!canh || !canh.coMo) return;
@@ -522,14 +635,21 @@ function khoiDongTab() {
     $("bangTab").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return;
       document.querySelectorAll("#h3_bangTab button").forEach(x => x.setAttribute("aria-selected", x === b));
       goc.querySelectorAll(".h3Than > section").forEach(s => s.hidden = s.dataset.th !== b.dataset.th);
-      if (b.dataset.th === "toMau" && !st.but) datBut(true);
+      if (b.dataset.th === "dung") veDungThem();
       if (b.dataset.th === "xuat") taoTikz(); });
     $("oBut").onchange = e => datBut(e.target.checked);
     $("oDoMo").oninput = e => { st.doMo = e.target.value / 100; $("vDoMo").textContent = e.target.value + "%"; };
     $("oDoDam").oninput = e => { st.doDam = e.target.value / 100; $("vDoDam").textContent = e.target.value + "%"; yeuCau(); };
     $("nHoan").onclick = () => { const s = st.hoanTac[st.id]; if (!s || !s.length) { bao("Không còn bước để hoàn tác"); return; } st.mauTheo[st.id] = JSON.parse(s.pop()); veDsMat(); yeuCau(); };
     $("nXoaMau").onclick = () => { luuHoanTac(); st.mauTheo[st.id] = {}; veDsMat(); yeuCau(); };
-    ["x0", "y0", "z0"].forEach((id, i) => $(id).addEventListener("input", e => { st.off[i] = +e.target.value || 0; if (st.neo === "tuChon") { dungCanh(); veDsDiem(); yeuCau(); } }));
+    $("oGoc").onchange = () => { const v = $("oGoc").value; datNeo(v.startsWith("d:") ? "diem:" + v.slice(2) : v.slice(2)); };
+    $("oTrucX").onchange = () => { const g = $("oGoc").value; if (g.startsWith("d:")) datNeo("diem:" + g.slice(2) + ($("oTrucX").value ? ">" + $("oTrucX").value : "")); };
+    $("dLoai").onchange = () => veDungThem();
+    $("nDung").onclick = dungTuForm;
+    $("dTen").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); dungTuForm(); } });
+    $("nLenh").onclick = () => { const r = docLenh($("dLenh").value); if (r.loi.length) { baoLoiDung(r.loi.join(" · ")); if (!r.out.length) return; } if (r.out.length && themPhu(r.out)) { $("dLenh").value = ""; if (r.loi.length) baoLoiDung(r.loi.join(" · ")); } };
+    $("nXoaDung").onclick = () => { st.phuTheo[st.id] = []; baoLoiDung(""); capNhatPhu(); };
+    ["x0", "y0", "z0"].forEach((id, i) => $(id).addEventListener("input", e => { st.off[i] = +e.target.value || 0; if (canh && canh.neo === "tuChon") { dungCanh(); veDsDiem(); yeuCau(); } }));
     $("oOxyz").onchange = e => datOxyz(e.target.checked);
     $("nOxyz").onclick = () => datOxyz(!st.oxyz);
     $("oLuoi").onchange = e => { st.luoiOxy = e.target.checked; if (st.luoiOxy && !st.oxyz) datOxyz(true); yeuCau(); };

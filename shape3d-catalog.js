@@ -66,7 +66,8 @@ B.chop = {
     const d = day2D(P), n = d.n, base = d.p.map(q => [q[0], q[1], 0]), H = P.chan === "A" ? base[0] : [0, 0, 0], S = [H[0], H[1], +P.h];
     const mats = [{ ds: [...Array(n).keys()], ten: "Mặt đáy " + d.ten.join("") }, ...d.ten.map((t, i) => ({ ds: [n, i, (i + 1) % n], ten: "Mặt bên S" + t + d.ten[(i + 1) % n] }))];
     const L = daDien(new Luoi(), [...d.ten, "S"], [...base, S], mats);
-    if (P.chan === "tam") { L.phu.push([S, [0, 0, 0]]); if (n === 4) L.phu.push([base[0], base[2]], [base[1], base[3]]); L.nhan.push(["O", [0, 0, 0]]); }
+    if (P.chan === "tam") { L.phu.push([S, [0, 0, 0]]); if (n === 4) L.phu.push([base[0], base[2]], [base[1], base[3]]); L.nhan.push(["O", [0, 0, 0]]); L.vuong = [[[0, 0, 0], S, base[0]]]; }
+    else L.vuong = [[base[0], S, base[1]], [base[0], S, base[n - 1]]];
     L.V = d.S * P.h / 3; L.ct = "V = ⅓ · S(đáy) · h"; L.tt = "S(đáy) = " + so1(d.S) + (P.chan === "tam" ? " · đường cao SO, O là " + d.tenTam : " · đường cao SA");
     L.neo = [{ k: "tamDay", ten: "Tâm đáy O", p: [0, 0, 0] }, neoA(base[0], base[1], vuongTaiA(P) ? ", AD ≡ Oy, AS ≡ Oz" : "")];
     L.keo = [{ nhan: "S", k: "h", min: 1, max: 10, ten: "chiều cao h" }];
@@ -100,6 +101,7 @@ B.tuDien = {
     if (P.kieu === "vuong") {
       const a = +P.a, b = +P.b, c = +P.c; pts = [[0, 0, 0], [a, 0, 0], [0, b, 0], [0, 0, c]]; ten = ["O", "A", "B", "C"];
       daDien(L, ten, pts, [{ ds: [0, 1, 2], ten: "Mặt OAB" }, { ds: [0, 1, 3], ten: "Mặt OAC" }, { ds: [0, 2, 3], ten: "Mặt OBC" }, { ds: [1, 2, 3], ten: "Mặt ABC" }]);
+      L.vuong = [[pts[0], pts[1], pts[2]], [pts[0], pts[1], pts[3]], [pts[0], pts[2], pts[3]]];
       L.V = a * b * c / 6; L.ct = "V = ⅙ · OA · OB · OC"; L.tt = "OA, OB, OC đôi một vuông góc tại O";
       L.neo = [{ k: "dinhO", ten: "Đỉnh O — OA ≡ Ox, OB ≡ Oy, OC ≡ Oz", p: [0, 0, 0] }];
     } else {
@@ -123,32 +125,38 @@ B.tuDien = {
 };
 /* ---- Lăng trụ & hình hộp ---- */
 function dungLangTru(P, d, ten) {
-  const n = d.n, h = +P.h, be = (+P.nghieng || 0) * DEG, hu = (+P.huong || 0) * DEG;
-  const v = [h * Math.tan(be) * Math.cos(hu), h * Math.tan(be) * Math.sin(hu), h];
+  const n = d.n, h = +P.h, A0 = d.p[0], kx = P.xien || "dung";
+  let Hx = A0;
+  if (kx === "tam") Hx = [0, 0];
+  else if (kx === "trung") Hx = [(d.p[1][0] + d.p[2][0]) / 2, (d.p[1][1] + d.p[2][1]) / 2];
+  else if (kx === "goc") { const be = (+P.nghieng || 0) * DEG, hu = (+P.huong || 0) * DEG; Hx = [A0[0] + h * Math.tan(be) * Math.cos(hu), A0[1] + h * Math.tan(be) * Math.sin(hu)]; }
+  const v = [Hx[0] - A0[0], Hx[1] - A0[1], h], xien = Math.hypot(v[0], v[1]) > 1e-6;
   const duoi = d.p.map(q => [q[0], q[1], 0]), tren = duoi.map(p => add(p, v)), tenT = phay(d.ten, "'");
   const mats = [{ ds: [...Array(n).keys()], ten: "Mặt đáy " + d.ten.join("") }, { ds: [...Array(n).keys()].map(i => n + i), ten: "Mặt đáy " + tenT.join("") },
     ...d.ten.map((t, i) => { const j = (i + 1) % n; return { ds: [i, j, n + j, n + i], ten: "Mặt bên " + t + d.ten[j] + tenT[j] + tenT[i] }; })];
   const L = daDien(new Luoi(), [...d.ten, ...tenT], [...duoi, ...tren], mats);
-  if (be > 1e-6) { const Hc = [tren[0][0], tren[0][1], 0]; L.phu.push([tren[0], Hc]); L.nhan.push(["H", Hc]); L.tt = "Đường cao A'H ⊥ đáy, góc giữa cạnh bên và đáy = " + so1(+P.nghieng) + "°"; }
+  if (xien) { const Hc = [Hx[0], Hx[1], 0]; L.phu.push([tren[0], Hc], [duoi[0], Hc]); L.nhan.push(["H", Hc]); L.vuong = [[Hc, tren[0], duoi[0]]];
+    L.tt = "A'H ⊥ (" + d.ten.join("") + "), H thuộc mặt đáy" + (kx === "tam" ? " và là tâm O của đáy" : kx === "trung" ? " và là trung điểm " + d.ten[1] + d.ten[2] : "") + " · góc giữa AA' và đáy = " + so1(Math.atan2(h, Math.hypot(v[0], v[1])) / DEG) + "°"; }
   L.V = d.S * h; L.ct = "V = S(đáy) · h"; if (!L.tt) L.tt = "S(đáy) = " + so1(d.S) + ", cạnh bên vuông góc với đáy";
-  L.neo = [{ k: "tamDay", ten: "Tâm đáy dưới O", p: [0, 0, 0] }, neoA(duoi[0], duoi[1], vuongTaiA(P) && be < 1e-6 ? ", AD ≡ Oy, AA' ≡ Oz" : "")];
+  L.neo = [{ k: "tamDay", ten: "Tâm đáy dưới O", p: [0, 0, 0] }, neoA(duoi[0], duoi[1], vuongTaiA(P) && !xien ? ", AD ≡ Oy, AA' ≡ Oz" : "")];
   L.keo = [{ nhan: tenT[0], k: "h", min: .5, max: 10, ten: "chiều cao h" }];
   L.moTuDong = true;
   return L;
 }
 const thamLangTru = (ds, mac, coXien) => [...thamDay(ds, mac),
   { k: "h", ten: "Chiều cao h (kéo đỉnh A' để nâng hạ)", loai: "so", min: .5, max: 10, buoc: .1, mac: 4 },
-  ...(coXien ? [{ k: "nghieng", ten: "Góc nghiêng cạnh bên so với phương đứng (0° = lăng trụ đứng)", don: "°", loai: "so", min: 0, max: 55, buoc: 1, mac: 0 },
-    { k: "huong", ten: "Hướng nghiêng", don: "°", loai: "so", min: 0, max: 359, buoc: 1, mac: 70, hien: P => +P.nghieng > 0 }] : [])];
+  ...(coXien ? [{ k: "xien", ten: "Kiểu lăng trụ", loai: "chon", mac: "dung", ds: [["dung", "Đứng (cạnh bên vuông góc đáy)"], ["tam", "Xiên: hình chiếu của A' lên đáy là tâm O"], ["trung", "Xiên: hình chiếu của A' lên đáy là trung điểm BC"], ["goc", "Xiên: tự chọn góc và hướng nghiêng"]] },
+    { k: "nghieng", ten: "Góc nghiêng cạnh bên so với phương đứng", don: "°", loai: "so", min: 0, max: 55, buoc: 1, mac: 30, hien: P => P.xien === "goc" },
+    { k: "huong", ten: "Hướng nghiêng", don: "°", loai: "so", min: 0, max: 359, buoc: 1, mac: 30, hien: P => P.xien === "goc" }] : [])];
 B.langTru = {
-  ten: P => { const d = day2D(P), x = +P.nghieng > 0; return "Hình lăng trụ " + (x ? "xiên " : d.deu ? "đều " : "đứng ") + tenDay(d) + " " + d.ten.join("") + "." + phay(d.ten, "'").join(""); },
+  ten: P => { const d = day2D(P), x = P.xien && P.xien !== "dung"; return "Hình lăng trụ " + (x ? "xiên " : d.deu ? "đều " : "đứng ") + tenDay(d) + " " + d.ten.join("") + "." + phay(d.ten, "'").join(""); },
   tham: thamLangTru([...DAY_TG, ...DAY_TU, ...DAY_DEU], "tgdeu", true),
   dung: P => dungLangTru(P, day2D(P))
 };
 B.hop = {
-  ten: P => P.day === "vuong" && Math.abs(P.h - P.a) < 1e-9 && !(+P.nghieng) ? "Hình lập phương ABCD.A'B'C'D'" : P.day === "chunhat" && !(+P.nghieng) ? "Hình hộp chữ nhật ABCD.A'B'C'D'" : +P.nghieng > 0 ? "Hình hộp xiên ABCD.A'B'C'D'" : "Hình hộp đứng ABCD.A'B'C'D'",
+  ten: P => { const x = P.xien && P.xien !== "dung"; return P.day === "vuong" && Math.abs(P.h - P.a) < 1e-9 && !x ? "Hình lập phương ABCD.A'B'C'D'" : P.day === "chunhat" && !x ? "Hình hộp chữ nhật ABCD.A'B'C'D'" : x ? "Hình hộp xiên ABCD.A'B'C'D'" : "Hình hộp đứng ABCD.A'B'C'D'"; },
   tham: thamLangTru([["chunhat", "Hình chữ nhật"], ["vuong", "Hình vuông"], ["binhhanh", "Hình bình hành"], ["thoi", "Hình thoi"]], "chunhat", true),
-  dung(P) { const L = dungLangTru(P, day2D(P)); L.ct = "V = S(đáy) · h" + (P.day === "chunhat" && !(+P.nghieng) ? " = a · b · h" : ""); return L; }
+  dung(P) { const L = dungLangTru(P, day2D(P)); L.ct = "V = S(đáy) · h" + (P.day === "chunhat" && (!P.xien || P.xien === "dung") ? " = a · b · h" : ""); return L; }
 };
 B.lapPhuong = {
   ten: () => "Hình lập phương ABCD.A'B'C'D'",
@@ -168,7 +176,7 @@ B.chopCut = {
     const mats = [{ ds: [...Array(n).keys()], ten: "Mặt đáy lớn " + d.ten.join("") }, { ds: [...Array(n).keys()].map(i => n + i), ten: "Mặt đáy nhỏ " + tenT.join("") },
       ...d.ten.map((t, i) => { const j = (i + 1) % n; return { ds: [i, j, n + j, n + i], ten: "Mặt bên " + t + d.ten[j] + tenT[j] + tenT[i] }; })];
     const L = daDien(new Luoi(), [...d.ten, ...tenT], [...duoi, ...tren], mats);
-    if (P.chan === "tam") { L.phu.push([[0, 0, 0], [0, 0, h]]); L.nhan.push(["O", [0, 0, 0]], ["O'", [0, 0, h]]); }
+    if (P.chan === "tam") { L.phu.push([[0, 0, 0], [0, 0, h]]); L.nhan.push(["O", [0, 0, 0]], ["O'", [0, 0, h]]); L.vuong = [[[0, 0, 0], [0, 0, h], duoi[0]]]; }
     const S1 = d.S, S2 = d.S * k * k; L.V = h / 3 * (S1 + S2 + Math.sqrt(S1 * S2)); L.ct = "V = h/3 · (S + S' + √(S·S'))"; L.tt = "S = " + so1(S1) + ", S' = " + so1(S2);
     L.neo = [{ k: "tamDay", ten: "Tâm đáy lớn O", p: [0, 0, 0] }, neoA(duoi[0], duoi[1])];
     L.moTuDong = true;
@@ -362,7 +370,7 @@ B.tru = {
     const r = +P.r, h = +P.h, L = new Luoi();
     const X = khoiXoay(L, { doan: [{ ten: "Đáy dưới (hình tròn)", phang: true, pts: [[0, 0], [r, 0]] }, { ten: "Mặt xung quanh", pts: [[r, 0], [r, h]] }, { ten: "Đáy trên (hình tròn)", phang: true, pts: [[r, h], [0, h]] }], quet: P.quet, truc: P.truc });
     nhanXoay(L, X, [["O", 0, 0], ["O'", 0, h], ["A", r, 0, 0], ["B", r, 0, Math.PI], ["A'", r, h, 0]]);
-    L.phu.push([X.P(0, 0, 0), X.P(0, h, 0)], [X.P(0, 0, 0), X.P(r, 0, X.du)]);
+    L.phu.push([X.P(0, 0, 0), X.P(0, h, 0)], [X.P(0, 0, 0), X.P(r, 0, X.du)]); L.vuong = [[X.P(0, 0, 0), X.P(0, h, 0), X.P(r, 0, X.du)]];
     const f = phanQuet(P); L.V = Math.PI * r * r * h * f; L.ct = "V = π · r² · h"; L.tt = "S(xq) = 2πrh ≈ " + so1(2 * Math.PI * r * h) + (f < 1 ? " · đang quét " + so1(f * 360) + "°" : "");
     L.neo = [{ k: "tamDay", ten: "Tâm đáy O", p: [0, 0, 0] }, { k: "tamTren", ten: "Tâm đáy trên O'", p: X.P(0, h, 0) }];
     if (X.day) L.moHam = moTronXoay(L, X, "tru", { r, h });
@@ -376,7 +384,7 @@ B.non = {
     const r = +P.r, h = +P.h, L = new Luoi(), l = Math.hypot(r, h);
     const X = khoiXoay(L, { doan: [{ ten: "Đáy (hình tròn)", phang: true, pts: [[0, 0], [r, 0]] }, { ten: "Mặt xung quanh", pts: [[r, 0], [0, h]] }], quet: P.quet, truc: P.truc });
     nhanXoay(L, X, [["S", 0, h], ["O", 0, 0], ["A", r, 0, 0], ["B", r, 0, Math.PI]]);
-    L.phu.push([X.P(0, 0, 0), X.P(0, h, 0)], [X.P(0, 0, 0), X.P(r, 0, X.du)]);
+    L.phu.push([X.P(0, 0, 0), X.P(0, h, 0)], [X.P(0, 0, 0), X.P(r, 0, X.du)]); L.vuong = [[X.P(0, 0, 0), X.P(0, h, 0), X.P(r, 0, X.du)]];
     const f = phanQuet(P); L.V = Math.PI * r * r * h / 3 * f; L.ct = "V = ⅓ · π · r² · h"; L.tt = "Đường sinh l = " + so1(l) + ", S(xq) = πrl ≈ " + so1(Math.PI * r * l) + ", góc ở tâm hình quạt trải = " + so1(360 * r / l) + "°";
     L.neo = [{ k: "tamDay", ten: "Tâm đáy O", p: [0, 0, 0] }, { k: "dinh", ten: "Đỉnh S", p: X.P(0, h, 0) }];
     L.keo = P.truc === "z" || !P.truc ? [{ nhan: "S", k: "h", min: .3, max: 10, ten: "chiều cao h" }] : [];
@@ -391,7 +399,7 @@ B.nonCut = {
     const R = +P.R, h = +P.h, L = new Luoi(); let r = +P.r; if (r >= R - .05) { r = R - .05; L.ghiChu = "Đáy nhỏ phải nhỏ hơn đáy lớn — đã lấy r = " + so1(r) + "."; }
     const X = khoiXoay(L, { doan: [{ ten: "Đáy lớn (hình tròn)", phang: true, pts: [[0, 0], [R, 0]] }, { ten: "Mặt xung quanh", pts: [[R, 0], [r, h]] }, { ten: "Đáy nhỏ (hình tròn)", phang: true, pts: [[r, h], [0, h]] }], quet: P.quet, truc: P.truc });
     nhanXoay(L, X, [["O", 0, 0], ["O'", 0, h], ["A", R, 0, 0], ["B", R, 0, Math.PI], ["A'", r, h, 0]]);
-    L.phu.push([X.P(0, 0, 0), X.P(0, h, 0)]);
+    L.phu.push([X.P(0, 0, 0), X.P(0, h, 0)], [X.P(0, 0, 0), X.P(R, 0, X.du)]); L.vuong = [[X.P(0, 0, 0), X.P(0, h, 0), X.P(R, 0, X.du)]];
     const f = phanQuet(P), l = Math.hypot(R - r, h); L.V = Math.PI * h / 3 * (R * R + R * r + r * r) * f; L.ct = "V = πh/3 · (R² + Rr + r²)"; L.tt = "Đường sinh l = " + so1(l) + ", S(xq) = π(R + r)l ≈ " + so1(Math.PI * (R + r) * l);
     L.neo = [{ k: "tamDay", ten: "Tâm đáy lớn O", p: [0, 0, 0] }];
     if (X.day) L.moHam = moTronXoay(L, X, "nonCut", { r: R, r2: r, h });
@@ -433,7 +441,7 @@ B.trucut = { gocSgk: () => ({ q: K.qTuGoc(-50, 18) }),
       const id = L.luoiUV(nu, nv, (i, j) => { const u = uu(i), x = r * Math.cos(u), y = r * Math.sin(u); return [x, y, t * x * j / nv]; }, xq, p => [p[0], p[1], 0], false);
       L.quat([0, 0, 0], vcT, cat, [-t, 0, 1], false);
       const A = [0, -r, 0], Bv = [0, r, 0], I = [0, 0, 0], H = [r, 0, 0], C = [r, 0, t * r];
-      L.canh.push(vc, vcT, [A, Bv]); L.phu.push([I, H], [H, C], [I, C]);
+      L.canh.push(vc, vcT, [A, Bv]); L.phu.push([I, H], [H, C], [I, C]); L.vuong = [[H, I, C]];
       L.nhan.push(["A", A], ["B", Bv], ["I", I], ["H", H], ["C", C]);
       for (let i = 6; i < nu; i += 6) L.wire.push(id[i].map(k => L.v[k]));
       L.wire.push(id.map(c => L.v[c[3]]));
@@ -485,7 +493,7 @@ B.xien = { gocSgk: () => ({ q: GOC_DUNG }),
       L.nhan.push(["O", O], ["O'", T]); L.V = Math.PI * r * r * h; L.ct = "V = π · r² · h (h là khoảng cách hai đáy)";
     }
     L.canh.push([...vong, vong[0]]);
-    const H = [0, d, 0]; L.phu.push([O, T], [T, H]); if (d > 1e-6) L.nhan.push(["H", H]);
+    const H = [0, d, 0]; L.phu.push([O, T], [T, H]); if (d > 1e-6) { L.nhan.push(["H", H]); L.phu.push([O, H]); L.vuong = [[H, T, O]]; }
     L.tt = "Đường cao " + (P.kieu === "non" ? "SH" : "O'H") + " = h vuông góc với mặt đáy";
     L.neo = [{ k: "tamDay", ten: "Tâm đáy O", p: O }];
     return L;
@@ -780,13 +788,13 @@ const MUC = [
   ["chopCut3", "dadien", "Hình chóp cụt", "Chóp cụt tam giác", "chopcut", "chopCut", { day: "tgdeu", a: 4.5 }, "chop cut tam giac"],
   ["chopCut4", "dadien", "Hình chóp cụt", "Chóp cụt tứ giác", "chopcut", "chopCut", { day: "chunhat", a: 4.5, b: 3.5 }, "chop cut tu giac"],
   ["chopCutDeu", "dadien", "Hình chóp cụt", "Chóp cụt đều (lục giác đều)", "chopcut", "chopCut", { day: "lucdeu", a: 2.5, k: .55 }, "chop cut deu"],
-  ["ltXien3", "dadien", "Hình lăng trụ", "Lăng trụ xiên tam giác", "langtru", "langTru", { day: "tgdeu", nghieng: 30, a: 4 }, "lang tru xien tam giac"],
-  ["ltXien4", "dadien", "Hình lăng trụ", "Lăng trụ xiên tứ giác", "langtru", "langTru", { day: "chunhat", nghieng: 25, a: 3.5, b: 3 }, "lang tru xien tu giac"],
+  ["ltXien3", "dadien", "Hình lăng trụ", "Lăng trụ xiên tam giác", "langtru", "langTru", { day: "tgdeu", xien: "tam", a: 4 }, "lang tru xien tam giac"],
+  ["ltXien4", "dadien", "Hình lăng trụ", "Lăng trụ xiên tứ giác", "langtru", "langTru", { day: "chunhat", xien: "tam", a: 3.5, b: 3 }, "lang tru xien tu giac"],
   ["ltDung", "dadien", "Hình lăng trụ", "Lăng trụ đứng (tam giác vuông)", "langtru", "langTru", { day: "tgvuongB", a: 3.5, b: 4 }, "lang tru dung"],
   ["ltDeu3", "dadien", "Hình lăng trụ", "Lăng trụ tam giác đều", "langtru", "langTru", { day: "tgdeu", a: 4 }, "lang tru deu tam giac"],
   ["ltDeu4", "dadien", "Hình lăng trụ", "Lăng trụ tứ giác đều", "langtru", "langTru", { day: "vuong", a: 3, h: 5 }, "lang tru deu tu giac"],
   ["ltDeu6", "dadien", "Hình lăng trụ", "Lăng trụ lục giác đều", "langtru", "langTru", { day: "lucdeu", a: 2, h: 4 }, "lang tru deu luc giac"],
-  ["hopXien", "dadien", "Hình hộp", "Hình hộp xiên", "hop", "hop", { day: "binhhanh", nghieng: 25, a: 3.5, b: 3 }, "hop xien"],
+  ["hopXien", "dadien", "Hình hộp", "Hình hộp xiên", "hop", "hop", { day: "binhhanh", xien: "trung", a: 3.5, b: 3 }, "hop xien"],
   ["hopDung", "dadien", "Hình hộp", "Hình hộp đứng", "hop", "hop", { day: "binhhanh", a: 3.5, b: 3 }, "hop dung"],
   ["hopCN", "dadien", "Hình hộp", "Hình hộp chữ nhật", "hop", "hop", { day: "chunhat", a: 4, b: 3, h: 2.6 }, "hop chu nhat"],
   ["lapPhuong", "dadien", "Hình hộp", "Hình lập phương", "hop", "lapPhuong", {}, "lap phuong"],
