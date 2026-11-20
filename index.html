@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&family=Noto+Serif:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Archivo+Black&display=swap">
 <link rel="stylesheet" href="style.css?v=20261120b">
+<link rel="stylesheet" href="hinh3d.css?v=20261120">
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700;800;900&display=swap">
 
@@ -165,6 +166,7 @@
 		<button type="button" role="tab" id="nutTabVeHinh" aria-selected="false" aria-controls="tabVeHinh" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="7" rx="1.5"/><rect x="3" y="14" width="9" height="7" rx="1.5"/><rect x="15" y="14" width="6" height="7" rx="1.5"/></svg><span>Vẽ hình TikZ theo mẫu</span></button>
 		<button type="button" role="tab" id="nutTabVeThucTe" aria-selected="false" aria-controls="tabVeThucTe" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg><span>Vẽ hình TikZ thực tế</span></button>
 		<button type="button" role="tab" id="nutTabVeTuY" aria-selected="false" aria-controls="tabVeTuY" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span>Vẽ hình TikZ tùy ý</span></button>
+		<button type="button" role="tab" id="nutTabHinh3D" aria-selected="false" aria-controls="tabHinh3D" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8 20 7.4v9.2L12 21.2 4 16.6V7.4z"/><path d="M4 7.4 12 12l8-4.6M12 12v9.2"/></svg><span>Hình 3D</span></button>
 		<button type="button" role="tab" id="nutTabKhoAnh" aria-selected="false" aria-controls="tabKhoAnh" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="5" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8M10 12h4"/></svg><span>Kho hình TikZ</span></button>
 	</div>
 	<div class="tabMenu" id="conLopHoc" role="tablist" aria-label="Lớp học" hidden>
@@ -651,6 +653,7 @@
 		</section>
 	</div>
 </section>
+<section class="manTab" id="tabHinh3D" role="tabpanel" aria-labelledby="nutTabHinh3D" hidden></section>
 <section class="manTab" id="tabVeTuY" role="tabpanel" aria-labelledby="nutTabVeTuY" hidden>
 	<div class="vt3">
 		<header class="vt3Dau">
@@ -724,6 +727,10 @@
 					<div class="vdCK" id="vdCKHop">
 						<div class="vdCKDau"><button class="vdNutNho" type="button" id="vdCKMo" aria-expanded="false" aria-controls="vdCKBan">⌨ Phím Casio</button><span class="vdCHGoi">Bấm phím để chèn macro (<code>\shiftk</code>, <code>\calck</code>…) tại con trỏ — dùng được trong dòng <code>casio:</code> và ngay trong chữ của <code>dong:</code>, <code>de:</code>…</span><button class="vdNutNho" type="button" id="vdCKDong">＋ Dòng casio:</button></div>
 						<div class="vdCKBan" id="vdCKBan" hidden></div>
+					</div>
+					<div class="vdCK h3VdHop" id="h3VdHop">
+						<div class="vdCKDau"><button class="vdNutNho" type="button" id="h3VdMo" aria-expanded="false" aria-controls="h3VdBan">◈ Khối 3D</button><span class="vdCHGoi">Chọn khối, xoay 360°, trải phẳng → chèn dòng <code>khoi3d</code> vào kịch bản</span></div>
+						<div class="h3VdBan" id="h3VdBan" hidden></div>
 					</div>
 					</div>
 				</div>
@@ -1862,7 +1869,9 @@ Lớp: ...</textarea></div>
 <script src="kpado.js?v=20261119"></script>
 <script src="core.js?v=20261119"></script>
 <script type="module" src="core-firebase.js?v=20261119"></script>
-<script src="app.js?v=20261119"></script>
+<script src="hinh3d-loi.js?v=20261120"></script>
+<script src="hinh3d.js?v=20261120"></script>
+<script src="app.js?v=20261120"></script>
 
 </body>
 </html>

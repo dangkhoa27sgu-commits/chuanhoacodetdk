@@ -68,8 +68,8 @@
 	const CHUA_CO = "Bộ luật trên hệ thống chưa có chức năng chuyển đổi — quản trị viên cần cập nhật bộ luật 12.3.";
 
 	/* ---------- tab ngang ---------- */
-	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"], ["nutTabVeHinh", "tabVeHinh"], ["nutTabVeThucTe", "tabVeThucTe"], ["nutTabVeTuY", "tabVeTuY"], ["nutTabKhoAnh", "tabKhoAnh"], ["nutTabVideo", "tabVideo"], ["nutTabKPado", "tabKPado"], ["nutTabGoiTen", "tabGoiTen"], ["nutTabChinhPhuc", "tabChinhPhuc"], ["nutTabThiOnline", "tabThiOnline"], ["nutTabGanID", "tabGanID"], ["nutTabNganHang", "tabNganHang"], ["nutTabTaoDe", "tabTaoDe"], ["nutTabDeTuongTu", "tabDeTuongTu"], ["nutTabVanPhong", "tabVanPhong"]];
-	const NHOM_TAB = { CongCu: ["nutTabChuan", "nutTabPdfTex", "nutTabPdfWord", "nutTabTexWord", "nutTabWordTex"], VeHinh: ["nutTabVeHinh", "nutTabVeThucTe", "nutTabVeTuY", "nutTabKhoAnh"], LopHoc: ["nutTabGoiTen", "nutTabChinhPhuc", "nutTabThiOnline"], DeThi: ["nutTabGanID", "nutTabNganHang", "nutTabTaoDe", "nutTabDeTuongTu"] };
+	const TAB = [["nutTabChuan", "tabChuan"], ["nutTabPdfTex", "tabPdfTex"], ["nutTabPdfWord", "tabPdfWord"], ["nutTabTexWord", "tabTexWord"], ["nutTabWordTex", "tabWordTex"], ["nutTabVeHinh", "tabVeHinh"], ["nutTabVeThucTe", "tabVeThucTe"], ["nutTabVeTuY", "tabVeTuY"], ["nutTabHinh3D", "tabHinh3D"], ["nutTabKhoAnh", "tabKhoAnh"], ["nutTabVideo", "tabVideo"], ["nutTabKPado", "tabKPado"], ["nutTabGoiTen", "tabGoiTen"], ["nutTabChinhPhuc", "tabChinhPhuc"], ["nutTabThiOnline", "tabThiOnline"], ["nutTabGanID", "tabGanID"], ["nutTabNganHang", "tabNganHang"], ["nutTabTaoDe", "tabTaoDe"], ["nutTabDeTuongTu", "tabDeTuongTu"], ["nutTabVanPhong", "tabVanPhong"]];
+	const NHOM_TAB = { CongCu: ["nutTabChuan", "nutTabPdfTex", "nutTabPdfWord", "nutTabTexWord", "nutTabWordTex"], VeHinh: ["nutTabVeHinh", "nutTabVeThucTe", "nutTabVeTuY", "nutTabHinh3D", "nutTabKhoAnh"], LopHoc: ["nutTabGoiTen", "nutTabChinhPhuc", "nutTabThiOnline"], DeThi: ["nutTabGanID", "nutTabNganHang", "nutTabTaoDe", "nutTabDeTuongTu"] };
 	const dongMenuTab = () => Object.keys(NHOM_TAB).forEach(k => { $("con" + k).hidden = true; $("nhom" + k).setAttribute("aria-expanded", "false"); });
 	function capNhatNhom(nut) { dongMenuTab(); Object.entries(NHOM_TAB).forEach(([k, ds]) => { const on = ds.includes(nut), b = $("nhom" + k); b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1; $("nhom" + k + "Con").textContent = on ? $(nut).textContent.replace(/^Vẽ hình TikZ\s*/, "").trim() : ""; }); }
 	function moMenuTab(k) { const m = $("con" + k), b = $("nhom" + k), mo = m.hidden; dongMenuTab(); if (!mo) return; const kh = b.closest(".tabKhung").getBoundingClientRect(), r = b.getBoundingClientRect(); m.style.left = Math.max(0, Math.min(r.left - kh.left, kh.width - 300)) + "px"; m.hidden = false; b.setAttribute("aria-expanded", "true"); }
@@ -87,6 +87,7 @@
 		if (nut === "nutTabVeHinh") khoiDongVH();
 		if (nut === "nutTabVeThucTe") khoiDongVHT();
 		if (nut === "nutTabVeTuY") khoiDongTuY();
+		if (nut === "nutTabHinh3D" && window.KHinh3D && window.KHinh3D.khoiDongTab) window.KHinh3D.khoiDongTab();
 		if (nut === "nutTabVideo") khoiDongVideo();
 		if (nut === "nutTabKPado" && typeof khoiDongKPado === "function") khoiDongKPado();
 		if (nut === "nutTabGoiTen") khoiDongGoiTen();
@@ -3610,6 +3611,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			["🎬 Cảnh & chuyển trang", [["Cảnh mới", "---\n>> "], ["Trang mới (xoá màn hình)", "===\n>> "], ["Trang: chuyển trượt", "=== truot\n>> "], ["Trang: chuyển xoay", "=== xoay\n>> "], ["Trang: vòng tròn", "=== tron\n>> "], ["Trang: rèm sáo", "=== rem\n>> "], ["Trang: nhoè mờ", "=== nhoe\n>> "]]],
 			["🗣️ Lời đọc & tiêu đề", [["Lời đọc", ">> "], ["Tiêu đề", "tieude: [vang]TỪ KHOÁ[/] NỘI DUNG"], ["Mục lục", "phan: Phần 1 | Phần 2 | Phần 3"], ["Chuyển mục", "muc: 2"]]],
 			["🧮 Phím Casio", [["Dãy phím (phím tắt)", "casio: MENU 9 2 2 ="], ["Dãy phím có hẹn giờ", "casio(1 | sau 1 | hiện 3 | giữ 5): MENU 9 2 2 ="], ["Dãy phím (macro casiovn)", "casio(1.2): \\shiftk \\calck \\equalk"], ["Phím ngay trong chữ", "dong: Bấm \\shiftk \\calck \\equalk"]]],
+			["◈ Khối 3D", [["Chóp đều: xoay 360° rồi trải phẳng", "khoi3d(xoay 360 5 | trải 3 | giữ 3): chóp tứ giác đều; a = 4; h = 5"], ["Chóp SA ⊥ đáy, tô mặt", "khoi3d(xoay 360 6 | trải 3 | gập 2): chóp tứ giác; a = 4; h = 5; tô SAB đỏ; tô đáy vàng"], ["Bát diện đều trải phẳng", "khoi3d(xoay 360 5 | trải 4 | giữ 3): bát diện đều; a = 3"], ["Khối tròn xoay quay Ox", "khoi3d(xoay 360 6 | trong suốt | oxyz): quay Ox"], ["Xuyến, khung dây", "khoi3d(1.2 | xoay 720 8 | khung dây): xuyến"], ["Hình tĩnh, góc nhìn trên", "khoi3d(tĩnh | góc trên | giữ 4): chóp tứ giác"]]],
 			["🖼 Chèn hình", [["Ảnh: to giữa → thu nhỏ lên trên", "chenhinh(1.5->0.75 | giua | 3 | 0 | phóng to, thu nhỏ, di chuyển lên trên): hinh_1"], ["Ảnh tĩnh ở trên", "chenhinh(1 | tren | 0 | 0 | ): hinh_1"], ["Ảnh to giữa màn hình", "chenhinh(1.8 | giua | 5 | 0 | phóng to): hinh_1"]]],
 			["➗ Nội dung toán", [["Đề bài", "de: Giải phương trình $x^2-4=0$"], ["Dòng chữ + công thức", "dong: TỬ: $\\sqrt{x-3}=0\\iff x=3$"], ["Công thức lớn", "ct: \\int_0^1 x^2\\,dx=\\dfrac13"], ["Khung kết quả (bút chì)", "khung: $\\Leftrightarrow m=12$"], ["Đồ thị", "dothi: y=1/(x-1) ; x=-2..5 ; y=-3..3 ; lo=2 ; chu=CHÚ THÍCH"], ["Hình TikZ", "hinh:\n\\begin{tikzpicture}\n\\draw (0,0)--(3,0)--(1,2)--cycle;\n\\end{tikzpicture}"]]],
 			["💡 Tương tác & nhấn mạnh", [["Câu hỏi gợi mở", "hoi: Bước tiếp theo nên làm gì?\ncho: 1.5"], ["Giấy nhớ mẹo", "meo: MẸO QUEN TAY | Dòng 1 | [do]Dòng 2[/]"], ["Cách làm SAI", "sai: Cộng thẳng $30+20=50$"], ["Cách làm ĐÚNG", "dung: $50-10=40$"], ["Nhãn nhấn mạnh", "nhan: [vang]ĐẾM 2 LẦN[/]"], ["Chữ thường", "chu: Ghi chú thêm…"], ["Dừng (giây)", "cho: 1.5"]]],
@@ -3642,6 +3644,10 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 ["<b>Hiệu ứng</b> ghép bằng dấu phẩy: <code>phóng to</code> (hiện to, nền tối), <code>thu nhỏ</code>, <code>di chuyển lên trên</code> / <code>di chuyển xuống dưới</code>; để trống = ảnh tĩnh. Khi ảnh lên trên hoặc xuống dưới, phần lời giải tự dồn và thu gọn theo cỡ nhỏ — chữ không bao giờ bị ảnh che.", "chenhinh(2->0.8 | giua | 4 | 0 | phóng to, di chuyển lên trên): hinh_1"],
 			["<b>Sticker nhân vật chibi</b>: bấm nút <b>☺ Sticker</b> chọn 1 trong 12 nhân vật (chao, cuoi, tuyetvoi, colen, nghingoi, ngacnhien, buon, chitro…). Dạng: <code>sticker: tên | lời thoại | giây</code>.", "sticker: tuyetvoi | Chuẩn luôn! | 3"],
 			["<b>Cỡ &amp; vị trí sticker</b> trong ngoặc: cỡ <b>to</b>/<b>nho</b> hoặc số 0.5–2; vị trí <b>trai</b>/<b>phai</b>/<b>giua</b>, <b>nang</b>/<b>ha</b>.", "sticker: colen (to phai) | Cố lên nào!\nsticker: nghingoi (nho trai nang) | Hmm…"],
+			{ nhom: "Khối 3D xoay & trải phẳng", ico: "◈", mau: "#5EEBFF" },
+			["<code>khoi3d(tùy chọn): tên hình; tham số; tô …</code> dựng khối không gian <b>xoay 360°</b> và <b>trải phẳng</b> ngay trong video. Nhanh nhất: bấm <b>◈ Khối 3D</b> dưới ô soạn, hoặc ở tab <b>Hình 3D</b> bấm <b>Đưa hình này vào video</b>.", "khoi3d(xoay 360 5 | trải 3 | giữ 3): chóp tứ giác đều; a = 4; h = 5"],
+			["Tùy chọn (ngăn bằng <code>|</code>): số đầu = cỡ (1 = chuẩn) · <code>xoay 360 5</code> (độ, giây; <code>-360</code> quay ngược, <code>tĩnh</code> = không xoay) · <code>trải 3</code>, <code>gập 2</code> (giây; chỉ hình chóp, bát diện) · <code>giữ 4</code> · <code>góc sgk/trước/trên/nghiêng</code> hoặc <code>góc 30 20</code> · <code>trong suốt</code>, <code>khung dây</code>, <code>oxyz</code>, <code>không nhãn</code>, <code>lưới</code> · <code>@3</code>, <code>sau 1</code>, <code>nhanh</code>, <code>chậm</code> như các lệnh khác.", "khoi3d(1.2 | xoay 360 6 | trải 3 | gập 2 | oxyz): chóp tứ giác"],
+			["Tên hình: <i>chóp tứ giác, chóp tứ giác đều, bát diện đều, trụ cụt, móng trụ, chỏm cầu, quạt cầu, paraboloid, xuyến, quay Ox</i>. Tham số như tab Hình 3D (<code>a = 4; h = 5; day = thang</code>). Tô mặt: <code>tô SAB đỏ</code>, <code>tô đáy vàng 60%</code> (màu: vàng, đỏ, xanh, lục, hồng, cam, tím, cyan).", "khoi3d(xoay 360 6): chóp tứ giác; day = chunhat; a = 4; b = 3; tô SBC xanh"],
 			{ nhom: "Phím máy tính Casio", ico: "🧮", mau: "#fb923c" },
 			["Lệnh <code>casio(cỡ | kiểu): dãy phím</code> — các phím hiện <b>lần lượt</b>, nhấn nảy nhẹ và loé sáng (xem thử và MP4 giống hệt). <b>Cỡ</b> 0.4–3 (mặc định 1). <b>Kiểu</b>: <code>mũi tên</code> (mặc định, có mũi tên mảnh giữa các phím) hoặc <code>không mũi tên</code>. Thêm <code>nhanh</code> / <code>chậm</code> để đổi tốc độ. Dòng sau chờ bấm xong mới hiện.", "casio: MENU 9 2 2 =\ncasio(1.3 | không mũi tên | chậm): SHIFT CALC ="],
 			["<b>Điều khiển thời gian</b> (thêm vào trong ngoặc, ngăn bằng <code>|</code>): <code>sau 2</code> = chờ 2 giây rồi mới hiện · <code>@2</code> = hiện ở giây thứ 2 kể từ lúc bắt đầu đọc câu <code>&gt;&gt;</code> · <code>hiện 3</code> = bấm hết cả dãy phím trong đúng 3 giây · <code>giữ 5</code> = bấm xong giữ trên màn hình 5 giây rồi mờ dần biến mất (không ghi <code>giữ</code> = hiện tới hết trang). Chỗ trống của dãy phím vẫn được giữ, các dòng khác không bị xô lệch.", "casio(1.2 | sau 2 | hiện 3 | giữ 5): MENU 9 2 2 =\ncasio(@1.5 | giữ 4): \\shiftk \\calck \\equalk"],
@@ -3698,6 +3704,9 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 					const so = m[2].match(/(\d+(?:[.,]\d+)?)\s*(?:s|giây|giay)?\b/i), tu = boDauVD(m[2].replace(/(\d+(?:[.,]\d+)?)\s*(?:s|giây|giay)?\b/i, "")), ck = tu ? CHUYEN_AL[tu] : "";
 					if (tu && !ck) kb.canhBao.push("dòng " + (i + 1) + ": chưa có kiểu chuyển “" + m[2].trim() + "” — dùng kiểu mặc định");
 					moiCanh(l[0] === "=" || !kb.canh.length, so ? +so[1].replace(",", ".") : 0, ck); continue; }
+				if ((m = l.match(/^khoi3d\s*(?:\(([^)]*)\))?\s*:\s*(.*)$/i))) {
+					let luc = null, toc = null, cho = 0; const ts = String(m[1] || "").split("|").filter(z => { const q = z.match(/^\s*@\s*(\d+(?:[.,]\d+)?)\s*(?:s|giây|giay)?\s*$/i); if (q) { luc = +q[1].replace(",", "."); return false; } const b = z.trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d"); if (/^nhanh$/.test(b)) { toc = 0.6; return false; } if (/^cham$/.test(b)) { toc = 1.6; return false; } const q2 = b.match(/^(?:sau|tre|doi|cho)\s*(\d+(?:[.,]\d+)?)\s*(?:s|giay)?$/); if (q2) { cho = +q2[1].replace(",", "."); return false; } return true; }).join("|");
+					if (!doan) moiDoan(""); doan.viec.push({ k: "khoi3d", ts, v: m[2].trim(), dong: i + 1, luc, toc, cho }); continue; }
 				if ((m = l.match(/^casio\s*(?:\(([^)]*)\))?\s*:\s*(.*)$/i))) {
 					let luc = null, toc = null, cho = 0; const ts = String(m[1] || "").split("|").filter(z => { const q = z.match(/^\s*@\s*(\d+(?:[.,]\d+)?)\s*(?:s|giây|giay)?\s*$/i); if (q) { luc = +q[1].replace(",", "."); return false; } const b = z.trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d"); if (/^nhanh$/.test(b)) { toc = 0.6; return false; } if (/^cham$/.test(b)) { toc = 1.6; return false; } const q2 = b.match(/^(?:sau|tre|doi|cho)\s*(\d+(?:[.,]\d+)?)\s*(?:s|giay)?$/); if (q2) { cho = +q2[1].replace(",", "."); return false; } return true; }).join("|");
 					if (!doan) moiDoan(""); doan.viec.push({ k: "casio", ts, v: m[2].trim(), dong: i + 1, luc, toc, cho }); continue; }
@@ -4232,6 +4241,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 						if (!e.coDinh) e.d *= v.toc || tocMD; e.dong = v.dong; e.vao = v.vao || ($v("vdSinhDong").checked && VAO_TU_DONG[v.k] ? VAO_TU_DONG[v.k][tl.pt.length % VAO_TU_DONG[v.k].length] : ""); e.vaos = (v.vaos && v.vaos.length) ? v.vaos : (e.vao ? [e.vao] : []);
 						if (y + e.h > yDay && trang.pt.length) { const lui = sangTrang(tA); e.t0 = tA + lui; } else e.t0 = tA;
 						e.x = cx0; e.y = y; e.w = cw; y += e.h + 30 * u; trang.pt.push(e); tl.pt.push(e); tCuoi = Math.max(tCuoi, e.t0 + Math.min(e.d, 0.7)); i++;
+						if (e.loai === "khoi3d") { lechCH += (v.cho || 0) + Math.max(0, e.d - 0.7); tCuoi = Math.max(tCuoi, e.t0 + e.d + (e.giu ? e.giu + 0.45 : 0)); }
 						if (e.loai === "casio") { lechCH += (v.cho || 0) + Math.max(0, e.d - 0.7); tCuoi = Math.max(tCuoi, e.t0 + e.d + (e.giu ? e.giu + 0.45 : 0)); }
 					}
 					T = Math.max(S0 + V + NHIP.nghi, tCuoi + NHIP.cho) + them; if (them) tl.choVung.push([T - them - 0.1, T]); tl.hoat.push([S0, S0 + V, d.dong]);
@@ -4281,6 +4291,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			}
 			if (k === "dothi") { const g = docDoThi(s), gw = Math.min(cw * 0.9, o.doc ? cw * 0.9 : 980 * u), gh = Math.min(gw * 0.68, 620 * u); return { loai: "dothi", g, gw, gh, h: gh + 80 * u, d: 2.4 }; }
 			if (k === "hinh") { const a = await napHinh(s, cw * 0.86, o.doc ? 760 * u : 600 * u); return { loai: "hinh", a, h: a.h + 10 * u, d: 0.9 }; }
+			if (k === "khoi3d") { if (!window.KHinh3D) throw new Error("chưa nạp hinh3d-loi.js"); return window.KHinh3D.taoPhanTuVideo(v.ts, s, { u: o.u, doc: o.doc, toc: v.toc, bao: t => S.canhBao.push("dòng " + v.dong + ": " + t) }); }
 			throw new Error("chưa hỗ trợ “" + k + "”");
 		}
 
@@ -4369,6 +4380,7 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 				const tw = 230 * u; bo2(ctx, x + 30 * u, y, tw, 36 * u, 10 * u); ctx.fillStyle = "#0b1b2b"; ctx.fill(); ctx.strokeStyle = MAU.xanh; ctx.stroke(); ctx.fillStyle = MAU.xanh; ctx.font = "900 " + 22 * u + "px " + FONT; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("CÂU HỎI GỢI MỞ", x + 30 * u + tw / 2, y + 19 * u);
 				const ix = x + 70 * u, iy = y + 16 * u + bh / 2, nh = 1 + .08 * Math.sin(p * e.d * 7); ctx.fillStyle = MAU.xanh; ctx.beginPath(); ctx.arc(ix, iy, 36 * u * nh, 0, 7); ctx.fill(); ctx.fillStyle = "#08121d"; ctx.font = "900 " + 46 * u + "px " + FONT; ctx.fillText("?", ix, iy + 2 * u); ctx.textAlign = "left";
 				veDong(ctx, Object.assign({}, dd, { o: Object.assign({}, dd.o, { trai: true }) }), x + 130 * u, y + 16 * u + (bh - dd.h) / 2, w - 160 * u, kep((p - 0.25) / 0.75, 0, 1)); ctx.restore(); return; }
+			if (e.loai === "khoi3d") { window.KHinh3D.veVideo(ctx, e.k3, x, y, w, e.h, e._t != null ? e._t : p * e.d, u); return; }
 			if (e.loai === "casio") {
 				const rowH = e.hk * 1.3, k = e.co;
 				e.hang.forEach((hg, r) => { const x0 = x + (w - hg.w) / 2, cy = y + 8 * u + r * rowH + rowH / 2;
@@ -4746,8 +4758,8 @@ khung: Chỉ có 1 tiệm cận đứng: $x=-3$`]
 			if (/^\s*\/\//.test(l)) return '<span class="t-cm">' + escH(l) + "</span>";
 			if (/^\s*(-{3,}|={3,})/.test(l)) return '<span class="t-ng">' + escH(l) + "</span>";
 			if (/^\s*>>/.test(l)) return '<span class="t-loi">' + escH(l) + "</span>";
-			const m = l.match(/^(\s*)([a-zA-Z]+)(\s*\([^)]*\))?(\s*:)([\s\S]*)$/); let dau = "", than = l;
-			if (m) { dau = escH(m[1]) + '<span class="' + (/^casio$/i.test(m[2]) ? "t-ck" : "t-k") + '">' + m[2] + "</span>" + (m[3] ? '<span class="t-p">' + escH(m[3]) + "</span>" : "") + '<span class="t-k">' + escH(m[4]) + "</span>"; than = m[5]; }
+			const m = l.match(/^(\s*)([a-zA-Z][a-zA-Z0-9]*)(\s*\([^)]*\))?(\s*:)([\s\S]*)$/); let dau = "", than = l;
+			if (m) { dau = escH(m[1]) + '<span class="' + (/^casio$/i.test(m[2]) ? "t-ck" : /^khoi3d$/i.test(m[2]) ? "t-k3" : "t-k") + '">' + m[2] + "</span>" + (m[3] ? '<span class="t-p">' + escH(m[3]) + "</span>" : "") + '<span class="t-k">' + escH(m[4]) + "</span>"; than = m[5]; }
 			return dau + escH(than).replace(/\$[^$]*\$?/g, z => '<span class="t-m">' + z + "</span>").replace(/\[\/?[a-z]*\]/g, z => '<span class="t-c">' + z + "</span>").replace(/\|/g, '<span class="t-s">|</span>').replace(/\\[A-Za-z0-9]+/g, z => window.KCasio && window.KCasio.MAP[z.slice(1)] ? '<span class="t-ck">' + z + "</span>" : z);
 		}
 		const capTo = () => { const v = $v("vdKB").value; $v("vdKBTo").innerHTML = v.split("\n").map(toDong).join("\n") + "\n "; $v("vdKBTo").scrollTop = $v("vdKB").scrollTop; };
