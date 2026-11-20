@@ -430,7 +430,7 @@ function damBaoMo(S) {
 function apDungMo(S, t, chiTinh) {
   if (!S.mo || t <= 0) {
     if (chiTinh) return S.v0;
-    S.v = S.v0; S.n = S.n0; S.canh = S.canh0; S.nhan = S.nhan0; S.phu = S.phu0; S.noiBat = S.noiBat0; S.tam = S.tam0; S.haiMat = false; S.polyNay = S.g.map(g => g.poly); S.moT = 0; return;
+    S.v = S.v0; S.n = S.n0; S.canh = S.canh0; S.nhan = S.nhan0; S.phu = S.phu0; S.noiBat = S.noiBat0; S.tam = S.tam0; S.haiMat = !!S.haiMat0; S.polyNay = S.g.map(g => g.poly); S.moT = 0; return;
   }
   if (S.mo.ham) {
     const r = S.moHam(t); if (chiTinh) return r.v;
@@ -464,9 +464,9 @@ function dinhTruc(S) {
 /* ================= Bảng màu vẽ (nét đậm, rõ khi chiếu lên bảng) ================= */
 const PAL = {
   toi: { nen: [182, 200, 228], canh: "#0A1226", lot: "rgba(255,255,255,.88)", khuat: "#14213D", lotKhuat: "rgba(255,255,255,.55)", canhSang: "#F4F8FF", khuatSang: "#C9D7F2",
-    chu: "#0B1020", vienChu: "rgba(255,255,255,.96)", vienChuMong: "rgba(255,255,255,.82)", truc: "#06B6D4", lotTruc: "rgba(2,6,23,.55)", luoi: "rgba(148,163,184,.28)", wire: "rgba(30,41,59,.30)", wireSang: "rgba(226,232,240,.35)", noiBat: "#F59E0B", w: 2.3 },
+    chu: "#0B1020", vienChu: "rgba(255,255,255,.96)", vienChuMong: "rgba(255,255,255,.82)", trucMau: { x: "#FB7185", y: "#34D399", z: "#60A5FA" }, truc: "#06B6D4", lotTruc: "rgba(2,6,23,.55)", luoi: "rgba(148,163,184,.28)", wire: "rgba(30,41,59,.30)", wireSang: "rgba(226,232,240,.35)", noiBat: "#F59E0B", w: 2.3 },
   giay: { nen: [236, 240, 246], canh: "#000000", lot: null, khuat: "#1F2937", lotKhuat: null, canhSang: "#000000", khuatSang: "#1F2937",
-    chu: "#000000", vienChu: "rgba(255,255,255,.96)", truc: "#111827", lotTruc: null, luoi: "rgba(0,0,0,.15)", wire: "rgba(0,0,0,.26)", wireSang: "rgba(0,0,0,.26)", noiBat: "#B45309", w: 2 }
+    chu: "#000000", vienChu: "rgba(255,255,255,.96)", trucMau: { x: "#B91C1C", y: "#047857", z: "#1D4ED8" }, truc: "#111827", lotTruc: null, luoi: "rgba(0,0,0,.15)", wire: "rgba(0,0,0,.26)", wireSang: "rgba(0,0,0,.26)", noiBat: "#B45309", w: 2 }
 };
 const hexRgb = h => { const s = h.replace("#", ""); return [0, 2, 4].map(i => parseInt(s.slice(i, i + 2), 16)); };
 const MAU = ["#E8001C", "#F59E0B", "#FACC15", "#22C55E", "#5EEBFF", "#3B82F6", "#A855F7", "#EC4899"];
@@ -590,7 +590,7 @@ function ve(ctx, S, cam, W, H, k, o) {
   // —— đường lưới trên mặt cong
   F.wire = [];
   const mWire = sang ? pal.wireSang : pal.wire;
-  if ((o.luoiMat || khung) && !(o.nhanh && !khung)) S.wire.forEach(pl => { const runs = tachNet(pl, F); F.wire.push(runs); runs.forEach(r => { if (r.thay) duong(r.pts, [], mWire, 1 * k); else if (khung && o.khuat) duong(r.pts, [3 * k, 4 * k], mWire, .9 * k); }); });
+  if ((o.luoiMat || khung || S.luoiLuon) && !(o.nhanh && !khung && !S.luoiLuon)) S.wire.forEach(pl => { const runs = tachNet(pl, F); F.wire.push(runs); runs.forEach(r => { if (r.thay) duong(r.pts, [], mWire, 1 * k); else if (khung && o.khuat) duong(r.pts, [3 * k, 4 * k], mWire, .9 * k); }); });
   // —— cạnh, đường phụ
   F.net = [];
   S.canh.forEach(pl => F.net.push({ loai: "canh", runs: tachNet(pl, F) }));
@@ -601,37 +601,46 @@ function ve(ctx, S, cam, W, H, k, o) {
   F.net.forEach(n => n.runs.forEach(r => themSeg(r.pts)));
   // —— đường viền mặt cong (silhouette)
   F.sil = [];
-  for (const [a, b, t1, t2] of S.sil) if (truoc[t1] !== truoc[t2]) { if (!F.che((X[a] + X[b]) / 2, (Y[a] + Y[b]) / 2, (D[a] + D[b]) / 2)) F.sil.push([a, b]); }
+  for (const [a, b, t1, t2] of S.sil) if (truoc[t1] !== truoc[t2] && !S.g[S.t[t1][3]].boVien) { if (!F.che((X[a] + X[b]) / 2, (Y[a] + Y[b]) / 2, (D[a] + D[b]) / 2)) F.sil.push([a, b]); }
   ctx.setLineDash([]);
   if (lot) { ctx.strokeStyle = lot; ctx.lineWidth = w + 2.2 * k; ctx.beginPath(); for (const [a, b] of F.sil) { ctx.moveTo(X[a], Y[a]); ctx.lineTo(X[b], Y[b]); } ctx.stroke(); }
   ctx.strokeStyle = mCanh; ctx.lineWidth = w; ctx.beginPath();
   for (const [a, b] of F.sil) { ctx.moveTo(X[a], Y[a]); ctx.lineTo(X[b], Y[b]); seg.push([X[a], Y[a], X[b], Y[b]]); }
   ctx.stroke();
+  // —— đường viền mặt cầu: đúng đường tròn lớn vuông góc hướng chiếu (không lấy theo lưới tam giác)
+  F.vienCau = null;
+  if (S.cauVien) { const r2 = F.R[2], e1 = norm(cross(r2, Math.abs(r2[2]) < .9 ? [0, 0, 1] : [1, 0, 0])), e2 = cross(r2, e1), { tam, R: Rc } = S.cauVien;
+    F.vienCau = Array.from({ length: 241 }, (_, i) => { const a = TAU * i / 240; return add(tam, add(mul(e1, Rc * Math.cos(a)), mul(e2, Rc * Math.sin(a)))); });
+    duong(F.vienCau, [], mCanh, w, lot, 2.2 * k); themSeg(F.vienCau); }
+  // —— thiết diện (khi khối chưa tách): tô phủ lên hình như hình vẽ SGK
+  if (S.catPoly && S.catMau) { ctx.setLineDash([]); ctx.beginPath(); S.catPoly.forEach((p, i) => { const q = F.prj(p); i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]); }); ctx.closePath();
+    const c = hexRgb(S.catMau.c); ctx.fillStyle = "rgba(" + c.join(",") + "," + Math.min(.85, S.catMau.a) + ")"; ctx.fill(); }
   // —— đường nổi bật (miền phẳng sinh khối, thiết diện)
   F.noiBat = [];
   (S.noiBat || []).forEach(pl => { const runs = tachNet(pl, F); F.noiBat.push(runs);
     runs.forEach(r => { if (r.thay) duong(r.pts, [], pal.noiBat, w * 1.15, lot, 2 * k); else duong(r.pts, [6 * k, 4 * k], pal.noiBat, w * .8, null, 0); themSeg(r.pts); }); });
   // —— hệ trục Oxyz
-  F.truc = [];
+  F.truc = []; F.chiSoO = -1;
   const nhanCho = [];
   if (o.oxyz) {
     const O = F.prj([0, 0, 0]);
     for (const [ten, tip] of dinhTruc(S)) {
       const runs = tachNet([[0, 0, 0], tip], F); F.truc.push({ ten, tip, runs });
-      runs.forEach(r => { if (r.thay) duong(r.pts, [], pal.truc, 1.7 * k, pal.lotTruc, 1.6 * k); else if (o.khuat) duong(r.pts, [5 * k, 4 * k], pal.truc, 1.3 * k, null, 0); themSeg(r.pts); });
+      const mt = (pal.trucMau || {})[ten] || pal.truc, wt = (o.giay ? 2.1 : 2.2) * k;
+      runs.forEach(r => { if (r.thay) duong(r.pts, [], mt, wt, pal.lotTruc, 1.8 * k); else if (o.khuat) duong(r.pts, [5 * k, 4 * k], mt, wt * .7, null, 0); themSeg(r.pts); });
       const T = F.prj(tip), dx = T[0] - O[0], dy = T[1] - O[1], l = Math.hypot(dx, dy) || 1, ux = dx / l, uy = dy / l;
-      if (runs[runs.length - 1].thay && l > 6 * k) { const s = 10 * k; ctx.setLineDash([]); ctx.fillStyle = pal.truc; ctx.beginPath(); ctx.moveTo(T[0], T[1]); ctx.lineTo(T[0] - ux * s - uy * s * .42, T[1] - uy * s + ux * s * .42); ctx.lineTo(T[0] - ux * s * .7, T[1] - uy * s * .7); ctx.lineTo(T[0] - ux * s + uy * s * .42, T[1] - uy * s - ux * s * .42); ctx.closePath(); ctx.fill(); }
+      if (runs[runs.length - 1].thay && l > 6 * k) { const s = 13 * k; ctx.setLineDash([]); ctx.fillStyle = mt; ctx.beginPath(); ctx.moveTo(T[0] + ux * 2 * k, T[1] + uy * 2 * k); ctx.lineTo(T[0] - ux * s - uy * s * .45, T[1] - uy * s + ux * s * .45); ctx.lineTo(T[0] - ux * s * .62, T[1] - uy * s * .62); ctx.lineTo(T[0] - ux * s + uy * s * .45, T[1] - uy * s - ux * s * .45); ctx.closePath(); ctx.fill(); }
       nhanCho.push({ t: ten, x: T[0], y: T[1], dx: ux, dy: uy, loai: "truc", uuTien: 3 });
     }
-    const trung = S.nhan.some(([, p]) => len(p) < 1e-6);
-    if (!(trung && o.nhan)) { const C = F.prj(S.tam); let dx = O[0] - C[0], dy = O[1] - C[1]; if (Math.hypot(dx, dy) < 4 * k) { dx = -1; dy = 1; } const l = Math.hypot(dx, dy); nhanCho.push({ t: "O", x: O[0], y: O[1], dx: dx / l, dy: dy / l, loai: "O", uuTien: 2 }); }
+    F.chiSoO = o.nhan ? S.nhan.findIndex(([, p]) => len(p) < 1e-6) : -1; // điểm có tên trùng gốc toạ độ → ghi "O ≡ I"
+    if (F.chiSoO < 0) { const C = F.prj(S.tam); let dx = O[0] - C[0], dy = O[1] - C[1]; if (Math.hypot(dx, dy) < 4 * k) { dx = -1; dy = 1; } const l = Math.hypot(dx, dy); nhanCho.push({ t: "O", x: O[0], y: O[1], dx: dx / l, dy: dy / l, loai: "O", uuTien: 2 }); }
   }
   // —— nhãn đỉnh (đẩy ra ngoài tâm hình, tự tránh đè nét và đè nhau)
   F.nhanViTri = [];
   const cham = [];
   if (o.nhan) {
     const C = F.prj(S.tam);
-    S.nhan.forEach(([t, p], i) => { const q = F.prj(p); let dx = q[0] - C[0], dy = q[1] - C[1]; const l = Math.hypot(dx, dy); if (l < 4 * k) { dx = 0; dy = -1; } else { dx /= l; dy /= l; }
+    S.nhan.forEach(([t0, p], i) => { const t = i === F.chiSoO && t0 !== "O" ? "O ≡ " + t0 : t0, q = F.prj(p); let dx = q[0] - C[0], dy = q[1] - C[1]; const l = Math.hypot(dx, dy); if (l < 4 * k) { dx = 0; dy = -1; } else { dx /= l; dy /= l; }
       const it = { t, i, x: q[0], y: q[1], dx, dy, loai: "dinh", xa: l }; nhanCho.push(it); cham.push(it); });
   }
   if (nhanCho.length) {
@@ -640,7 +649,7 @@ function ve(ctx, S, cam, W, H, k, o) {
     ctx.setLineDash([]);
     for (const it of cham) { ctx.fillStyle = pal.chu; ctx.strokeStyle = pal.vienChu; ctx.lineWidth = 1.1 * k; ctx.beginPath(); ctx.arc(it.x, it.y, 2.3 * k, 0, TAU); ctx.fill(); ctx.stroke(); }
     ctx.font = fnt; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.lineJoin = "round";
-    for (const d of dat) { ctx.lineWidth = 2.6 * k; ctx.strokeStyle = pal.vienChuMong || pal.vienChu; ctx.strokeText(d.t, d.x, d.y + .5 * k); ctx.fillStyle = d.loai === "truc" && !o.giay ? "#075985" : pal.chu; ctx.fillText(d.t, d.x, d.y + .5 * k);
+    for (const d of dat) { ctx.lineWidth = 2.6 * k; ctx.strokeStyle = pal.vienChuMong || pal.vienChu; ctx.strokeText(d.t, d.x, d.y + .5 * k); ctx.fillStyle = d.loai === "truc" ? PAL.giay.trucMau[d.t] : pal.chu; ctx.fillText(d.t, d.x, d.y + .5 * k);
       F.nhanViTri.push({ t: d.t, i: d.i, loai: d.loai, goc: -d.g / DEG }); }
   }
   // —— điểm đang xem toạ độ: vòng sáng, đường gióng xuống mặt Oxy và các trục, nhãn toạ độ
@@ -735,10 +744,12 @@ function taoTikz(S, F, o) {
       if (dg.length) L.push(...dongVe("\\fill[" + tenMau[mau[g].c] + ",fill opacity=" + f(mau[g].a) + "]", dg));
     }
   }
+  if (S.catPoly && S.catMau) { L.push("\t\\definecolor{mauTD}{RGB}{" + hexRgb(S.catMau.c).join(",") + "}"); L.push("\t\\fill[mauTD,fill opacity=" + f(Math.min(.85, S.catMau.a)) + "] " + noi([S.catPoly.concat([S.catPoly[0]])])[0] + "--cycle;"); }
   // —— nét
   const khuat = [], thay = [], phuThay = [], noiBatT = [];
   F.net.forEach(nt => nt.runs.forEach(r => { if (!r.thay) { if (o.khuat) khuat.push(r.pts); } else thay.push(r.pts); }));
   noiVien(S, F).forEach(pl => thay.push(pl));
+  if (F.vienCau) thay.push(F.vienCau);
   if (o.che === "khung" || o.luoiMat) F.wire.forEach(rs => rs.forEach(r => { if (r.thay) phuThay.push(r.pts); }));
   (F.noiBat || []).forEach(rs => rs.forEach(r => noiBatT.push(r)));
   L.push(...dongVe("\\draw[dashed]", noi(khuat)));
@@ -762,6 +773,8 @@ function taoTikz(S, F, o) {
   }
   if (o.nhan && nhanX.length) {
     const C = T2(S.tam), gocCua = x => { if (gocNhan.has(x.i)) return gocNhan.get(x.i); const q = T2(x.p), dx = q[0] - C[0], dy = q[1] - C[1]; return Math.hypot(dx, dy) < .05 ? 90 : Math.round(Math.atan2(dy, dx) / DEG / 5) * 5; };
+    const iO = F.chiSoO != null && F.chiSoO >= 0 && S.nhan[F.chiSoO] && S.nhan[F.chiSoO][0] !== "O" ? F.chiSoO : -1;
+    nhanX.forEach(x => { if (x.i === iO) x.t = "O\\equiv " + x.t; });
     if (nhanX.every(x => x.id === x.t)) L.push("\t\\foreach \\p/\\g in {" + nhanX.map(x => x.id + "/" + gocCua(x)).join(",") + "}{\\fill (\\p) circle (1pt); \\path (\\p)+(\\g:3mm) node{$\\p$};}");
     else L.push("\t\\foreach \\p/\\g/\\n in {" + nhanX.map(x => x.id + "/" + gocCua(x) + "/" + x.t).join(",") + "}{\\fill (\\p) circle (1pt); \\path (\\p)+(\\g:3mm) node{$\\n$};}");
   }
@@ -825,6 +838,106 @@ function dungPhu(L, ds, loi) {
     if (d.noi) d.noi.forEach(t => { const p = tim(t); if (p) L.phu.push([q, p]); });
   }
 }
+/* ================= Đổi tên đỉnh theo ý giáo viên (P.tenDay, P.tenTren) ================= */
+const RE_TEN = /[A-Z][0-9]*'*(?![\p{Ll}(])/gu;
+const tachTen = s => String(s || "").match(/[A-Z][0-9]*'*/g) || [];
+const thayTen = (s, map) => typeof s === "string" ? s.replace(RE_TEN, t => map[t] || t) : s;
+function taoDoiTen(L, P) {
+  const map = {}; let co = false;
+  for (const [cu, moi] of [[L.tenDay, P.tenDay], [L.tenTren, P.tenTren]]) {
+    if (!cu || !moi) continue; const ds = tachTen(moi);
+    if (ds.length !== cu.length) { L.ghiChu = (L.ghiChu ? L.ghiChu + " " : "") + "Cần đúng " + cu.length + " tên đỉnh (" + cu.join(", ") + ") — giữ tên cũ."; continue; }
+    cu.forEach((t, i) => { if (ds[i] !== t) { map[t] = ds[i]; co = true; } });
+  }
+  if (!co) return null;
+  const sau = L.nhan.map(([t]) => map[t] || t), trung = sau.filter((t, i) => sau.indexOf(t) !== i && L.nhan[sau.indexOf(t)][1] !== L.nhan[i][1]);
+  if (trung.length) { L.ghiChu = (L.ghiChu ? L.ghiChu + " " : "") + "Tên " + [...new Set(trung)].join(", ") + " bị trùng — giữ tên cũ."; return null; }
+  return map;
+}
+function apDoiTen(L, map) {
+  L.nhan = L.nhan.map(([t, p]) => [map[t] || t, p]);
+  L.g.forEach(g => { g.ten = thayTen(g.ten, map); });
+  (L.keo || []).forEach(h => { h.nhan = map[h.nhan] || h.nhan; });
+  (L.neo || []).forEach(n => { n.ten = thayTen(n.ten, map); });
+  L.tt = thayTen(L.tt, map); L.ct = thayTen(L.ct, map);
+  if (L.tenDay) L.tenDay = L.tenDay.map(t => map[t] || t); if (L.tenTren) L.tenTren = L.tenTren.map(t => map[t] || t);
+}
+/* ================= Thiết diện + tách / ghép khối (cắt phẳng thật bằng Sutherland–Hodgman, bịt kín hai nửa) ================= */
+function canhTuLuoi(L, goc) {
+  const S = { id: goc.id, ten: goc.ten, v: L.v, t: L.t, g: L.g, canh: L.canh, phu: L.phu || [], wire: [], noiBat: L.noiBat || [], nhan: L.nhan, V: goc.V, ct: goc.ct, tt: goc.tt,
+    keo: [], neo: goc.neo, neoDs: goc.neoDs, gocSgk: goc.gocSgk, coMo: false, coQuet: false, sil: [], haiMat: false, haiMat0: false };
+  S.n = S.t.map(([a, b, c]) => norm(cross(sub(S.v[b], S.v[a]), sub(S.v[c], S.v[a]))));
+  S.theoMat = S.g.map(() => []); S.t.forEach((t, i) => S.theoMat[t[3]].push(i));
+  const mn = [1e9, 1e9, 1e9], mx = [-1e9, -1e9, -1e9]; for (const p of S.v) for (let i = 0; i < 3; i++) { if (p[i] < mn[i]) mn[i] = p[i]; if (p[i] > mx[i]) mx[i] = p[i]; }
+  S.mn = goc.mn; S.mx = goc.mx; S.co = goc.co; S.tam = mul(add(mn, mx), .5);
+  S.v0 = S.v; S.n0 = S.n; S.canh0 = S.canh; S.nhan0 = S.nhan; S.phu0 = S.phu; S.noiBat0 = S.noiBat; S.tam0 = S.tam; S.polyNay = S.g.map(g => g.poly); S.moT = 0;
+  return S;
+}
+const TEN_TD = "MNPQRTUVXYZKLEFGH".split("");
+/* c = { kieu: "ngang" | "nghieng" | "3diem", t (0..1), gx, gy (độ), ba: [3 tên điểm], ten: [tên đỉnh thiết diện], mau: {c,a}, tach (0..1), mauMat: {chỉ số mặt: {c,a}} } */
+function catThietDien(S, c) {
+  if (!S || S.g.some(g => !g.poly)) return { loi: "Thiết diện dùng cho khối đa diện (các mặt phẳng)." };
+  const V0 = S.v0, nhan = S.nhan0, tim = t => { const x = nhan.find(([m]) => m === t); return x && x[1]; };
+  let n, d;
+  if (c.kieu === "3diem") {
+    const P = (c.ba || []).map(tim); if (P.length < 3 || P.some(p => !p)) return { loi: "Chọn đủ 3 điểm có tên để xác định mặt phẳng cắt." };
+    const nn = cross(sub(P[1], P[0]), sub(P[2], P[0])); if (len(nn) < 1e-9) return { loi: "Ba điểm thẳng hàng — chưa xác định được mặt phẳng." };
+    n = norm(nn); if (n[2] < -1e-9 || (Math.abs(n[2]) < 1e-9 && n[0] < 0)) n = mul(n, -1); d = dot(n, P[0]);
+  } else {
+    const ax = (c.kieu === "nghieng" ? +c.gx || 0 : 0) * DEG, ay = (c.kieu === "nghieng" ? +c.gy || 0 : 0) * DEG;
+    n = norm([Math.sin(ay) * Math.cos(ax), -Math.sin(ax), Math.cos(ay) * Math.cos(ax)]);
+    const ds = V0.map(p => dot(n, p)), a = Math.min(...ds), b = Math.max(...ds); d = a + (b - a) * (.02 + .96 * Math.min(1, Math.max(0, +c.t)));
+  }
+  const eps = 1e-7 * (S.co || 1), f = p => dot(n, p) - d, khoa = p => p.map(x => (Math.abs(x) < 5e-6 ? 0 : x).toFixed(5)).join(",");
+  const tren = [], duoi = [], seg = [];
+  S.g.forEach((g, gi) => {
+    const P = g.poly, fs = P.map(f), nOut = S.n0[S.theoMat[gi][0]];
+    if (fs.every(x => Math.abs(x) <= eps)) { duoi.push({ poly: P, gi, n: nOut }); return; }
+    const A = [], Bm = [], cut = [];
+    for (let i = 0; i < P.length; i++) {
+      const p = P[i], q = P[(i + 1) % P.length], fp = fs[i], fq = fs[(i + 1) % P.length];
+      if (fp >= -eps) A.push(p); if (fp <= eps) Bm.push(p); if (Math.abs(fp) <= eps) cut.push(p);
+      if ((fp > eps && fq < -eps) || (fp < -eps && fq > eps)) { const x = lerp3(p, q, fp / (fp - fq)); A.push(x); Bm.push(x); cut.push(x); }
+    }
+    if (A.length >= 3 && dienTichDaGiac(A) > eps) tren.push({ poly: A, gi, n: nOut });
+    if (Bm.length >= 3 && dienTichDaGiac(Bm) > eps) duoi.push({ poly: Bm, gi, n: nOut });
+    const u = []; cut.forEach(p => { if (!u.some(q => len(sub(p, q)) < 1e-6)) u.push(p); });
+    if (u.length === 2) seg.push(u);
+    else if (u.length > 2) { const e = norm(cross(n, nOut)); u.sort((a, b) => dot(a, e) - dot(b, e)); for (let i = 0; i + 1 < u.length; i += 2) seg.push([u[i], u[i + 1]]); }
+  });
+  // nối các đoạn giao tuyến thành đa giác thiết diện
+  const ke = new Map(), diem = new Map();
+  seg.forEach(([a, b]) => { const ka = khoa(a), kb = khoa(b); if (ka === kb) return; diem.set(ka, a); diem.set(kb, b); [[ka, kb], [kb, ka]].forEach(([x, y]) => { if (!ke.has(x)) ke.set(x, new Set()); ke.get(x).add(y); }); });
+  const da = new Set(), vong = [];
+  for (const k0 of ke.keys()) { if (da.has(k0)) continue; const l = [k0]; da.add(k0); let cur = k0, truoc = null;
+    for (let buoc = 0; buoc < 500; buoc++) { const tiep = [...ke.get(cur)].find(x => x !== truoc && !da.has(x)); if (!tiep) break; da.add(tiep); l.push(tiep); truoc = cur; cur = tiep; }
+    if (l.length >= 3) vong.push(l.map(k => diem.get(k))); }
+  if (!vong.length) return { loi: "Mặt phẳng không cắt khối — hãy dời vị trí mặt cắt." };
+  let loop = vong.reduce((a, b) => dienTichDaGiac(b) > dienTichDaGiac(a) ? b : a);
+  if (dot(phapNewell(loop), n) < 0) loop = loop.slice().reverse();
+  // tên đỉnh thiết diện: trùng đỉnh sẵn có thì dùng tên đó, còn lại lấy theo danh sách giáo viên đặt
+  const daDung = new Set(nhan.map(([t]) => t)), dsTen = (c.ten && c.ten.length ? c.ten : TEN_TD).filter(t => !daDung.has(t)).concat(TEN_TD.filter(t => !daDung.has(t)));
+  let j = 0; const tenTD = loop.map(p => { const x = nhan.find(([, q]) => len(sub(p, q)) < 1e-6); if (x) return x[0]; while (j < dsTen.length && daDung.has(dsTen[j])) j++; const t = dsTen[j++] || "X"; daDung.add(t); return t; });
+  const info = { dt: dienTichDaGiac(loop), soDinh: loop.length, ten: tenTD, n };
+  const tach = Math.max(0, Math.min(1, +c.tach || 0)), mauTD = c.mau || { c: "#F59E0B", a: .55 };
+  if (tach < 1e-4) { // khối nguyên, vẽ thiết diện phủ lên
+    const S2 = Object.assign({}, S, { nhan: S.nhan0.concat(tenTD.map((t, i) => [t, loop[i]]).filter(([t]) => !nhan.some(([m]) => m === t))), noiBat: (S.noiBat0 || []).concat([[...loop, loop[0]]]), catPoly: loop, catMau: mauTD });
+    S2.nhan0 = S2.nhan; S2.noiBat0 = S2.noiBat; info.S = S2; return info;
+  }
+  const g = tach * .45 * (S.co || 1), dT = mul(n, g / 2), dD = mul(n, -g / 2), L = new Luoi(), canhDa = new Set();
+  const tenPhan = c.kieu === "ngang" ? ["phần trên", "phần dưới"] : ["phần 1", "phần 2"];
+  const them = (ds, dv, tp) => ds.forEach(({ poly, gi, n: nn }) => {
+    const pts = poly.map(p => add(p, dv)), mm = c.mauMat && c.mauMat[gi] ? c.mauMat[gi] : S.g[gi].mau;
+    L.daGiac(pts, L.mat(S.g[gi].ten + " (" + tp + ")", { phang: true, poly: pts, goc: gi, mau: mm }), nn);
+    pts.forEach((p, i) => { const q = pts[(i + 1) % pts.length], k1 = khoa(p), k2 = khoa(q), kk = k1 < k2 ? k1 + "|" + k2 : k2 + "|" + k1; if (!canhDa.has(kk)) { canhDa.add(kk); L.canh.push([p, q]); } });
+  });
+  them(tren, dT, tenPhan[0]); them(duoi, dD, tenPhan[1]);
+  [[dT, mul(n, -1), tenPhan[0]], [dD, n, tenPhan[1]]].forEach(([dv, nn, tp]) => { const pts = loop.map(p => add(p, dv)); L.daGiac(pts, L.mat("Thiết diện " + tenTD.join("") + " (" + tp + ")", { phang: true, poly: pts, goc: -1, mau: mauTD }), nn); });
+  nhan.forEach(([t, p]) => { const v = f(p); if (v > eps) L.nhan.push([t, add(p, dT)]); else if (v < -eps) L.nhan.push([t, add(p, dD)]); });
+  tenTD.forEach((t, i) => { L.nhan.push([t, add(loop[i], dT)], [t, add(loop[i], dD)]); });
+  info.S = canhTuLuoi(L, S);
+  return info;
+}
 function gocVuong(H, P1, P2, s) { // ký hiệu góc vuông tại H giữa HP1 và HP2
   const u = norm(sub(P1, H)); let v = sub(P2, H); v = norm(sub(v, mul(u, dot(v, u)))); if (!isFinite(v[0]) || len(v) < .5) return null;
   return [add(H, mul(u, s)), add(add(H, mul(u, s)), mul(v, s)), add(H, mul(v, s))];
@@ -834,7 +947,8 @@ const macDinh = id => { const m = MUC_ID[id], bd = m && B[m.dung]; if (!bd) retu
 function dungCanh(cfg) {
   const m = MUC_ID[cfg.id]; if (!m || !m.dung) throw new Error("Hình “" + cfg.id + "” chưa có trong KMath.");
   const bd = B[m.dung], P = Object.assign(macDinh(cfg.id), cfg.P || {}), L = bd.dung(P);
-  if (!L.V && L.V !== 0) L.V = theTichLuoi(L);
+  if (!L.khongKhoi && !L.V && L.V !== 0) L.V = theTichLuoi(L);
+  const doiTen = taoDoiTen(L, P); if (doiTen) apDoiTen(L, doiTen);
   const loiPhu = []; if (cfg.phu && cfg.phu.length) dungPhu(L, cfg.phu, loiPhu);
   if (L.vuong && L.vuong.length) { let mn = 1e9, mx = -1e9; L.v.forEach(p => p.forEach(x => { if (x < mn) mn = x; if (x > mx) mx = x; }));
     const s = Math.min(.35, Math.max(.12, (mx - mn) * .04)); L.vuong.forEach(([H, A, Bq]) => { const pl = gocVuong(H, A, Bq, Math.min(s, len(sub(A, H)) * .4, len(sub(Bq, H)) * .4)); if (pl) L.phu.push(pl); }); }
@@ -850,10 +964,11 @@ function dungCanh(cfg) {
   const ca = Math.cos((n.rot || 0) * DEG), sa = Math.sin((n.rot || 0) * DEG), off = n.tuChon ? (cfg.off || [0, 0, 0]) : [0, 0, 0];
   const T = p => { const q = sub(p, n.p); return [q[0] * ca - q[1] * sa + off[0], q[0] * sa + q[1] * ca + off[1], q[2] + off[2]]; };
   const S = {
-    id: cfg.id, ten: bd.ten(P), v: L.v.map(T), t: L.t, neo: n.k, neoDs, keo: L.keo || [], gocSgk: L.gocSgk || (bd.gocSgk ? bd.gocSgk(P) : null),
+    id: cfg.id, ten: doiTen ? thayTen(bd.ten(P), doiTen) : bd.ten(P), v: L.v.map(T), tenDay: L.tenDay || null, tenTren: L.tenTren || null, haiMat0: !!L.haiMat, haiMat: !!L.haiMat, luoiLuon: !!L.luoiLuon,
+    cauVien: L.cauVien ? { tam: T(L.cauVien.tam), R: L.cauVien.R } : null, t: L.t, neo: n.k, neoDs, keo: L.keo || [], gocSgk: L.gocSgk || (bd.gocSgk ? bd.gocSgk(P) : null),
     g: L.g.map(g => Object.assign({}, g, { poly: g.poly ? g.poly.map(T) : null })), coQuet: !!bd.quet, quet: P.quet,
     canh: L.canh.map(c => c.map(T)), phu: L.phu.map(c => c.map(T)), wire: L.wire.map(c => c.map(T)), noiBat: L.noiBat.map(c => c.map(T)),
-    nhan: L.nhan.map(([t, p]) => [t, T(p)]), V: L.V, ct: L.ct, tt: L.tt, ghiChu: L.ghiChu, loiPhu
+    nhan: L.nhan.map(([t, p]) => [t, T(p)]), V: L.khongKhoi ? null : L.V, ct: L.ct, tt: L.tt, ghiChu: L.ghiChu, loiPhu
   };
   S.n = S.t.map(([a, b, c]) => norm(cross(sub(S.v[b], S.v[a]), sub(S.v[c], S.v[a]))));
   // viền mặt cong: cạnh chung hai tam giác cùng mặt cong (ghép theo toạ độ để nối cả đường nối vòng)
@@ -929,6 +1044,7 @@ function docNoiDung(s, bao) {
     if (qt) { let a = qt[3] != null ? soVN(qt[3]) : .55; if (a > 1) a /= 100; toMau.push({ mat: qt[1], c: MAU_VD[qt[2]], a: Math.min(1, Math.max(.1, a)) }); continue; }
     const qk = p.match(/^\s*([A-Za-z][A-Za-z0-9]*)\s*=\s*(.+)$/);
     if (!qk) { bao("chưa hiểu “" + p + "” — dùng dạng a = 4 hoặc tô SAB đỏ"); continue; }
+    if (/^ten(Day|Tren)$/i.test(qk[1])) { P[/day/i.test(qk[1]) ? "tenDay" : "tenTren"] = qk[2].trim(); continue; }
     const t = bd.tham.find(x => x.k === qk[1]) || bd.tham.find(x => x.k.toLowerCase() === qk[1].toLowerCase());
     if (!t || t.loai === "mau") { bao("hình này không có tham số “" + qk[1] + "” — có: " + bd.tham.filter(x => x.loai !== "mau").map(x => x.k).join(", ")); continue; }
     const v = qk[2].trim();
@@ -1021,7 +1137,7 @@ function veVideo(ctx, k3, x, y, w, h, tau, u) {
 
 window.KHinh3D = {
   phienBan: "2.0", DEG, TAU, MUC, MUC_ID, TEN_NHOM, B, ICO, MAU_F, GOC, PAL, MAU, MAU_VD, MAT_SGK, MAT_NGANG, XIEN_SGK,
-  so, boDau, bienDich, hexRgb, toaDoChu, TEN_LOAI_PHU, SO_DIEM_PHU, macDinh, dungCanh, apDungMo, damBaoMo, dinhTruc, chieu, tachNet, ve, vuaKhung, giaiDiem, duongGiong, taoTikz,
+  so, boDau, bienDich, hexRgb, toaDoChu, TEN_LOAI_PHU, SO_DIEM_PHU, catThietDien, tachTen, macDinh, dungCanh, apDungMo, damBaoMo, dinhTruc, chieu, tachNet, ve, vuaKhung, giaiDiem, duongGiong, taoTikz,
   qTuGoc, qMul, qAxis, qNorm, qToMat, matToQ, slerp, dot, len, camGoc, maTranChieu, timHinh, docNoiDung, docTuyChon, taoPhanTuVideo, veVideo, dangKy,
   // công cụ cho shape3d-catalog.js
   cc: { add, sub, mul, dot, cross, len, norm, lerp3, Luoi, daDien, khoiXoay, moTronXoay, baoLoi, datMatDay, phapNewell, dienTichDaGiac, giao2D, theTichLuoi, bienDich, so, DEG, TAU, MAT_NGANG, MAP_TRUC, dtCo }

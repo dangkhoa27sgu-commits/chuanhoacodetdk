@@ -14,7 +14,7 @@ const so1 = v => so(v, 2);
 /* ---------- đáy phẳng dùng chung ---------- */
 function daGiacDeu(n, a) { const R = a / (2 * Math.sin(Math.PI / n)), t0 = -Math.PI / 2 - Math.PI / n; return Array.from({ length: n }, (_, k) => [R * Math.cos(t0 + TAU * k / n), R * Math.sin(t0 + TAU * k / n)]); }
 const DAY_TG = [["tgdeu", "Tam giác đều"], ["tgvuongB", "Tam giác vuông tại B"], ["tgvuongA", "Tam giác vuông tại A"]];
-const DAY_TU = [["vuong", "Hình vuông"], ["chunhat", "Hình chữ nhật"], ["thoi", "Hình thoi"], ["binhhanh", "Hình bình hành"], ["thang", "Hình thang cân (AD ∥ BC)"]];
+const DAY_TU = [["tuGiac", "Tứ giác bất kỳ (không có cạnh song song)"], ["vuong", "Hình vuông"], ["chunhat", "Hình chữ nhật"], ["thoi", "Hình thoi"], ["binhhanh", "Hình bình hành"], ["thang", "Hình thang cân (AD ∥ BC)"]];
 const DAY_DEU = [["ngudeu", "Ngũ giác đều"], ["lucdeu", "Lục giác đều"], ["deuN", "Đa giác đều n cạnh"]];
 const tamNgoai = (A, B2, C) => { const d = 2 * (A[0] * (B2[1] - C[1]) + B2[0] * (C[1] - A[1]) + C[0] * (A[1] - B2[1])); if (Math.abs(d) < 1e-12) return [(A[0] + B2[0] + C[0]) / 3, (A[1] + B2[1] + C[1]) / 3];
   const a2 = A[0] ** 2 + A[1] ** 2, b2 = B2[0] ** 2 + B2[1] ** 2, c2 = C[0] ** 2 + C[1] ** 2;
@@ -30,6 +30,7 @@ function day2D(P) {
     case "thoi": { const q = [a * Math.sin(al), a * Math.cos(al)]; p = [[0, 0], q, [q[0], q[1] + a], [0, a]]; break; }
     case "binhhanh": { const q = [a * Math.sin(al), a * Math.cos(al)]; p = [[0, 0], q, [q[0], q[1] + b], [0, b]]; break; }
     case "thang": { const c = Math.min(+(P.c ?? a / 2), a * 1.6); p = [[0, 0], [b, (a - c) / 2], [b, (a + c) / 2], [0, a]]; break; }
+    case "tuGiac": { const k = a / 4; p = [[0, 0], [3.6, -.4], [3.2, 4.4], [.4, 3]].map(q => [q[0] * k, q[1] * k]); break; } // không có cặp cạnh đối nào song song
     case "ngudeu": p = daGiacDeu(5, a); break;
     case "lucdeu": p = daGiacDeu(6, a); break;
     default: p = daGiacDeu(Math.max(3, Math.min(12, Math.round(P.n || 6))), a);
@@ -49,7 +50,7 @@ const vuongTaiA = P => ["vuong", "chunhat", "tgvuongA"].includes(P.day);
 const thamDay = (ds, mac) => [
   { k: "day", ten: "Đáy", loai: "chon", mac, ds },
   { k: "n", ten: "Số cạnh đáy n", loai: "so", min: 3, max: 12, buoc: 1, mac: 7, hien: P => P.day === "deuN" },
-  { k: "a", ten: P => ["tgdeu", "vuong", "thoi", "ngudeu", "lucdeu", "deuN"].includes(P.day) ? "Cạnh đáy a" : P.day === "thang" ? "AD = a (đáy lớn)" : "AB = a", loai: "so", min: .5, max: 8, buoc: .1, mac: 4 },
+  { k: "a", ten: P => ["tgdeu", "vuong", "thoi", "ngudeu", "lucdeu", "deuN"].includes(P.day) ? "Cạnh đáy a" : P.day === "thang" ? "AD = a (đáy lớn)" : P.day === "tuGiac" ? "Kích thước đáy" : "AB = a", loai: "so", min: .5, max: 8, buoc: .1, mac: 4 },
   { k: "b", ten: P => P.day === "thang" ? "Khoảng cách giữa AD và BC" : P.day === "tgvuongA" ? "AC = b" : P.day === "tgvuongB" ? "BC = b" : "AD = b", loai: "so", min: .5, max: 8, buoc: .1, mac: 3, hien: P => ["chunhat", "binhhanh", "thang", "tgvuongA", "tgvuongB"].includes(P.day) },
   { k: "c", ten: "BC = c (đáy nhỏ)", loai: "so", min: .5, max: 8, buoc: .1, mac: 2, hien: P => P.day === "thang" },
   { k: "goc", ten: "Góc BAD", don: "°", loai: "so", min: 30, max: 150, buoc: 1, mac: 60, hien: P => P.day === "thoi" || P.day === "binhhanh" }
@@ -58,17 +59,20 @@ const thamDay = (ds, mac) => [
 /* ======================= NHÓM 1 — KHỐI ĐA DIỆN ======================= */
 /* ---- Hình chóp đáy bất kỳ ---- */
 B.chop = {
-  ten: P => { const d = day2D(P), deu = d.deu && P.chan === "tam"; return "Hình chóp " + tenDay(d) + (deu ? " đều" : "") + " S." + d.ten.join(""); },
+  ten: P => { const d = day2D(P), deu = d.deu && P.chan === "tam", t = d.ten.join(""); return "Hình chóp " + tenDay(d) + (deu ? " đều" : "") + " S." + t + (P.chan === "A" ? " có SA ⊥ (" + t + ")" : P.chan === "trungAB" ? " có (SAB) ⊥ (" + t + ")" : ""); },
   tham: [...thamDay([...DAY_TG, ...DAY_TU, ...DAY_DEU], "chunhat"),
     { k: "h", ten: "Chiều cao h (kéo đỉnh S trên hình để nâng hạ)", loai: "so", min: 1, max: 10, buoc: .1, mac: 5 },
-    { k: "chan", ten: "Chân đường cao", loai: "chon", mac: "tam", ds: [["tam", "Tâm O của đáy"], ["A", "Trùng A (SA ⊥ đáy)"]] }],
+    { k: "chan", ten: "Vị trí đỉnh S", loai: "chon", mac: "tam", ds: [["tam", "Trên tâm O của đáy (chân đường cao là O)"], ["A", "SA vuông góc với đáy"], ["trungAB", "Mặt bên (SAB) vuông góc với đáy (chân H là trung điểm AB)"], ["lech", "Vị trí bất kỳ (không đặc biệt)"]] }],
   dung(P) {
-    const d = day2D(P), n = d.n, base = d.p.map(q => [q[0], q[1], 0]), H = P.chan === "A" ? base[0] : [0, 0, 0], S = [H[0], H[1], +P.h];
+    const d = day2D(P), n = d.n, base = d.p.map(q => [q[0], q[1], 0]), Hab = mul(add(base[0], base[1]), .5);
+    const H = P.chan === "A" ? base[0] : P.chan === "trungAB" ? Hab : P.chan === "lech" ? base.reduce((s2, p, i) => add(s2, mul(p, [.38, .12, .2, .3, .1, .1][i] || 0)), [0, 0, 0]).map((x, i, arr) => i < 2 ? x / ([.38, .12, .2, .3, .1, .1].slice(0, n).reduce((u, v) => u + v, 0)) : 0) : [0, 0, 0], S = [H[0], H[1], +P.h];
     const mats = [{ ds: [...Array(n).keys()], ten: "Mặt đáy " + d.ten.join("") }, ...d.ten.map((t, i) => ({ ds: [n, i, (i + 1) % n], ten: "Mặt bên S" + t + d.ten[(i + 1) % n] }))];
     const L = daDien(new Luoi(), [...d.ten, "S"], [...base, S], mats);
     if (P.chan === "tam") { L.phu.push([S, [0, 0, 0]]); if (n === 4) L.phu.push([base[0], base[2]], [base[1], base[3]]); L.nhan.push(["O", [0, 0, 0]]); L.vuong = [[[0, 0, 0], S, base[0]]]; }
-    else L.vuong = [[base[0], S, base[1]], [base[0], S, base[n - 1]]];
-    L.V = d.S * P.h / 3; L.ct = "V = ⅓ · S(đáy) · h"; L.tt = "S(đáy) = " + so1(d.S) + (P.chan === "tam" ? " · đường cao SO, O là " + d.tenTam : " · đường cao SA");
+    else if (P.chan === "A") L.vuong = [[base[0], S, base[1]], [base[0], S, base[n - 1]]];
+    else if (P.chan === "trungAB") { L.phu.push([S, Hab]); L.nhan.push(["H", Hab]); L.vuong = [[Hab, S, base[1]]]; }
+    L.tenDay = d.ten.slice(); L.tenTren = ["S"];
+    L.V = d.S * P.h / 3; L.ct = "V = ⅓ · S(đáy) · h"; L.tt = "S(đáy) = " + so1(d.S) + (P.chan === "tam" ? " · đường cao SO, O là " + d.tenTam : P.chan === "A" ? " · đường cao SA" : P.chan === "trungAB" ? " · (SAB) ⊥ đáy theo giao tuyến AB, đường cao SH với H là trung điểm AB" + (Math.abs(P.h - Math.sqrt(3) / 2 * Math.hypot(base[1][0] - base[0][0], base[1][1] - base[0][1])) < .06 ? " — tam giác SAB đều" : "") : " · đỉnh S ở vị trí bất kỳ");
     L.neo = [{ k: "tamDay", ten: "Tâm đáy O", p: [0, 0, 0] }, neoA(base[0], base[1], vuongTaiA(P) ? ", AD ≡ Oy, AS ≡ Oz" : "")];
     L.keo = [{ nhan: "S", k: "h", min: 1, max: 10, ten: "chiều cao h" }];
     L.mo = { goc: 0, cay: d.ten.map((_, i) => [i + 1, 0]) };
@@ -100,6 +104,7 @@ B.tuDien = {
     const L = new Luoi(); let pts, ten;
     if (P.kieu === "vuong") {
       const a = +P.a, b = +P.b, c = +P.c; pts = [[0, 0, 0], [a, 0, 0], [0, b, 0], [0, 0, c]]; ten = ["O", "A", "B", "C"];
+      L.tenDay = ["O", "A", "B"]; L.tenTren = ["C"];
       daDien(L, ten, pts, [{ ds: [0, 1, 2], ten: "Mặt OAB" }, { ds: [0, 1, 3], ten: "Mặt OAC" }, { ds: [0, 2, 3], ten: "Mặt OBC" }, { ds: [1, 2, 3], ten: "Mặt ABC" }]);
       L.vuong = [[pts[0], pts[1], pts[2]], [pts[0], pts[1], pts[3]], [pts[0], pts[2], pts[3]]];
       L.V = a * b * c / 6; L.ct = "V = ⅙ · OA · OB · OC"; L.tt = "OA, OB, OC đôi một vuông góc tại O";
@@ -113,7 +118,7 @@ B.tuDien = {
         pts = datTamGiacDay([[x, y, z], [x, -y, -z], [-x, y, -z], [-x, -y, z]], 0, 1, 2);
         L.V = 8 * x * y * z / 3; L.ct = "V = √((p²+q²−r²)(p²+r²−q²)(q²+r²−p²)) / (6√2)"; L.tt = "4 mặt là 4 tam giác bằng nhau";
       }
-      ten = ["A", "B", "C", "D"];
+      ten = ["A", "B", "C", "D"]; L.tenDay = ["A", "B", "C"]; L.tenTren = ["D"];
       daDien(L, ten, pts, [{ ds: [0, 1, 2], ten: "Mặt đáy ABC" }, { ds: [0, 1, 3], ten: "Mặt ABD" }, { ds: [1, 2, 3], ten: "Mặt BCD" }, { ds: [2, 0, 3], ten: "Mặt CAD" }]);
       const G = [0, 0, 0]; if (P.kieu === "deu") { L.phu.push([pts[3], G]); L.nhan.push(["G", G]); }
       L.neo = [{ k: "tamDay", ten: "Tâm đường tròn ngoại tiếp đáy ABC", p: [0, 0, 0] }, neoA(pts[0], pts[1])];
@@ -135,6 +140,7 @@ function dungLangTru(P, d, ten) {
   const mats = [{ ds: [...Array(n).keys()], ten: "Mặt đáy " + d.ten.join("") }, { ds: [...Array(n).keys()].map(i => n + i), ten: "Mặt đáy " + tenT.join("") },
     ...d.ten.map((t, i) => { const j = (i + 1) % n; return { ds: [i, j, n + j, n + i], ten: "Mặt bên " + t + d.ten[j] + tenT[j] + tenT[i] }; })];
   const L = daDien(new Luoi(), [...d.ten, ...tenT], [...duoi, ...tren], mats);
+  L.tenDay = d.ten.slice(); L.tenTren = tenT.slice();
   if (xien) { const Hc = [Hx[0], Hx[1], 0]; L.phu.push([tren[0], Hc], [duoi[0], Hc]); L.nhan.push(["H", Hc]); L.vuong = [[Hc, tren[0], duoi[0]]];
     L.tt = "A'H ⊥ (" + d.ten.join("") + "), H thuộc mặt đáy" + (kx === "tam" ? " và là tâm O của đáy" : kx === "trung" ? " và là trung điểm " + d.ten[1] + d.ten[2] : "") + " · góc giữa AA' và đáy = " + so1(Math.atan2(h, Math.hypot(v[0], v[1])) / DEG) + "°"; }
   L.V = d.S * h; L.ct = "V = S(đáy) · h"; if (!L.tt) L.tt = "S(đáy) = " + so1(d.S) + ", cạnh bên vuông góc với đáy";
@@ -176,6 +182,7 @@ B.chopCut = {
     const mats = [{ ds: [...Array(n).keys()], ten: "Mặt đáy lớn " + d.ten.join("") }, { ds: [...Array(n).keys()].map(i => n + i), ten: "Mặt đáy nhỏ " + tenT.join("") },
       ...d.ten.map((t, i) => { const j = (i + 1) % n; return { ds: [i, j, n + j, n + i], ten: "Mặt bên " + t + d.ten[j] + tenT[j] + tenT[i] }; })];
     const L = daDien(new Luoi(), [...d.ten, ...tenT], [...duoi, ...tren], mats);
+    L.tenDay = d.ten.slice(); L.tenTren = tenT.slice();
     if (P.chan === "tam") { L.phu.push([[0, 0, 0], [0, 0, h]]); L.nhan.push(["O", [0, 0, 0]], ["O'", [0, 0, h]]); L.vuong = [[[0, 0, 0], [0, 0, h], duoi[0]]]; }
     const S1 = d.S, S2 = d.S * k * k; L.V = h / 3 * (S1 + S2 + Math.sqrt(S1 * S2)); L.ct = "V = h/3 · (S + S' + √(S·S'))"; L.tt = "S = " + so1(S1) + ", S' = " + so1(S2);
     L.neo = [{ k: "tamDay", ten: "Tâm đáy lớn O", p: [0, 0, 0] }, neoA(duoi[0], duoi[1])];
@@ -208,7 +215,7 @@ B.platon = {
       const h = a / Math.SQRT2, A = [-a / 2, -a / 2, 0], Bv = [a / 2, -a / 2, 0], C = [a / 2, a / 2, 0], D = [-a / 2, a / 2, 0], E = [0, 0, h], F = [0, 0, -h];
       const day = ["A", "B", "C", "D"], mats = [];
       for (const [dn, di] of [["E", 4], ["F", 5]]) for (let i = 0; i < 4; i++) mats.push({ ds: [di, i, (i + 1) % 4], ten: "Mặt " + dn + day[i] + day[(i + 1) % 4] });
-      daDien(L, ["A", "B", "C", "D", "E", "F"], [A, Bv, C, D, E, F], mats);
+      daDien(L, ["A", "B", "C", "D", "E", "F"], [A, Bv, C, D, E, F], mats); L.tenDay = ["A", "B", "C", "D"]; L.tenTren = ["E", "F"];
       L.phu.push([E, F], [A, C], [Bv, D]); L.nhan.push(["I", [0, 0, 0]]);
       L.V = Math.SQRT2 / 3 * a ** 3; L.ct = "V = a³√2 / 3"; L.tt = "6 đỉnh, 12 cạnh, 8 mặt · loại {3; 4}";
       L.neo = [{ k: "tam", ten: "Tâm I của khối", p: [0, 0, 0] }, { k: "dinhA", ten: "Đỉnh A", p: A }];
@@ -264,7 +271,7 @@ B.ltCut = {
     const mats = [{ ds: [...Array(n).keys()], ten: "Mặt đáy " + d.ten.join("") }, { ds: [...Array(n).keys()].map(i => n + i), ten: "Mặt cắt " + tenT.join("") },
       ...d.ten.map((tt, i) => { const j = (i + 1) % n; return { ds: [i, j, n + j, n + i], ten: "Mặt bên " + tt + d.ten[j] + tenT[j] + tenT[i] }; })];
     const L = daDien(new Luoi(), [...d.ten, ...tenT], [...duoi, ...tren], mats);
-    L.ghiChu = L0.join(" "); L.ct = "V = S(đáy) · h_tb (h_tb: chiều cao tại trọng tâm đáy)";
+    L.tenDay = d.ten.slice(); L.tenTren = tenT.slice(); L.ghiChu = L0.join(" "); L.ct = "V = S(đáy) · h_tb (h_tb: chiều cao tại trọng tâm đáy)";
     L.tt = "Các cạnh bên AA', BB', … vuông góc đáy nhưng dài khác nhau";
     L.neo = [{ k: "tamDay", ten: "Tâm đáy O", p: [0, 0, 0] }, neoA(duoi[0], duoi[1])];
     L.moTuDong = true;
@@ -283,6 +290,7 @@ B.nem = {
     const E = P.kieu === "nem" ? [0, 0, h] : [a / 2, (b - c) / 2, h], F = P.kieu === "nem" ? [0, b, h] : [a / 2, (b + c) / 2, h];
     const pts = [[0, 0, 0], [a, 0, 0], [a, b, 0], [0, b, 0], E, F].map(p => [p[0] - a / 2, p[1] - b / 2, p[2]]);
     const L = daDien(new Luoi(), ["A", "B", "C", "D", "E", "F"], pts, [{ ds: [0, 1, 2, 3], ten: "Mặt đáy ABCD" }, { ds: [0, 1, 4], ten: "Mặt ABE" }, { ds: [1, 2, 5, 4], ten: "Mặt BCFE" }, { ds: [2, 3, 5], ten: "Mặt CDF" }, { ds: [3, 0, 4, 5], ten: "Mặt DAEF" }]);
+    L.tenDay = ["A", "B", "C", "D"]; L.tenTren = ["E", "F"];
     L.ct = "V = h/6 · (S₁ + 4·S_giữa + S₂) (công thức khối lăng trụ cụt tổng quát)"; L.tt = P.kieu === "nem" ? "V = ½ · a · b · h" : "V = a·h·(2b + c)/6";
     L.V = P.kieu === "nem" ? a * b * h / 2 : a * h * (2 * b + c) / 6;
     L.neo = [{ k: "tamDay", ten: "Tâm đáy", p: [0, 0, 0] }, { k: "dinhA", ten: "Đỉnh A — AB ≡ Ox, AD ≡ Oy", p: pts[0] }];
@@ -299,7 +307,7 @@ B.songChop = {
     const n = Math.round(+P.n), d = daGiacDeu(n, +P.a), ten = CHU.slice(0, n), S = [0, 0, +P.h1], S2 = [0, 0, -P.h2];
     const pts = [...d.map(q => [q[0], q[1], 0]), S, S2], mats = [];
     ten.forEach((t, i) => { const j = (i + 1) % n; mats.push({ ds: [n, i, j], ten: "Mặt S" + t + ten[j] }, { ds: [n + 1, i, j], ten: "Mặt S'" + t + ten[j] }); });
-    const L = daDien(new Luoi(), [...ten, "S", "S'"], pts, mats);
+    const L = daDien(new Luoi(), [...ten, "S", "S'"], pts, mats); L.tenDay = ten.slice(); L.tenTren = ["S", "S'"];
     L.phu.push([S, S2]); L.nhan.push(["O", [0, 0, 0]]);
     const Sd = Math.abs(dtCo(d)); L.V = Sd * (+P.h1 + +P.h2) / 3; L.ct = "V = ⅓ · S(đáy) · SS'"; L.tt = "Hai chóp đều chung đáy " + ten.join("");
     L.neo = [{ k: "tam", ten: "Tâm O của đáy chung", p: [0, 0, 0] }, neoA(pts[0], pts[1])];
@@ -326,7 +334,7 @@ B.daLom = {
     const L = new Luoi(), a = +P.a, b = +P.b, h = +P.h;
     if (P.kieu === "chuL") {
       const c = Math.min(+P.c, b - .2), e = Math.min(+P.e, a - .2), poly = [[0, 0], [a, 0], [a, c], [e, c], [e, b], [0, b]].map(q => [q[0] - a / 2, q[1] - b / 2]);
-      langTruTuDaGiac(L, poly, h, ["A", "B", "C", "D", "E", "F"]);
+      langTruTuDaGiac(L, poly, h, ["A", "B", "C", "D", "E", "F"]); L.tenDay = ["A", "B", "C", "D", "E", "F"]; L.tenTren = ["A'", "B'", "C'", "D'", "E'", "F'"];
       L.V = h * (a * b - (a - e) * (b - c)); L.ct = "V = S(đáy chữ L) · h"; L.tt = "S(đáy) = ab − (a − e)(b − c) = " + so1(a * b - (a - e) * (b - c));
       L.neo = [{ k: "tam", ten: "Tâm hình hộp bao", p: [0, 0, 0] }, { k: "dinhA", ten: "Đỉnh A — AB ≡ Ox, AF ≡ Oy", p: [poly[0][0], poly[0][1], 0] }];
     } else if (P.kieu === "khe") {
@@ -362,7 +370,7 @@ const GOC_NGANG = K.qNorm(K.qMul(K.qAxis([1, 0, 0], 14 * DEG), K.qAxis([0, 1, 0]
 const gocTruc = P => ({ q: P.truc === "x" || P.truc === "y" ? GOC_NGANG : GOC_DUNG });
 const phanQuet = P => Math.min(360, +(P.quet == null ? 360 : P.quet)) / 360;
 function nhanXoay(L, X, ds) { ds.forEach(([t, r, s, du]) => { if (du == null || du <= X.phi + 1e-6) L.nhan.push([t, X.P(r, s, X.du + (du || 0))]); }); }
-function cung(X, r, s) { const out = []; for (let k = 0; k <= X.nk; k++) out.push(X.P(r, s, X.du + X.phi * k / X.nk)); return out; }
+function cung(X, r, s, n) { n = n || X.nk; const out = []; for (let k = 0; k <= n; k++) out.push(X.P(r, s, X.du + X.phi * k / n)); return out; }
 B.tru = {
   ten: () => "Hình trụ", quet: true, gocSgk: gocTruc,
   tham: [{ k: "r", ten: "Bán kính đáy r", loai: "so", min: .3, max: 5, buoc: .1, mac: 2 }, { k: "h", ten: "Chiều cao h", loai: "so", min: .3, max: 10, buoc: .1, mac: 4 }, TRUC],
@@ -412,8 +420,9 @@ B.cau = {
   tham: [{ k: "R", ten: "Bán kính R", loai: "so", min: .5, max: 6, buoc: .1, mac: 3 }, TRUC],
   dung(P) {
     const R = +P.R, L = new Luoi();
-    const X = khoiXoay(L, { doan: [{ ten: "Mặt cầu", pts: cungTron(R, -Math.PI / 2, Math.PI / 2, 36).map(([s, r]) => [Math.max(0, s), r]), soVT: 6 }], quet: P.quet, truc: P.truc });
-    L.canh.push(cung(X, R, 0));
+    const X = khoiXoay(L, { doan: [{ ten: "Mặt cầu", pts: cungTron(R, -Math.PI / 2, Math.PI / 2, 48).map(([s, r]) => [Math.max(0, s), r]), soVT: 6 }], quet: P.quet, truc: P.truc, nu: 96 });
+    L.canh.push(cung(X, R, 0, 360));
+    if (X.day) { L.g[0].boVien = true; L.cauVien = { tam: [0, 0, 0], R }; } // viền ngoài = đường tròn lớn chính xác, xích đạo tiếp xúc khít
     nhanXoay(L, X, [["O", 0, 0], ["A", R, 0, Math.PI / 2]]);
     if (X.phi >= Math.PI / 2) L.phu.push([X.P(0, 0, 0), X.P(R, 0, X.du + Math.PI / 2)]);
     const f = phanQuet(P); L.V = 4 / 3 * Math.PI * R ** 3 * f; L.ct = "V = 4/3 · π · R³"; L.tt = "S(mặt cầu) = 4πR² ≈ " + so1(4 * Math.PI * R * R) + " · đường tròn lớn vẽ đậm";
@@ -624,6 +633,25 @@ B.steinmetz = { gocSgk: () => ({ q: K.qTuGoc(32, 24) }),
     return L;
   }
 };
+/* ---- Mặt yên ngựa (paraboloid hyperbolic) z = x²/a² − y²/b² ---- */
+B.yenNgua = {
+  ten: () => "Hình yên ngựa (paraboloid hyperbolic)", gocSgk: () => ({ q: K.qTuGoc(38, 30) }),
+  tham: [{ k: "a", ten: "Hệ số a (độ mở theo Ox)", loai: "so", min: .8, max: 5, buoc: .1, mac: 2 }, { k: "b", ten: "Hệ số b (độ mở theo Oy)", loai: "so", min: .8, max: 5, buoc: .1, mac: 2 },
+    { k: "X", ten: "Miền vẽ: |x| ≤ X", loai: "so", min: 1, max: 5, buoc: .1, mac: 2.5 }, { k: "Y", ten: "Miền vẽ: |y| ≤ Y", loai: "so", min: 1, max: 5, buoc: .1, mac: 2.5 }],
+  dung(P) {
+    const a = +P.a, b = +P.b, X = +P.X, Y = +P.Y, N = 40, z = (x, y) => x * x / (a * a) - y * y / (b * b), L = new Luoi();
+    const g = L.mat("Mặt yên ngựa", { tron: true }), xy = (i, j) => [-X + 2 * X * i / N, -Y + 2 * Y * j / N];
+    const id = L.luoiUV(N, N, (i, j) => { const [x, y] = xy(i, j); return [x, y, z(x, y)]; }, g, p => [-2 * p[0] / (a * a), 2 * p[1] / (b * b), 1], false);
+    const v = (i, j) => L.v[id[i][j]];
+    L.canh.push(Array.from({ length: N + 1 }, (_, i) => v(i, 0)), Array.from({ length: N + 1 }, (_, i) => v(i, N)), Array.from({ length: N + 1 }, (_, j) => v(0, j)), Array.from({ length: N + 1 }, (_, j) => v(N, j)));
+    for (let k = 5; k < N; k += 5) { L.wire.push(Array.from({ length: N + 1 }, (_, j) => v(k, j)), Array.from({ length: N + 1 }, (_, i) => v(i, k))); }
+    L.noiBat.push(Array.from({ length: N + 1 }, (_, i) => v(i, N / 2)), Array.from({ length: N + 1 }, (_, j) => v(N / 2, j)));
+    L.nhan.push(["O", [0, 0, 0]]); L.haiMat = true; L.luoiLuon = true; L.khongKhoi = true;
+    L.ct = "z = x²/a² − y²/b²"; L.tt = "Cắt bởi mặt phẳng y = 0: parabol quay lên; x = 0: parabol quay xuống (hai đường cam). O là điểm yên ngựa.";
+    L.neo = [{ k: "goc", ten: "Điểm yên ngựa O", p: [0, 0, 0] }];
+    return L;
+  }
+};
 /* ---- Khối tròn xoay sinh bởi đồ thị (y = f(x) hoặc x = g(y)) quanh Ox hoặc Oy ---- */
 const MAU_F = [
   ["sqrt(x)", 0, 4, "y = √x trên [0; 4] (SGK)", "yf"],
@@ -780,7 +808,9 @@ const MUC = [
   ["tdGanDeu", "dadien", "Hình chóp", "Tứ diện gần đều", "chop", "tuDien", { kieu: "gan" }, "tu dien gan deu"],
   ["chop3deu", "dadien", "Hình chóp", "Hình chóp tam giác đều", "chop", "chop", { day: "tgdeu", chan: "tam", h: 4.5 }, "chop deu tam giac s.abc"],
   ["chop3", "dadien", "Hình chóp", "Hình chóp tam giác S.ABC", "chop", "chop", { day: "tgvuongB", chan: "A", a: 3.5, b: 4 }, "chop tam giac sa vuong goc"],
-  ["chop4", "dadien", "Hình chóp", "Hình chóp tứ giác S.ABCD", "chop", "chop", { day: "chunhat" }, "chop tu giac vuong chu nhat thoi binh hanh thang s.abcd"],
+  ["chop4", "dadien", "Hình chóp", "Hình chóp tứ giác S.ABCD", "chop", "chop", { day: "tuGiac", chan: "lech", a: 4.4 }, "chop tu giac bat ky s.abcd"],
+  ["chopSA", "dadien", "Hình chóp", "Hình chóp S.ABCD có SA ⊥ đáy", "chop", "chop", { day: "binhhanh", chan: "A", a: 4, b: 3.6, goc: 70, h: 4.5 }, "chop sa vuong goc day binh hanh"],
+  ["chopMatBen", "dadien", "Hình chóp", "Hình chóp có mặt bên vuông góc đáy", "chop", "chop", { day: "vuong", chan: "trungAB", a: 4, h: 3.5 }, "chop mat ben vuong goc day sab"],
   ["chop4deu", "dadien", "Hình chóp", "Hình chóp tứ giác đều", "chop", "chop", { day: "vuong", chan: "tam" }, "chop deu"],
   ["chop5", "dadien", "Hình chóp", "Hình chóp ngũ giác đều", "chop", "chop", { day: "ngudeu", chan: "tam", a: 3 }, "chop ngu giac"],
   ["chop6", "dadien", "Hình chóp", "Hình chóp lục giác đều", "chop", "chop", { day: "lucdeu", chan: "tam", a: 2.6 }, "chop luc giac"],
@@ -831,6 +861,7 @@ const MUC = [
   ["hyperboloid", "ungdung", "Mặt bậc hai & xuyến", "Hyperboloid một tầng", "tru", "hyperboloid", {}, "hyperboloid thap giai nhiet"],
   ["xuyen", "ungdung", "Mặt bậc hai & xuyến", "Hình xuyến (torus)", "xuyen", "xuyen", {}, "xuyen torus phao banh donut"],
   ["steinmetz", "ungdung", "Mặt bậc hai & xuyến", "Khối Steinmetz (giao hai trụ)", "tru", "steinmetz", {}, "steinmetz giao hai hinh tru"],
+  ["yenNgua", "ungdung", "Mặt bậc hai & xuyến", "Hình yên ngựa (paraboloid hyperbolic)", "ham", "yenNgua", {}, "yen ngua paraboloid hyperbolic mat cong"],
   ["quayHam", "ungdung", "Khối tạo bởi đồ thị", "Quay đồ thị quanh Ox / Oy", "ham", "quayHam", {}, "tich phan the tich quay quanh ox oy ham so y = f(x) x = g(y)"],
   ["vatThe", "ungdung", "Khối tạo bởi đồ thị", "Vật thực tế: trống đồng, thùng, chai", "vat", "vatThe", {}, "trong dong thung ruou chai lo binh hoa thuc te"],
   ["thietDien", "ungdung", "Khối tạo bởi đồ thị", "Thiết diện S(x): mái vòm, đáy tròn", "ham", "thietDien", {}, "thiet dien s(x) mai vom"]
