@@ -20,7 +20,7 @@ const tamNgoai = (A, B2, C) => { const d = 2 * (A[0] * (B2[1] - C[1]) + B2[0] * 
   const a2 = A[0] ** 2 + A[1] ** 2, b2 = B2[0] ** 2 + B2[1] ** 2, c2 = C[0] ** 2 + C[1] ** 2;
   return [(a2 * (B2[1] - C[1]) + b2 * (C[1] - A[1]) + c2 * (A[1] - B2[1])) / d, (a2 * (C[0] - B2[0]) + b2 * (A[0] - C[0]) + c2 * (B2[0] - A[0])) / d]; };
 function day2D(P) {
-  const a = +P.a, b = +(P.b ?? a), al = (P.goc ?? 60) * DEG; let p, tam, tenTam = "tâm đáy";
+  const a = +P.a, b = +(P.b ?? a), al = (180 - (P.goc ?? 120)) * DEG; /* goc = góc ABC; góc BAD = 180° − ABC */ let p, tam, tenTam = "tâm đáy";
   switch (P.day) {
     case "tgdeu": p = daGiacDeu(3, a); break;
     case "tgvuongB": p = [[0, 0], [a, 0], [a, b]]; break;
@@ -53,7 +53,7 @@ const thamDay = (ds, mac) => [
   { k: "a", ten: P => ["tgdeu", "vuong", "thoi", "ngudeu", "lucdeu", "deuN"].includes(P.day) ? "Cạnh đáy a" : P.day === "thang" ? "AD = a (đáy lớn)" : P.day === "tuGiac" ? "Kích thước đáy" : "AB = a", loai: "so", min: .5, max: 8, buoc: .1, mac: 4 },
   { k: "b", ten: P => P.day === "thang" ? "Khoảng cách giữa AD và BC" : P.day === "tgvuongA" ? "AC = b" : P.day === "tgvuongB" ? "BC = b" : "AD = b", loai: "so", min: .5, max: 8, buoc: .1, mac: 3, hien: P => ["chunhat", "binhhanh", "thang", "tgvuongA", "tgvuongB"].includes(P.day) },
   { k: "c", ten: "BC = c (đáy nhỏ)", loai: "so", min: .5, max: 8, buoc: .1, mac: 2, hien: P => P.day === "thang" },
-  { k: "goc", ten: "Góc BAD", don: "°", loai: "so", min: 30, max: 150, buoc: 1, mac: 60, hien: P => P.day === "thoi" || P.day === "binhhanh" }
+  { k: "goc", ten: "Góc ABC (kéo để chỉnh độ lài của đáy)", don: "°", loai: "so", min: 30, max: 150, buoc: 1, mac: 120, hien: P => P.day === "thoi" || P.day === "binhhanh" }
 ];
 
 /* ======================= NHÓM 1 — KHỐI ĐA DIỆN ======================= */
@@ -809,7 +809,7 @@ const MUC = [
   ["chop3deu", "dadien", "Hình chóp", "Hình chóp tam giác đều", "chop", "chop", { day: "tgdeu", chan: "tam", h: 4.5 }, "chop deu tam giac s.abc"],
   ["chop3", "dadien", "Hình chóp", "Hình chóp tam giác S.ABC", "chop", "chop", { day: "tgvuongB", chan: "A", a: 3.5, b: 4 }, "chop tam giac sa vuong goc"],
   ["chop4", "dadien", "Hình chóp", "Hình chóp tứ giác S.ABCD", "chop", "chop", { day: "tuGiac", chan: "lech", a: 4.4 }, "chop tu giac bat ky s.abcd"],
-  ["chopSA", "dadien", "Hình chóp", "Hình chóp S.ABCD có SA ⊥ đáy", "chop", "chop", { day: "binhhanh", chan: "A", a: 4, b: 3.6, goc: 70, h: 4.5 }, "chop sa vuong goc day binh hanh"],
+  ["chopSA", "dadien", "Hình chóp", "Hình chóp S.ABCD có SA ⊥ đáy", "chop", "chop", { day: "binhhanh", chan: "A", a: 3, b: 4, goc: 90, h: 3.5 }, "chop sa vuong goc day binh hanh"],
   ["chopMatBen", "dadien", "Hình chóp", "Hình chóp có mặt bên vuông góc đáy", "chop", "chop", { day: "vuong", chan: "trungAB", a: 4, h: 3.5 }, "chop mat ben vuong goc day sab"],
   ["chop4deu", "dadien", "Hình chóp", "Hình chóp tứ giác đều", "chop", "chop", { day: "vuong", chan: "tam" }, "chop deu"],
   ["chop5", "dadien", "Hình chóp", "Hình chóp ngũ giác đều", "chop", "chop", { day: "ngudeu", chan: "tam", a: 3 }, "chop ngu giac"],

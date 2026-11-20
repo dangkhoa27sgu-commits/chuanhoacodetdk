@@ -528,11 +528,14 @@ function xepNhan(ctx, ds, segs, cham, W, H, k, font, nhanh) {
   for (const it of ds) {
     const w = ctx.measureText(it.t).width + 3 * k, h = 13 * k, g0 = Math.atan2(it.dy, it.dx);
     let best = null, bs = 1e18;
-    for (const rr of RADII) for (let j = 0; j < NG; j++) {
-      const dg = (j % 2 ? 1 : -1) * Math.ceil(j / 2) * (360 / NG) * DEG, g = g0 + dg;
+    // ứng viên: các hướng "đẹp" (bội 45°, ưu tiên nhẹ — giống TikZ viết tay) + các hướng quanh hướng tự nhiên g0
+    const UV = [...Array(8).keys()].map(j => { let dg = j * 45 * DEG - g0; dg = Math.atan2(Math.sin(dg), Math.cos(dg)); return [dg, -3]; })
+      .concat([...Array(NG).keys()].map(j => [(j % 2 ? 1 : -1) * Math.ceil(j / 2) * (360 / NG) * DEG, 0]));
+    for (const rr of RADII) for (const [dg, thuong] of UV) {
+      const g = g0 + dg;
       const r = rr * k + (Math.abs(Math.cos(g)) * w / 2 + Math.abs(Math.sin(g)) * h / 2) * .55;
       const cx = it.x + Math.cos(g) * r, cy = it.y + Math.sin(g) * r, x0 = cx - w / 2, x1 = cx + w / 2, y0 = cy - h / 2, y1 = cy + h / 2;
-      let s = Math.abs(dg) * 9 + (rr - RADII[0]) * 1.5 * (it.uuTien || 1);
+      let s = Math.abs(dg) * 9 + thuong + (rr - RADII[0]) * 1.5 * (it.uuTien || 1);
       if (x0 < 2 || y0 < 2 || x1 > W - 2 || y1 > H - 2) s += 500;
       for (const b of daDat) if (x0 < b[2] && x1 > b[0] && y0 < b[3] && y1 > b[1]) s += 1000;
       for (const p of cham) if (p !== it && p.x > x0 - 2 * k && p.x < x1 + 2 * k && p.y > y0 - 2 * k && p.y < y1 + 2 * k) s += 350;
@@ -693,7 +696,9 @@ function taoTikz(S, F, o) {
   const [r0, r1] = F.R, P2 = p => [dot(r0, p), dot(r1, p)];
   const pts = S.v.map(P2); (o.diem || []).forEach(d => pts.push(P2(d.p))); if (o.oxyz) { pts.push([0, 0]); F.truc.forEach(a => pts.push(P2(a.tip))); }
   let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9; for (const [x, y] of pts) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
-  const s = Math.min(9 / ((x1 - x0) || 1), 8 / ((y1 - y0) || 1));
+  const sVua = Math.min(9 / ((x1 - x0) || 1), 8 / ((y1 - y0) || 1));
+  // giữ đúng kích thước thật (scale 1:1 như TikZ viết tay) khi hình vừa khổ; chỉ co/giãn khi quá to hoặc quá nhỏ
+  const s = (x1 - x0) <= 11 && (y1 - y0) <= 10 && Math.max(x1 - x0, y1 - y0) >= 3 ? 1 : sVua;
   const T2 = p => { const q = P2(p); return [(q[0] - x0) * s, (q[1] - y0) * s]; };
   const f = v => { let x = Math.round(v * 100) / 100; if (Math.abs(x) < .005) x = 0; return String(x); };
   // khi trải phẳng một đỉnh có nhiều bản sao (S, S2, S3…): tên toạ độ riêng, nhãn vẫn là S
