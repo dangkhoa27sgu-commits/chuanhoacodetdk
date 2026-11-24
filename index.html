@@ -6,7 +6,7 @@
 <title>KMath</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&family=Noto+Serif:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Archivo+Black&display=swap">
-<link rel="stylesheet" href="style.css?v=20261124t">
+<link rel="stylesheet" href="style.css?v=20261124u">
 <link rel="stylesheet" href="shape3d.css?v=20261120e">
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700;800;900&display=swap">
@@ -1643,19 +1643,43 @@
 						<label class="vdCong" id="trdLGHop" hidden><input type="checkbox" id="trdLG"><i aria-hidden="true"></i>Kèm file lời giải sắp theo thứ tự câu của từng mã</label>
 					</div>
 				</details>
+				<details class="mdThe tdKhoi" open>
+					<summary><b>③ Mẫu đề &amp; xuất bản</b><span>khuôn mẫu · phiếu tô · app chấm</span></summary>
+					<div class="trdNhom"><div class="trdNhan">Thông tin đầu đề</div>
+						<div class="trdMeta" id="trdMeta"></div>
+					</div>
+					<div class="trdNhom"><div class="trdNhan">Khuôn mẫu</div>
+						<label class="vdCong"><input type="checkbox" id="trdGoiMau"><i aria-hidden="true"></i>Gói đề vào khuôn mẫu <small>(LaTeX: main.tex · Word: word mẫu.docx — điền Mã đề, số trang tự động)</small></label>
+						<div class="trdHang"><span class="trdMauTen" id="trdMauTen"></span><button class="vdNutNho" type="button" id="trdMauNap">Nạp khuôn khác…</button><button class="vdNutNho" type="button" id="trdMauGoc">Dùng khuôn gốc</button><input type="file" id="trdMauTep" accept=".tex,.docx" hidden></div>
+						<div id="trdTexHop" hidden>
+							<div class="trdHang"><span>Chế độ ex_test</span><div class="vdSeg" id="trdCheDo" role="group" aria-label="Chế độ ex_test"><button type="button" data-v="dethi">[dethi] Đề học sinh</button><button type="button" data-v="loigiai">[loigiai] Lời giải</button><button type="button" data-v="solcolor">[solcolor] Tô đáp án</button></div></div>
+							<label class="vdCong"><input type="checkbox" id="trdAnBang"><i aria-hidden="true"></i>Hiện bảng đáp án cuối mỗi đề <small>(\hienbangdapan / \anbangdapan)</small></label>
+						</div>
+					</div>
+					<div class="trdNhom"><div class="trdNhan">Phiếu tô trắc nghiệm</div>
+						<div class="trdHang"><select class="mdO trdPhieuChon" id="trdPhieu" aria-label="Mẫu phiếu tô"><option value="">Không xuất phiếu tô</option><option value="tnm">Phiếu TNMarker</option><option value="azota">Phiếu Azota</option><option value="bgd">Phiếu Bộ GD (đen trắng)</option></select><button class="vdNutNho" type="button" id="trdXemPhieu">🖨 Xem / In phiếu (mã đang xem)</button></div>
+						<label class="vdCong" id="trdInPhieuHop" hidden><input type="checkbox" id="trdInPhieu"><i aria-hidden="true"></i>\input phiếu tô ngay sau mỗi đề trong main.tex</label>
+						<p class="vdGhi">Phiếu tô sẵn mã đề; in khổ A4, tỉ lệ 100%, lề “Không” để máy chấm đọc đúng ô định vị.</p>
+					</div>
+					<div class="trdNhom"><div class="trdNhan">Đáp án cho app chấm</div>
+						<div class="trdHang trdApp"><span>Excel</span><div class="txChips" id="trdXlsDs"></div></div>
+						<div class="trdHang trdApp"><span>Mã QR</span><div class="txChips" id="trdQrDs"></div></div>
+					</div>
+				</details>
 				<button class="gtBatDau tdTao" type="button" id="trdChay" disabled>⟳ Trộn &amp; xác thực</button>
 				<p class="vdGhi" id="trdTT"></p>
 			</section>
 			<section class="tdPhai">
 				<div class="tdPhaiDau">
 					<div class="trdMaXem" id="trdMaXem" role="tablist" aria-label="Mã đề"></div>
-					<div class="vt3Che tdThe" id="trdTheXem" role="tablist"><button type="button" role="tab" data-xem="cau" aria-selected="true">Đối chiếu &amp; đáp án</button><button type="button" role="tab" data-xem="de" aria-selected="false" id="trdTheDe" hidden>Bản đề</button></div>
+					<div class="vt3Che tdThe" id="trdTheXem" role="tablist"><button type="button" role="tab" data-xem="cau" aria-selected="true">Đối chiếu &amp; đáp án</button><button type="button" role="tab" data-xem="de" aria-selected="false" id="trdTheDe">Bản đề (A4)</button></div>
 				</div>
 				<div class="trdXT" id="trdXT" hidden></div>
 				<div class="tdXem" id="trdXem"></div>
 				<div class="tdXuat">
 					<button class="gtBatDau tdBo" type="button" id="trdZip" disabled>📦 Tải trọn bộ (.zip)</button>
 					<button class="vdNutNho" type="button" id="trdMot" disabled>Tải mã đang xem</button>
+					<button class="vdNutNho" type="button" id="trdIn" disabled>🖨 Xem / Xuất PDF</button>
 					<button class="vdNutNho" type="button" id="trdXls" disabled>Đáp án Excel</button>
 				</div>
 			</section>
@@ -1938,8 +1962,10 @@ Lớp: ...</textarea></div>
 <script src="shape3d-engine.js?v=20261120f"></script>
 <script src="shape3d-catalog.js?v=20261120f"></script>
 <script src="shape3d.js?v=20261120e"></script>
-<script src="tronde.js?v=20261124t"></script>
-<script src="app.js?v=20261124t"></script>
+<script src="tronde.js?v=20261124u"></script>
+<script src="tronde-mau.js?v=20261124u"></script>
+<script src="tronde-goi.js?v=20261124u"></script>
+<script src="app.js?v=20261124u"></script>
 
 </body>
 </html>

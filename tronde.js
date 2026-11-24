@@ -525,6 +525,7 @@
 		if (ganMa) { const r = dongMaDocx(dauDe, ganMa); dauDe = r.bx; daDong = r.ok; }
 		out.push(...truoc, ...dauDe);
 		if (ganMa && !daDong) out.push('<w:p><w:pPr><w:jc w:val="right"/></w:pPr><w:r><w:rPr><w:b/></w:rPr>' + taoT("Mã đề: " + ganMa) + "</w:r></w:p>");
+		const moThan = out.length;
 		info.phan.forEach(p => {
 			if (p.h >= 0) out.push(B[p.h].x);
 			for (let i = p.s; i < (p.cau[0] ? p.cau[0].s : p.e); i++) out.push(B[i].x);
@@ -541,9 +542,10 @@
 			ketQua.push({ loai: p.loai, ten: p.ten, cau });
 		});
 		for (let i = info.duoi; i < info.hetDe; i++) out.push(B[i].x);
+		const than = out.slice(moThan);
 		if (info.sect >= 0) out.push(B[info.sect].x);
 		const xml = info.xml.slice(0, info.bo + 8) + out.join("") + info.xml.slice(info.bc);
-		const bien = { ma, loai: "docx", xml, phan: ketQua, daDong: ganMa ? daDong : null };
+		const bien = { ma, loai: "docx", xml, than, phan: ketQua, daDong: ganMa ? daDong : null };
 		if (cfg.loiGiai && info.loiGiai && info.loiGiai.khop.length) bien.loiGiaiXml = dungLoiGiai(info, bien);
 		return bien;
 	}
@@ -683,7 +685,7 @@
 		return t + "\\end{document}\n";
 	}
 
-	const API = { phanTich, tron, xacThuc, sinhMa, kiemMa, rngTuSeed, rngMay, hoanVi, laKhoa, bangDapAn, docxDapAn, texDapAn, demCau, LOAI_TEN, PHAN_LA, _noi: { phanTichTex, tachChoice, tachItemch, docP, xuatP, moCau, moPhuongAn, khoiCap1, chuXml, chuanTex } };
+	const API = { boDau, XA, XD, reEsc, conTrucTiep, cuoiPT, docNhom, laChuThich, timLenh, phanTich, tron, xacThuc, sinhMa, kiemMa, rngTuSeed, rngMay, hoanVi, laKhoa, bangDapAn, docxDapAn, texDapAn, demCau, LOAI_TEN, PHAN_LA, _noi: { phanTichTex, tachChoice, tachItemch, docP, xuatP, moCau, moPhuongAn, khoiCap1, chuXml, chuanTex } };
 	G.KTronDe = API;
 	if (typeof module !== "undefined" && module.exports) module.exports = API;
 })(typeof window !== "undefined" ? window : globalThis);

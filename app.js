@@ -9167,36 +9167,38 @@ async function thiChay(ma) {
 			}
 			napKho();
 		}
-		return { khoiDong, _ma: () => MA, _tex: () => texDay(), _phieu: phieu, _xu: XU, _xls: k => EXCEL[k][1](), _qr: k => QR[k][1](), _mt: d => xlsMaTran(d), _phieuTex: (k, v) => PHIEU[k](demPhan(v || MA[0])), _texMot: v => texMot(v) };
+		return { khoiDong, _ma: () => MA, _tex: () => texDay(), _phieu: phieu, _xu: XU, _xls: k => EXCEL[k][1](), _qr: k => QR[k][1](), _mt: d => xlsMaTran(d), _phieuTex: (k, v) => PHIEU[k](demPhan(v || MA[0])), _texMot: v => texMot(v), _voiMA: (ds, fn) => { const cu = MA; MA = ds; try { return fn(); } finally { MA = cu; } }, _xlsDs: () => Object.keys(EXCEL).map(k => [k, EXCEL[k][0]]), _qrDs: () => Object.keys(QR).map(k => [k, QR[k][0]]) };
 	})();
 	function khoiDongTaoDe() { TD_API.khoiDong(); window.TDKMod = Object.assign(window.TDKMod || {}, { TD: TD_API }); }
-	// ===== Tab Trộn đề thi (lõi: tronde.js → window.KTronDe). Nạp .docx/.tex → trộn câu/phương án → mã đề 4 số → xác thực song ánh → xuất .zip =====
+	// ===== Tab Trộn đề thi (lõi: tronde.js → window.KTronDe; đóng gói: tronde-goi.js; khuôn mẫu: tronde-mau.js) =====
+	// Nạp .docx/.tex → trộn câu/phương án → mã đề 4 số → xác thực song ánh → gói theo mẫu (main.tex / word mẫu.docx) + Excel/QR app chấm + phiếu tô → .zip
 	const TRD_API = (() => {
-		const K = () => window.KTronDe, $g = id => document.getElementById(id);
-		const S = { tep: null, loai: "", buf: null, text: "", info: null, deChon: 0, ma: [], ds: [], xt: [], xem: 0, cheXem: "cau", dangChay: false };
-		const CFG = Object.assign({ tronPA: true, tronTN: true, tronDS: true, tronTLN: true, tronY: false, dongMa: true, loiGiai: true, soDe: 4, cheMa: "ngau" }, (() => { try { return JSON.parse(localStorage.getItem("tdk_trd_cfg") || "{}"); } catch (e) { return {}; } })());
+		const K = () => window.KTronDe, KG = () => window.KTronDe && window.KTronDe.goi, $g = id => document.getElementById(id);
+		const S = { tep: null, loai: "", buf: null, text: "", xml: "", info: null, deChon: 0, ma: [], ds: [], xt: [], xtGoi: [], xem: 0, cheXem: "cau", dangChay: false, mauTex: null, mauWord: null, tenMauTex: "", tenMauWord: "", xemDe: new Map(), phienXem: 0 };
+		const MAC = { tronPA: true, tronTN: true, tronDS: true, tronTLN: true, tronY: false, dongMa: true, loiGiai: true, soDe: 4, cheMa: "ngau", goiMau: true, cheDo: "dethi", anBang: false, inputPhieu: true, phieu: "", xls: ["tnmaker", "azota"], qr: [], meta: { so: "Sở GD&ĐT TP Hồ Chí Minh", truong: "KMath", gv: "", tenDe: "ĐỀ KIỂM TRA", namHoc: "2026 - 2027", lop: "12", thoiGian: "90" } };
+		const CFG = Object.assign({}, MAC, (() => { try { return JSON.parse(localStorage.getItem("tdk_trd_cfg") || "{}"); } catch (e) { return {}; } })());
+		CFG.meta = Object.assign({}, MAC.meta, CFG.meta || {});
 		const luuCFG = () => { try { localStorage.setItem("tdk_trd_cfg", JSON.stringify(CFG)); } catch (e) { } };
 		const TEN = { tn: "TN", ds: "ĐS", tln: "TLN", tl: "TL" }, LA = ["I", "II", "III", "IV", "V"];
+		const PHIEU_TEN = { tnm: "TNMarker", azota: "Azota", bgd: "Bộ GD (đen trắng)" };
 		const tt = (m, loi) => { const e = $g("trdTT"); e.textContent = m || ""; e.className = "vdGhi" + (loi ? " trdLoi" : ""); };
 		const tenGoc = () => (S.tep ? S.tep.name : "de-thi").replace(/\.(docx|tex)$/i, "").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").replace(/[^A-Za-z0-9]+/g, "_").replace(/^_|_$/g, "").slice(0, 60) || "de-thi";
-		function demChu(d) { return ["tn", "ds", "tln", "tl"].filter(k => d[k]).map(k => d[k] + " " + TEN[k]).join(" · "); }
+		const demChu = d => ["tn", "ds", "tln", "tl"].filter(k => d[k]).map(k => d[k] + " " + TEN[k]).join(" · ");
+		const nghi = () => new Promise(r => setTimeout(r, 0));
 		// ---------- ① nạp & kiểm đếm ----------
 		async function nap(f) {
 			if (!f) return; if (!/\.(docx|tex)$/i.test(f.name)) { tt("Chỉ nhận file Word .docx hoặc LaTeX .tex.", true); return; }
 			if (!K()) { tt("Chưa tải được bộ trộn đề (tronde.js) — tải lại trang (Ctrl+F5).", true); return; }
-			S.tep = f; S.loai = /\.docx$/i.test(f.name) ? "docx" : "tex"; S.deChon = 0; S.ds = []; S.xt = []; S.xem = 0;
+			S.tep = f; S.loai = /\.docx$/i.test(f.name) ? "docx" : "tex"; S.deChon = 0; S.ds = []; S.xt = []; S.xtGoi = []; S.xem = 0; S.xemDe.clear();
 			tt("Đang đọc " + f.name + "…");
 			try {
 				if (S.loai === "docx") { await napZip(); S.buf = await f.arrayBuffer(); const z = await window.JSZip.loadAsync(S.buf), d = z.file("word/document.xml"); if (!d) throw new Error("file không phải Word .docx hợp lệ"); S.xml = await d.async("string"); }
-				else { const b = new Uint8Array(await f.arrayBuffer()); S.text = new TextDecoder("utf-8").decode(b).replace(/^﻿/, ""); }
+				else S.text = new TextDecoder("utf-8").decode(new Uint8Array(await f.arrayBuffer())).replace(/^﻿/, "");
 				phanTich(); tt("");
 			} catch (e) { S.info = null; veDem(); tt("Không đọc được file: " + (e.message || e), true); }
-			veKetQua();
+			veMau(); veKetQua();
 		}
-		function phanTich() {
-			S.info = S.loai === "docx" ? K().phanTich({ loai: "docx", xml: S.xml, deChon: S.deChon }) : K().phanTich({ loai: "tex", text: S.text });
-			S.ds = []; S.xt = []; veDem(); veCauHinh();
-		}
+		function phanTich() { S.info = S.loai === "docx" ? K().phanTich({ loai: "docx", xml: S.xml, deChon: S.deChon }) : K().phanTich({ loai: "tex", text: S.text }); S.ds = []; S.xt = []; S.xtGoi = []; S.xemDe.clear(); veDem(); veCauHinh(); }
 		function veDem() {
 			const I = S.info, el = $g("trdDem"), cb = $g("trdCB"), hop = $g("trdDeHop");
 			$g("trdTenTep").textContent = S.tep ? S.tep.name : ".docx · .tex";
@@ -9205,7 +9207,7 @@ async function thiChay(ma) {
 			hop.hidden = !(I.de && I.de.length > 1);
 			if (!hop.hidden) $g("trdDe").innerHTML = I.de.map((d, i) => '<option value="' + i + '"' + (i === S.deChon ? " selected" : "") + ">" + esc(d.ten) + "</option>").join("");
 			el.innerHTML = '<div class="trdHuy">' + I.ds.map(p => '<span class="trdBadge t-' + p.loai + '"><b>' + p.cau.length + "</b> " + TEN[p.loai] + "</span>").join("") + '<span class="trdBadge tong"><b>' + I.dem.tong + "</b> câu</span></div>"
-				+ '<ol class="trdPhanDs">' + I.ds.map((p, pi) => '<li><div class="trdPhanTen">' + esc(p.ten) + "</div><div class=\"trdCauDs\">" + p.cau.map(c => '<span class="trdC' + (c.khoa ? " khoa" : "") + (!c.da && p.loai !== "tl" ? " thieu" : "") + '" title="' + esc((c.tomTat || "") + (c.khoa ? "\n🔒 Giữ nguyên thứ tự phương án: " + c.khoa : "") + (c.nguonDA ? "\nĐáp án lấy từ: " + c.nguonDA : "")) + '">' + c.so + "<i>" + esc(c.da || (p.loai === "tl" ? "—" : "?")) + "</i></span>").join("") + "</div></li>").join("") + "</ol>";
+				+ '<ol class="trdPhanDs">' + I.ds.map(p => '<li><div class="trdPhanTen">' + esc(p.ten) + '</div><div class="trdCauDs">' + p.cau.map(c => '<span class="trdC' + (c.khoa ? " khoa" : "") + (!c.da && p.loai !== "tl" ? " thieu" : "") + '" title="' + esc((c.tomTat || "") + (c.khoa ? "\n🔒 Giữ nguyên thứ tự phương án: " + c.khoa : "") + (c.nguonDA ? "\nĐáp án lấy từ: " + c.nguonDA : "")) + '">' + c.so + "<i>" + esc(c.da || (p.loai === "tl" ? "—" : "?")) + "</i></span>").join("") + "</div></li>").join("") + "</ol>";
 			const khoa = []; I.ds.forEach((p, pi) => p.cau.forEach(c => { if (c.khoa && c.da) khoa.push("Phần " + LA[pi] + " câu " + c.so); }));
 			const lgLech = I.loiGiai && I.loiGiai.lech && I.loiGiai.lech.length ? ["Lời giải cuối đề không khớp số câu ở: " + I.loiGiai.lech.join(", ") + " — phần đó không xuất kèm lời giải."] : [];
 			cb.innerHTML = I.loi.map(x => '<li class="loi">⛔ ' + esc(x) + "</li>").join("") + I.canhBao.concat(lgLech).map(x => '<li class="canh">⚠ ' + esc(x) + "</li>").join("")
@@ -9221,6 +9223,7 @@ async function thiChay(ma) {
 			else if (S.ma.length < n) S.ma = S.ma.concat(CFG.cheMa === "ngau" ? K().sinhMa(n - S.ma.length, rnd(), S.ma) : Array(n - S.ma.length).fill(""));
 			veMa();
 		}
+		function capNhatTTMa() { const kq = K().kiemMa(S.ma), sai = kq.filter(k => k.loi).length; $g("trdMaTT").textContent = sai ? "⚠ " + sai + " mã chưa hợp lệ (cần đúng 4 chữ số, không trùng)." : S.ma.length + " mã đề hợp lệ."; $g("trdMaTT").className = "vdGhi" + (sai ? " trdLoi" : ""); return kq; }
 		function veMa() {
 			const kq = K().kiemMa(S.ma);
 			$g("trdSoDe").value = CFG.soDe;
@@ -9228,9 +9231,7 @@ async function thiChay(ma) {
 			document.querySelectorAll("#trdCheMa [data-v]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === CFG.cheMa)));
 			$g("trdSinhLai").textContent = CFG.cheMa === "ngau" ? "↻ Sinh lại" : "↻ Điền ô trống";
 			$g("trdMaDs").innerHTML = S.ma.map((m, i) => '<label class="trdMa' + (kq[i].loi ? " sai" : "") + '" title="' + esc(kq[i].loi || "Mã đề " + (i + 1)) + '"><small>' + (i + 1) + '</small><input inputmode="numeric" maxlength="4" autocomplete="off" spellcheck="false" placeholder="____" value="' + esc(m) + '" data-i="' + i + '" aria-label="Mã đề thứ ' + (i + 1) + '"></label>').join("");
-			const sai = kq.filter(k => k.loi);
-			$g("trdMaTT").textContent = sai.length ? "⚠ " + sai.length + " mã chưa hợp lệ (cần đúng 4 chữ số, không trùng)." : S.ma.length + " mã đề hợp lệ.";
-			$g("trdMaTT").className = "vdGhi" + (sai.length ? " trdLoi" : "");
+			capNhatTTMa();
 		}
 		function veCauHinh() {
 			[["trdPA", "tronPA"], ["trdTN", "tronTN"], ["trdDS", "tronDS"], ["trdTLN", "tronTLN"], ["trdDong", "dongMa"], ["trdLG", "loiGiai"]].forEach(([id, k]) => { $g(id).checked = !!CFG[k]; });
@@ -9238,49 +9239,123 @@ async function thiChay(ma) {
 			const I = S.info, co = k => !I || I.dem[k] > 0;
 			$g("trdNhomTN").classList.toggle("mo", !co("tn")); $g("trdNhomDS").classList.toggle("mo", !co("ds")); $g("trdNhomTLN").classList.toggle("mo", !co("tln"));
 		}
+		// ---------- ④ mẫu & xuất bản ----------
+		const META = [["so", "Sở GD&ĐT"], ["truong", "Trường"], ["gv", "Giáo viên"], ["tenDe", "Tên đề"], ["namHoc", "Năm học"], ["lop", "Lớp"], ["thoiGian", "Thời gian (phút)"]];
+		function veMau() {
+			const laTex = S.loai === "tex", laWord = S.loai === "docx";
+			$g("trdMeta").innerHTML = META.map(([k, t]) => '<label class="trdO' + ((k === "truong" || k === "gv") && laWord ? " an" : "") + '"><span>' + t + '</span><input class="mdO" data-meta="' + k + '" value="' + esc(CFG.meta[k] || "") + '"' + (k === "thoiGian" ? ' inputmode="numeric"' : "") + "></label>").join("");
+			$g("trdGoiMau").checked = !!CFG.goiMau;
+			$g("trdMauTen").textContent = !S.loai ? "Nạp đề để chọn khuôn." : laTex ? "Khuôn: " + (S.tenMauTex || "main.tex mẫu của thầy (nhúng sẵn)") : "Khuôn: " + (S.tenMauWord || "word mẫu.docx của thầy (nhúng sẵn)");
+			$g("trdTexHop").hidden = !laTex;
+			document.querySelectorAll("#trdCheDo [data-v]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === CFG.cheDo)));
+			$g("trdAnBang").checked = !CFG.anBang; $g("trdInPhieu").checked = !!CFG.inputPhieu; $g("trdInPhieuHop").hidden = !laTex || !CFG.phieu;
+			$g("trdPhieu").value = CFG.phieu || ""; $g("trdXemPhieu").disabled = !CFG.phieu;
+			const TD = window.TDKMod && window.TDKMod.TD || (typeof TD_API !== "undefined" ? TD_API : null);
+			const xls = (TD && TD._xlsDs ? TD._xlsDs() : []).map(([k, t]) => [k, k === "smarttest" ? "Smartest (SmartTest)" : t]); xls.splice(1, 0, ["unt", "unT edu"]);
+			$g("trdXlsDs").innerHTML = xls.map(([k, t]) => '<label class="vdCong"><input type="checkbox" data-xls="' + k + '"' + (CFG.xls.includes(k) ? " checked" : "") + '><i aria-hidden="true"></i>' + esc(t) + "</label>").join("");
+			$g("trdQrDs").innerHTML = (TD && TD._qrDs ? TD._qrDs() : []).map(([k, t]) => '<label class="vdCong"><input type="checkbox" data-qr="' + k + '"' + (CFG.qr.includes(k) ? " checked" : "") + '><i aria-hidden="true"></i>' + esc(k === "smarttest" ? "Smartest (SmartTest)" : t) + "</label>").join("");
+		}
+		const b64 = s => { const b = atob(s), u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; };
+		async function docGoi(buf) { await napZip(); const z = await window.JSZip.loadAsync(buf), f = {}; for (const n of Object.keys(z.files)) { if (z.files[n].dir) continue; f[n] = /\.(xml|rels)$/i.test(n) ? await z.file(n).async("string") : await z.file(n).async("uint8array"); } return f; }
+		async function ghiGoi(f) { await napZip(); const z = new window.JSZip(); Object.keys(f).forEach(k => z.file(k, f[k])); return z.generateAsync({ type: "blob", mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", compression: "DEFLATE" }); }
+		const mauTex = () => S.mauTex || (window.KTronDeMau && window.KTronDeMau.mainTex) || "";
+		async function mauWord() { if (S.mauWord) return docGoi(S.mauWord); if (!window.KTronDeMau || !window.KTronDeMau.wordMau) throw new Error("Chưa tải được khuôn word mẫu (tronde-mau.js)"); return docGoi(b64(window.KTronDeMau.wordMau)); }
+		const metaWord = () => { const m = CFG.meta; return { so: (m.so || "").toUpperCase(), tenDe: (m.tenDe || "").toUpperCase(), namHoc: m.namHoc, mon: "Toán" + (m.lop ? " " + m.lop : ""), thoiGian: m.thoiGian }; };
+		const tdAPI = () => (typeof TD_API !== "undefined" ? TD_API : null);
+		const phieuTex = b => tdAPI()._phieuTex(CFG.phieu, KG().sangMA(b));
+		function phieuSvg(b) { const d = KG().phieuDem(b); return KG().phieuSVG(CFG.phieu, d, CFG.phieu === "tnm" ? "" : phieuTex(b)); }
 		// ---------- trộn + xác thực ----------
 		async function chay() {
 			const I = S.info; if (!I || I.loi.length || S.dangChay) return;
 			const kq = K().kiemMa(S.ma); if (!S.ma.length || kq.some(k => k.loi)) { tt("Kiểm tra lại mã đề: mỗi mã đúng 4 chữ số và không trùng nhau.", true); return; }
-			S.dangChay = true; $g("trdChay").disabled = true; tt("Đang trộn " + S.ma.length + " mã đề và kiểm tra từng câu…");
-			await new Promise(r => setTimeout(r, 30));
+			S.dangChay = true; $g("trdChay").disabled = true; tt("Đang trộn " + S.ma.length + " mã đề và kiểm tra từng câu…"); await nghi();
 			try {
-				const r = rnd(), cfg = Object.assign({}, CFG);
-				S.ds = []; S.xt = [];
-				for (const ma of S.ma) { const b = K().tron(I, cfg, ma, r); S.ds.push(b); S.xt.push(K().xacThuc(I, b)); await new Promise(z => setTimeout(z, 0)); }
-				S.xem = 0; const hong = S.xt.filter(x => x.length).length;
-				tt(hong ? "⛔ " + hong + " mã đề không qua kiểm tra — chưa cho xuất. Xem chi tiết bên phải." : "Xong — " + S.ds.length + " mã đề đã được kiểm tra khớp 100% với đề gốc.", !!hong);
+				const r = rnd(), cfg = Object.assign({}, CFG, { dongMa: CFG.goiMau ? false : CFG.dongMa });
+				S.ds = []; S.xt = []; S.xtGoi = []; S.xemDe.clear(); S.goiWord = []; S.goiTex = null;
+				for (const ma of S.ma) { const b = K().tron(I, cfg, ma, r); S.ds.push(b); S.xt.push(K().xacThuc(I, b)); await nghi(); }
+				if (CFG.goiMau && !S.xt.some(x => x.length)) await kiemGoi();
+				S.xem = 0; const hong = S.xt.filter(x => x.length).length + S.xtGoi.filter(x => x.length).length;
+				tt(hong ? "⛔ Có mã đề không qua kiểm tra — chưa cho xuất. Xem chi tiết bên phải." : "Xong — " + S.ds.length + " mã đề đã kiểm tra khớp 100% đề gốc" + (CFG.goiMau ? ", đã gói vào khuôn mẫu." : "."), !!hong);
 			} catch (e) { S.ds = []; S.xt = []; tt("Lỗi khi trộn: " + (e.message || e), true); }
 			finally { S.dangChay = false; $g("trdChay").disabled = !!I.loi.length; veKetQua(); }
 		}
+		// gói theo mẫu và kiểm tra gói (Word: rId, loại tệp, kiểu, numbering, Mã đề, trường số trang; TeX: main.tex, ans/, data/)
+		async function kiemGoi() {
+			if (S.loai === "docx") {
+				const mau = await mauWord(), nguon = await docGoi(S.buf);
+				for (const b of S.ds) { tt("Đang gói mã " + b.ma + " vào khuôn Word…"); await nghi(); const ng = Object.assign({}, nguon, { "word/document.xml": b.xml }); const g = KG().goiWord(mau, ng, b.than, metaWord(), b.ma); S.goiWord.push(g); S.xtGoi.push(KG().xacThucGoiWord(g, ng, b.than, b.ma)); }
+			} else {
+				const g = KG().goiTex(S.ds, CFG.meta, { cheDo: CFG.cheDo, anBang: CFG.anBang, phieu: CFG.phieu, inputPhieu: CFG.inputPhieu }, mauTex(), CFG.phieu ? phieuTex : null);
+				S.goiTex = g; S.xtGoi = [KG().xacThucGoiTex(g, S.ds)];
+			}
+		}
 		// ---------- ③ xem trước & xuất ----------
 		function veKetQua() {
-			const co = S.ds.length > 0, hong = S.xt.some(x => x.length), I = S.info;
-			["trdZip", "trdMot", "trdXls"].forEach(id => { $g(id).disabled = !co || hong; });
-			$g("trdTheDe").hidden = !(co && S.loai === "tex");
+			const co = S.ds.length > 0, hong = S.xt.some(x => x.length) || S.xtGoi.some(x => x.length), I = S.info;
+			["trdZip", "trdMot", "trdXls", "trdIn"].forEach(id => { $g(id).disabled = !co || hong; });
 			$g("trdMaXem").innerHTML = S.ds.map((b, i) => '<button type="button" role="tab" data-i="' + i + '" aria-selected="' + (i === S.xem) + '" class="' + (S.xt[i] && S.xt[i].length ? "hong" : "") + '">' + b.ma + "</button>").join("");
 			const xt = $g("trdXT");
 			if (!co) { xt.hidden = true; $g("trdXem").innerHTML = '<p class="mdTrong">' + (I ? "Chọn cách trộn, số đề và mã đề rồi bấm <b>Trộn &amp; xác thực</b>." : "Nạp file đề .docx hoặc .tex ở bước ①.") + "</p>"; return; }
 			xt.hidden = false;
-			if (hong) xt.innerHTML = '<div class="trdXTHong"><b>⛔ Không qua kiểm tra</b><ul>' + S.xt.map((x, i) => x.length ? "<li>Mã " + S.ds[i].ma + ": " + esc(x.slice(0, 4).join(" · ")) + "</li>" : "").join("") + "</ul></div>";
-			else { const d = I.dem; xt.innerHTML = '<div class="trdXTOk"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="m8.5 12 2.4 2.4L15.5 10"/></svg><span><b>Đã xác thực:</b> ' + demChu(d) + " — Tổng " + d.tong + "/" + d.tong + " câu khớp 100% bản gốc · " + S.ds.length + " mã đề · đáp án đồng bộ</span></div>"; }
+			if (hong) { const ds = []; S.xt.forEach((x, i) => { if (x.length) ds.push("Mã " + S.ds[i].ma + ": " + x.slice(0, 4).join(" · ")); }); S.xtGoi.forEach((x, i) => { if (x.length) ds.push((S.loai === "docx" ? "Gói Word mã " + S.ds[i].ma : "Gói LaTeX") + ": " + x.slice(0, 4).join(" · ")); }); xt.innerHTML = '<div class="trdXTHong"><b>⛔ Không qua kiểm tra</b><ul>' + ds.map(x => "<li>" + esc(x) + "</li>").join("") + "</ul></div>"; }
+			else { const d = I.dem; xt.innerHTML = '<div class="trdXTOk"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="m8.5 12 2.4 2.4L15.5 10"/></svg><span><b>Đã xác thực:</b> ' + demChu(d) + " — Tổng " + d.tong + "/" + d.tong + " câu khớp 100% bản gốc · " + S.ds.length + " mã đề · đáp án đồng bộ" + (CFG.goiMau ? " · đã gói vào " + (S.loai === "docx" ? "word mẫu" : "main.tex") : "") + "</span></div>"; }
 			document.querySelectorAll("#trdTheXem [data-xem]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.xem === S.cheXem)));
 			veXem();
 		}
-		function veXem() {
+		const dauDeXem = ma => { const m = CFG.meta, w = metaWord(); return { donVi: [w.so || "", S.loai === "tex" ? (m.truong || "") : "ĐỀ THI CHÍNH THỨC"].filter(Boolean), ghiChu: "", kiThi: [w.tenDe, m.namHoc ? "Năm học: " + m.namHoc : ""].filter(Boolean), mon: "Môn: " + w.mon, thoiGian: m.thoiGian ? "Thời gian làm bài: " + m.thoiGian + " phút (không kể thời gian phát đề)" : "", maDe: ma }; };
+		// Word → LaTeX (bộ luật KMath) để xem trước kiểu bản in: giải mã MathType/Equation, WMF → PNG
+		async function texTuWord(b) {
+			const T = bo(); if (!T || !T.wordSangLatex) throw new Error("bộ luật chưa có chức năng Word → LaTeX");
+			const blob = await ghiGoi(Object.assign({}, await docGoi(S.buf), { "word/document.xml": b.xml })), r = await T.wordSangLatex(await blob.arrayBuffer(), {}), W2 = T._w2t || {};
+			let tex = r.tex || ""; const anh = {};
+			for (const h of (r.hinh || [])) {
+				const vt = "" + h.so + ""; if (tex.indexOf(vt) < 0) continue; let bl = null;
+				try { const b8 = h.tep ? await r.tepNhiPhan(h.tep) : null; if (b8 && b8.length) { const png = b8[0] === 0x89 && b8[1] === 0x50, jpg = b8[0] === 0xFF && b8[1] === 0xD8; if (png || jpg) bl = new Blob([b8], { type: png ? "image/png" : "image/jpeg" }); else if (W2.wmfSangPng) { const pg = await W2.wmfSangPng(b8); if (pg) bl = new Blob([pg], { type: "image/png" }); } } } catch (e) { }
+				if (!bl) { tex = tex.split(vt).join(""); continue; }
+				const ten = "trd" + b.ma + "h" + h.so; anh[ten] = URL.createObjectURL(bl); tex = tex.split(vt).join("\\includegraphics[width=" + Math.max(2.5, Math.min(14, h.wCm || 6)).toFixed(1) + "cm]{" + ten + "}");
+			}
+			return { tex: ganDapAn(tex.replace(/[]\d*[]?/g, ""), b), anh };
+		}
+		// đánh dấu \True / \shortans theo đáp án đã đồng bộ của mã đề (để bản xem trước gạch đúng đáp án)
+		function ganDapAn(tex, b) {
+			const N = K()._noi, cau = b.phan.flatMap(p => p.cau), ex = N.phanTichTex(tex).ex; if (ex.length !== cau.length) return tex;
+			for (let i = ex.length - 1; i >= 0; i--) {
+				const c = cau[i], x = ex[i]; let raw = x.raw.replace(/\\True\s*/g, ""); const ch = N.tachChoice(raw);
+				if (ch && (c.loai === "tn" || c.loai === "ds") && c.da) { const dung = c.loai === "tn" ? [0, 1, 2, 3].map(k => "ABCD"[k] === c.da) : c.da.split("").map(v => v === "Đ"); ch.nh.map((g, k) => [g, k]).reverse().forEach(([g, k]) => { if (dung[k]) raw = raw.slice(0, g.s + 1) + "\\True " + raw.slice(g.s + 1); }); }
+				tex = tex.slice(0, x.s) + raw + tex.slice(x.e);
+			}
+			return tex;
+		}
+		async function veXem() {
 			const b = S.ds[S.xem], el = $g("trdXem"); if (!b) return;
-			if (S.cheXem === "de" && S.loai === "tex") {
-				const ex = K()._noi.phanTichTex(b.tho).ex.map(x => x.raw).join("\n\n");
-				el.innerHTML = '<div class="toDe trdGiay"></div>'; Promise.resolve(QB.xemTruoc(el.firstChild, ex, { lg: false, gach: true })).catch(() => { el.firstChild.innerHTML = '<p class="mdTrong">Chưa hiển thị được bản đề.</p>'; });
+			if (S.cheXem === "de") {
+				const lan = ++S.phienXem; el.innerHTML = '<div class="toDe trdGiay" id="trdGiay"><p class="mdTrong">Đang dựng bản xem trước mã ' + b.ma + "…</p></div>";
+				try {
+					let x = S.xemDe.get(b.ma);
+					if (!x) { x = S.loai === "tex" ? { tex: K()._noi.phanTichTex(b.tho).ex.map(e => e.raw).join("\n\n"), anh: {} } : await texTuWord(b); S.xemDe.set(b.ma, x); }
+					if (lan !== S.phienXem) return;
+					await QB.xemTruoc($g("trdGiay"), x.tex, { anh: x.anh, dauDe: dauDeXem(b.ma), hoTen: true, lg: false, gach: true });
+				} catch (e) { if (lan === S.phienXem) $g("trdGiay").innerHTML = '<p class="mdTrong">Chưa dựng được bản xem trước: ' + esc(e.message || e) + "</p>"; }
 				return;
 			}
-			const I = S.info, PA = "ABCD", pa = (c) => c.loai === "tn" ? c.pa.map(k => PA[k]).join("") : c.loai === "ds" ? c.pa.map(k => "abcd"[k]).join("") : "";
+			const I = S.info, PA = "ABCD", pa = c => c.loai === "tn" ? c.pa.map(k => PA[k]).join("") : c.loai === "ds" ? c.pa.map(k => "abcd"[k]).join("") : "";
 			el.innerHTML = '<div class="trdBang">' + b.phan.map((p, pi) => '<div class="trdPhanXem"><div class="trdPhanTen">' + esc(I.ds[pi] ? I.ds[pi].ten : "Phần " + LA[pi]) + '</div><table><thead><tr><th>Câu</th><th>Câu gốc</th><th>Đáp án</th><th>' + (p.loai === "tn" ? "Thứ tự A–D (theo gốc)" : p.loai === "ds" ? "Thứ tự a–d (theo gốc)" : "") + "</th><th>Nội dung (rút gọn)</th></tr></thead><tbody>"
-				+ p.cau.map(c => { const g = I.ds[pi] && I.ds[pi].cau[c.goc - 1]; return "<tr><td><b>" + c.so + "</b></td><td>" + c.goc + "</td><td class=\"da\">" + esc(c.da || "—") + (c.da !== c.daGoc && c.daGoc ? ' <small>(gốc ' + esc(c.daGoc) + ")</small>" : "") + "</td><td class=\"pa\">" + (pa(c) && pa(c) !== "ABCD" && pa(c) !== "abcd" ? esc(pa(c)) : (g && g.khoa ? "🔒 giữ nguyên" : "giữ nguyên")) + '</td><td class="nd">' + esc(g ? g.tomTat : "") + "</td></tr>"; }).join("") + "</tbody></table></div>").join("") + "</div>";
+				+ p.cau.map(c => { const g = I.ds[pi] && I.ds[pi].cau[c.goc - 1]; return "<tr><td><b>" + c.so + "</b></td><td>" + c.goc + '</td><td class="da">' + esc(c.da || "—") + (c.da !== c.daGoc && c.daGoc ? " <small>(gốc " + esc(c.daGoc) + ")</small>" : "") + '</td><td class="pa">' + (pa(c) && pa(c) !== "ABCD" && pa(c) !== "abcd" ? esc(pa(c)) : (g && g.khoa ? "🔒 giữ nguyên" : "giữ nguyên")) + '</td><td class="nd">' + esc(g ? g.tomTat : "") + "</td></tr>"; }).join("") + "</tbody></table></div>").join("") + "</div>";
 		}
+		// in một trang HTML (bản đề / phiếu tô) qua khung ẩn → hộp In của trình duyệt → Lưu PDF
+		function inHTML(html, laTrangDu) {
+			const f = document.createElement("iframe"); f.setAttribute("aria-hidden", "true"); f.style.cssText = "position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden";
+			document.body.appendChild(f); const d = f.contentDocument;
+			d.open(); d.write(laTrangDu ? html : '<!doctype html><html lang="vi"><head><meta charset="utf-8"><base href="' + esc(location.href) + '">' + [...document.querySelectorAll('link[rel="stylesheet"]')].map(l => '<link rel="stylesheet" href="' + esc(l.href) + '">').join("") + '<style>@page{size:A4;margin:14mm 14mm 16mm}html,body{background:#fff!important;margin:0}body::before,body::after{display:none!important}.toDe{box-shadow:none!important;max-width:none!important;margin:0!important;padding:0!important;border-radius:0!important}.toDe .cau{break-inside:avoid}.tdDoiCau{display:none!important}</style></head><body>' + html + "</body></html>"); d.close();
+			const xong = () => setTimeout(() => f.remove(), 1500);
+			setTimeout(() => { try { f.contentWindow.focus(); f.contentWindow.onafterprint = xong; f.contentWindow.print(); } catch (e) { toast("Không mở được hộp In: " + (e.message || e)); } setTimeout(xong, 60000); }, 600);
+		}
+		async function inDe() { if (S.cheXem !== "de") { S.cheXem = "de"; veKetQua(); } const b = S.ds[S.xem]; for (let k = 0; k < 120 && !(S.xemDe.get(b.ma) && $g("trdGiay") && !/Đang dựng/.test($g("trdGiay").textContent)); k++) await new Promise(r => setTimeout(r, 250)); await new Promise(r => setTimeout(r, 400)); const g = $g("trdGiay"); if (g) inHTML('<div class="toDe">' + g.innerHTML + "</div>"); }
+		function xemPhieu() { if (!CFG.phieu) return; const ds = S.ds.length ? [S.ds[S.xem]] : null; if (!ds) { tt("Trộn đề trước để có mã đề tô sẵn trên phiếu.", true); return; } try { inHTML(KG().phieuHTML(ds.map(phieuSvg), "Phiếu tô " + PHIEU_TEN[CFG.phieu] + " — mã " + ds[0].ma), true); } catch (e) { tt("Chưa dựng được phiếu tô: " + (e.message || e), true); } }
 		async function goiDocx(xml) { await napZip(); const z = await window.JSZip.loadAsync(S.buf); z.file("word/document.xml", xml); return z.generateAsync({ type: "blob", mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", compression: "DEFLATE" }); }
 		const tenDe = b => tenGoc() + "_Ma" + b.ma + "." + S.loai;
-		async function taiMot() { const b = S.ds[S.xem]; if (!b) return; try { await taiVe(S.loai === "docx" ? await goiDocx(b.xml) : new Blob([b.text], { type: "text/x-tex" }), tenDe(b)); } catch (e) { tt("Chưa tải được: " + (e.message || e), true); } }
+		async function fileDe(b, i) { if (S.loai === "tex") return CFG.goiMau && S.goiTex ? S.goiTex.f["data/de_" + b.ma + ".tex"] : b.text; return CFG.goiMau && S.goiWord[i] ? ghiGoi(S.goiWord[i].f) : goiDocx(b.xml); }
+		async function taiMot() { const b = S.ds[S.xem]; if (!b) return; try { const f = await fileDe(b, S.xem); await taiVe(f instanceof Blob ? f : new Blob([f], { type: "text/x-tex" }), tenDe(b)); } catch (e) { tt("Chưa tải được: " + (e.message || e), true); } }
 		function sheets() {
 			const ds = S.ds, rows = K().bangDapAn(ds), o1 = {}, o2 = {}, o3 = {}, rong = { A: 9, B: 7 }, chu = n => XL.chuCot(n);
 			[o1, o2, o3].forEach((o, k) => { o.A1 = { v: "Phần", s: 1 }; o.B1 = { v: "Câu", s: 1 }; ds.forEach((b, j) => { o[chu(j + 3) + "1"] = { v: "Mã " + b.ma, s: 1 }; rong[chu(j + 3)] = k === 2 ? 12 : 11; }); });
@@ -9289,27 +9364,55 @@ async function thiChay(ma) {
 			return [{ ten: "Đáp án", o: o1, rong }, { ten: "Đối chiếu câu gốc", o: o2, rong }, { ten: "Thứ tự phương án", o: o3, rong }];
 		}
 		async function taiXls() { try { await taiVe(await XL.tao(sheets()), tenGoc() + "_DapAn_" + S.ds.length + "ma.xlsx"); } catch (e) { tt("Chưa tải được Excel: " + (e.message || e), true); } }
-		function baoCao() {
-			const I = S.info, d = I.dem, L = ["KMath · Trộn đề thi — báo cáo xác thực", "File gốc: " + (S.tep ? S.tep.name : ""), "Thời điểm: " + new Date().toLocaleString("vi-VN"), "Số câu gốc: " + demChu(d) + " — tổng " + d.tong, "Cấu hình: " + [CFG.tronPA && "xáo PA câu TN", CFG.tronTN && "xáo câu TN", CFG.tronDS && "xáo câu ĐS", CFG.tronY ? "xáo ý a–d" : "giữ ý a–d", CFG.tronTLN && "xáo câu TLN"].filter(Boolean).join(", "), ""];
-			S.ds.forEach((b, i) => { L.push("Mã " + b.ma + ": " + (S.xt[i].length ? "KHÔNG ĐẠT — " + S.xt[i].join("; ") : "ĐẠT — " + d.tong + "/" + d.tong + " câu khớp bản gốc, đáp án đồng bộ")); });
-			if (I.canhBao.length) { L.push("", "Lưu ý khi đọc đề gốc:"); I.canhBao.forEach(x => L.push(" - " + x)); }
+		// Excel/QR theo từng app chấm (dùng lại đúng hàm của "Tạo đề thi"; unT edu theo mẫu UnT_Mau-Dap-An-Trac-Nghiem-THPT-2025)
+		async function xuatApp(z, canh) {
+			const TD = tdAPI(), MA = S.ds.map(b => KG().sangMA(b)), da = [];
+			for (const k of CFG.xls) {
+				try {
+					if (k === "unt") { const r = KG().xlsUnT(S.ds); r.canh.forEach(c => canh.push("unT edu: " + c)); z.file("dap-an/" + tenGoc() + "-dapan-unT.xlsx", await XL.tao(r.sheets)); da.push("unT edu"); continue; }
+					if (!TD || !TD._voiMA) continue; const sh = TD._voiMA(MA, () => TD._xls(k)); z.file("dap-an/" + tenGoc() + "-dapan-" + k + ".xlsx", await XL.tao(sh)); da.push(k);
+				} catch (e) { canh.push("Excel " + k + ": " + (e.message || e)); }
+			}
+			const qr = [];
+			for (const k of CFG.qr) {
+				try { const s = TD._voiMA(MA, () => TD._qr(k)); if (new TextEncoder().encode(s).length > 2300) { canh.push("QR " + k + " quá dài — giảm số mã đề"); continue; } const ten = (TD._qrDs().find(x => x[0] === k) || [k, k])[1]; const bl = await XL.qrPng(s, { o: 8, chu: "Đáp án · " + ten }); z.file("dap-an/ma-qr/qr-" + k + ".png", bl); qr.push([ten, bl]); }
+				catch (e) { canh.push("QR " + k + ": " + (e.message || e)); }
+			}
+			if (qr.length) { const url = await Promise.all(qr.map(([t, bl]) => new Promise(ok => { const r = new FileReader(); r.onload = () => ok([t, r.result]); r.readAsDataURL(bl); }))); z.file("dap-an/ma-qr/In_QR.html", '<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>QR đáp án</title><style>@page{size:A4;margin:12mm}body{font-family:system-ui,sans-serif;text-align:center}.q{display:inline-block;margin:10px;page-break-inside:avoid}.q img{width:70mm}</style></head><body><h3>QR đáp án — ' + esc(S.tep ? S.tep.name : "") + " — " + S.ds.map(b => b.ma).join(", ") + "</h3>" + url.map(([t, u]) => '<div class="q"><img src="' + u + '" alt=""><div>' + esc(t) + "</div></div>").join("") + "</body></html>"); }
+			return da;
+		}
+		function baoCao(canh) {
+			const I = S.info, d = I.dem, L = ["KMath · Trộn đề thi — báo cáo xác thực", "File gốc: " + (S.tep ? S.tep.name : ""), "Thời điểm: " + new Date().toLocaleString("vi-VN"), "Số câu gốc: " + demChu(d) + " — tổng " + d.tong, "Cấu hình: " + [CFG.tronPA && "xáo PA câu TN", CFG.tronTN && "xáo câu TN", CFG.tronDS && "xáo câu ĐS", CFG.tronY ? "xáo ý a–d" : "giữ ý a–d", CFG.tronTLN && "xáo câu TLN"].filter(Boolean).join(", "), "Đóng gói: " + (CFG.goiMau ? (S.loai === "tex" ? "main.tex mẫu [" + CFG.cheDo + "], " + (CFG.anBang ? "ẩn" : "hiện") + " bảng đáp án" : "word mẫu") : "không gói mẫu") + (CFG.phieu ? " · phiếu tô " + PHIEU_TEN[CFG.phieu] : ""), ""];
+			S.ds.forEach((b, i) => { L.push("Mã " + b.ma + ": " + (S.xt[i].length ? "KHÔNG ĐẠT — " + S.xt[i].join("; ") : "ĐẠT — " + d.tong + "/" + d.tong + " câu khớp bản gốc, đáp án đồng bộ") + (S.loai === "docx" && S.xtGoi[i] ? (S.xtGoi[i].length ? " · gói Word LỖI: " + S.xtGoi[i].join("; ") : " · gói Word đạt (rId, loại tệp, kiểu, đánh số, Mã đề, số trang)") : "")); });
+			if (S.loai === "tex" && S.xtGoi[0]) L.push("Gói LaTeX: " + (S.xtGoi[0].length ? "LỖI — " + S.xtGoi[0].join("; ") : "đạt (\\dethi/\\ketthucdethi, ans/ riêng từng mã, số trang theo từng đề)"));
+			const g = (S.goiWord || []).flatMap(x => x.canh).concat(S.goiTex ? S.goiTex.canh : []).concat(canh || []);
+			if (I.canhBao.length || g.length) { L.push("", "Lưu ý:"); [...new Set(I.canhBao.concat(g))].forEach(x => L.push(" - " + x)); }
 			return L.join("\r\n") + "\r\n";
 		}
 		async function taiZip() {
 			const nut = $g("trdZip"); nut.disabled = true; tt("Đang đóng gói…");
 			try {
-				await napZip(); const z = new window.JSZip(), g = tenGoc(), tieu = "BẢNG ĐÁP ÁN — " + (S.tep ? S.tep.name : "") + " — " + S.ds.length + " mã đề";
-				for (const b of S.ds) { tt("Đang đóng gói mã " + b.ma + "…"); z.file("de-thi/" + tenDe(b), S.loai === "docx" ? await goiDocx(b.xml) : b.text); if (b.loiGiaiXml && CFG.loiGiai) z.file("loi-giai/" + g + "_LoiGiai_Ma" + b.ma + ".docx", await goiDocx(b.loiGiaiXml)); }
-				z.file(g + "_DapAn_TongHop.xlsx", await XL.tao(sheets()));
-				if (S.loai === "docx") { const f = K().docxDapAn(S.ds, tieu), w = new window.JSZip(); Object.keys(f).forEach(k => w.file(k, f[k])); z.file(g + "_DapAn_TongHop.docx", await w.generateAsync({ type: "blob", mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", compression: "DEFLATE" })); }
-				else z.file(g + "_DapAn_TongHop.tex", K().texDapAn(S.ds, tieu));
-				z.file("BaoCao_XacThuc.txt", "﻿" + baoCao());
+				await napZip(); const z = new window.JSZip(), g = tenGoc(), tieu = "BẢNG ĐÁP ÁN — " + (S.tep ? S.tep.name : "") + " — " + S.ds.length + " mã đề", canh = [];
+				if (S.loai === "tex" && CFG.goiMau && S.goiTex) { Object.keys(S.goiTex.f).forEach(k => z.file(k, S.goiTex.f[k])); z.folder("ans"); }
+				else for (let i = 0; i < S.ds.length; i++) { const b = S.ds[i]; tt("Đang đóng gói mã " + b.ma + "…"); z.file("de-thi/" + tenDe(b), await fileDe(b, i)); }
+				if (S.loai === "docx") for (const b of S.ds) if (b.loiGiaiXml && CFG.loiGiai) z.file("loi-giai/" + g + "_LoiGiai_Ma" + b.ma + ".docx", await goiDocx(b.loiGiaiXml));
+				if (CFG.phieu) {
+					const svg = S.ds.map(phieuSvg); z.file("phieu-to/PhieuTo_" + CFG.phieu + "_" + S.ds.length + "ma.html", KG().phieuHTML(svg, "Phiếu tô " + PHIEU_TEN[CFG.phieu]));
+					if (!(S.loai === "tex" && CFG.goiMau)) S.ds.forEach(b => z.file("phieu-to/phieu_" + b.ma + ".tex", "% Phiếu tô " + PHIEU_TEN[CFG.phieu] + " — mã đề " + b.ma + " (\\input sau \\ketthucdethi; cần tikz + \\usetikzlibrary{calc}, biên dịch 2 lần)\n" + phieuTex(b)));
+				}
+				z.file("dap-an/" + g + "_DapAn_TongHop.xlsx", await XL.tao(sheets()));
+				if (S.loai === "docx") { const f = K().docxDapAn(S.ds, tieu), w = new window.JSZip(); Object.keys(f).forEach(k => w.file(k, f[k])); z.file("dap-an/" + g + "_DapAn_TongHop.docx", await w.generateAsync({ type: "blob", mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", compression: "DEFLATE" })); }
+				else z.file("dap-an/" + g + "_DapAn_TongHop.tex", K().texDapAn(S.ds, tieu));
+				await xuatApp(z, canh);
+				z.file("BaoCao_XacThuc.txt", "﻿" + baoCao(canh));
 				await taiVe(await z.generateAsync({ type: "blob", compression: "DEFLATE" }), g + "_TronDe_" + S.ds.length + "ma.zip");
-				tt("Đã xuất " + S.ds.length + " mã đề kèm đáp án tổng hợp (Excel + " + (S.loai === "docx" ? "Word" : "TeX") + ") và báo cáo xác thực.");
+				tt("Đã xuất " + S.ds.length + " mã đề" + (CFG.goiMau ? " (theo khuôn mẫu)" : "") + " kèm đáp án, " + (CFG.phieu ? "phiếu tô, " : "") + "báo cáo xác thực." + (canh.length ? " ⚠ " + canh.join(" · ") : ""), !!canh.length);
 			} catch (e) { tt("Chưa xuất được: " + (e.message || e), true); } finally { nut.disabled = false; }
 		}
 		// ---------- gắn sự kiện ----------
 		let daGan = false;
+		function boChon(e, sel, k) { const o = e.target.closest(sel); if (!o) return false; const v = o.dataset[k]; const ds = CFG[k === "xls" ? "xls" : "qr"]; const i = ds.indexOf(v); if (o.checked && i < 0) ds.push(v); if (!o.checked && i >= 0) ds.splice(i, 1); luuCFG(); return true; }
+		const datLaiGoi = () => { if (S.ds.length) { S.xtGoi = []; S.goiWord = []; S.goiTex = null; S.ds = []; S.xt = []; S.xemDe.clear(); veKetQua(); tt("Đã đổi cấu hình đóng gói — bấm Trộn & xác thực lại."); } };
 		function khoiDong() {
 			if (daGan) return; daGan = true;
 			const tha = $g("trdTha"), tep = $g("trdTep");
@@ -9322,20 +9425,34 @@ async function thiChay(ma) {
 			$g("trdY").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (!b) return; CFG.tronY = b.dataset.v === "tron"; luuCFG(); veCauHinh(); });
 			$g("trdNhanh").addEventListener("click", e => { const b = e.target.closest("[data-n]"); if (b) chinhSoMa(+b.dataset.n); });
 			$g("trdSoDe").addEventListener("change", e => chinhSoMa(+e.target.value));
-			$g("trdCheMa").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (!b || b.dataset.v === CFG.cheMa) return; CFG.cheMa = b.dataset.v; luuCFG(); if (CFG.cheMa === "tay") S.ma = S.ma.map(() => ""); else S.ma = K().sinhMa(S.ma.length, rnd()); veMa(); const o = $g("trdMaDs").querySelector("input"); if (o && CFG.cheMa === "tay") o.focus(); });
+			$g("trdCheMa").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (!b || b.dataset.v === CFG.cheMa) return; CFG.cheMa = b.dataset.v; luuCFG(); S.ma = CFG.cheMa === "tay" ? S.ma.map(() => "") : K().sinhMa(S.ma.length, rnd()); veMa(); const o = $g("trdMaDs").querySelector("input"); if (o && CFG.cheMa === "tay") o.focus(); });
 			$g("trdSinhLai").addEventListener("click", () => { if (CFG.cheMa === "ngau") S.ma = K().sinhMa(S.ma.length, rnd()); else { const giu = S.ma.filter(m => /^\d{4}$/.test(m)), moi = K().sinhMa(S.ma.filter(m => !/^\d{4}$/.test(m)).length, rnd(), giu); S.ma = S.ma.map(m => /^\d{4}$/.test(m) ? m : moi.shift()); } veMa(); });
-			$g("trdMaDs").addEventListener("input", e => { const o = e.target.closest("input[data-i]"); if (!o) return; const v = o.value.replace(/\D/g, "").slice(0, 4); if (v !== o.value) o.value = v; S.ma[+o.dataset.i] = v; const kq = K().kiemMa(S.ma); o.parentNode.classList.toggle("sai", !!kq[+o.dataset.i].loi); const sai = kq.filter(k => k.loi).length; $g("trdMaTT").textContent = sai ? "⚠ " + sai + " mã chưa hợp lệ (cần đúng 4 chữ số, không trùng)." : S.ma.length + " mã đề hợp lệ."; $g("trdMaTT").className = "vdGhi" + (sai ? " trdLoi" : ""); });
+			$g("trdMaDs").addEventListener("input", e => { const o = e.target.closest("input[data-i]"); if (!o) return; const v = o.value.replace(/\D/g, "").slice(0, 4); if (v !== o.value) o.value = v; S.ma[+o.dataset.i] = v; const kq = capNhatTTMa(); o.parentNode.classList.toggle("sai", !!kq[+o.dataset.i].loi); });
 			$g("trdMaDs").addEventListener("change", () => veMa());
+			// ④ mẫu & xuất bản
+			$g("trdMeta").addEventListener("input", e => { const o = e.target.closest("[data-meta]"); if (!o) return; CFG.meta[o.dataset.meta] = o.value; luuCFG(); S.xemDe.clear(); if (S.ds.length && CFG.goiMau) { S.goiWord = []; S.goiTex = null; } });
+			$g("trdMeta").addEventListener("change", () => { if (S.ds.length && CFG.goiMau) datLaiGoi(); });
+			$g("trdGoiMau").addEventListener("change", e => { CFG.goiMau = e.target.checked; luuCFG(); datLaiGoi(); });
+			$g("trdCheDo").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (!b) return; CFG.cheDo = b.dataset.v; luuCFG(); veMau(); datLaiGoi(); });
+			$g("trdAnBang").addEventListener("change", e => { CFG.anBang = !e.target.checked; luuCFG(); datLaiGoi(); });
+			$g("trdInPhieu").addEventListener("change", e => { CFG.inputPhieu = e.target.checked; luuCFG(); datLaiGoi(); });
+			$g("trdPhieu").addEventListener("change", e => { CFG.phieu = e.target.value; luuCFG(); veMau(); if (S.loai === "tex") datLaiGoi(); });
+			$g("trdXemPhieu").addEventListener("click", xemPhieu);
+			$g("trdXlsDs").addEventListener("change", e => boChon(e, "[data-xls]", "xls"));
+			$g("trdQrDs").addEventListener("change", e => boChon(e, "[data-qr]", "qr"));
+			$g("trdMauNap").addEventListener("click", () => $g("trdMauTep").click());
+			$g("trdMauTep").addEventListener("change", async e => { const f = e.target.files[0]; e.target.value = ""; if (!f) return; try { if (/\.tex$/i.test(f.name)) { const t = (await f.text()).replace(/^﻿/, ""); if (!/\\begin\{document\}/.test(t) || !/ex_test/.test(t)) throw new Error("main.tex phải có \\begin{document} và nạp ex_test"); S.mauTex = t; S.tenMauTex = f.name; } else if (/\.docx$/i.test(f.name)) { S.mauWord = await f.arrayBuffer(); await docGoi(S.mauWord); S.tenMauWord = f.name; } else throw new Error("chỉ nhận main.tex hoặc .docx"); veMau(); datLaiGoi(); toast("Đã dùng khuôn " + f.name + " (chỉ trong phiên này)"); } catch (er) { tt("Khuôn mẫu không dùng được: " + (er.message || er), true); } });
+			$g("trdMauGoc").addEventListener("click", () => { S.mauTex = null; S.mauWord = null; S.tenMauTex = S.tenMauWord = ""; veMau(); datLaiGoi(); });
 			$g("trdChay").addEventListener("click", chay);
 			$g("trdMaXem").addEventListener("click", e => { const b = e.target.closest("[data-i]"); if (!b) return; S.xem = +b.dataset.i; veKetQua(); });
 			$g("trdTheXem").addEventListener("click", e => { const b = e.target.closest("[data-xem]"); if (!b) return; S.cheXem = b.dataset.xem; veKetQua(); });
-			$g("trdZip").addEventListener("click", taiZip); $g("trdMot").addEventListener("click", taiMot); $g("trdXls").addEventListener("click", taiXls);
+			$g("trdZip").addEventListener("click", taiZip); $g("trdMot").addEventListener("click", taiMot); $g("trdXls").addEventListener("click", taiXls); $g("trdIn").addEventListener("click", inDe);
 			S.ma = CFG.cheMa === "ngau" ? K().sinhMa(CFG.soDe, rnd()) : Array(CFG.soDe).fill("");
-			veCauHinh(); veMa(); veDem(); veKetQua();
+			veCauHinh(); veMa(); veDem(); veMau(); veKetQua();
 		}
 		return { khoiDong, _S: S };
 	})();
-	function khoiDongTronDe() { if (!window.KTronDe) { toast("Chưa tải được tronde.js — tải lại trang (Ctrl+F5)."); return; } TRD_API.khoiDong(); window.TDKMod = Object.assign(window.TDKMod || {}, { TRD: TRD_API }); }
+	function khoiDongTronDe() { if (!window.KTronDe || !window.KTronDe.goi) { toast("Chưa tải được tronde.js / tronde-goi.js — tải lại trang (Ctrl+F5)."); return; } TRD_API.khoiDong(); window.TDKMod = Object.assign(window.TDKMod || {}, { TRD: TRD_API }); }
 	// ===== Tab Đề tương tự: mẫu tham số + bộ tính biểu thức (phân số chính xác) =====
 	const TT_API = (() => {
 		const $g = id => document.getElementById(id);
