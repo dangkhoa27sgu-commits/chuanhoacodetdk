@@ -2302,3 +2302,73 @@ select option,select optgroup{background:#0F172A!important;color:#E2E8F0!importa
 				.nhieuFile .nfDong{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:7px 10px;border-radius:9px;background:rgba(127,127,127,.08)}
 				.nhieuFile .nfDong .ma{font-weight:700;margin-right:auto;word-break:break-all}
 				.nhieuFile .nfNut2{display:flex;gap:6px}
+
+/* ===== Vẽ hình theo mẫu — ô nhập trực quan (24/11/2026): Trục số, Bảng xét dấu, ẩn/hiện ô theo lựa chọn ===== */
+.vmForm .vhTruong [hidden]{display:none!important}
+.vmForm .vhTruong > .vhKhoi{display:block;min-width:0}
+.tsKhoi,.xdKhoi{display:grid;gap:10px}
+.tsDau{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.tsDau > b{font-size:12.5px;font-weight:700;color:var(--vt-chu);letter-spacing:.2px}
+.vmForm .tsNutNho{height:30px;padding:0 11px;font-size:12.5px;border-radius:8px}
+.tsDsTap{display:grid;gap:8px}
+.tsThe{display:grid;gap:7px;padding:10px 11px;border:1px solid var(--vt-vien);border-radius:12px;background:var(--vt-acNhat,rgba(94,235,255,.06))}
+.tsTheDau{display:flex;align-items:center;gap:8px;min-width:0}
+.vmForm .vhTruong input.tsTen{width:46px!important;height:30px!important;padding:0 6px!important;text-align:center;font-family:"Times New Roman",serif;font-style:italic;font-weight:700;font-size:16px!important}
+.tsBang{color:var(--vt-phu);font-weight:700}
+.tsXem{flex:1;min-width:0;font-size:15px;color:var(--vt-chu);overflow-x:auto;white-space:nowrap}
+.tsXem.loi,.tsKQ.loi{color:#FCA5A5;font-size:12.5px}
+.tsKhoang{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.vmForm .vhTruong .tsKhoang select{width:auto!important;min-width:132px;flex:0 0 auto}
+.tsBieu{display:inline-flex;align-items:center;gap:4px;flex:1 1 230px;min-width:0}
+.tsNgoac,.tsCham{font-family:"Times New Roman",serif;font-size:21px;font-weight:400;color:var(--vt-ac);line-height:1;user-select:none}
+.tsCham{font-size:17px;color:var(--vt-phu)}
+.tsO{display:inline-flex;align-items:center;gap:3px;flex:1 1 0;min-width:0}
+.vmForm .vhTruong .tsO input{min-width:52px;height:32px!important;text-align:center;font-family:"JetBrains Mono",Consolas,monospace;font-size:13px!important}
+.vmForm .vhTruong .tsO input:disabled{opacity:1;color:var(--vt-ac)!important;font-family:"Times New Roman",serif;font-size:16px!important}
+.tsVC{flex:none;height:28px;min-width:34px;padding:0 6px;border:1px solid var(--vt-vien);border-radius:8px;background:none;color:var(--vt-phu);font:600 12.5px/1 "Times New Roman",serif;cursor:pointer;white-space:nowrap}
+.tsVC:hover{border-color:var(--vt-ac);color:var(--vt-chu)}
+.tsVC[aria-pressed="true"]{color:#ECFEFF;background:var(--vt-acNhat);border-color:var(--vt-ac);box-shadow:0 0 14px -6px var(--vt-ac)}
+.tsXoa{flex:none;width:26px;height:26px;border:0;border-radius:7px;background:none;color:var(--vt-phu);font-size:13px;cursor:pointer;display:grid;place-items:center}
+.tsXoa:hover{color:#FCA5A5;background:rgba(248,113,113,.12)}
+.tsHop{font-family:"Times New Roman",serif;font-size:16px;color:var(--vt-phu);padding-left:6px}
+.tsThem{justify-self:start;height:26px;padding:0 10px;border:1px dashed var(--vt-vien);border-radius:8px;background:none;color:var(--vt-phu);font:inherit;font-size:12px;cursor:pointer}
+.tsThem:hover{border-color:var(--vt-ac);color:var(--vt-chu)}
+.tsPhep{display:grid;gap:8px;padding:10px 11px;border:1px solid var(--vt-vien);border-radius:12px}
+.tsPhepHang{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tsPhepHang label{display:flex!important;align-items:center;gap:8px}
+.vmForm .vhTruong .tsPhepHang select{width:auto!important;min-width:70px;font-family:"Times New Roman",serif;font-style:italic;font-size:15px!important}
+.tsC{font-family:"Times New Roman",serif;font-size:19px;color:var(--vt-chu);margin-right:-6px}
+.vmForm .vhTruong .tsPhepHang select.tsChiSo{min-width:58px;height:28px!important;font-size:13px!important;align-self:flex-end}
+.tsOp button{min-width:34px;font-family:"Times New Roman",serif!important;font-size:16px!important}
+.vmForm .vhTruong label.tsBat{display:flex!important;align-items:center;gap:8px;font-size:12.5px;color:var(--vt-chu);font-weight:500}
+.tsBat input{width:16px;height:16px;accent-color:var(--vt-ac)}
+.tsKQ{margin:0;font-size:15px;color:var(--vt-chu);padding:6px 10px;border-radius:9px;background:var(--vt-nen2);min-height:1.4em;overflow-x:auto}
+/* bảng xét dấu (bố cục dọc: hàng = mốc / khoảng, cột = biểu thức) */
+.xdCuon{overflow-x:auto;border:1px solid var(--vt-vien);border-radius:12px;padding:4px 6px}
+.xdBang{border-collapse:collapse;width:100%}
+.xdBang th,.xdBang td{padding:4px 4px;text-align:center;vertical-align:middle}
+.xdBang thead th{border-bottom:1px solid var(--vt-vien);font-weight:400;vertical-align:bottom;padding-bottom:7px}
+.xdBang tbody th{border-right:1px solid var(--vt-vien);padding-right:8px;font-weight:400}
+.xdCotX{border-right:1px solid var(--vt-vien);font-family:"Times New Roman",serif;font-size:17px;color:var(--vt-chu)}
+.xdCotThem{width:30px}
+.xdHangKhe th,.xdHangKhe td{padding-top:1px;padding-bottom:1px}
+.xdO{display:flex;align-items:center;gap:4px;justify-content:flex-start}
+.vmForm .vhTruong .xdO input{width:86px!important;height:32px!important;padding:0 4px!important;text-align:center;font-family:"JetBrains Mono",Consolas,monospace;font-size:13px!important}
+.vmForm .vhTruong .xdO input:disabled{opacity:1;color:var(--vt-ac)!important;font-family:"Times New Roman",serif;font-size:16px!important}
+.vmForm .vhTruong .xdO input.sai{border-color:#F87171!important}
+.xdO .tsXoa{width:22px;height:22px;font-size:11px}
+.xdXem{font-size:13px;color:var(--vt-chu);margin-top:2px;text-align:left;padding-left:4px}
+.xdXem:empty{display:none}
+.xdThem{width:24px;height:24px;border:1px dashed var(--vt-vien);border-radius:50%;background:none;color:var(--vt-phu);font-size:13px;line-height:1;cursor:pointer;padding:0}
+.xdThem:hover{border-color:var(--vt-ac);color:var(--vt-ac);border-style:solid}
+.vmForm .vhTruong .xdTen input{width:84px!important;height:30px!important;padding:0 6px!important;font-family:"Times New Roman",serif;font-style:italic;font-size:15px!important;text-align:center}
+.xdNutDong{display:flex;gap:2px;justify-content:center;margin-top:4px}
+.xdNutDong .tsVC{height:22px;font:600 11px/1 var(--f-ui,sans-serif);padding:0 6px}
+.xdNutDong .tsXoa{width:22px;height:22px;font-size:11px}
+.xdDau{width:40px;height:28px;border:1px solid var(--vt-vien);border-radius:8px;background:var(--vt-nen2);color:var(--vt-chu);font:600 17px/1 "Times New Roman",serif;cursor:pointer;padding:0}
+.xdDau:hover:not(:disabled){border-color:var(--vt-ac);box-shadow:0 0 12px -5px var(--vt-ac)}
+.xdDau.trong{color:var(--vt-phu);opacity:.55}
+.xdDau:disabled{border-style:dashed;opacity:.3;cursor:default}
+.xdDauMoc{width:28px;height:28px;border-radius:50%}
+.xdChan{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.xdGoi{font-size:11.5px;color:var(--vt-phu);line-height:1.45}
