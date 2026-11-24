@@ -6,7 +6,7 @@
 <title>KMath</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&family=Noto+Serif:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Archivo+Black&display=swap">
-<link rel="stylesheet" href="style.css?v=20261120b">
+<link rel="stylesheet" href="style.css?v=20261124t">
 <link rel="stylesheet" href="shape3d.css?v=20261120e">
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700;800;900&display=swap">
@@ -179,6 +179,7 @@
 		<button type="button" role="tab" id="nutTabNganHang" aria-selected="false" aria-controls="tabNganHang" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg><span>Ngân hàng câu hỏi</span></button>
 		<button type="button" role="tab" id="nutTabTaoDe" aria-selected="false" aria-controls="tabTaoDe" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg><span>Tạo đề thi</span></button>
 		<button type="button" role="tab" id="nutTabDeTuongTu" aria-selected="false" aria-controls="tabDeTuongTu" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M4 16V5a2 2 0 0 1 2-2h11"/></svg><span>Đề tương tự</span></button>
+		<button type="button" role="tab" id="nutTabTronDe" aria-selected="false" aria-controls="tabTronDe" tabindex="-1"><svg class="icoTab" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3.5V8h4.5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 20.5V16h-4.5"/></svg><span>Trộn đề thi</span></button>
 	</div></div>
 		<div class="manTab" id="tabChuan" role="tabpanel" aria-labelledby="nutTabChuan">
 		<section class="thongtin" aria-label="Thông tin dự án">
@@ -1596,6 +1597,71 @@
 		</div>
 	</div>
 </section>
+<section class="manTab" id="tabTronDe" role="tabpanel" aria-labelledby="nutTabTronDe" hidden>
+	<div class="td trd">
+		<header class="mdDau">
+			<div class="mdDauTen">
+				<span class="mdDauIco trdIco" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3.5V8h4.5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 20.5V16h-4.5"/></svg></span>
+				<div><h2>Trộn đề thi</h2><p>Nạp đề Word (.docx) hoặc LaTeX (.tex) → chọn cách trộn và mã đề 4 số → xem trước, xuất trọn bộ kèm đáp án. Mọi mã đề đều được kiểm tra khớp 100% với đề gốc.</p></div>
+			</div>
+		</header>
+		<div class="tdThan">
+			<section class="tdTrai">
+				<details class="mdThe tdKhoi" open>
+					<summary><b>① Nạp &amp; kiểm đếm đề gốc</b><span id="trdTenTep">.docx · .tex</span></summary>
+					<label class="trdTha" id="trdTha">
+						<input type="file" id="trdTep" accept=".docx,.tex,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/x-tex" hidden>
+						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 18v-6"/><path d="m9.5 14.5 2.5-2.5 2.5 2.5"/></svg>
+						<b>Chọn hoặc kéo thả file đề</b>
+						<span>Word .docx (MathType, Equation, hình, bảng giữ nguyên từng byte) · LaTeX .tex theo ex_test. Đề chia PHẦN I / II / III; đáp án lấy từ chữ đỏ/gạch chân, bảng đáp án hoặc <code>\True</code>.</span>
+					</label>
+					<label class="trdChonDe" id="trdDeHop" hidden><span>File có nhiều đề — chọn đề để trộn</span><select class="mdO" id="trdDe"></select></label>
+					<div id="trdDem"></div>
+					<ul class="trdCB" id="trdCB"></ul>
+				</details>
+				<details class="mdThe tdKhoi" open>
+					<summary><b>② Cấu hình trộn &amp; mã đề</b><span>mã đề đúng 4 chữ số</span></summary>
+					<div class="trdNhom" id="trdNhomTN"><div class="trdNhan">Phần I · Trắc nghiệm nhiều phương án</div>
+						<label class="vdCong"><input type="checkbox" id="trdPA"><i aria-hidden="true"></i>Xáo trộn đáp án câu TN <small>(A, B, C, D — đáp án tự đồng bộ)</small></label>
+						<label class="vdCong"><input type="checkbox" id="trdTN"><i aria-hidden="true"></i>Xáo trộn thứ tự câu TN</label>
+					</div>
+					<div class="trdNhom" id="trdNhomDS"><div class="trdNhan">Phần II · Đúng / Sai</div>
+						<label class="vdCong"><input type="checkbox" id="trdDS"><i aria-hidden="true"></i>Xáo trộn thứ tự câu ĐS</label>
+						<div class="trdHang"><span>Thứ tự các ý a, b, c, d</span><div class="vdSeg" id="trdY" role="group" aria-label="Thứ tự các ý trong câu Đúng/Sai"><button type="button" data-v="giu">Giữ nguyên thứ tự</button><button type="button" data-v="tron">Xáo trộn thứ tự đáp án</button></div></div>
+					</div>
+					<div class="trdNhom" id="trdNhomTLN"><div class="trdNhan">Phần III · Trả lời ngắn</div>
+						<label class="vdCong"><input type="checkbox" id="trdTLN"><i aria-hidden="true"></i>Xáo trộn thứ tự câu TLN</label>
+					</div>
+					<div class="trdNhom"><div class="trdNhan">Số đề &amp; mã đề</div>
+						<div class="trdHang"><span>Số đề cần tạo</span><div class="vdSeg" id="trdNhanh" role="group" aria-label="Số đề"><button type="button" data-n="2">2</button><button type="button" data-n="4">4</button><button type="button" data-n="6">6</button><button type="button" data-n="8">8</button></div><input class="mdO trdSo" type="number" id="trdSoDe" min="1" max="50" aria-label="Số đề tuỳ chọn"></div>
+						<div class="trdHang"><span>Cách đặt mã đề</span><div class="vdSeg" id="trdCheMa" role="group" aria-label="Cách đặt mã đề"><button type="button" data-v="ngau">Sinh ngẫu nhiên</button><button type="button" data-v="tay">Đặt thủ công</button></div><button class="vdNutNho" type="button" id="trdSinhLai">↻ Sinh lại</button></div>
+						<div class="trdMaDs" id="trdMaDs"></div>
+						<p class="vdGhi" id="trdMaTT"></p>
+					</div>
+					<div class="trdNhom">
+						<label class="vdCong"><input type="checkbox" id="trdDong"><i aria-hidden="true"></i>Ghi “Mã đề: ####” lên đầu mỗi đề <small>(Word: điền vào dòng “Mã đề” có sẵn hoặc thêm dòng mới · LaTeX: <code>\def\maDe</code>, tên đề, tên file đáp án)</small></label>
+						<label class="vdCong" id="trdLGHop" hidden><input type="checkbox" id="trdLG"><i aria-hidden="true"></i>Kèm file lời giải sắp theo thứ tự câu của từng mã</label>
+					</div>
+				</details>
+				<button class="gtBatDau tdTao" type="button" id="trdChay" disabled>⟳ Trộn &amp; xác thực</button>
+				<p class="vdGhi" id="trdTT"></p>
+			</section>
+			<section class="tdPhai">
+				<div class="tdPhaiDau">
+					<div class="trdMaXem" id="trdMaXem" role="tablist" aria-label="Mã đề"></div>
+					<div class="vt3Che tdThe" id="trdTheXem" role="tablist"><button type="button" role="tab" data-xem="cau" aria-selected="true">Đối chiếu &amp; đáp án</button><button type="button" role="tab" data-xem="de" aria-selected="false" id="trdTheDe" hidden>Bản đề</button></div>
+				</div>
+				<div class="trdXT" id="trdXT" hidden></div>
+				<div class="tdXem" id="trdXem"></div>
+				<div class="tdXuat">
+					<button class="gtBatDau tdBo" type="button" id="trdZip" disabled>📦 Tải trọn bộ (.zip)</button>
+					<button class="vdNutNho" type="button" id="trdMot" disabled>Tải mã đang xem</button>
+					<button class="vdNutNho" type="button" id="trdXls" disabled>Đáp án Excel</button>
+				</div>
+			</section>
+		</div>
+	</div>
+</section>
 <section class="manTab" id="tabVanPhong" role="tabpanel" aria-labelledby="nutTabVanPhong" hidden>
 	<div class="kw">
 		<header class="mdDau">
@@ -1872,7 +1938,8 @@ Lớp: ...</textarea></div>
 <script src="shape3d-engine.js?v=20261120f"></script>
 <script src="shape3d-catalog.js?v=20261120f"></script>
 <script src="shape3d.js?v=20261120e"></script>
-<script src="app.js?v=20261120c"></script>
+<script src="tronde.js?v=20261124t"></script>
+<script src="app.js?v=20261124t"></script>
 
 </body>
 </html>

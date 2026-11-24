@@ -2482,3 +2482,53 @@ select option,select optgroup{background:#0F172A!important;color:#E2E8F0!importa
 .xlLG .giua{text-align:center;margin:10px 0}
 .xlLG .hienThi{display:block;text-align:center;margin:8px 0;overflow-x:auto}
 @media(max-width:620px){.thiCau.thiXL{padding:16px 14px}.xlO{min-width:0;flex:1 1 40%}}
+
+/* ===== Tab Trộn đề thi (#tabTronDe) — 24/11/2026 ===== */
+.trdIco { background: linear-gradient(135deg, #b4f1ff, #3fb7e8); } .trdIco svg { stroke: #062b3d; }
+#tabTronDe .trdTha { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 20px 16px; border: 1.5px dashed var(--vien, #c9d3e0); border-radius: 14px; background: var(--mat2, rgba(16,26,56,.72)); text-align: center; cursor: pointer; transition: border-color .15s, background .15s; }
+#tabTronDe .trdTha:hover, #tabTronDe .trdTha.keo { border-color: var(--vang, #5EEBFF); background: rgba(94,235,255,.07); }
+#tabTronDe .trdTha.co { padding: 12px 16px; }
+#tabTronDe .trdTha svg { width: 30px; height: 30px; fill: none; stroke: var(--vang, #5EEBFF); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+#tabTronDe .trdTha b { font-size: 14px; color: var(--chu); } #tabTronDe .trdTha span { font-size: 12.5px; color: var(--phu); line-height: 1.5; max-width: 520px; }
+#tabTronDe .trdChonDe { display: flex; align-items: center; gap: 10px; margin-top: 10px; font-size: 13px; color: var(--phu); } #tabTronDe .trdChonDe select { flex: 1; min-width: 0; }
+#tabTronDe .trdHuy { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 8px; }
+#tabTronDe .trdBadge { display: inline-flex; align-items: baseline; gap: 4px; padding: 4px 11px; border-radius: 99px; font-size: 12.5px; font-weight: 700; color: var(--chu); background: rgba(148,163,184,.14); border: 1px solid var(--vien); }
+#tabTronDe .trdBadge b { font-size: 15px; } #tabTronDe .trdBadge.t-tn b { color: #7dd3fc; } #tabTronDe .trdBadge.t-ds b { color: #6EE7B7; } #tabTronDe .trdBadge.t-tln b { color: #fdba74; } #tabTronDe .trdBadge.t-tl b { color: #c4b5fd; } #tabTronDe .trdBadge.tong { border-color: var(--vang, #5EEBFF); }
+#tabTronDe .trdPhanDs { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+#tabTronDe .trdPhanTen { font-size: 12px; font-weight: 700; color: var(--phu); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#tabTronDe .trdCauDs { display: flex; flex-wrap: wrap; gap: 4px; }
+#tabTronDe .trdC { display: inline-flex; align-items: center; gap: 3px; height: 24px; padding: 0 7px; border-radius: 7px; font-size: 12px; font-weight: 700; color: var(--chu); background: rgba(148,163,184,.12); border: 1px solid var(--vien); cursor: default; }
+#tabTronDe .trdC i { font-style: normal; font-weight: 800; color: var(--xanh, #6EE7B7); }
+#tabTronDe .trdC.khoa { border-color: rgba(253,186,116,.55); } #tabTronDe .trdC.khoa::after { content: "🔒"; font-size: 10px; }
+#tabTronDe .trdC.thieu i { color: var(--do, #FCA5A5); }
+#tabTronDe .trdCB { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 6px; font-size: 12.5px; line-height: 1.5; }
+#tabTronDe .trdCB li { padding: 7px 10px; border-radius: 9px; border: 1px solid var(--vien); background: rgba(148,163,184,.08); color: var(--chu); }
+#tabTronDe .trdCB li.loi { border-color: rgba(252,165,165,.6); background: rgba(252,165,165,.10); } #tabTronDe .trdCB li.canh { color: var(--phu); } #tabTronDe .trdCB li.khoa { border-color: rgba(253,186,116,.45); }
+#tabTronDe .trdNhom { display: grid; gap: 8px; padding: 10px 0; border-top: 1px solid var(--vien); } #tabTronDe .trdNhom:first-of-type { border-top: 0; padding-top: 0; }
+#tabTronDe .trdNhom.mo { opacity: .45; }
+#tabTronDe .trdNhan { font-size: 12px; font-weight: 800; letter-spacing: .02em; text-transform: uppercase; color: var(--vang, #5EEBFF); }
+#tabTronDe .trdHang { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 10px; font-size: 13px; color: var(--phu); } #tabTronDe .trdHang > span { min-width: 132px; }
+#tabTronDe .trdSo { width: 74px; }
+#tabTronDe .trdMaDs { display: flex; flex-wrap: wrap; gap: 6px; }
+#tabTronDe .trdMa { display: inline-flex; align-items: center; gap: 5px; padding: 3px 4px 3px 8px; border-radius: 10px; border: 1px solid var(--vien); background: var(--mat2); }
+#tabTronDe .trdMa small { font-size: 10.5px; color: var(--phu); font-weight: 700; }
+#tabTronDe .trdMa input { width: 58px; height: 28px; border: 0; border-radius: 7px; background: rgba(148,163,184,.12); color: var(--chu); font: 700 15px var(--f-code, monospace); letter-spacing: .12em; text-align: center; outline: none; }
+#tabTronDe .trdMa input:focus { box-shadow: 0 0 0 2px var(--vang, #5EEBFF); }
+#tabTronDe .trdMa.sai { border-color: rgba(252,165,165,.8); } #tabTronDe .trdMa.sai input { color: var(--do, #FCA5A5); }
+#tabTronDe .trdLoi { color: var(--do, #FCA5A5) !important; }
+#tabTronDe .trdMaXem { display: flex; flex-wrap: wrap; gap: 5px; }
+#tabTronDe .trdMaXem button { height: 30px; padding: 0 12px; border-radius: 9px; border: 1px solid var(--vien); background: none; color: var(--phu); font: 700 13px var(--f-code, monospace); letter-spacing: .08em; cursor: pointer; }
+#tabTronDe .trdMaXem button[aria-selected="true"] { background: var(--vang, #5EEBFF); border-color: var(--vang, #5EEBFF); color: #062b3d; }
+#tabTronDe .trdMaXem button.hong { border-color: rgba(252,165,165,.8); color: var(--do, #FCA5A5); }
+#tabTronDe .trdXT > div { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 12px; font-size: 13px; line-height: 1.5; }
+#tabTronDe .trdXTOk { border: 1px solid rgba(110,231,183,.5); background: rgba(110,231,183,.10); color: var(--chu); }
+#tabTronDe .trdXTOk svg { width: 22px; height: 22px; flex: none; fill: none; stroke: var(--xanh, #6EE7B7); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+#tabTronDe .trdXTHong { display: block !important; border: 1px solid rgba(252,165,165,.6); background: rgba(252,165,165,.10); color: var(--chu); } #tabTronDe .trdXTHong ul { margin: 6px 0 0; padding-left: 18px; }
+#tabTronDe .trdBang { display: grid; gap: 14px; max-height: 62vh; overflow: auto; }
+#tabTronDe .trdPhanXem table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+#tabTronDe .trdPhanXem th { position: sticky; top: 0; background: var(--mat2); color: var(--phu); font-weight: 700; text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--vien); white-space: nowrap; }
+#tabTronDe .trdPhanXem td { padding: 6px 8px; border-bottom: 1px solid var(--vien); color: var(--chu); vertical-align: top; }
+#tabTronDe .trdPhanXem td.da { font-weight: 800; color: var(--xanh, #6EE7B7); white-space: nowrap; } #tabTronDe .trdPhanXem td.da small { font-weight: 600; color: var(--phu); }
+#tabTronDe .trdPhanXem td.pa { font-family: var(--f-code, monospace); color: var(--phu); white-space: nowrap; }
+#tabTronDe .trdPhanXem td.nd { color: var(--phu); max-width: 360px; }
+#tabTronDe .trdGiay { max-height: 66vh; overflow: auto; }
