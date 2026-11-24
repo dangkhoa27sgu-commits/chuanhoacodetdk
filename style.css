@@ -2372,3 +2372,113 @@ select option,select optgroup{background:#0F172A!important;color:#E2E8F0!importa
 .xdDauMoc{width:28px;height:28px;border-radius:50%}
 .xdChan{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .xdGoi{font-size:11.5px;color:var(--vt-phu);line-height:1.45}
+/* ô nút chọn (segmented) và ô xếp 3 trên một hàng — 24/11/2026 (lần 3) */
+#vhTruong [hidden],#vhTruong > label[hidden],#vhTruong > div[hidden]{display:none!important}
+.vmForm .vhTruong > .o2{grid-column:span 2}
+.vmForm .vhTruong > .o2.dauHang{grid-column:1 / span 2}
+.vmForm .vhTruong > .vhNutChon{display:grid;gap:5px;min-width:0}
+.vmForm .vhTruong > .vhNutChon > span{font-size:12.5px;color:var(--vt-phu);font-weight:500}
+.vmForm .vhTruong > .vhNutChon .tuyDoan{display:flex;flex-wrap:wrap;gap:3px;justify-self:start;max-width:100%}
+.vmForm .vhTruong > .vhNutChon .tuyDoan button{white-space:nowrap}
+/* bảng kí hiệu + danh sách hàm (miền giới hạn) + bảng điểm (đồ thị qua điểm) */
+.dtKhoi{display:grid;gap:9px}
+.khBan{display:flex;flex-wrap:wrap;gap:4px;padding:7px;border:1px solid var(--vt-vien);border-radius:11px;background:var(--vt-nen2)}
+.khBan button{min-width:34px;height:28px;padding:0 7px;border:1px solid var(--vt-vien);border-radius:7px;background:none;color:var(--vt-chu);font:600 13px/1 "Times New Roman",serif;cursor:pointer}
+.khBan button:hover{border-color:var(--vt-ac);color:var(--vt-ac);box-shadow:0 0 10px -5px var(--vt-ac)}
+.dtDs{display:grid;gap:7px}
+.dtDong{display:grid;grid-template-columns:auto minmax(0,1fr) 74px 26px;gap:6px;align-items:center;padding:7px 8px;border:1px solid var(--vt-vien);border-radius:11px}
+.dtTen{font-family:"Times New Roman",serif;font-size:15px;color:var(--vt-chu);white-space:nowrap}
+.vmForm .vhTruong .dtDong input{height:32px!important}
+.vmForm .vhTruong .dtDong input.dtHam{font-family:"JetBrains Mono",Consolas,monospace;font-size:13px!important}
+.vmForm .vhTruong .dtDong input.dtNhan{font-family:"Times New Roman",serif;font-style:italic;text-align:center}
+.dtXem{grid-column:1 / -1;font-size:14px;color:var(--vt-chu);min-height:0;overflow-x:auto}
+.dtXem:empty{display:none}
+.dtXem .loi{color:#FCA5A5;font-size:12px}
+.dtGhi{font-size:12px;color:var(--vt-phu)}
+.ddBang{display:grid;gap:5px}
+.ddDau,.ddDong{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto 26px;gap:6px;align-items:center}
+.ddDau span{font-size:11.5px;color:var(--vt-phu);text-align:center;font-family:"Times New Roman",serif;font-style:italic}
+.ddDau span:nth-child(3){font-family:inherit;font-style:normal}
+.vmForm .vhTruong .ddDong input{height:32px!important;text-align:center;font-family:"JetBrains Mono",Consolas,monospace;font-size:13px!important}
+.ddLoai button{padding:0 8px;font-size:12px}
+.dtMien{display:flex;flex-direction:column;gap:5px}
+.dtMien:empty{display:none}
+.dtMienNut{display:flex;align-items:center;gap:8px;text-align:left;padding:6px 9px;border:1px solid var(--vt-vien);border-radius:9px;background:none;color:var(--vt-phu);font:inherit;font-size:12px;cursor:pointer}
+.dtMienNut b{display:grid;place-items:center;width:20px;height:20px;border-radius:6px;background:var(--vt-nen2);color:var(--vt-phu);font-size:11.5px;flex:none}
+.dtMienNut[aria-pressed="true"]{color:var(--vt-chu);border-color:var(--vt-ac);background:var(--vt-acNhat)}
+.dtMienNut[aria-pressed="true"] b{background:var(--vt-ac);color:#04121f}
+/* bảng biến thiên nhập trực quan */
+.btBan{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:8px}
+.btBan .dtGhi{flex:1 1 100%}
+.btBang td{vertical-align:middle}
+.btBang .btCotD{width:40px}
+.btGt{display:flex;align-items:center;gap:4px;min-width:0}
+.btGt input{flex:1 1 0;min-width:0;width:100%}
+.btGt.hai input{text-align:center}
+.btVach{flex:none;font-weight:700;color:var(--vt-ac);font-size:15px;line-height:1}
+.btMui{color:var(--vt-phu);font-size:15px;text-align:center}
+/* ===== \immini: chữ trái – hình phải, hẹp màn hình xếp dọc (dùng chung mọi bản xem đề) ===== */
+.immini{display:flex;gap:18px;align-items:flex-start;margin:6px 0}
+.immini .imChu{flex:1 1 auto;min-width:0}
+.immini .imHinh{flex:0 0 auto;max-width:42%;text-align:center}
+.immini .imHinh img{max-width:100%;height:auto}
+@media(max-width:640px){.immini{flex-direction:column;gap:10px}.immini .imHinh{max-width:100%;align-self:center}}
+/* ===== xem lại bài thi: bảng tổng, thẻ so sánh đáp án, hộp lời giải ===== */
+.xlTong{background:#0f1c30;border:1px solid #22395a;border-radius:16px;padding:16px 18px;margin:0 0 18px;display:grid;grid-template-columns:auto 1fr;gap:12px 22px;align-items:start;color:#cfe0f7}
+.xlDiem{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:96px;padding:10px 12px;border-radius:14px;background:linear-gradient(140deg,#16325a,#0f2240);border:1px solid #2a4a78}
+.xlDiem b{font:900 30px/1 "Be Vietnam Pro",sans-serif;color:#f5b301}
+.xlDiem span{font-size:11.5px;color:#9fc0ea;margin-top:4px;font-weight:700}
+.xlBan{display:flex;flex-direction:column;gap:10px;min-width:0}
+.xlNhom{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.xlNhomTen{font:800 12px "Be Vietnam Pro",sans-serif;padding:4px 11px;border-radius:99px;color:#fff;min-width:96px;text-align:center}
+.xlNhomTen.xanh{background:#2f6fed}.xlNhomTen.luc{background:#139a66}.xlNhomTen.cam{background:#d17c00}.xlNhomTen.tim{background:#6d5ae6}
+.xlChip{display:flex;flex-wrap:wrap;gap:6px}
+.xlChip button{width:32px;height:32px;border-radius:9px;border:1.5px solid transparent;font:800 13px "Be Vietnam Pro",sans-serif;cursor:pointer;color:#fff;background:#3a4a63;transition:transform .12s}
+.xlChip button:hover{transform:translateY(-1px)}
+.xlChip button.d{background:#139a66}.xlChip button.s{background:#c8384c}.xlChip button.p{background:#d79a00}.xlChip button.chua{background:transparent;border-color:#4a5d7a;color:#9fb3cf}.xlChip button.tay{background:#6d5ae6}
+.xlLoc{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12.5px;border-top:1px solid #22395a;padding-top:10px}
+.xlChu{display:flex;align-items:center;gap:6px;color:#9fb3cf;font-weight:600}
+.xlChu i{width:11px;height:11px;border-radius:3px;display:inline-block;margin-left:8px}
+.xlChu i:first-child{margin-left:0}
+.xlChu i.d{background:#139a66}.xlChu i.p{background:#d79a00}.xlChu i.s{background:#c8384c}.xlChu i.chua{border:1.5px solid #4a5d7a}
+.xlLoc label{display:flex;align-items:center;gap:7px;font-weight:700;color:#cfe0f7;cursor:pointer}
+.xlLoc input{accent-color:#f5b301;width:16px;height:16px}
+@media(max-width:620px){.xlTong{grid-template-columns:1fr}.xlDiem{flex-direction:row;gap:8px;justify-content:flex-start}}
+#thiXLDs.chiSai .thiXL.kq-d{display:none}
+.thiCau.thiXL{border-left:5px solid #c9d3e2;scroll-margin-top:14px}
+.thiCau.thiXL.kq-d{border-left-color:#2fcf8f}.thiCau.thiXL.kq-s{border-left-color:#e5485f}.thiCau.thiXL.kq-p{border-left-color:#f5b301}.thiCau.thiXL.kq-chua{border-left-color:#9aa7bd}.thiCau.thiXL.kq-tay{border-left-color:#8b7cf0}
+.thiKQCau .tt.c{background:#eef1f6;color:#56657d}
+.thiKQCau .xlD{margin-left:auto;font:800 13px "Be Vietnam Pro",sans-serif;color:#16233a;background:#f2f5fa;padding:4px 12px;border-radius:99px}
+/* đánh dấu lựa chọn của thí sinh ngay trên đề */
+.thiCau.thiXL .thiDe .pa > div{position:relative}
+.thiCau.thiXL .thiDe .pa > div.hsSai{border-color:#e5485f;background:#fdeef0}
+.thiCau.thiXL .thiDe .pa > div.hsChon:not(.hsSai){box-shadow:0 0 0 2px #2fcf8f inset}
+.thiCau.thiXL .thiDe .hsNhan{display:inline-block;margin-left:10px;font:800 11px "Be Vietnam Pro",sans-serif;padding:3px 9px;border-radius:99px;background:#102a43;color:#fff;vertical-align:middle;white-space:nowrap}
+.thiCau.thiXL .thiDe .pa > div.hsSai .hsNhan{background:#c8384c}
+.thiCau.thiXL .thiDe .pa > div.dung .hsNhan{background:#139a66}
+.thiCau.thiXL .thiDe .ds .hsNhan{margin-left:8px;flex:none}
+.thiCau.thiXL .thiDe .ds .hsNhan.d{background:#e6f9f0;color:#13794f}
+.thiCau.thiXL .thiDe .ds .hsNhan.s{background:#fdeaed;color:#b3293c}
+.thiCau.thiXL .thiDe .ds .hsNhan.chua{background:#eef1f6;color:#56657d}
+.thiCau.thiXL .thiDe .ds .dS{margin-left:auto}
+/* hộp so sánh: bài làm ↔ đáp án */
+.xlSoSanh{display:flex;flex-wrap:wrap;align-items:stretch;gap:10px;margin-top:14px;padding-top:14px;border-top:1px dashed #dfe5ee;font-family:"Be Vietnam Pro",sans-serif}
+.xlO{display:flex;flex-direction:column;gap:2px;min-width:130px;padding:9px 16px;border-radius:12px;border:1.5px solid #e3e8f0;background:#f8fafd}
+.xlO > span{font-size:11.5px;font-weight:700;color:#5a7290;text-transform:uppercase;letter-spacing:.4px}
+.xlO b{font-size:19px;color:#16233a;font-family:"Source Serif 4",Georgia,serif}
+.xlO.d{border-color:#2fcf8f;background:#eafaf1}.xlO.d b{color:#13794f}
+.xlO.s{border-color:#e5485f;background:#fdeef0}.xlO.s b{color:#b3293c}
+.xlO.chua b{color:#8a97ab}
+.xlO.dung{border-color:#2fcf8f;background:#fff}.xlO.dung b{color:#13794f}
+.xlBangDS{border-collapse:separate;border-spacing:4px;font-size:13.5px}
+.xlBangDS th{font-weight:800;color:#5a7290;padding:2px 8px;text-align:right;white-space:nowrap}
+.xlBangDS tr:first-child th{text-align:center}
+.xlBangDS td{width:38px;height:32px;text-align:center;border-radius:8px;font-weight:800;background:#f2f5fa;color:#16233a}
+.xlBangDS td.d{background:#e6f9f0;color:#13794f}.xlBangDS td.s{background:#fdeaed;color:#b3293c}.xlBangDS td.chua{color:#8a97ab}
+.xlBangDS td.dung{background:#fff;border:1.5px solid #2fcf8f;color:#13794f}
+.xlGhi{align-self:center;font-size:13px;font-weight:700;color:#5a7290}
+.xlLG{margin-top:14px;padding:14px 18px;border-radius:14px;background:#f4f8ff;border:1px solid #d6e3fb;border-left:4px solid #2f6fed;font-family:"Source Serif 4",Charter,Georgia,serif;font-size:16.5px;line-height:1.7;color:#16233a}
+.xlLGTen{font:800 13px "Be Vietnam Pro",sans-serif;color:#2f6fed;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.xlLG .giua{text-align:center;margin:10px 0}
+.xlLG .hienThi{display:block;text-align:center;margin:8px 0;overflow-x:auto}
+@media(max-width:620px){.thiCau.thiXL{padding:16px 14px}.xlO{min-width:0;flex:1 1 40%}}
