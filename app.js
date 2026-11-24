@@ -2189,8 +2189,13 @@ Trả về DUY NHẤT JSON: {"1":{"ten":"vệ tinh","tu":["vệ tinh nhân tạo
 				else if (v === "BC") { p = [[0, a], [0, 0], [c, 0], [c, b]]; vg = [[0, 1, 2], [1, 2, 3]]; }
 				else { const Y = Math.max(a, b); p = [[0, Y], [0, Y - a], [c, Y - b], [c, Y]]; vg = [[1, 0, 3], [0, 3, 2]]; }
 				break; }
-			case "thangCan": p = [[(b - a) / 2, c], [0, 0], [b, 0], [(b + a) / 2, c]]; break;
-			case "thangThuong": { let s = +g.ld; if (!isFinite(s)) s = .4; if (Math.abs(s - (b - a) / 2) < .2) s += .6; if (Math.abs(s) < .1) s = .3; if (Math.abs(s + a - b) < .1) s += .3; p = [[s, c], [0, 0], [b, 0], [s + a, c]]; break; } // không cân, không có góc vuông
+			case "thangCan": case "thangThuong": {
+				// theo mẫu TikZ của thầy: dựng ngay trên hình vẽ (BC nằm ngang phía trước, AD nằm ngang phía sau, cao c/2 trên giấy) rồi đưa ngược về không gian
+				// mẫu cân: A(-1;1,5), B(0;0), C(3;0), D(4;1,5) · mẫu thường: A(-0,5;1,5), B(0;0), C(3;0), D(5,55;1,5)
+				let s = g.day === "thangCan" ? (b - a) / 2 : +g.ld; if (!isFinite(s)) s = -.5;
+				if (g.day === "thangThuong" && Math.abs(s - (b - a) / 2) < .2) s += .6; // tránh thành hình thang cân
+				const k = +g.co || .5, al = (+g.goc || 40) * Math.PI / 180, hp = c / 2, y = hp / (k * Math.sin(al)), dx = k * y * Math.cos(al);
+				p = [[s - dx, y], [0, 0], [b, 0], [s + a - dx, y]]; break; }
 			default: p = [[.25 * a, .7 * a], [0, 0], [a, 0], [1.15 * a, a]]; // tứ giác thường: không có cặp cạnh đối nào song song
 		}
 		return { p, vg };
@@ -2242,7 +2247,7 @@ Trả về DUY NHẤT JSON: {"1":{"ten":"vệ tinh","tu":["vệ tinh nhân tạo
 		{ k: "b", nhan: "Độ dài AB", kieu: "so", mac: 3, hien: g => /^(chuNhat|binhHanh|thang)/.test(g.day), nhanF: g => tenViTri(g, /^thang/.test(g.day) ? "Đáy " + canhThang(g)[1] : "Độ dài AB") },
 		{ k: "c", nhan: "Chiều cao hình thang", kieu: "so", mac: 3, hien: g => /^thang/.test(g.day), nhanF: g => { const t = canhThang(g)[2]; return t ? tenViTri(g, "Chiều cao " + t) : "Chiều cao hình thang"; } },
 		{ k: "gocDay", nhan: "Góc ABC (độ)", kieu: "so", mac: 60, hien: g => g.day === "thoi" || g.day === "binhHanh", nhanF: g => tenViTri(g, "Góc ABC (độ)") },
-		{ k: "ld", nhan: "Lệch đỉnh A so với B", kieu: "so", mac: .4, hien: g => g.day === "thangThuong", nhanF: g => tenViTri(g, "Lệch đỉnh A so với B") },
+		{ k: "ld", nhan: "Lệch đỉnh A so với B", kieu: "so", mac: -.5, hien: g => g.day === "thangThuong", nhanF: g => tenViTri(g, "Lệch đỉnh A so với B") },
 		...CHAN_CHUNG,
 		{ k: "chan", nhan: "Chân đường cao H", kieu: "chon", lua: [["A", "SA ⊥ đáy (H ≡ A)"], ["B", "SB ⊥ đáy (H ≡ B)"], ["C", "SC ⊥ đáy (H ≡ C)"], ["D", "SD ⊥ đáy (H ≡ D)"], ["tam", "H là giao điểm hai đường chéo"], ["trungAB", "H là trung điểm AB"], ["trungBC", "H là trung điểm BC"], ["trungCD", "H là trung điểm CD"], ["trungDA", "H là trung điểm DA"], ["tuy", "H là điểm bất kì trong đáy"]] },
 		...NUT_CHOP,
@@ -2250,9 +2255,13 @@ Trả về DUY NHẤT JSON: {"1":{"ten":"vệ tinh","tu":["vệ tinh nhân tạo
 		const T = tenK(g, 5), S = T[0], V = T.slice(1), d = dayTuGiacVH(g), P3 = {};
 		V.forEach((t, i) => P3[t] = [d.p[i][0], d.p[i][1], 0]);
 		const H = chanTuGiacVH(g.chan, d.p), { them, vg } = chopChung(g, S, V, d, H, P3, !!(g.cheo || H.tam));
-		return { P3, mat: [[...V], [S, V[0], V[1]], [S, V[1], V[2]], [S, V[2], V[3]], [S, V[3], V[0]]], them, vg };
+		const nhanCo = g.day === "thangCan" || g.day === "thangThuong" ? { [V[0]]: 180, [V[1]]: -135, [V[2]]: g.day === "thangCan" ? -40 : -90, [V[3]]: 0, [S]: 90 } : null;
+		return { P3, nhanCo, mat: [[...V], [S, V[0], V[1]], [S, V[1], V[2]], [S, V[2], V[3]], [S, V[3], V[0]]], them, vg };
 	});
 	const tenK = (g, n) => tenDs(g.ten, n);
+	// đổi loại đáy → nạp kích thước mặc định hợp với loại đó (hình thang cân / thường đúng mẫu của thầy)
+	const MAC_DAY_TU = { tuGiac: { a: 4 }, binhHanh: { a: 4, b: 3, gocDay: 60 }, vuong: { a: 4 }, chuNhat: { a: 4, b: 3 }, thoi: { a: 4, gocDay: 60 }, thangVuong: { a: 4, b: 3, c: 3 }, thangCan: { a: 5, b: 3, c: 3 }, thangThuong: { a: 6.05, b: 3, c: 3, ld: -.5 } };
+	chopTuGiac.doiTruong = e => { if (e.target.id !== "vh_day") return; Object.entries(MAC_DAY_TU[e.target.value] || {}).forEach(([k, v]) => { const o = $("vh_" + k); if (o) o.value = v; }); capHienVH(); };
 	const KHONG_GIAN = [
 		chopTamGiac, chopTuGiac,
 		khongGian("Hình hộp / lập phương ABCD.A'B'C'D'", "A trước-trái, B trước-phải, C sau-phải, D sau-trái. “Lệch” khác 0 → hình hộp xiên.", [{ k: "ten", nhan: "Tên 8 đỉnh", kieu: "chu", mac: "A, B, C, D, A', B', C', D'" }, { k: "a", nhan: "Chiều dài AB", kieu: "so", mac: 4 }, { k: "b", nhan: "Chiều sâu AD", kieu: "so", mac: 3 }, { k: "h", nhan: "Chiều cao", kieu: "so", mac: 3 }, { k: "lech", nhan: "Lệch mặt trên", kieu: "so", mac: 0 }], g => {
